@@ -184,6 +184,7 @@ contains
       end do
    end function regex
 
+   
    ! Analysis for concatenation
    function term() result(res)
       implicit none
@@ -194,18 +195,20 @@ contains
           .or. current_token == tk_end) then
          res => make_tree_node(op_empty, null(), null())
       else 
-         res => factor()
+         res => postfix_op()
          do while (current_token /= tk_union &
                    .and. current_token /= tk_rpar &
                    .and. current_token /= tk_end )
-            res => make_tree_node(op_concat, res, factor())
+            res => make_tree_node(op_concat, res, postfix_op())
          end do 
       end if
 
    end function term
 
+
+   ! Postfix Operators
    ! Analysis for repetition: *, +, ?.
-   function factor() result(res)
+   function postfix_op() result(res)
       implicit none
       type(tree_t), pointer :: res
       integer :: void
@@ -223,7 +226,7 @@ contains
          void = get_token(strbuff)
       end if
 
-   end function factor 
+   end function postfix_op 
 
 
    ! Analysis for character itself. 
@@ -239,16 +242,16 @@ contains
          void = get_token(strbuff)
          res => regex()
          if (current_token /= tk_rpar) then
-            write(stderr, *) "Close paren is expected."
+            write(stderr, *) "Close parenthesis is expected."
          end if 
          void = get_token(strbuff)
       else
-         write(stderr, *) "Normal character or open paren is expected."
+         write(stderr, *) "Normal character or open parenthesis is expected."
       end if
    end function primary
    
 
-   recursive subroutine dump_tree(p)
+   recursive subroutine print_tree(p)
       implicit none
       type(tree_t) :: p
 
@@ -256,28 +259,28 @@ contains
       case (op_char)
          write(*, "(a)", advance='no') '"'//trim(p%c)//'"'
       case (op_concat)
-         write(*, "(a)", advance='no') "(concat "
-         call dump_tree(p%left)
+         write(*, "(a)", advance='no') "(concatenate "
+         call print_tree(p%left)
          write(*, "(a)", advance='no') ' '
-         call dump_tree(p%right)
+         call print_tree(p%right)
          write(*, "(a)", advance='no') ')'
       case (op_union)
          write(*, "(a)", advance='no') "(or "
-         call dump_tree(p%left)
+         call print_tree(p%left)
          write(*, "(a)", advance='no') ' '
-         call dump_tree(p%right)
+         call print_tree(p%right)
          write(*, "(a)", advance='no') ')'
       case (op_closure)
          write(*, "(a)", advance='no') "(closure "
-         call dump_tree(p%left)
+         call print_tree(p%left)
          write(*, "(a)", advance='no') ')'
       case (op_empty)
          write(*, '(a)', advance='no') "EMPTY"
       case default
-         write(stderr, *) "This cannot hoppen in <dump_tree>"
+         write(stderr, *) "This will not hoppen in 'print_tree'"
          error stop
       end select
-   end subroutine dump_tree
+   end subroutine print_tree
 
 
    ! Parse a regular expression and return a pointer to the corresponding syntax tree.
@@ -291,29 +294,29 @@ contains
       t => regex()
 
       if (current_token /= tk_end) then 
-         write(stderr, *) "Extra character at end of pattern."
+         write(stderr, *) "The pattern contains extra character at the end."
       end if
 
-      print *, "--- TREE DUMP ---"
-      call dump_tree(t)
+      print *, "--- PRINT TREE ---"
+      call print_tree(t)
       print *, ''
    end function parse_regex
 
 !=====================================================================!
 
-   function gen_node()
+   function generate_node()
       implicit none
-      integer(int32) :: gen_node
+      integer(int32) :: generate_node
 
       if (nfa_nstate >= NFA_STATE_MAX) then
-         write(stderr, *) "Too many NFA state."
+         write(stderr, *) "Number of NFA states too large."
          error stop
       end if
 
       nfa_nstate = nfa_nstate + 1 
-      gen_node = nfa_nstate
+      generate_node = nfa_nstate
       
-   end function gen_node
+   end function generate_node
 
 
    subroutine add_transition(from, to, c)
@@ -355,20 +358,20 @@ contains
          call generate_nfa(tree%right, entry, way_out)
       
       case (op_closure)
-         a1 = gen_node()
-         a2 = gen_node()
+         a1 = generate_node()
+         a2 = generate_node()
          call add_transition(entry, a1, EMPTY)
          call generate_nfa(tree%left, a1, a2)
          call add_transition(a2, a1, EMPTY)
          call add_transition(a1, way_out, EMPTY)
       
       case (op_concat)
-         a1 = gen_node()
+         a1 = generate_node()
          call generate_nfa(tree%left, entry, a1)
          call generate_nfa(tree%right, a1, way_out)
       
       case default
-         write(stderr, *) "This cannot happen in <generate_nfa>."
+         write(stderr, *) "This will not happen in 'generate_nfa'."
          error stop
       end select
 
@@ -379,21 +382,21 @@ contains
       implicit none
       type(tree_t), intent(in)  :: tree
 
-      nfa_entry = gen_node()
+      nfa_entry = generate_node()
 
-      nfa_exit = gen_node()
+      nfa_exit = generate_node()
 
       call generate_nfa(tree, nfa_entry, nfa_exit)
 
    end subroutine build_nfa
       
-   subroutine dump_nfa()
+   subroutine print_nfa()
       implicit none
       integer :: i, j
       type(nlist_t), pointer :: p
       character(3) :: chara
 
-      print *, "--- NFA DUMP ---"
+      print *, "--- PRINT NFA ---"
 
       do i = 1, NFA_STATE_MAX
          if (i <= nfa_nstate) then
@@ -411,7 +414,7 @@ contains
          end if
       end do
 
-   end subroutine dump_nfa
+   end subroutine print_nfa
          
    logical function check_NFA_state(state, s)
       implicit none
@@ -441,7 +444,7 @@ contains
    end subroutine dfa_initialize
 
 
-   subroutine dump_NFA_state_set (p)
+   subroutine print_NFA_state_set (p)
       implicit none
       type(NFA_state_set_t), intent(in) :: p
 
@@ -450,16 +453,16 @@ contains
       do i = 1, nfa_nstate
          if (check_NFA_state(p, i)) write(*, '(i0, a)', advance='no') i, ' '
       end do
-   end subroutine dump_NFA_state_set
+   end subroutine print_NFA_state_set
 
-   subroutine dump_dfa()
+   subroutine print_dfa()
       implicit none
 
       type(D_slist_t), pointer :: l
       integer(int32) :: i, j
       character(1) :: c_Accepted
 
-      print *, "--- DFA DUMP ---"
+      print *, "--- PRINT DFA---"
 
       do i = 1, dfa_nstate
          if (dfa(i)%accepted) then
@@ -482,11 +485,11 @@ contains
          else
             write(*, '(a, i2, a)', advance='no') "state ", i, '  = ( '
          end if
-         call dump_NFA_state_set(dfa(i)%state)
+         call print_NFA_state_set(dfa(i)%state)
          write(*,'(a)') ")"
       end do
 
-   end subroutine dump_dfa
+   end subroutine print_dfa
 
 
    subroutine add_NFA_state(state, s)
@@ -572,7 +575,7 @@ contains
       end do
 
       if (dfa_nstate >= DFA_STATE_MAX) then
-         write(stderr, '(a)') "Too many DFA state."
+         write(stderr, '(a)') "Number of DFA states too large.."
          error stop
       end if
 
@@ -712,7 +715,7 @@ contains
          t => fetch_unvisited_D_state()
       end do
 
-      call dump_dfa()
+      call print_dfa()
 
    end subroutine convert_NFA_to_DFA
 
