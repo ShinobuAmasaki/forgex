@@ -8,6 +8,9 @@ module dfa_m
 
    public :: convert_NFA_to_DFA
    public :: print_dfa
+   public :: matching
+
+   public :: D_state_t
    
    integer(int32), parameter :: DFA_STATE_MAX = 100
 
@@ -282,7 +285,7 @@ contains
 
    end function compute_reachable_N_state
 
-   
+
    subroutine convert_NFA_to_DFA()
       implicit none
 
@@ -328,5 +331,76 @@ contains
 
 
    end subroutine convert_NFA_to_DFA
+
+
+   function next_state_dfa(state, chara) result(res)
+      use :: utf8_m
+      implicit none
+      type(D_state_t), intent(in) :: state
+      character(*), intent(in) :: chara
+      type(D_slist_t), pointer :: ptr
+      type(D_state_t), pointer :: res
+
+      ptr => state%next
+      do while (associated(ptr))
+         if (chara(1:iutf8(chara, 1)) == ptr%c) then
+            res => ptr%to
+            return
+         end if
+         ptr => ptr%next
+      end do
+
+      res => null()
+   end function next_state_dfa
+
+
+   subroutine matching (str, from, to)
+      use :: utf8_m
+      implicit none
+      character(*), intent(in) :: str
+      integer(int32), intent(inout) :: from, to
+      type(D_state_t), pointer :: state
+
+      integer(int32) :: start, next
+      integer(int32) :: max_match, i
+
+      ! Match the pattern by shifting one character from the begining of string str.
+      ! This loop should be parallelized.
+      start = 1
+      do while (start < len(str))
+
+         ! Initialize DFA
+         max_match = 0
+         i = start
+         state => initial_dfa_state
+
+         ! 
+         do while( associated(state))
+
+            if (state%accepted) then
+               max_match = i
+            end if
+
+            if (i > len(str)) exit
+
+            next = iutf8(str, i) + 1
+
+            state => next_state_dfa(state, str(i:next-1))
+
+            i = next
+
+         end do
+
+         if (max_match /= 0) then
+            from = start
+            to = max_match -1
+            return
+         end if
+
+         start = iutf8(str, start) + 1
+      end do
+
+   end subroutine
+
 
 end module dfa_m
