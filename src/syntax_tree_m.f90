@@ -25,6 +25,7 @@ module syntax_tree_m
       enumerator :: tk_union
       enumerator :: tk_lpar
       enumerator :: tk_rpar
+      enumerator :: tk_backslash
       enumerator :: tk_question
       enumerator :: tk_star
       enumerator :: tk_plus
@@ -90,14 +91,15 @@ contains
       integer(int32) :: res
       character(3) :: c
 
-      if (idx == len_trim(str)+1) then
+
+      if (idx > len(str)) then
          current_token = tk_end
+         token_char = ''
       else
 
          next_idx = iutf8(str, idx) + 1
 
          c = str(idx:next_idx-1)
-         idx = next_idx
 
          select case (trim(c))
          case ('|')
@@ -112,11 +114,24 @@ contains
             current_token = tk_plus
          case ('?')
             current_token = tk_question
+         case ('\')
+            current_token = tk_backslash
+            ! Read the next character
+            idx = next_idx
+            next_idx = iutf8(str, idx) +1 
+
+            c = str(idx:iutf8(str, idx))
+            token_char = c
+            
          case default
             current_token = tk_char
             token_char = c
          end select
+
+         idx = next_idx
+
       end if
+      
 
       res = current_token
 
@@ -209,6 +224,7 @@ contains
       if (current_token == tk_star) then
          res => make_tree_node(op_closure, res, null())
          void = get_token(strbuff)
+
       else if (current_token == tk_plus) then
          res => make_tree_node(op_concat, res, make_tree_node(op_closure, res, null()))
          void = get_token(strbuff)
@@ -230,6 +246,7 @@ contains
       if (current_token == tk_char) then
          res => make_atom(token_char)
          void = get_token(strbuff)
+         
       else if (current_token == tk_lpar) then
          void = get_token(strbuff)
          res => regex()
@@ -237,6 +254,11 @@ contains
             write(stderr, *) "Close parenthesis is expected."
          end if 
          void = get_token(strbuff)
+
+      else if (current_token == tk_backslash) then
+         res => make_atom(token_char)
+         void = get_token(strbuff)
+
       else
          write(stderr, *) "Normal character or open parenthesis is expected."
       end if

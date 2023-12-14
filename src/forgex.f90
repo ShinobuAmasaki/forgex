@@ -14,12 +14,7 @@ module forgex
    use :: dfa_m, only: convert_nfa_to_dfa, print_dfa, matching
    implicit none
 
- 
-   
 contains
-
-
-
 
 
 end module forgex
