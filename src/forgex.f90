@@ -1,4 +1,4 @@
-!! Fortran Regular Expression
+!! Fortran Regular Expression (Forgex)
 !! 
 !! MIT License
 !!
@@ -13,7 +13,7 @@ module forgex
    integer(int32), parameter :: NFA_VECTOR_SIZE = NFA_STATE_MAX
    integer(int32), parameter :: DFA_STATE_MAX = 100
 
-   character(1), parameter :: EMPTY = char(0)
+   character(3), parameter :: EMPTY = char(0)
 
    ! These enums will be rewritten in Fortran 2023's enumerator feature. 
    enum, bind(c)
@@ -39,13 +39,13 @@ module forgex
 
    type :: tree_t
       integer(int32) :: op ! operator
-      character(1) :: c 
+      character(3) :: c = EMPTY
       type(tree_t), pointer :: left => null()
       type(tree_t), pointer :: right => null()
    end type
 
    type :: nlist_t
-      character(1) :: c
+      character(3) :: c = EMPTY
       integer(int32) :: to
       type(nlist_t), pointer :: next => null()  
    end type 
@@ -55,13 +55,13 @@ module forgex
    end type 
 
    type :: D_list_t
-      character(1) :: c = EMPTY
+      character(3) :: c = EMPTY
       type(NFA_state_set_t) :: to
       type(D_list_t), pointer :: next => null()
    end type
 
    type :: D_slist_t
-      character(1) :: c = EMPTY
+      character(3) :: c = EMPTY
       type(D_state_t), pointer :: to => null()
       type(D_slist_t), pointer :: next => null()
    end type
@@ -75,7 +75,7 @@ module forgex
    end type 
 
    integer(int32) :: current_token
-   character(1) :: token_char
+   character(3) :: token_char = EMPTY
    character(:), allocatable, target :: strbuff
 
    type(nlist_t), target :: nfa(NFA_STATE_MAX)
@@ -90,19 +90,24 @@ module forgex
 contains
 
    function get_token(str) result(res)
+      use :: utf8_m
       implicit none
       character(*), intent(in) :: str
       integer(int32), save :: idx = 1
+      integer(int32) :: next_idx
       integer(int32) :: res
-      character(1) :: c
+      character(3) :: c
 
       if (idx == len_trim(str)+1) then
          current_token = tk_end
       else
 
-         c = str(idx:idx)
-         idx = idx + 1
-         select case (c)
+         next_idx = iutf8(str, idx) + 1
+
+         c = str(idx:next_idx-1)
+         idx = next_idx
+
+         select case (trim(c))
          case ('|')
             current_token = tk_union
          case ('(')
@@ -155,7 +160,7 @@ contains
    ! Make a leaf on the syntax tree. 
    function make_atom (c) result(p)
       implicit none
-      character(1), intent(in) :: c
+      character(3), intent(in) :: c
       type(tree_t), pointer :: p
 
       allocate(p)
@@ -249,7 +254,7 @@ contains
 
       select case (p%op)
       case (op_char)
-         write(*, "(a)", advance='no') '"'//p%c//'"'
+         write(*, "(a)", advance='no') '"'//trim(p%c)//'"'
       case (op_concat)
          write(*, "(a)", advance='no') "(concat "
          call dump_tree(p%left)
@@ -314,7 +319,7 @@ contains
    subroutine add_transition(from, to, c)
       implicit none
       integer(int32), intent(in) :: from, to
-      character(1), intent(in) :: c
+      character(3), intent(in) :: c
 
       type(nlist_t), pointer :: p
       
@@ -386,7 +391,7 @@ contains
       implicit none
       integer :: i, j
       type(nlist_t), pointer :: p
-      character(1) :: chara
+      character(3) :: chara
 
       print *, "--- NFA DUMP ---"
 
@@ -398,7 +403,7 @@ contains
                if (p%to /= 0 ) then
                   chara = p%c
                   if (chara == char(0)) chara = '?'
-                  write(*, "(a, a1, a2, i0, a1)", advance='no') "(", chara,", ", p%to, ")"
+                  write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(chara),", ", p%to, ")"
                end if
                p => p%next
             end do
@@ -465,7 +470,7 @@ contains
 
          l => dfa(i)%next
          do while (associated(l))
-            write(*, '(a, a, i0, 1x)', advance='no') l%c, '=>', l%to%index
+            write(*, '(a, a, i0, 1x)', advance='no') trim(l%c), '=>', l%to%index
             l => l%next
          end do
          write(*, *) ""
