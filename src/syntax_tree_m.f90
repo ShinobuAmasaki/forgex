@@ -131,7 +131,6 @@ contains
          idx = next_idx
 
       end if
-      
 
       res = current_token
 
@@ -246,7 +245,7 @@ contains
       if (current_token == tk_char) then
          res => make_atom(token_char)
          void = get_token(strbuff)
-         
+
       else if (current_token == tk_lpar) then
          void = get_token(strbuff)
          res => regex()
