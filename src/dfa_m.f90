@@ -364,6 +364,9 @@ contains
       integer(int32) :: start, next
       integer(int32) :: max_match, i
 
+      ! logical, allocatable :: is_first(:)
+      ! call is_first_byte_of_character_array(str, is_first, len(str))
+
       ! Match the pattern by shifting one character from the begining of string str.
       ! This loop should be parallelized.
       start = 1
