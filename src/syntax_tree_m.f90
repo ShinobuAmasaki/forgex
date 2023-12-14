@@ -13,6 +13,11 @@ module syntax_tree_m
    
    public :: tree_t
    public :: parse_regex
+   public :: print_tree
+   
+   interface print_tree
+      module procedure :: print_tree_api
+   end interface
 
    ! These enums will be rewritten in Fortran 2023's enumerator feature. 
    enum, bind(c)
@@ -32,8 +37,6 @@ module syntax_tree_m
       enumerator :: op_union
       enumerator :: op_closure
       enumerator :: op_empty
-      ! enumerator :: 
-      ! enumerator :: 
    end enum
 
    type :: tree_t
@@ -49,7 +52,7 @@ module syntax_tree_m
 
 contains
 
-      ! Parse a regular expression and return a pointer to the corresponding syntax tree.
+   ! Parse a regular expression and return a pointer to the corresponding syntax tree.
    function parse_regex(str) result(t)
       implicit none
       character(*), intent(in) :: str
@@ -63,11 +66,20 @@ contains
          write(stderr, *) "The pattern contains extra character at the end."
       end if
 
-      print *, "--- PRINT TREE ---"
-      call print_tree(t)
-      print *, ''
    end function parse_regex
 
+
+   subroutine print_tree_api (tree)
+      implicit none
+      type(tree_t), pointer :: tree
+
+      print *, "--- PRINT TREE ---"
+      call print_tree_internal(tree)
+      print *, ''
+
+   end subroutine
+
+!---------------------------------------------------------------------!
 
    function get_token(str) result(res)
       use :: utf8_m
@@ -231,7 +243,7 @@ contains
    end function primary
    
 
-   recursive subroutine print_tree(p)
+   recursive subroutine print_tree_internal(p)
       implicit none
       type(tree_t) :: p
 
@@ -240,19 +252,19 @@ contains
          write(*, "(a)", advance='no') '"'//trim(p%c)//'"'
       case (op_concat)
          write(*, "(a)", advance='no') "(concatenate "
-         call print_tree(p%left)
+         call print_tree_internal(p%left)
          write(*, "(a)", advance='no') ' '
-         call print_tree(p%right)
+         call print_tree_internal(p%right)
          write(*, "(a)", advance='no') ')'
       case (op_union)
          write(*, "(a)", advance='no') "(or "
-         call print_tree(p%left)
+         call print_tree_internal(p%left)
          write(*, "(a)", advance='no') ' '
-         call print_tree(p%right)
+         call print_tree_internal(p%right)
          write(*, "(a)", advance='no') ')'
       case (op_closure)
          write(*, "(a)", advance='no') "(closure "
-         call print_tree(p%left)
+         call print_tree_internal(p%left)
          write(*, "(a)", advance='no') ')'
       case (op_empty)
          write(*, '(a)', advance='no') "EMPTY"
@@ -260,7 +272,7 @@ contains
          write(stderr, *) "This will not hoppen in 'print_tree'"
          error stop
       end select
-   end subroutine print_tree
+   end subroutine print_tree_internal
 
 
 end module syntax_tree_m
