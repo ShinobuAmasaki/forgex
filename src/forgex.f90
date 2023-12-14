@@ -7,7 +7,10 @@
 !!  
 module forgex
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
-   use :: syntax_tree_m
+   
+   use :: syntax_tree_m, only: EMPTY, op_char, op_concat, op_union, op_closure, &
+                               op_empty, tree_t, parse_regex
+   
    implicit none
 
    integer(int32), parameter :: NFA_STATE_MAX = 128

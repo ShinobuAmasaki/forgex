@@ -49,6 +49,25 @@ module syntax_tree_m
 
 contains
 
+      ! Parse a regular expression and return a pointer to the corresponding syntax tree.
+   function parse_regex(str) result(t)
+      implicit none
+      character(*), intent(in) :: str
+      type(tree_t), pointer :: t
+
+      call initialize_regex_parser(str)
+
+      t => regex()
+
+      if (current_token /= tk_end) then 
+         write(stderr, *) "The pattern contains extra character at the end."
+      end if
+
+      print *, "--- PRINT TREE ---"
+      call print_tree(t)
+      print *, ''
+   end function parse_regex
+
 
    function get_token(str) result(res)
       use :: utf8_m
@@ -243,24 +262,5 @@ contains
       end select
    end subroutine print_tree
 
-
-   ! Parse a regular expression and return a pointer to the corresponding syntax tree.
-   function parse_regex(str) result(t)
-      implicit none
-      character(*), intent(in) :: str
-      type(tree_t), pointer :: t
-
-      call initialize_regex_parser(str)
-
-      t => regex()
-
-      if (current_token /= tk_end) then 
-         write(stderr, *) "The pattern contains extra character at the end."
-      end if
-
-      print *, "--- PRINT TREE ---"
-      call print_tree(t)
-      print *, ''
-   end function parse_regex
 
 end module syntax_tree_m
