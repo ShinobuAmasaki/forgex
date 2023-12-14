@@ -66,4 +66,42 @@ contains
 
    end function iutf8
 
+   
+   pure function is_first_byte_of_character(chara) result(res)
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      character(1), intent(in) :: chara
+      logical :: res
+      integer(int8) :: byte, shift_6
+
+      byte = ichar(chara)
+
+      res = .true. 
+
+      shift_6 = ishft(byte, -6)
+
+      if (shift_6 == 2) res = .false.
+
+   end function is_first_byte_of_character
+
+
+   subroutine is_first_byte_of_character_array (str, array, length)
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      logical, allocatable, intent(inout) :: array(:)
+      integer(int32), intent(in) :: length
+      character(len=length), intent(in) :: str
+      integer :: i
+
+      if (allocated(array)) deallocate(array)
+
+      allocate(array(length), source=.false.)
+
+      do concurrent (i = 1:length)
+         array(i) = is_first_byte_of_character(str(i:i))
+      end do
+
+   end subroutine
+      
+
 end module utf8_m
