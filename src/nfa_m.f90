@@ -8,8 +8,10 @@
 
 module nfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
+   use :: segment_m 
    use :: syntax_tree_m, only: EMPTY, op_char, op_concat, op_union, op_closure, &
-                               op_empty, tree_t 
+                               op_empty, tree_t
+   use :: utf8_m
    implicit none
    private 
 
@@ -21,7 +23,8 @@ module nfa_m
    integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
 
    type, public :: nlist_t
-      character(3) :: c = EMPTY
+      ! character(3) :: c = EMPTY
+      type(segment_t) :: c
       integer(int32) :: to
       type(nlist_t), pointer :: next => null()  
    end type 
@@ -31,6 +34,7 @@ module nfa_m
       logical :: vec(NFA_VECTOR_SIZE) = .false.
    end type 
 
+   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_MIN, UTF8_CODE_MIN)
 
    type(nlist_t), public, target :: nfa(NFA_STATE_MAX)
    integer(int32), public :: nfa_entry, nfa_exit
@@ -58,7 +62,8 @@ contains
    subroutine add_transition(from, to, c)
       implicit none
       integer(int32), intent(in) :: from, to
-      character(3), intent(in) :: c
+      ! character(3), intent(in) :: c
+      type(segment_t) :: c
 
       type(nlist_t), pointer :: p
       
@@ -67,8 +72,9 @@ contains
       
       p = nfa(from)
 
-      ! nfa(from)%is_active = .true.
-      nfa(from)%c = c
+
+      nfa(from)%c%min = c%min
+      nfa(from)%c%max = c%max
       nfa(from)%to = to
       nfa(from)%next => p
 
@@ -80,14 +86,16 @@ contains
       type(tree_t), intent(in) :: tree
       integer(int32), intent(in) :: entry, way_out
 
-      integer :: a1, a2
+      integer :: a1, a2, j
 
       select case (tree%op)
       case (op_char)
-         call add_transition(entry, way_out, tree%c)
+         do j = 1, size(tree%c, dim=1)
+            call add_transition(entry, way_out, tree%c(j))
+         end do 
      
       case (op_empty)
-         call add_transition(entry, way_out, EMPTY)
+         call add_transition(entry, way_out, SEG_EMPTY)
 
       case (op_union)
          call generate_nfa(tree%left, entry, way_out)
@@ -96,10 +104,10 @@ contains
       case (op_closure)
          a1 = generate_node()
          a2 = generate_node()
-         call add_transition(entry, a1, EMPTY)
+         call add_transition(entry, a1, SEG_EMPTY)
          call generate_nfa(tree%left, a1, a2)
-         call add_transition(a2, a1, EMPTY)
-         call add_transition(a1, way_out, EMPTY)
+         call add_transition(a2, a1, SEG_EMPTY)
+         call add_transition(a1, way_out, SEG_EMPTY)
       
       case (op_concat)
          a1 = generate_node()
@@ -130,7 +138,8 @@ contains
       implicit none
       integer :: i, j
       type(nlist_t), pointer :: p
-      character(3) :: chara
+      character(4) :: chara(2)
+      character(9) :: cache
 
       print *, "--- PRINT NFA ---"
 
@@ -140,9 +149,18 @@ contains
             p => nfa(i)
             do while (associated(p))
                if (p%to /= 0 ) then
-                  chara = p%c
-                  if (chara == char(0)) chara = '?'
-                  write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(chara),", ", p%to, ")"
+                  chara(1) = char(p%c%min)
+                  chara(2) = char(p%c%max)
+
+                  if (chara(1) == chara(2))  then
+                     cache = chara(1)
+                  else
+                     cache = trim(chara(1))//'-'//trim(chara(2))
+                  end if
+
+                  if (chara(1) == char(0) .and. chara(2) == char(0)) cache = '?'
+                  
+                  write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(cache),", ", p%to, ")"
                end if
                p => p%next
             end do

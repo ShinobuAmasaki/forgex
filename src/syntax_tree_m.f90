@@ -361,7 +361,7 @@ contains
    end function 
       
 
-
+ 
    ! Analysis for character itself. 
    function primary() result(res)
       implicit none
