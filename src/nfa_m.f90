@@ -1,3 +1,11 @@
+!! Fortran Regular Expression (Forgex)
+!! 
+!! MIT License
+!!
+!! (C) Amasaki Shinobu, 2023
+!!     A regular expression engine for Fortran.
+!!     nfa_m module is a part of Forgex.
+
 module nfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: syntax_tree_m, only: EMPTY, op_char, op_concat, op_union, op_closure, &
