@@ -149,8 +149,8 @@ contains
             p => nfa(i)
             do while (associated(p))
                if (p%to /= 0 ) then
-                  chara(1) = char(p%c%min)
-                  chara(2) = char(p%c%max)
+                  chara(1) = char_utf8(p%c%min)
+                  chara(2) = char_utf8(p%c%max)
 
                   if (chara(1) == chara(2))  then
                      cache = chara(1)

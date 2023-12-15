@@ -297,7 +297,7 @@ contains
          void = get_token(strbuff, class=.true.)
       end do 
 
-      siz = len_trim(buf)
+      siz = len_trim_utf8(buf)
 
       siz = siz - 2*count_token(buf(2:len_trim(buf)-1), hyphen)
 
@@ -443,14 +443,14 @@ contains
 
       ! 文字クラスが1文字のみの場合
       if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
-         str = char(p%c(1)%min)
+         str = char_utf8(p%c(1)%min)
          return
       end if
 
       buf = '[ '
       do j = 1, siz
 
-         buf = buf//char(p%c(j)%min)//'-'//char(p%c(j)%max)//'; '
+         buf = buf//char_utf8(p%c(j)%min)//'-'//char_utf8(p%c(j)%max)//'; '
 
       end do
       buf = trim(buf)//']'
