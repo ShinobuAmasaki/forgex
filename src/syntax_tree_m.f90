@@ -8,6 +8,8 @@
 
 module syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
+   use :: utf8_m
+   use :: segment_m
    implicit none
    private
 
@@ -27,6 +29,8 @@ module syntax_tree_m
       module procedure :: print_tree_api
    end interface
 
+   character(1), parameter :: hyphen = '-'
+
    ! These enums will be rewritten in Fortran 2023's enumerator feature. 
    enum, bind(c)
       enumerator :: tk_char = 0
@@ -37,6 +41,9 @@ module syntax_tree_m
       enumerator :: tk_question
       enumerator :: tk_star
       enumerator :: tk_plus
+      enumerator :: tk_lsbracket ! left square bracket
+      enumerator :: tk_rsbracket ! right square bracket 
+      enumerator :: tk_hyphen
       enumerator :: tk_end
    end enum
 
@@ -50,13 +57,16 @@ module syntax_tree_m
 
    type :: tree_t
       integer(int32) :: op ! operator
-      character(3) :: c = EMPTY
+      ! character(3) :: c = EMPTY
+      type(segment_t), allocatable :: c(:)
       type(tree_t), pointer :: left => null()
       type(tree_t), pointer :: right => null()
    end type
 
+   type(segment_t), public :: SEG_EMPTY
+
    integer(int32) :: current_token
-   character(3) :: token_char = EMPTY
+   character(4) :: token_char = EMPTY
    character(:), allocatable, target :: strbuff
 
 contains
@@ -90,15 +100,21 @@ contains
 
 !---------------------------------------------------------------------!
 
-   function get_token(str) result(res)
+   function get_token(str, class) result(res)
       use :: utf8_m
       implicit none
       character(*), intent(in) :: str
+      logical, optional, intent(in) :: class
+
+      logical :: class_flag
+
       integer(int32), save :: idx = 1
       integer(int32) :: next_idx
       integer(int32) :: res
-      character(3) :: c
+      character(4) :: c
 
+      class_flag = .false.
+      if (present(class)) class_flag = class 
 
       if (idx > len(str)) then
          current_token = tk_end
@@ -109,32 +125,52 @@ contains
 
          c = str(idx:next_idx-1)
 
-         select case (trim(c))
-         case ('|')
-            current_token = tk_union
-         case ('(')
-            current_token = tk_lpar
-         case (')')
-            current_token = tk_rpar
-         case ('*')
-            current_token = tk_star
-         case ('+')
-            current_token = tk_plus
-         case ('?')
-            current_token = tk_question
-         case ('\')
-            current_token = tk_backslash
-            ! Read the next character
-            idx = next_idx
-            next_idx = idxutf8(str, idx) +1 
+         if (class_flag) then
 
-            c = str(idx:idxutf8(str, idx))
-            token_char = c
+            select case (trim(c))
+            case (']')
+               current_token = tk_rsbracket
+            case ('-')
+               current_token = tk_hyphen 
+               token_char = c
+            case default
+               current_token = tk_char
+               token_char = c
+            end select
+         
+         else
+            select case (trim(c))
+            case ('|')
+               current_token = tk_union
+            case ('(')
+               current_token = tk_lpar
+            case (')')
+               current_token = tk_rpar
+            case ('*')
+               current_token = tk_star
+            case ('+')
+               current_token = tk_plus
+            case ('?')
+               current_token = tk_question
+            case ('\')
+               current_token = tk_backslash
+               ! Read the next character
+               idx = next_idx
+               next_idx = idxutf8(str, idx) +1 
+
+               c = str(idx:idxutf8(str, idx))
+               token_char = c
             
-         case default
-            current_token = tk_char
-            token_char = c
-         end select
+            case ('[')
+               current_token = tk_lsbracket
+            case (']')
+               current_token = tk_rsbracket
+            
+            case default
+               current_token = tk_char
+               token_char = c
+            end select
+         end if
 
          idx = next_idx
 
@@ -172,15 +208,17 @@ contains
 
 
    ! Make a leaf on the syntax tree. 
-   function make_atom (c) result(p)
+   function make_atom (a, b) result(p)
       implicit none
-      character(3), intent(in) :: c
+      character(4), intent(in) :: a, b
       type(tree_t), pointer :: p
 
       allocate(p)
+      allocate(p%c(1))
 
       p%op = op_char
-      p%c = c
+      p%c%min = ichar_utf8(a)
+      p%c%max = ichar_utf8(b)
 
    end function make_atom
 
@@ -243,6 +281,86 @@ contains
 
    end function postfix_op 
 
+   function char_class() result(res)
+      implicit none
+      type(tree_t), pointer :: res
+      character(9) :: buf
+      type(segment_t), allocatable :: segment_list(:)
+      integer :: void
+      integer :: siz, count_hyphen, i, inext, iend, j
+
+      res => null()
+
+      buf = ''
+      do while (current_token /= tk_rsbracket)
+         buf = trim(buf)//token_char
+         void = get_token(strbuff, class=.true.)
+      end do 
+
+      siz = len_trim(buf)
+
+      siz = siz - 2*count_token(buf(2:len_trim(buf)-1), hyphen)
+
+      if (buf(1:1) == hyphen)  siz = siz - 1
+      if (buf(len_trim(buf):len_trim(buf)) == hyphen) siz = siz - 1
+
+      allocate(segment_list(siz))
+
+      iend = len_trim(buf)
+      i = 1
+      j = 1
+      do while (i <= iend)
+
+         inext = idxutf8(buf, i) + 1
+
+      
+         ! 次の文字がハイフンではないならば
+         if (buf(inext:inext) /= hyphen) then
+            segment_list(j)%min = ichar_utf8(buf(i:inext-1))
+            segment_list(j)%max = ichar_utf8(buf(i:inext-1))
+
+            j = j + 1
+         else
+            segment_list(j)%min = ichar_utf8(buf(i:inext-1))
+
+            ! 2文字すすめる
+            i = inext +1
+
+            inext = idxutf8(buf, i) + 1
+            segment_list(j)%max = ichar_utf8(buf(i:inext-1))
+            j = j + 1
+
+         end if
+
+         if (j == 1 .and. buf(1:1) == hyphen) then
+            segment_list(1)%min = UTF8_CODE_MIN
+            ! 一文字すすめる
+            i = inext
+            inext = idxutf8(buf, i) + 1
+            segment_list(1)%max = ichar_utf8(buf(i:inext-1))
+            ! もう1文字すすめる
+            i = idxutf8(buf, i) + 1 
+            j = j + 1
+            cycle
+         end if
+
+         if (i == iend .and. buf(iend:iend) == hyphen) then
+            segment_list(siz)%max = UTF8_CODE_MAX
+            exit
+         end if
+
+         i = inext 
+      end do
+
+      allocate(res)
+      allocate(res%c(siz))
+
+      res%c(:) = segment_list(:)
+      res%op = op_char
+
+   end function 
+      
+
 
    ! Analysis for character itself. 
    function primary() result(res)
@@ -251,7 +369,7 @@ contains
       integer :: void
 
       if (current_token == tk_char) then
-         res => make_atom(token_char)
+         res => make_atom(token_char, token_char)
          void = get_token(strbuff)
 
       else if (current_token == tk_lpar) then
@@ -262,8 +380,16 @@ contains
          end if 
          void = get_token(strbuff)
 
+      else if (current_token == tk_lsbracket) then
+         void = get_token(strbuff)
+         res => char_class()
+         if (current_token /= tk_rsbracket) then
+            write(stderr, *) "Close square bracket is expected."
+         end if
+         void = get_token(strbuff)
+
       else if (current_token == tk_backslash) then
-         res => make_atom(token_char)
+         res => make_atom(token_char, token_char)
          void = get_token(strbuff)
 
       else
@@ -278,7 +404,7 @@ contains
 
       select case (p%op)
       case (op_char)
-         write(*, "(a)", advance='no') '"'//trim(p%c)//'"'
+         write(*, "(a)", advance='no') '"'//trim(print_class(p))//'"'
       case (op_concat)
          write(*, "(a)", advance='no') "(concatenate "
          call print_tree_internal(p%left)
@@ -303,5 +429,35 @@ contains
       end select
    end subroutine print_tree_internal
 
+
+   function print_class (p) result(str)
+      implicit none
+      type(tree_t), intent(in) :: p
+      character(1024) :: str
+      character(:), allocatable :: buf
+      integer :: siz, j
+
+      str = ''
+
+      siz = size(p%c, dim=1)
+
+      ! 文字クラスが1文字のみの場合
+      if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
+         str = char(p%c(1)%min)
+         return
+      end if
+
+      buf = '[ '
+      do j = 1, siz
+
+         buf = buf//char(p%c(j)%min)//'-'//char(p%c(j)%max)//'; '
+
+      end do
+      buf = trim(buf)//']'
+
+      str = trim(buf)
+
+
+   end function print_class
 
 end module syntax_tree_m
