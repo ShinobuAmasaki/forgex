@@ -411,7 +411,7 @@ contains
 
       select case (p%op)
       case (op_char)
-         write(*, "(a)", advance='no') '"'//trim(print_class(p))//'"'
+         write(*, "(a)", advance='no') trim(print_class(p))
       case (op_concat)
          write(*, "(a)", advance='no') "(concatenate "
          call print_tree_internal(p%left)
@@ -450,12 +450,12 @@ contains
 
       ! 文字クラスが1文字のみの場合
       if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
-         str = char_utf8(p%c(1)%min)
+         str = '"'//char_utf8(p%c(1)%min)//'"'
          return
       end if
 
       if (siz == 1 .and. p%c(1)%min == UTF8_CODE_MIN .and. p%c(1)%max == UTF8_CODE_MAX) then
-         str = "ANY"
+         str = '<ANY>'
          return
       end if
 
