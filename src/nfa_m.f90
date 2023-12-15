@@ -34,7 +34,7 @@ module nfa_m
       logical :: vec(NFA_VECTOR_SIZE) = .false.
    end type 
 
-   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_MIN, UTF8_CODE_MIN)
+   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
 
    type(nlist_t), public, target :: nfa(NFA_STATE_MAX)
    integer(int32), public :: nfa_entry, nfa_exit
@@ -71,7 +71,6 @@ contains
       allocate(p)
       
       p = nfa(from)
-
 
       nfa(from)%c%min = c%min
       nfa(from)%c%max = c%max
@@ -158,7 +157,7 @@ contains
                      cache = trim(chara(1))//'-'//trim(chara(2))
                   end if
 
-                  if (chara(1) == char(0) .and. chara(2) == char(0)) cache = '?'
+                  if (chara(1) == char_utf8(0) .and. chara(2) == char_utf8(0)) cache = '?'
                   
                   write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(cache),", ", p%to, ")"
                end if

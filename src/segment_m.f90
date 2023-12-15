@@ -4,8 +4,10 @@ module segment_m
    implicit none
    
    type, public :: segment_t
-      integer(int32) :: min = UTF8_CODE_MIN ! = 0
-      integer(int32) :: max = UTF8_CODE_MIN ! = 0
+      integer(int32) :: min = UTF8_CODE_EMPTY ! = 0
+      integer(int32) :: max = UTF8_CODE_EMPTY ! = 0
+   contains
+      procedure :: print => segment_for_print
    end type
 
    interface operator(==)
@@ -37,6 +39,14 @@ contains
 
    end function segment_not_equiv
 
+   function segment_for_print (seg) result(res)
+      implicit none
+      class(segment_t), intent(in) :: seg
+      character(:), allocatable :: res
+
+      res = '['//char_utf8(seg%min)//'-'//char_utf8(seg%max)//']'
+
+   end function segment_for_print
 
 
 end module segment_m
