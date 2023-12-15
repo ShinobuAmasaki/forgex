@@ -30,7 +30,7 @@ module dfa_m
       type(D_list_t), pointer :: next => null()
    end type
 
-   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_MIN, UTF8_CODE_MIN)
+   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
 
    type :: D_slist_t
       ! character(3) :: c = EMPTY
