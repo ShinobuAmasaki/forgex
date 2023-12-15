@@ -1,3 +1,11 @@
+!! Fortran Regular Expression (Forgex)
+!! 
+!! MIT License
+!!
+!! (C) Amasaki Shinobu, 2023
+!!     A regular expression engine for Fortran.
+!!     dfa_m module is a part of Forgex.
+
 module dfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: syntax_tree_m, only: EMPTY

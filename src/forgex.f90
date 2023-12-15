@@ -4,7 +4,8 @@
 !!
 !! (C) Amasaki Shinobu, 2023
 !!     A regular expression engine for Fortran.
-!!  
+!!
+  
 module forgex
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    
