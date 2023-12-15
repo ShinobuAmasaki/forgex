@@ -75,6 +75,92 @@ contains
 
    end function idxutf8
 
+   function char_utf8 (code) result(str)
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      integer(int32), intent(in) :: code
+      character(4) :: str
+
+      character(:), allocatable :: bin
+      integer(int32) :: buf, mask
+      integer(int8) :: byte(4)
+      
+      str = ''
+      buf = code
+
+      bin = '0000000000000000000000000111111' ! lower 6-bit mask
+      read(bin, '(b32.32)') mask
+
+      byte(1) = and(ishft(buf, -18), mask)
+      
+      buf = code
+      byte(2) = and(ishft(buf, -12), mask)
+      
+      buf = code
+      byte(3) = and(ishft(buf, -6), mask)
+      
+      buf = code
+      byte(4) = and(buf, mask)
+
+      if (code > 2**7-1) then
+        
+         if (2**16 -1 < code) then
+            ! the first byte of 4-byte character
+            byte(1) = ibset(byte(1),7)
+            byte(1) = ibset(byte(1),6)
+            byte(1) = ibset(byte(1),5)
+            byte(1) = ibset(byte(1),4)
+            byte(1) = ibclr(byte(1),3)
+            byte(2) = set_continuation_byte(byte(2))
+            byte(3) = set_continuation_byte(byte(3))
+            byte(4) = set_continuation_byte(byte(4))
+            
+         ! the first byte of 3-byte character
+         else if (2**11 - 1 < code) then
+            byte(1) = 0 
+            byte(2) = ibset(byte(2), 7)
+            byte(2) = ibset(byte(2), 6)
+            byte(2) = ibset(byte(2), 5)
+            byte(2) = ibclr(byte(2), 4)
+            byte(3) = set_continuation_byte(byte(3))
+            byte(4) = set_continuation_byte(byte(4))
+
+         ! the first byte of 2-byte character
+         else if (2**7 -1 < code) then
+            byte(1) = 0
+            byte(2) = 0
+            byte(3) = ibset(byte(3), 7)
+            byte(3) = ibset(byte(3), 6)
+            byte(3) = ibclr(byte(3), 5)
+            byte(4) = set_continuation_byte(byte(4))
+         end if
+
+         str = char(byte(1))//char(byte(2))//char(byte(3))//char(byte(4))
+
+         str = trim(adjustl(str))
+      
+      else
+         
+         str = char(code)
+      end if
+
+               
+   contains
+      
+      function set_continuation_byte(byte) result(res)
+         implicit none
+         integer(int8), intent(in) :: byte
+         integer(int8) :: res
+
+         res = ibset(byte, 7)
+         res = ibclr(res, 6)
+
+      end function set_continuation_byte
+
+      
+
+   end function char_utf8
+
    ! Take a UTF-8 character as an argument and
    ! return the integer representing its Unicode code point. 
    function ichar_utf8 (chara) result(res)
