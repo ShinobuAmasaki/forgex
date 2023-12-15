@@ -9,7 +9,9 @@
 module utf8_m
    implicit none
 
-   
+   integer, parameter :: UTF8_CODE_MAX = 2**21-1
+   integer, parameter :: UTF8_CODE_MIN = 0
+
 contains
 
    ! INDEX OF UTF8
