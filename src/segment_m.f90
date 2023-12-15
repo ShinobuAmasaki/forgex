@@ -45,7 +45,9 @@ contains
       character(:), allocatable :: res
 
       if (seg%min == UTF8_CODE_MIN .and. seg%max == UTF8_CODE_MAX) then
-         res = "ANY"
+         res = "<ANY>"
+      else if (seg%min == seg%max) then
+         res = char_utf8(seg%min)
       else 
          res = '['//char_utf8(seg%min)//'-'//char_utf8(seg%max)//']'
       end if
