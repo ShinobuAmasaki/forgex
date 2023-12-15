@@ -204,4 +204,21 @@ contains
    end subroutine
       
 
+   function count_token(str, token) result(count)
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      character(*), intent(in) :: str
+      character(1), intent(in) :: token
+      integer :: count, i, siz
+
+      count = 0
+      siz = len(str)
+      do i = 1, siz
+         if (str(i:i) == token) count = count + 1
+      end do 
+
+   end function count_token
+
+
+
 end module utf8_m
