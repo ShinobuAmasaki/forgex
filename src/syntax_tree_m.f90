@@ -43,6 +43,7 @@ module syntax_tree_m
       enumerator :: tk_plus
       enumerator :: tk_lsbracket ! left square bracket
       enumerator :: tk_rsbracket ! right square bracket 
+      enumerator :: tk_dot
       enumerator :: tk_hyphen
       enumerator :: tk_end
    end enum
@@ -165,6 +166,9 @@ contains
                current_token = tk_lsbracket
             case (']')
                current_token = tk_rsbracket
+
+            case ('.')
+               current_token = tk_dot
             
             case default
                current_token = tk_char
@@ -210,7 +214,7 @@ contains
    ! Make a leaf on the syntax tree. 
    function make_atom (a, b) result(p)
       implicit none
-      character(4), intent(in) :: a, b
+      character(*), intent(in) :: a, b
       type(tree_t), pointer :: p
 
       allocate(p)
@@ -359,8 +363,7 @@ contains
       res%op = op_char
 
    end function 
-      
-
+   
  
    ! Analysis for character itself. 
    function primary() result(res)
@@ -386,6 +389,10 @@ contains
          if (current_token /= tk_rsbracket) then
             write(stderr, *) "Close square bracket is expected."
          end if
+         void = get_token(strbuff)
+      else if (current_token == tk_dot) then
+         res => make_atom(char_utf8(UTF8_CODE_MIN), char_utf8(UTF8_CODE_MAX))
+
          void = get_token(strbuff)
 
       else if (current_token == tk_backslash) then
@@ -444,6 +451,11 @@ contains
       ! 文字クラスが1文字のみの場合
       if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
          str = char_utf8(p%c(1)%min)
+         return
+      end if
+
+      if (siz == 1 .and. p%c(1)%min == UTF8_CODE_MIN .and. p%c(1)%max == UTF8_CODE_MAX) then
+         str = "ANY"
          return
       end if
 

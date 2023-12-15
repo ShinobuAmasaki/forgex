@@ -154,7 +154,7 @@ contains
                   if (chara(1) == chara(2))  then
                      cache = chara(1)
                   else
-                     cache = trim(chara(1))//'-'//trim(chara(2))
+                     cache = p%c%print()
                   end if
 
                   if (chara(1) == char_utf8(0) .and. chara(2) == char_utf8(0)) cache = '?'
