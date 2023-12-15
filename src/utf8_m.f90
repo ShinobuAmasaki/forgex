@@ -8,20 +8,21 @@
 
 module utf8_m
    implicit none
+
    
 contains
 
    ! INDEX OF UTF8
    ! This function returns the index of the end of the (multibyte) character,
    ! given the string str and the current index curr.
-   pure function iutf8 (str, curr) result(tail) 
+   pure function idxutf8 (str, curr) result(tail) 
       use, intrinsic :: iso_fortran_env
       implicit none
       character(*), intent(in) :: str
       integer(int32), intent(in) :: curr
       integer(int32)  :: tail
       integer(int32) :: i
-      integer(int8) :: byte, shift_4, shift_5, shift_6, shift_7
+      integer(int8) :: byte, shift_3, shift_4, shift_5, shift_6, shift_7
 
       tail = curr
 
@@ -29,6 +30,7 @@ contains
 
          byte = ichar(str(curr+i:curr+i))
 
+         shift_3 = ishft(byte, -3)
          shift_4 = ishft(byte, -4)
          shift_5 = ishft(byte, -5)
          shift_6 = ishft(byte, -6)
@@ -38,24 +40,29 @@ contains
 
          if (i == 0) then
 
-            if (shift_4 == 14) then
+            if (shift_3 == 30 ) then ! 11110_2
+               tail = curr + 4 - 1
+               return
+            end if
+
+            if (shift_4 == 14) then ! 1110_2
                tail = curr + 3 - 1
                return 
             end if
 
-            if (shift_5 == 6) then
+            if (shift_5 == 6) then  ! 110_2
                tail = curr + 2 - 1
                return
             end if
 
-            if (shift_7 == 0) then
+            if (shift_7 == 0) then ! 0_2
                tail = curr + 1 - 1
                return
             end if 
 
          else 
             
-            if (shift_4 == 14 .or. shift_5 == 6 .or. shift_7 == 0) then
+            if (shift_3 == 30 .or. shift_4 == 14 .or. shift_5 == 6 .or. shift_7 == 0) then
                tail = curr + i - 1
                return 
             end if 
@@ -64,7 +71,98 @@ contains
 
       end do
 
-   end function iutf8
+   end function idxutf8
+
+   ! Take a UTF-8 character as an argument and
+   ! return the integer representing its Unicode code point. 
+   function ichar_utf8 (chara) result(res)
+      use, intrinsic :: iso_fortran_env
+      implicit none
+      character(*), intent(in) :: chara
+      integer(int32) :: res
+      integer(int8) :: byte(4), shift_3, shift_4, shift_5, shift_7
+      integer(int8) ::  mask_2_bit, mask_3_bit, mask_4_bit, mask_5_bit
+      integer(int32) :: buf
+
+      character(8) :: binary
+
+      binary = '00111111'
+      read(binary, '(b8.8)') mask_2_bit
+
+      binary = '00011111'
+      read(binary, '(b8.8)') mask_3_bit  ! for 2-byte character 
+      
+      binary = '00001111'
+      read(binary, '(b8.8)') mask_4_bit  ! for 3-byte character 
+
+      binary = '00000111'
+      read(binary, '(b8.8)') mask_5_bit
+
+      res = 0
+
+      if (len(chara) > 4)  then
+         res = -1
+         return
+      end if
+
+      byte(1) = ichar(chara(1:1))
+      if (len(chara) >= 2) byte(2) = ichar(chara(2:2))
+      if (len(chara) >= 3) byte(3) = ichar(chara(3:3))
+      if (len(chara) >= 4) byte(4) = ichar(chara(4:4))
+
+      shift_3 = ishft(byte(1), -3)
+      shift_4 = ishft(byte(1), -4)
+      shift_5 = ishft(byte(1), -5)
+      shift_7 = ishft(byte(1), -7)
+
+      ! 1-byte character 
+      if (shift_7 == 0) then
+
+         res = byte(1)
+         return
+
+      ! 4-byte character
+      else if (shift_3 == 30) then
+
+         res = and(byte(1), mask_5_bit)
+
+         res = ishft(res, 6)
+         buf = and(byte(2), mask_2_bit)
+         res = or(res, buf)
+
+         res = ishft(res, 6)
+         buf = and(byte(3), mask_2_bit)
+         res = or(res, buf)
+
+         res = ishft(res, 6)
+         buf = and(byte(4), mask_2_bit)
+         res = or(res, buf)
+
+      ! 3-byte character
+      else if (shift_4 == 14) then
+         
+         res = and(byte(1), mask_4_bit)
+
+         res = ishft(res, 6)
+         buf = and(byte(2), mask_2_bit)
+         res = or(res, buf)
+
+         res = ishft(res, 6)
+         buf = and(byte(3), mask_2_bit)
+         res = or(res, buf)
+
+      ! 2-byte character
+      else if (shift_5 == 6) then
+
+         res = and(byte(1), mask_3_bit)
+
+         res = ishft(res, 6)
+         buf = and(byte(2), mask_2_bit)
+         res = or(res, buf)
+
+      end if 
+
+   end function ichar_utf8
 
    
    pure function is_first_byte_of_character(chara) result(res)

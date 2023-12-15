@@ -97,7 +97,7 @@ contains
          token_char = ''
       else
 
-         next_idx = iutf8(str, idx) + 1
+         next_idx = idxutf8(str, idx) + 1
 
          c = str(idx:next_idx-1)
 
@@ -118,9 +118,9 @@ contains
             current_token = tk_backslash
             ! Read the next character
             idx = next_idx
-            next_idx = iutf8(str, idx) +1 
+            next_idx = idxutf8(str, idx) +1 
 
-            c = str(idx:iutf8(str, idx))
+            c = str(idx:idxutf8(str, idx))
             token_char = c
             
          case default
