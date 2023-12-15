@@ -12,7 +12,7 @@ module dfa_m
 
    public :: D_state_t
    
-   integer(int32), parameter :: DFA_STATE_MAX = 100
+   integer(int32), parameter :: DFA_STATE_MAX = 1024
 
 
    type :: D_list_t
@@ -343,7 +343,7 @@ contains
 
       ptr => state%next
       do while (associated(ptr))
-         if (chara(1:iutf8(chara, 1)) == ptr%c) then
+         if (chara(1:idxutf8(chara, 1)) == ptr%c) then
             res => ptr%to
             return
          end if
@@ -386,7 +386,7 @@ contains
 
             if (i > len(str)) exit
 
-            next = iutf8(str, i) + 1
+            next = idxutf8(str, i) + 1
 
             state => next_state_dfa(state, str(i:next-1))
 
@@ -400,7 +400,7 @@ contains
             return
          end if
 
-         start = iutf8(str, start) + 1
+         start = idxutf8(str, start) + 1
       end do
 
    end subroutine

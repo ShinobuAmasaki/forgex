@@ -9,7 +9,7 @@ module nfa_m
    public :: build_nfa
    public :: print_nfa
 
-   integer(int32), parameter, public :: NFA_STATE_MAX = 128
+   integer(int32), parameter, public :: NFA_STATE_MAX = 1024
    integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
 
    type, public :: nlist_t
