@@ -10,7 +10,8 @@ module utf8_m
    implicit none
 
    integer, parameter :: UTF8_CODE_MAX = 2**21-1
-   integer, parameter :: UTF8_CODE_MIN = 0
+   integer, parameter :: UTF8_CODE_MIN = 33 ! = 0x21: '!'
+   integer, parameter :: UTF8_CODE_EMPTY = 0
 
 contains
 

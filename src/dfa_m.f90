@@ -8,6 +8,7 @@
 
 module dfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
+   use :: segment_m
    use :: syntax_tree_m, only: EMPTY
    use :: nfa_m, only: NFA_state_set_t, check_NFA_state, nlist_t, nfa_nstate, nfa, &
                        NFA_VECTOR_SIZE, nfa_entry, nfa_exit, build_nfa, print_nfa
@@ -22,16 +23,18 @@ module dfa_m
    
    integer(int32), parameter :: DFA_STATE_MAX = 1024
 
-
    type :: D_list_t
-      character(3) :: c = EMPTY
+      ! character(3) :: c = EMPTY
+      type(segment_t), allocatable :: c(:)
       type(NFA_state_set_t) :: to
       type(D_list_t), pointer :: next => null()
    end type
 
+   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_MIN, UTF8_CODE_MIN)
 
    type :: D_slist_t
-      character(3) :: c = EMPTY
+      ! character(3) :: c = EMPTY
+      type(segment_t), allocatable :: c(:)
       type(D_state_t), pointer :: to => null()
       type(D_slist_t), pointer :: next => null()
    end type
@@ -96,7 +99,7 @@ contains
 
          l => dfa(i)%next
          do while (associated(l))
-            write(*, '(a, a, i0, 1x)', advance='no') trim(l%c), '=>', l%to%index
+            write(*, '(a, a, i0, 1x)', advance='no') l%c(1)%print(), '=>', l%to%index
             l => l%next
          end do
          write(*, *) ""
@@ -137,7 +140,7 @@ contains
       p => nfa(s)
       do while (associated(p))
 
-         if (p%c == EMPTY .and. .not. check_NFA_state(state, p%to) ) then
+         if (p%c == SEG_EMPTY .and. .not. check_NFA_state(state, p%to) ) then
             if (p%to /= 0) call mark_empty_transition(state, p%to)
          end if 
 
@@ -236,7 +239,7 @@ contains
       type(D_state_t), intent(in) :: dstate
 
       type(D_list_t), pointer :: res
-      integer(int32):: i
+      integer(int32):: i, j
       type(NFA_state_set_t), pointer :: state
       type(nlist_t), pointer :: p
       type(D_list_t), pointer :: b
@@ -259,28 +262,33 @@ contains
             middle: do while (associated(p))
 
                ! Except for ε-transition.
-               if (p%c /= EMPTY) then
+               if (p%c /= SEG_EMPTY) then
 
                   a => res
                   inner: do while(associated(a))
                      
-                     if (a%c == p%c) then
-                        call add_NFA_state(a%to, p%to)
-                        
-                        ! Move to next NFA state
-                        p => p%next
-                        cycle middle
+                     do j = 1, size(a%c, dim=1)   
+                        if (a%c(j) == p%c .and. p%to /= 0) then
+                           call add_NFA_state(a%to, p%to)
+                           
+                           ! Move to next NFA state
+                           p => p%next
+                           cycle middle
 
-                     end if
+                        end if
+                     end do
                      a => a%next
 
                   end do inner
 
-                  allocate(b)
-                  b%c = p%c
-                  call add_NFA_state(b%to, p%to)
-                  b%next => res
-                  res => b
+                  if (p%to /= 0) then 
+                     allocate(b)
+                     allocate(b%c(1))
+                     b%c(1) = p%c
+                     call add_NFA_state(b%to, p%to)
+                     b%next => res
+                     res => b
+                  end if
                   
                end if
 
@@ -349,12 +357,18 @@ contains
       type(D_slist_t), pointer :: ptr
       type(D_state_t), pointer :: res
 
+      integer :: inext, j
+
       ptr => state%next
       do while (associated(ptr))
-         if (chara(1:idxutf8(chara, 1)) == ptr%c) then
-            res => ptr%to
-            return
-         end if
+         inext = idxutf8(chara, 1) + 1
+
+         do j = 1, size(ptr%c, dim=1)
+            if ( ptr%c(j)%min <= ichar_utf8(chara(1:inext)) .and. ichar_utf8(chara(1:inext)) <= ptr%c(j)%max) then
+               res => ptr%to
+               return
+            end if
+         end do
          ptr => ptr%next
       end do
 
