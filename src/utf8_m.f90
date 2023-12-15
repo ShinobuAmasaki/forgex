@@ -75,11 +75,12 @@ contains
 
    end function idxutf8
 
+
    function char_utf8 (code) result(str)
       use, intrinsic :: iso_fortran_env
       implicit none
       integer(int32), intent(in) :: code
-      character(4) :: str
+      character(:), allocatable :: str
 
       character(:), allocatable :: bin
       integer(int32) :: buf, mask
@@ -136,15 +137,13 @@ contains
          end if
 
          str = char(byte(1))//char(byte(2))//char(byte(3))//char(byte(4))
-
          str = trim(adjustl(str))
       
       else
-         
          str = char(code)
       end if
 
-               
+            
    contains
       
       function set_continuation_byte(byte) result(res)
@@ -155,9 +154,7 @@ contains
          res = ibset(byte, 7)
          res = ibclr(res, 6)
 
-      end function set_continuation_byte
-
-      
+      end function set_continuation_byte      
 
    end function char_utf8
 
@@ -251,6 +248,21 @@ contains
       end if 
 
    end function ichar_utf8
+
+   function len_trim_utf8(str) result(count)
+      implicit none
+      character(*), intent(in) :: str
+      integer :: i, inext, count
+
+      i = 1
+      count = 0
+      do while(i <= len_trim(str))
+         inext = idxutf8(str, i) + 1
+         count = count + 1
+         i = inext
+      end do
+      
+   end function len_trim_utf8
 
    
    pure function is_first_byte_of_character(chara) result(res)
