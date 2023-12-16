@@ -15,6 +15,15 @@ module syntax_tree_m
 
    character(3), parameter, public :: EMPTY = char(0)
 
+   character(1), parameter, private :: ESCAPE_T = 't'
+   character(1), parameter, private :: ESCAPE_N = 'n'
+   character(1), parameter, private :: ESCAPE_R = 'r'
+   character(1), parameter, private :: ESCAPE_D = 'd'
+   character(1), parameter, private :: ESCAPE_W = 'w'
+   character(1), parameter, private :: ESCAPE_S = 's'
+
+
+
    public :: op_char
    public :: op_concat
    public :: op_union
@@ -64,8 +73,6 @@ module syntax_tree_m
       type(tree_t), pointer :: right => null()
    end type
 
-   type(segment_t), public :: SEG_EMPTY
-
    integer(int32) :: current_token
    character(4) :: token_char = EMPTY
    character(:), allocatable, target :: strbuff
@@ -79,6 +86,8 @@ contains
       type(tree_t), pointer :: t
 
       call initialize_regex_parser(str)
+
+      print *, str
 
       t => regex()
 
@@ -159,7 +168,7 @@ contains
                idx = next_idx
                next_idx = idxutf8(str, idx) +1 
 
-               c = str(idx:idxutf8(str, idx))
+               c = str(idx:next_idx - 1)
                token_char = c
             
             case ('[')
@@ -212,9 +221,23 @@ contains
 
 
    ! Make a leaf on the syntax tree. 
-   function make_atom (a, b) result(p)
+   function make_atom (seg) result(p)
       implicit none
-      character(*), intent(in) :: a, b
+      type(segment_t), intent(in) :: seg
+      type(tree_t), pointer :: p
+
+      allocate(p)
+      allocate(p%c(1))
+
+      p%op = op_char
+      p%c = seg
+
+   end function make_atom
+
+   function make_atom_char (a,b) result(p)
+      implicit none
+      character(*), intent(in) :: a
+      character(*), intent(in), optional :: b
       type(tree_t), pointer :: p
 
       allocate(p)
@@ -222,9 +245,13 @@ contains
 
       p%op = op_char
       p%c%min = ichar_utf8(a)
-      p%c%max = ichar_utf8(b)
+      if (present(b)) then
+         p%c%max = ichar_utf8(b)
+      else
+         p%c%max = ichar_utf8(a)
+      end if
 
-   end function make_atom
+   end function make_atom_char
 
 
    ! Analysis alternation (X|Y)
@@ -288,20 +315,23 @@ contains
    function char_class() result(res)
       implicit none
       type(tree_t), pointer :: res
-      character(9) :: buf
+      character(:), allocatable :: buf
       type(segment_t), allocatable :: segment_list(:)
       integer :: void
       integer :: siz, count_hyphen, i, inext, iend, j
 
       res => null()
 
+
       buf = ''
       do while (current_token /= tk_rsbracket)
-         buf = trim(buf)//token_char
+         iend = idxutf8(token_char, 1) 
+         buf = buf//token_char(1:iend)
          void = get_token(strbuff, class=.true.)
-      end do 
+      end do
 
-      siz = len_trim_utf8(buf)
+
+      siz = len_utf8(buf)
 
       siz = siz - 2*count_token(buf(2:len_trim(buf)-1), hyphen)
 
@@ -310,7 +340,7 @@ contains
 
       allocate(segment_list(siz))
 
-      iend = len_trim(buf)
+      iend = len_utf8(buf)
       i = 1
       j = 1
       do while (i <= iend)
@@ -364,15 +394,63 @@ contains
 
    end function 
    
+
+   function shorthand(token) result(res)
+      implicit none
+      character(4), intent(in) :: token
+      type(tree_t), pointer :: res, left, right, left_two
+
+      type(segment_t), allocatable :: segment_list(:)
+      type(segment_t) :: seg
+
+      res => null()
+
+      select case (trim(token))
+      case (ESCAPE_T); res => make_atom(SEG_TAB);   return
+      case (ESCAPE_N); res => make_atom(SEG_LF); return
+      case (ESCAPE_R); res => make_atom(SEG_CR);    return 
+      case (ESCAPE_D); res => make_atom(SEG_DIGIT); return 
+      case (ESCAPE_W)
+         allocate(segment_list(4))
+         segment_list(1) = SEG_LOWERCASE
+         segment_list(2) = SEG_UPPERCASE
+         segment_list(3) = SEG_DIGIT
+         segment_list(4) = SEG_UNDERSCORE
+
+      case (ESCAPE_S)
+         allocate(segment_list(6))
+         segment_list(1) = SEG_SPACE
+         segment_list(2) = SEG_TAB
+         segment_list(3) = SEG_CR
+         segment_list(4) = SEG_LF
+         segment_list(5) = SEG_FF
+         segment_list(6) = SEG_ZENKAKU_SPACE
+         
+      case default
+         seg = segment_t(ichar_utf8(token_char), ichar_utf8(token_char))
+         res => make_atom(seg)
+         return
+      end select
+
+      allocate(res)
+      allocate(res%c(size(segment_list, dim=1)))
+
+      res%c(:) = segment_list(:)
+      res%op = op_char
+   
+      deallocate(segment_list)
+
+   end function shorthand
  
    ! Analysis for character itself. 
    function primary() result(res)
       implicit none
       type(tree_t), pointer :: res
       integer :: void
+      type(segment_t) :: seg
 
       if (current_token == tk_char) then
-         res => make_atom(token_char, token_char)
+         res => make_atom(segment_t(ichar_utf8(token_char), ichar_utf8(token_char)))
          void = get_token(strbuff)
 
       else if (current_token == tk_lpar) then
@@ -391,12 +469,12 @@ contains
          end if
          void = get_token(strbuff)
       else if (current_token == tk_dot) then
-         res => make_atom(char_utf8(UTF8_CODE_MIN), char_utf8(UTF8_CODE_MAX))
+         res => make_atom(SEG_ANY)
 
          void = get_token(strbuff)
 
       else if (current_token == tk_backslash) then
-         res => make_atom(token_char, token_char)
+         res => shorthand(token_char)
          void = get_token(strbuff)
 
       else
@@ -440,29 +518,58 @@ contains
    function print_class (p) result(str)
       implicit none
       type(tree_t), intent(in) :: p
-      character(1024) :: str
+      character(:), allocatable :: str
       character(:), allocatable :: buf
+      character(:), allocatable :: c
       integer :: siz, j
 
       str = ''
 
       siz = size(p%c, dim=1)
 
+      if (p%c(1) == SEG_LF) then
+         str = '<LF>'
+         return
+
+      
       ! 文字クラスが1文字のみの場合
-      if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
+      else if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
          str = '"'//char_utf8(p%c(1)%min)//'"'
          return
       end if
 
-      if (siz == 1 .and. p%c(1)%min == UTF8_CODE_MIN .and. p%c(1)%max == UTF8_CODE_MAX) then
+      if (siz == 1 .and. p%c(1) == SEG_ANY) then
          str = '<ANY>'
          return
       end if
+      
+
 
       buf = '[ '
       do j = 1, siz
 
-         buf = buf//char_utf8(p%c(j)%min)//'-'//char_utf8(p%c(j)%max)//'; '
+         if (p%c(j) == SEG_LF) then
+            buf = buf//"<LF>; "
+         
+         else if (p%c(j) == SEG_TAB) then
+            buf = buf//"<TAB>; "
+         
+         else if (p%c(j) == SEG_CR) then
+            buf = buf//"<CR>; "
+         
+         else if (p%c(j) == SEG_FF) then
+            buf = buf//"<FF>; "
+
+         else if (p%c(j) == SEG_SPACE) then
+            buf = buf//"<SPACE>; "
+
+         else if (p%c(j) == SEG_ZENKAKU_SPACE) then
+            buf = buf//"<ZENKAKU SPACE>; "
+
+         else 
+
+            buf = buf//char_utf8(p%c(j)%min)//'-'//char_utf8(p%c(j)%max)//'; '
+         end if
 
       end do
       buf = trim(buf)//']'
