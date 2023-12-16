@@ -19,25 +19,35 @@ module nfa_m
    public :: build_nfa
    public :: print_nfa
 
+   ! Upper limit of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_MAX = 1024
+   
+   ! Upper limit of NFA transition instance
    integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
 
+   ! nlist_t is a type represents a transition on NFA.
+   ! It transit to state 'to' by character segment 'c'. 
    type, public :: nlist_t
-      ! character(3) :: c = EMPTY
       type(segment_t) :: c
       integer(int32) :: to
       type(nlist_t), pointer :: next => null()  
    end type 
 
-
+   ! NFA_state_set_t represents set of NFA states.
    type, public :: NFA_state_set_t
       logical :: vec(NFA_VECTOR_SIZE) = .false.
    end type 
 
+   ! The empty segment for initializing.
    type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
 
+   ! A table of transition on NFA.
    type(nlist_t), public, target :: nfa(NFA_STATE_MAX)
+
+   ! Initial and accepting state on NFA.
    integer(int32), public :: nfa_entry, nfa_exit
+
+   ! Number of NFA states.
    integer(int32), public :: nfa_nstate = 0
 
 contains
@@ -62,7 +72,6 @@ contains
    subroutine add_transition(from, to, c)
       implicit none
       integer(int32), intent(in) :: from, to
-      ! character(3), intent(in) :: c
       type(segment_t) :: c
 
       type(nlist_t), pointer :: p

@@ -21,36 +21,44 @@ module dfa_m
 
    public :: D_state_t
    
+   ! Upper limit for number of DFA states instance.
    integer(int32), parameter :: DFA_STATE_MAX = 1024
 
+   ! dlist_t is the type represents a list of transitionable NFA state.
    type :: D_list_t
-      ! character(3) :: c = EMPTY
       type(segment_t), allocatable :: c(:)
       type(NFA_state_set_t) :: to
       type(D_list_t), pointer :: next => null()
    end type
 
+   ! Empty character segment for initializing
    type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
 
+   ! D_slist_t is the type represents a list of transition destinations
+   ! It transition to state 'to' by character segment 'c'.
    type :: D_slist_t
-      ! character(3) :: c = EMPTY
-      type(segment_t), allocatable :: c(:)
-      type(D_state_t), pointer :: to => null()
-      type(D_slist_t), pointer :: next => null()
+      type(segment_t), allocatable :: c(:)                
+      type(D_state_t), pointer :: to => null() 
+      type(D_slist_t), pointer :: next => null()    ! pointer to next data
    end type
 
 
+   ! D_state_t is the type represents a state of DFA.
    type :: D_state_t
       integer(int32) :: index
-      type(NFA_state_set_t), pointer :: state => null() 
-      logical :: visited
-      logical :: accepted
-      type(D_slist_t), pointer :: next => null() 
+      type(NFA_state_set_t), pointer :: state => null()  ! a set of NFA states represented by this DFA state.
+      logical :: visited = .false.                       ! .true. if already processed.
+      logical :: accepted = .false.                      ! .true. if it includes accepting state. 
+      type(D_slist_t), pointer :: next => null()         ! list of transition destinations
    end type
 
 
+   ! Number of DFA state instances
    integer(int32) :: dfa_nstate = 0
+
+   ! The table of DFA states 
    type(D_state_t), target :: dfa(DFA_STATE_MAX)
+
    type(D_state_t), pointer :: initial_dfa_state => null()
 
 
