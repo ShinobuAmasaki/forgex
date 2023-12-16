@@ -31,8 +31,6 @@ module dfa_m
       type(D_list_t), pointer :: next => null()
    end type
 
-   ! Empty character segment for initializing
-   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
 
    ! D_slist_t is the type represents a list of transition destinations
    ! It transition to state 'to' by character segment 'c'.
@@ -267,6 +265,7 @@ contains
 
             ! Examine all NFA states reachable from NFA state <i> and list them. 
             p => nfa(i)
+
             middle: do while (associated(p))
 
                ! Except for ε-transition.
@@ -379,6 +378,7 @@ contains
          end do
          ptr => ptr%next
       end do
+
 
       res => null()
    end function next_state_dfa

@@ -38,9 +38,6 @@ module nfa_m
       logical :: vec(NFA_VECTOR_SIZE) = .false.
    end type 
 
-   ! The empty segment for initializing.
-   type(segment_t) :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
-
    ! A table of transition on NFA.
    type(nlist_t), public, target :: nfa(NFA_STATE_MAX)
 
@@ -146,27 +143,22 @@ contains
       implicit none
       integer :: i, j
       type(nlist_t), pointer :: p
-      character(4) :: chara(2)
-      character(9) :: cache
+      character(:), allocatable :: cache
 
       print *, "--- PRINT NFA ---"
 
       do i = 1, NFA_STATE_MAX
          if (i <= nfa_nstate) then
+
             write(*, '(a, i3, a)', advance='no') "state ", i, ": "
             p => nfa(i)
+
             do while (associated(p))
                if (p%to /= 0 ) then
-                  chara(1) = char_utf8(p%c%min)
-                  chara(2) = char_utf8(p%c%max)
 
-                  if (chara(1) == chara(2))  then
-                     cache = chara(1)
-                  else
-                     cache = p%c%print()
-                  end if
+                  cache = p%c%print()
 
-                  if (chara(1) == char_utf8(0) .and. chara(2) == char_utf8(0)) cache = '?'
+                  if (p%c == SEG_EMPTY) cache = '?'
                   
                   write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(cache),", ", p%to, ")"
                end if
@@ -177,7 +169,8 @@ contains
       end do
 
    end subroutine print_nfa
-         
+
+   ! Is the arguement 'state' (set of NFA state) includes state 's'?
    logical function check_NFA_state(state, s)
       implicit none
       type(NFA_state_set_t), intent(in) :: state

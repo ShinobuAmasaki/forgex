@@ -265,6 +265,22 @@ contains
       
    end function len_trim_utf8
 
+
+   function len_utf8(str) result(count)
+      implicit none
+      character(*), intent(in) :: str
+      integer :: i, inext, count
+
+      i = 1
+      count = 0
+      do while(i <= len(str))
+         inext = idxutf8(str, i) + 1
+         count = count + 1
+         i = inext
+      end do
+      
+   end function len_utf8
+
    
    pure function is_first_byte_of_character(chara) result(res)
       use, intrinsic :: iso_fortran_env
