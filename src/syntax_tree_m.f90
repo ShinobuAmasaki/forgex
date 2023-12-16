@@ -234,6 +234,7 @@ contains
 
    end function make_atom
 
+
    function make_atom_char (a,b) result(p)
       implicit none
       character(*), intent(in) :: a
@@ -311,6 +312,7 @@ contains
       end if
 
    end function postfix_op 
+
 
    function char_class() result(res)
       implicit none
@@ -394,6 +396,26 @@ contains
 
    end function 
    
+   function make_tree_crlf() result(res)
+      implicit none
+      type(tree_t), pointer :: res
+      type(tree_t), pointer :: cr, lf
+
+      res => null()
+
+      allocate(cr)
+      allocate(cr%c(1))
+      cr%c(1) = SEG_CR
+      cr%op = op_char
+
+      allocate(lf)
+      allocate(lf%c(1))
+      lf%c(1) = SEG_LF
+      lf%op = op_char
+
+      res => make_tree_node(op_union, lf, make_tree_node(op_concat, cr, lf))
+   end function
+
 
    function shorthand(token) result(res)
       implicit none
@@ -407,7 +429,10 @@ contains
 
       select case (trim(token))
       case (ESCAPE_T); res => make_atom(SEG_TAB);   return
-      case (ESCAPE_N); res => make_atom(SEG_LF); return
+      case (ESCAPE_N)
+         ! res => make_atom(SEG_LF);
+         res => make_tree_crlf()
+         return
       case (ESCAPE_R); res => make_atom(SEG_CR);    return 
       case (ESCAPE_D); res => make_atom(SEG_DIGIT); return 
       case (ESCAPE_W)
@@ -530,8 +555,11 @@ contains
       if (p%c(1) == SEG_LF) then
          str = '<LF>'
          return
-
       
+      else if (p%c(1) == SEG_CR) then
+         str = '<CR>'
+         return
+            
       ! 文字クラスが1文字のみの場合
       else if (siz == 1 .and. p%c(1)%min == p%c(1)%max) then
          str = '"'//char_utf8(p%c(1)%min)//'"'
