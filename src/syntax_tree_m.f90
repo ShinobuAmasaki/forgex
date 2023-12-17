@@ -21,6 +21,10 @@ module syntax_tree_m
    character(1), parameter, private :: ESCAPE_D = 'd'
    character(1), parameter, private :: ESCAPE_W = 'w'
    character(1), parameter, private :: ESCAPE_S = 's'
+   character(1), parameter, private :: ESCAPE_D_CAPITAL = 'D'
+   character(1), parameter, private :: ESCAPE_W_CAPITAL = 'W'
+   character(1), parameter, private :: ESCAPE_S_CAPITAL = 'S'
+   character(1), parameter, private :: HAT = '^'
 
 
 
@@ -313,6 +317,46 @@ contains
 
    end function postfix_op 
 
+      ! Analysis for character itself. 
+   function primary() result(res)
+      implicit none
+      type(tree_t), pointer :: res
+      integer :: void
+      type(segment_t) :: seg
+
+      if (current_token == tk_char) then
+         res => make_atom(segment_t(ichar_utf8(token_char), ichar_utf8(token_char)))
+         void = get_token(strbuff)
+
+      else if (current_token == tk_lpar) then
+         void = get_token(strbuff)
+         res => regex()
+         if (current_token /= tk_rpar) then
+            write(stderr, *) "Close parenthesis is expected."
+         end if 
+         void = get_token(strbuff)
+
+      else if (current_token == tk_lsbracket) then
+         void = get_token(strbuff)
+         res => char_class()
+         if (current_token /= tk_rsbracket) then
+            write(stderr, *) "Close square bracket is expected."
+         end if
+         void = get_token(strbuff)
+      else if (current_token == tk_dot) then
+         res => make_atom(SEG_ANY)
+
+         void = get_token(strbuff)
+
+      else if (current_token == tk_backslash) then
+         res => shorthand(token_char)
+         void = get_token(strbuff)
+
+      else
+         write(stderr, *) "Normal character or open parenthesis is expected."
+      end if
+   end function primary
+
 
    function char_class() result(res)
       implicit none
@@ -321,9 +365,10 @@ contains
       type(segment_t), allocatable :: segment_list(:)
       integer :: void
       integer :: siz, count_hyphen, i, inext, iend, j
+      logical :: inverted
+
 
       res => null()
-
 
       buf = ''
       do while (current_token /= tk_rsbracket)
@@ -332,6 +377,12 @@ contains
          void = get_token(strbuff, class=.true.)
       end do
 
+      inverted = .false.
+      ! is there '^' at first?
+      if (buf(1:1) == HAT) then
+         inverted = .true.
+         buf = buf(2:len(buf))
+      end if 
 
       siz = len_utf8(buf)
 
@@ -388,14 +439,19 @@ contains
          i = inext 
       end do
 
+      if (inverted) then
+         call invert_segment_list(segment_list)
+      end if
+
       allocate(res)
-      allocate(res%c(siz))
+      allocate(res%c(size(segment_list, dim=1)))
 
       res%c(:) = segment_list(:)
       res%op = op_char
 
-   end function 
+   end function char_class
    
+
    function make_tree_crlf() result(res)
       implicit none
       type(tree_t), pointer :: res
@@ -435,12 +491,25 @@ contains
          return
       case (ESCAPE_R); res => make_atom(SEG_CR);    return 
       case (ESCAPE_D); res => make_atom(SEG_DIGIT); return 
+      case (ESCAPE_D_CAPITAL)
+         allocate(segment_list(1))
+         segment_list(1) = SEG_DIGIT
+         call invert_segment_list(segment_list)
+         
       case (ESCAPE_W)
          allocate(segment_list(4))
          segment_list(1) = SEG_LOWERCASE
          segment_list(2) = SEG_UPPERCASE
          segment_list(3) = SEG_DIGIT
          segment_list(4) = SEG_UNDERSCORE
+      
+      case (ESCAPE_W_CAPITAL)
+         allocate(segment_list(4))
+         segment_list(1) = SEG_LOWERCASE
+         segment_list(2) = SEG_UPPERCASE
+         segment_list(3) = SEG_DIGIT
+         segment_list(4) = SEG_UNDERSCORE
+         call invert_segment_list(segment_list)
 
       case (ESCAPE_S)
          allocate(segment_list(6))
@@ -450,6 +519,16 @@ contains
          segment_list(4) = SEG_LF
          segment_list(5) = SEG_FF
          segment_list(6) = SEG_ZENKAKU_SPACE
+      
+      case (ESCAPE_S_CAPITAL)
+         allocate(segment_list(6))
+         segment_list(1) = SEG_SPACE
+         segment_list(2) = SEG_TAB
+         segment_list(3) = SEG_CR
+         segment_list(4) = SEG_LF
+         segment_list(5) = SEG_FF
+         segment_list(6) = SEG_ZENKAKU_SPACE
+         call invert_segment_list(segment_list)
          
       case default
          seg = segment_t(ichar_utf8(token_char), ichar_utf8(token_char))
@@ -466,47 +545,50 @@ contains
       deallocate(segment_list)
 
    end function shorthand
- 
-   ! Analysis for character itself. 
-   function primary() result(res)
+
+
+   subroutine invert_segment_list(list)
       implicit none
-      type(tree_t), pointer :: res
-      integer :: void
-      type(segment_t) :: seg
+      type(segment_t), intent(inout), allocatable :: list(:)
+      logical :: unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
+      logical :: inverted(UTF8_CODE_MIN-1:UTF8_CODE_MAX+1)
+      integer :: i, j, count
 
-      if (current_token == tk_char) then
-         res => make_atom(segment_t(ichar_utf8(token_char), ichar_utf8(token_char)))
-         void = get_token(strbuff)
+      unicode(:) = .false. 
+      inverted(:) = .false.
 
-      else if (current_token == tk_lpar) then
-         void = get_token(strbuff)
-         res => regex()
-         if (current_token /= tk_rpar) then
-            write(stderr, *) "Close parenthesis is expected."
-         end if 
-         void = get_token(strbuff)
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+         do j = 1, size(list, dim=1)
+            unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
+         end do
+      end do
 
-      else if (current_token == tk_lsbracket) then
-         void = get_token(strbuff)
-         res => char_class()
-         if (current_token /= tk_rsbracket) then
-            write(stderr, *) "Close square bracket is expected."
+      inverted(UTF8_CODE_MIN-1) = .false.
+      inverted(UTF8_CODE_MAX+1) = .false. 
+      inverted(UTF8_CODE_MIN:UTF8_CODE_MAX) = .not. unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
+
+      count = 0
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+         if (.not. inverted(i-1) .and. inverted(i)) count = count + 1
+      end do
+
+      deallocate(list)
+      allocate(list(count))
+
+      count = 1
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX+1
+         if (.not. inverted(i-1).and. inverted(i)) then
+            list(count)%min = i
          end if
-         void = get_token(strbuff)
-      else if (current_token == tk_dot) then
-         res => make_atom(SEG_ANY)
-
-         void = get_token(strbuff)
-
-      else if (current_token == tk_backslash) then
-         res => shorthand(token_char)
-         void = get_token(strbuff)
-
-      else
-         write(stderr, *) "Normal character or open parenthesis is expected."
-      end if
-   end function primary
+         
+         if (inverted(i-1) .and. .not. inverted(i)) then
+            list(count)%max = i-1
+            count = count + 1
+         end if 
+      end do
    
+   end subroutine invert_segment_list 
+  
 
    recursive subroutine print_tree_internal(p)
       implicit none
@@ -594,9 +676,12 @@ contains
          else if (p%c(j) == SEG_ZENKAKU_SPACE) then
             buf = buf//"<ZENKAKU SPACE>; "
 
-         else 
+         else if (p%c(j)%max == UTF8_CODE_MAX) then
+            buf = buf//'"'//char_utf8(p%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
+         
+         else
 
-            buf = buf//char_utf8(p%c(j)%min)//'-'//char_utf8(p%c(j)%max)//'; '
+            buf = buf//'"'//char_utf8(p%c(j)%min)//'"-"'//char_utf8(p%c(j)%max)//'"; '
          end if
 
       end do
