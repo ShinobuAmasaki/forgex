@@ -78,7 +78,7 @@ contains
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then
-         res = '["'//char_utf8(seg%min)//'"-'//"<U+1FFF>"//']'
+         res = '["'//char_utf8(seg%min)//'"-'//"<U+1FFFFF>"//']'
       else
          res = '["'//char_utf8(seg%min)//'"-"'//char_utf8(seg%max)//'"]'
       end if
