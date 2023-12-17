@@ -22,7 +22,7 @@ module segment_m
    type(segment_t), parameter, public :: SEG_DIGIT = segment_t(48, 57)   ! 0-9
    type(segment_t), parameter, public :: SEG_UPPERCASE = segment_t(65, 90)   ! A-Z
    type(segment_t), parameter, public :: SEG_LOWERCASE = segment_t(97, 122)  ! a-z
-   type(segment_t), parameter, public :: SEG_ZENKAKU_SPACE = segment_t(12288, 12288) ! 全角スペース'　'
+   type(segment_t), parameter, public :: SEG_ZENKAKU_SPACE = segment_t(12288, 12288) ! '　' U+3000 全角スペース
 
    interface operator(==)
       module procedure :: segment_equivalent
@@ -77,8 +77,10 @@ contains
 
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
+      else if (seg%max == UTF8_CODE_MAX) then
+         res = '["'//char_utf8(seg%min)//'"-'//"<U+1FFF>"//']'
       else
-         res = '['//char_utf8(seg%min)//'-'//char_utf8(seg%max)//']'
+         res = '["'//char_utf8(seg%min)//'"-"'//char_utf8(seg%max)//'"]'
       end if
 
    end function segment_for_print
