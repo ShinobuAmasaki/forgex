@@ -54,8 +54,10 @@ module syntax_tree_m
       enumerator :: tk_question
       enumerator :: tk_star
       enumerator :: tk_plus
-      enumerator :: tk_lsbracket ! left square bracket
-      enumerator :: tk_rsbracket ! right square bracket 
+      enumerator :: tk_lsbracket    ! left square bracket
+      enumerator :: tk_rsbracket    ! right square bracket 
+      enumerator :: tk_lcurlybrace  ! left curly brace
+      enumerator :: tk_rcurlybrace  ! right curly brace
       enumerator :: tk_dot
       enumerator :: tk_hyphen
       enumerator :: tk_end
@@ -179,6 +181,10 @@ contains
                current_token = tk_lsbracket
             case (']')
                current_token = tk_rsbracket
+            case ('{')
+               current_token = tk_lcurlybrace
+            case ('}')
+               current_token = tk_rcurlybrace
 
             case ('.')
                current_token = tk_dot
@@ -298,7 +304,7 @@ contains
    ! Analysis for repetition: *, +, ?.
    function postfix_op() result(res)
       implicit none
-      type(tree_t), pointer :: res
+      type(tree_t), pointer :: res, p
       integer :: void
 
       res => primary()
@@ -313,6 +319,12 @@ contains
       else if (current_token == tk_question) then
          res => make_tree_node(op_union, res, make_tree_node(op_empty, res, null()))
          void = get_token(strbuff)
+      
+      else if (current_token == tk_lcurlybrace) then
+         
+         p => res
+         res => range_min_max(p)
+         void = get_token(strbuff) 
       end if
 
    end function postfix_op 
@@ -357,6 +369,64 @@ contains
       end if
    end function primary
 
+   function range_min_max(p) result(res)
+      implicit none
+      type(tree_t), pointer, intent(in) :: p
+      type(tree_t), pointer :: res
+      character(:), allocatable :: buf
+      integer :: void
+      integer(int32) :: arg(2), ios, min, max
+      integer(int32) :: count
+
+      buf = ''
+      arg(:) = 0
+      res => null()
+      max = 0
+      min = 0 
+
+      void = get_token(strbuff)
+        
+      do while(current_token /= tk_rcurlybrace)
+         buf = buf//trim(token_char) 
+         void = get_token(strbuff)
+      end do
+
+      read(buf, *, iostat=ios) arg(:)
+
+      if (arg(2) == 0) then
+         if (buf(len_trim(buf):len_trim(buf)) == ',') then
+            min = arg(1)
+         else
+            min = 1
+            max = arg(1)
+         end if
+      else
+         min = arg(1)
+         max = arg(2)
+      end if
+
+      res => p
+      count = min
+      res => make_tree_node(op_union, res, make_tree_node(op_empty, res, null()))
+      do while (count < max)
+         res => make_tree_node(op_union, res, make_tree_node(op_empty, res, null()))
+         res => make_tree_node(op_concat, p, res)
+         count = count + 1
+      end do
+
+      count = 1
+      do while (count < min)
+         res => make_tree_node(op_concat, res, p)
+         count = count + 1
+      end do
+
+      if (max == 0) then
+         res => make_tree_node(op_concat, res, make_tree_node(op_closure, p, null()))
+      end if
+
+      
+   end function range_min_max
+
 
    function char_class() result(res)
       implicit none
@@ -396,11 +466,12 @@ contains
       iend = len_utf8(buf)
       i = 1
       j = 1
+      buf = buf//char(0) ! 空文字を末尾に追加する。
+
       do while (i <= iend)
 
          inext = idxutf8(buf, i) + 1
 
-      
          ! 次の文字がハイフンではないならば
          if (buf(inext:inext) /= hyphen) then
             segment_list(j)%min = ichar_utf8(buf(i:inext-1))
@@ -495,7 +566,7 @@ contains
          allocate(segment_list(1))
          segment_list(1) = SEG_DIGIT
          call invert_segment_list(segment_list)
-         
+
       case (ESCAPE_W)
          allocate(segment_list(4))
          segment_list(1) = SEG_LOWERCASE
@@ -652,8 +723,6 @@ contains
          str = '<ANY>'
          return
       end if
-      
-
 
       buf = '[ '
       do j = 1, siz
@@ -680,8 +749,8 @@ contains
             buf = buf//'"'//char_utf8(p%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
          
          else
-
             buf = buf//'"'//char_utf8(p%c(j)%min)//'"-"'//char_utf8(p%c(j)%max)//'"; '
+
          end if
 
       end do
