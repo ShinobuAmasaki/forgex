@@ -105,7 +105,9 @@ contains
 
          l => dfa(i)%next
          do while (associated(l))
-            write(*, '(a, a, i0, 1x)', advance='no') l%c(1)%print(), '=>', l%to%index
+            do j = 1, size(l%c, dim=1)
+               write(*, '(a, a, i0, 1x)', advance='no') l%c(j)%print(), '=>', l%to%index
+            end do
             l => l%next
          end do
          write(*, *) ""
@@ -317,6 +319,8 @@ contains
       type(D_list_t), pointer :: x
       type(D_slist_t), pointer :: p
 
+      integer :: j 
+
       t => null()
       x => null()
       p => null()
@@ -351,7 +355,6 @@ contains
 
          t => fetch_unvisited_D_state()
       end do
-
 
    end subroutine convert_NFA_to_DFA
 

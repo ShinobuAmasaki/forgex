@@ -18,6 +18,7 @@ module nfa_m
    public :: check_NFA_state
    public :: build_nfa
    public :: print_nfa
+   public :: disjoin_nfa
 
    ! Upper limit of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_MAX = 1024
@@ -28,8 +29,8 @@ module nfa_m
    ! nlist_t is a type represents a transition on NFA.
    ! It transit to state 'to' by character segment 'c'. 
    type, public :: nlist_t
-      type(segment_t) :: c
-      integer(int32) :: to
+      type(segment_t) :: c = SEG_EMPTY
+      integer(int32) :: to = 0
       type(nlist_t), pointer :: next => null()  
    end type 
 
@@ -69,7 +70,7 @@ contains
    subroutine add_transition(from, to, c)
       implicit none
       integer(int32), intent(in) :: from, to
-      type(segment_t) :: c
+      type(segment_t), intent(in) :: c
 
       type(nlist_t), pointer :: p
       
@@ -139,6 +140,7 @@ contains
 
    end subroutine build_nfa
       
+
    subroutine print_nfa()
       implicit none
       integer :: i, j
@@ -168,6 +170,8 @@ contains
          end if
       end do
 
+
+
    end subroutine print_nfa
 
    ! Is the arguement 'state' (set of NFA state) includes state 's'?
@@ -183,5 +187,106 @@ contains
       end if
       
    end function check_NFA_state
+
+
+   subroutine disjoin_nfa()
+      use :: priority_queue_m
+      use :: segment_disjoin_m
+      implicit none
+      type(nlist_t), pointer :: p, q
+      integer(int32) :: i, j, k 
+      type(priority_queue_t) :: queue
+      type(segment_t), allocatable :: seg_list(:)
+      integer :: num
+
+
+      num = 0
+      p => null()
+
+      do i = 1,nfa_nstate
+         if (i <= nfa_nstate) then
+
+            p => nfa(i)
+
+            do while (associated(p))
+               if (p%to /= 0 ) then
+
+                  if (p%c /= SEG_EMPTY) call enqueue(queue, p%c)
+               end if
+               p => p%next
+            end do
+
+         end if
+      end do
+
+      num = queue%number
+
+      allocate(seg_list(num))
+      do j = 1, num
+         seg_list(j) = dequeue(queue)
+      end do
+
+      call disjoin(seg_list)
+
+      do i = 1, nfa_nstate 
+         if (i <= nfa_nstate) then
+
+            p => nfa(i)
+
+            do while (associated(p))
+               if (p%to /= 0 .and. p%c /= SEG_EMPTY) then
+                  if (.not. is_prime_semgment(p%c, seg_list)) then
+                     call disjoin_nfa_state(p, seg_list)
+                  end if
+               end if
+               p => p%next
+            end do
+
+         end if
+      end do
+
+   end subroutine disjoin_nfa
+
+   subroutine disjoin_nfa_state(state, seg_list)
+      use :: segment_disjoin_m
+      implicit none
+      type(nlist_t), pointer, intent(inout) ::state 
+
+      type(segment_t), intent(inout) :: seg_list(:)
+      
+      integer :: j, k, siz
+      siz = size(seg_list, dim=1)
+
+      block
+         logical :: flag(siz)
+         flag = is_overlap_to_seg_list(state%c, seg_list, siz)
+
+         k = 1
+
+         do j = 1, siz
+            if (flag(j)) then
+               block
+                  type(nlist_t), pointer :: ptr
+                  ptr => null() 
+            
+                  if (j == 1) then
+                     state%c = seg_list(j)
+                  else
+                     allocate(ptr)
+                     ptr = state 
+                     state%c = seg_list(j)
+                     state%to = ptr%to
+                     state%next => ptr
+                  end if
+
+               end block
+            end if 
+         end do 
+      end block
+
+
+
+   end subroutine disjoin_nfa_state 
+
 
 end module nfa_m
