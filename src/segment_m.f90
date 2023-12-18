@@ -8,6 +8,7 @@ module segment_m
       integer(int32) :: max = UTF8_CODE_EMPTY ! = 0
    contains
       procedure :: print => segment_for_print
+      procedure :: validate => segment_is_valid
    end type
 
    ! See ASCII code set
@@ -32,8 +33,48 @@ module segment_m
       module procedure :: segment_not_equiv
    end interface
 
+   interface operator(.in.)
+      module procedure :: arg_in_segment
+      module procedure :: arg_in_segment_list
+      module procedure :: seg_in_segment
+   end interface
+
 
 contains
+
+
+   function arg_in_segment(a, seg) result(res)
+      implicit none
+      integer(int32), intent(in) :: a
+      type(segment_t), intent(in) :: seg
+      logical :: res
+
+      res = seg%min <= a .and. a <= seg%max
+   end function arg_in_segment
+
+   
+   function arg_in_segment_list(a, seg_list) result(res)
+      implicit none
+      integer(int32), intent(in) :: a
+      type(segment_t), intent(in) :: seg_list(:)
+      logical :: res
+      integer :: i
+
+      res = .false.
+      do i = 1, ubound(seg_list, dim=1)
+         res = res .or. (seg_list(i)%min <= a .and. a <= seg_list(i)%max)
+      end do
+
+   end function arg_in_segment_list
+      
+   function seg_in_segment(a, b) result(res)
+      implicit none
+      type(segment_t), intent(in) :: a, b
+      logical :: res
+
+      res =  b%min <= a%min .and. a%max <= b%max
+
+   end function seg_in_segment
 
    function segment_equivalent(a, b) result(res)
       implicit none
@@ -84,6 +125,16 @@ contains
       end if
 
    end function segment_for_print
+
+
+   function segment_is_valid(self) result(res)
+      implicit none
+      class(segment_t) :: self
+      logical :: res
+
+      res = self%min <= self%max
+
+   end function segment_is_valid
 
 
 end module segment_m
