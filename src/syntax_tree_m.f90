@@ -80,6 +80,7 @@ module syntax_tree_m
       type(tree_t), pointer :: right => null()
    end type
 
+   integer(int32) :: idx = 1
    integer(int32) :: current_token
    character(4) :: token_char = EMPTY
    character(:), allocatable, target :: strbuff
@@ -94,7 +95,7 @@ contains
 
       call initialize_regex_parser(str)
 
-      print *, str
+      idx = 1
 
       t => regex()
 
@@ -147,7 +148,7 @@ contains
 
       logical :: class_flag
 
-      integer(int32), save :: idx = 1
+      ! integer(int32), save :: idx = 1
       integer(int32) :: next_idx
       integer(int32) :: res
       character(4) :: c
