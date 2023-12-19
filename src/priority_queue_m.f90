@@ -6,7 +6,9 @@
 !!     A regular expression engine for Fortran.
 !!     priority_queue_m module is a part of Forgex.
 !! 
-!! The original Fortran implementation of priority queue by Ue Tsubasa.
+!! (C) ue1221, 2021
+!! 
+!! The original Fortran implementation of priority queue is by ue1221.
 !! cf. https://github.com/ue1221/fortran-utilities
 
 module priority_queue_m
