@@ -18,7 +18,7 @@ module segment_m
    type(segment_t), parameter, public :: SEG_LF    = segment_t(10, 10)   ! Line Feed 
    type(segment_t), parameter, public :: SEG_FF    = segment_t(12, 12)   ! Form Feed
    type(segment_t), parameter, public :: SEG_CR    = segment_t(13, 13)   ! Carriage Return
-   type(segment_t), parameter, public :: SEG_SPACE = segment_t(32, 32)
+   type(segment_t), parameter, public :: SEG_SPACE = segment_t(32, 32)   ! White space
    type(segment_t), parameter, public :: SEG_UNDERSCORE = segment_t(95, 95)
    type(segment_t), parameter, public :: SEG_DIGIT = segment_t(48, 57)   ! 0-9
    type(segment_t), parameter, public :: SEG_UPPERCASE = segment_t(65, 90)   ! A-Z

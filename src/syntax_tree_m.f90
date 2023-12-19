@@ -37,6 +37,7 @@ module syntax_tree_m
    public :: tree_t
    public :: parse_regex
    public :: print_tree
+   public :: deallocate_tree
    
    interface print_tree
       module procedure :: print_tree_api
@@ -113,6 +114,28 @@ contains
       print *, ''
 
    end subroutine
+
+   
+   recursive subroutine deallocate_tree(tree)
+      implicit none
+      type(tree_t), pointer :: tree
+      type(tree_t), pointer :: p
+
+      if (.not. associated(tree)) then
+         return
+      end if
+
+      call deallocate_tree(tree%left)
+      call deallocate_tree(tree%right)
+
+      if (associated(tree)) then
+         if (allocated(tree%c)) then
+             deallocate(tree%c)
+         end if
+         nullify(tree)
+      end if
+
+   end subroutine deallocate_tree
 
 !---------------------------------------------------------------------!
 

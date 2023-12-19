@@ -108,7 +108,6 @@ module automaton_m
       procedure :: matching
    end type 
 
-   type(automaton_t), public :: automaton
 
 contains
 
