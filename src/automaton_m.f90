@@ -106,6 +106,7 @@ module automaton_m
       procedure :: print_NFA_state_set
       procedure :: print_dfa
       procedure :: matching
+      procedure :: free => deallocate_automaton
    end type 
 
 
@@ -115,6 +116,9 @@ contains
       implicit none
       class(automaton_t) :: self
       integer :: i
+
+      self%nfa_nstate = 0
+      self%dfa_nstate = 0
 
       allocate(self%nfa(NFA_STATE_MAX))
       allocate(self%dfa(DFA_STATE_MAX))
