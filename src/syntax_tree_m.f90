@@ -148,7 +148,6 @@ contains
 
       logical :: class_flag
 
-      ! integer(int32), save :: idx = 1
       integer(int32) :: next_idx
       integer(int32) :: res
       character(4) :: c
@@ -685,25 +684,25 @@ contains
 
       select case (p%op)
       case (op_char)
-         write(*, "(a)", advance='no') trim(print_class(p))
+         write(stderr, "(a)", advance='no') trim(print_class(p))
       case (op_concat)
-         write(*, "(a)", advance='no') "(concatenate "
+         write(stderr, "(a)", advance='no') "(concatenate "
          call print_tree_internal(p%left)
-         write(*, "(a)", advance='no') ' '
+         write(stderr, "(a)", advance='no') ' '
          call print_tree_internal(p%right)
-         write(*, "(a)", advance='no') ')'
+         write(stderr, "(a)", advance='no') ')'
       case (op_union)
-         write(*, "(a)", advance='no') "(or "
+         write(stderr, "(a)", advance='no') "(or "
          call print_tree_internal(p%left)
-         write(*, "(a)", advance='no') ' '
+         write(stderr, "(a)", advance='no') ' '
          call print_tree_internal(p%right)
-         write(*, "(a)", advance='no') ')'
+         write(stderr, "(a)", advance='no') ')'
       case (op_closure)
-         write(*, "(a)", advance='no') "(closure "
+         write(stderr, "(a)", advance='no') "(closure "
          call print_tree_internal(p%left)
-         write(*, "(a)", advance='no') ')'
+         write(stderr, "(a)", advance='no') ')'
       case (op_empty)
-         write(*, '(a)', advance='no') "EMPTY"
+         write(stderr, '(a)', advance='no') "EMPTY"
       case default
          write(stderr, *) "This will not hoppen in 'print_tree'"
          error stop
