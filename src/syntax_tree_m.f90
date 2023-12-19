@@ -93,9 +93,8 @@ contains
       character(*), intent(in) :: str
       type(tree_t), pointer :: t
 
-      call initialize_regex_parser(str)
-
       idx = 1
+      call initialize_regex_parser(str)
 
       t => regex()
 
@@ -131,7 +130,7 @@ contains
 
       if (associated(tree)) then
          if (allocated(tree%c)) then
-             deallocate(tree%c)
+            deallocate(tree%c)
          end if
          nullify(tree)
       end if
