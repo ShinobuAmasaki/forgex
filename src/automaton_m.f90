@@ -52,7 +52,7 @@ module automaton_m
       ! Upper limit for number of DFA states instance.
    integer(int32), parameter :: DFA_STATE_MAX = 1024
 
-   ! dlist_t is the type represents a list of transitionable NFA state.
+   ! D_list_t is the type represents a list of transitionable NFA state.
    type :: D_list_t
       type(segment_t), allocatable :: c(:)
       type(NFA_state_set_t) :: to
@@ -152,7 +152,28 @@ contains
 
       deallocate(self%nfa)
 
+      do j = 1, size(self%dfa, dim=1)
+         call deallocate_dfa(self%dfa(j)%next)
+      end do
+
+      deallocate(self%dfa)
+
    end subroutine deallocate_automaton
+
+
+   recursive subroutine deallocate_dfa(dfa)
+      implicit none
+      type(D_slist_t), pointer :: dfa
+
+      if (.not. associated(dfa)) then
+         return
+      end if
+
+      call deallocate_dfa(dfa%next)
+
+      if (allocated(dfa%c)) deallocate(dfa%c)
+      deallocate(dfa)
+   end subroutine deallocate_dfa
 
 
    recursive subroutine deallocate_nfa(nfa)
