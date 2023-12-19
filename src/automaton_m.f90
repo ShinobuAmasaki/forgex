@@ -141,6 +141,36 @@ contains
 
    end subroutine build_nfa
 
+   subroutine deallocate_automaton(self)
+      implicit none
+      class(automaton_t) :: self
+      integer :: j 
+
+      do j = 1, size(self%nfa, dim=1)
+         call deallocate_nfa(self%nfa(j)%next)
+      end do
+
+      deallocate(self%nfa)
+
+   end subroutine deallocate_automaton
+
+
+   recursive subroutine deallocate_nfa(nfa)
+      implicit none
+      type(nlist_t), pointer :: nfa
+
+      if (.not. associated(nfa)) then
+         return
+      end if
+
+      call deallocate_nfa(nfa%next)
+
+      if (associated(nfa)) then
+         deallocate(nfa)
+      end if
+
+   end subroutine deallocate_nfa
+
 !=====================================================================!
 
    function generate_node(self)
