@@ -481,7 +481,6 @@ contains
 
       siz = siz - 2*count_token(buf(2:len_trim(buf)-1), hyphen)
 
-      if (buf(1:1) == hyphen)  siz = siz - 1
       if (buf(len_trim(buf):len_trim(buf)) == hyphen) siz = siz - 1
 
       allocate(segment_list(siz))
@@ -513,15 +512,10 @@ contains
 
          end if
 
+         ! 先頭の文字がハイフンならば、処理を分岐する。
          if (j == 1 .and. buf(1:1) == hyphen) then
-            segment_list(1)%min = UTF8_CODE_MIN
-            ! 一文字すすめる
-            i = inext
-            inext = idxutf8(buf, i) + 1
-            segment_list(1)%max = ichar_utf8(buf(i:inext-1))
-            ! もう1文字すすめる
-            i = idxutf8(buf, i) + 1 
-            j = j + 1
+            segment_list(1)%min = ichar_utf8(hyphen)
+            segment_list(1)%max = ichar_utf8(hyphen)
             cycle
          end if
 
