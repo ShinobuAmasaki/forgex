@@ -13,6 +13,8 @@ module utf8_m
    integer, parameter :: UTF8_CODE_MIN = 32 ! = 0x21: '!'
    integer, parameter :: UTF8_CODE_EMPTY = 0
 
+   integer, parameter :: UTF8_CHAR_SIZE = 4
+
 contains
 
    ! INDEX OF UTF8

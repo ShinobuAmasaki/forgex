@@ -9,8 +9,8 @@
 module automaton_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: segment_m 
-   use :: syntax_tree_m, only: EMPTY, op_char, op_concat, op_union, op_closure, &
-                               op_empty, tree_t
+   use :: enums_m
+   use :: syntax_tree_m
    use :: utf8_m
    implicit none
    private 
