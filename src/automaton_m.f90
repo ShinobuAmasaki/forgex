@@ -300,7 +300,7 @@ contains
       type(nlist_t), pointer :: p, q
       integer(int32) :: i, j, k 
       type(priority_queue_t) :: queue
-      type(segment_t), allocatable :: seg_list(:)
+      type(segment_t), allocatable :: seg_list(:), new_list(:)
       integer :: num
 
 
@@ -330,7 +330,7 @@ contains
          seg_list(j) = dequeue(queue)
       end do
 
-      call disjoin(seg_list)
+      call disjoin(seg_list, new_list)
 
       do i = 1, self%nfa_nstate 
          ! if (i <= self%nfa_nstate) then
@@ -339,8 +339,8 @@ contains
 
             do while (associated(p))
                if (p%to /= 0 .and. p%c /= SEG_EMPTY) then
-                  if (.not. is_prime_semgment(p%c, seg_list)) then
-                     call disjoin_nfa_state(p, seg_list)
+                  if (.not. is_prime_semgment(p%c, new_list)) then
+                     call disjoin_nfa_state(p, new_list)
                   end if
                end if
                p => p%next
