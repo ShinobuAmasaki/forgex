@@ -31,7 +31,8 @@ module automaton_m
    type, public :: nlist_t
       type(segment_t) :: c = SEG_EMPTY
       integer(int32) :: to = 0
-      type(nlist_t), pointer :: next => null()  
+      type(nlist_t), pointer :: next => null()
+      integer(int32) :: index
    end type 
 
    ! NFA_state_set_t represents set of NFA states.
@@ -126,6 +127,10 @@ contains
       do i = 1, size(self%dfa, dim=1)
          self%dfa(i)%index = i
       end do 
+
+      do i = 1, size(self%nfa, dim=1)
+         self%nfa(i)%index = i
+      end do
 
    end subroutine init
 
@@ -332,21 +337,26 @@ contains
 
       call disjoin(seg_list, new_list)
 
+
       do i = 1, self%nfa_nstate 
-         ! if (i <= self%nfa_nstate) then
+
 
             p => self%nfa(i)
 
             do while (associated(p))
-               if (p%to /= 0 .and. p%c /= SEG_EMPTY) then
+               if (p%to /= 0 .and. p%c /= SEG_EMPTY .and. p%index <= 0) then
+
                   if (.not. is_prime_semgment(p%c, new_list)) then
                      call disjoin_nfa_state(p, new_list)
                   end if
+
+                  if (p%index == 0) exit
                end if
                p => p%next
+
             end do
 
-         ! end if
+
       end do
 
    end subroutine disjoin_nfa

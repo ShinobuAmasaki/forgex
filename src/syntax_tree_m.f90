@@ -228,7 +228,7 @@ contains
 
    function regex(tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree
 
       tree => null()
@@ -244,7 +244,7 @@ contains
 
    function term(tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree
       
       tree => null() 
@@ -266,7 +266,7 @@ contains
 
    function postfix_op(tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree
       
       tree => null()
@@ -296,7 +296,7 @@ contains
 
    function primary (tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree
       
       type(segment_t) :: seg
@@ -342,7 +342,7 @@ contains
 
    function range_min_max(tape, ptr) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer, intent(in) :: ptr
       type(tree_t), pointer :: tree
 
@@ -404,7 +404,7 @@ contains
 
    function char_class(tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree
       type(segment_t), allocatable :: seglist(:)
 
@@ -523,7 +523,7 @@ contains
 
    function shorthand(tape) result(tree)
       implicit none
-      type(tape_t), intent(in) :: tape
+      type(tape_t), intent(inout) :: tape
       type(tree_t), pointer :: tree, left, right 
 
       type(segment_t), allocatable :: seglist(:)
@@ -620,7 +620,7 @@ contains
 
       do i = UTF8_CODE_MIN, UTF8_CODE_MAX
          do j = 1, size(list, dim=1)
-            unicode = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
+            unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
          end do
       end do 
 

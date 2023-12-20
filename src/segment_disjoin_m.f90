@@ -13,7 +13,10 @@ module segment_disjoin_m
 
 contains
 
-      subroutine disjoin_kernel(seg_list, new_list)
+   subroutine disjoin_kernel(seg_list, new_list)
+
+      ! 否定クラスの場合に遅すぎるので改善したい
+
       implicit none
       type(segment_t), intent(in) :: seg_list(:)
       type(priority_queue_t) :: pqueue
@@ -129,7 +132,7 @@ contains
       ! リストのうちのいずれかと一致すれば、交差していない。
       res = .false. 
       do j = 1, size(disjoined_list)
-         res = res .or. seg == disjoined_list(j)
+         res = res .or. ( disjoined_list(j)%min <= seg%min .and. seg%max <= disjoined_list(j)%max)
       end do
 
    end function is_prime_semgment
