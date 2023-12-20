@@ -13,11 +13,13 @@ module segment_disjoin_m
 
 contains
 
-      subroutine disjoin_kernel(seg_list)
+      subroutine disjoin_kernel(seg_list, new_list)
       implicit none
-      type(segment_t), intent(inout), allocatable :: seg_list(:)
+      type(segment_t), intent(in) :: seg_list(:)
       type(priority_queue_t) :: pqueue
-      type(segment_t), allocatable :: new_list(:)
+      type(segment_t), allocatable :: buff(:)
+      type(segment_t), intent(out), allocatable :: new_list(:)
+      type(segment_t), allocatable :: cache(:)
       type(segment_t) :: new, SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size
@@ -29,24 +31,28 @@ contains
          call enqueue(pqueue, seg_list(j))
       end do
 
+      allocate(buff(siz))
+   
+
       do j = 1, siz
-         seg_list(j) = dequeue(pqueue)
+         buff(j) = dequeue(pqueue)
       end do
 
-      bottom = seg_list(1)%min
+      bottom = buff(1)%min
       top = 0
       do j = 1, siz
-         top = max(top, seg_list(j)%max)
+         top = max(top, buff(j)%max)
       end do
 
       allocate(new_list(top-bottom+1))
+      allocate(cache(top-bottom+1))
 
       k = 1
       new = SEG_UPPER
       do i = bottom, top
 
          ! i が範囲に含まれる場合
-         if (i .in. seg_list(1:siz)) then 
+         if (i .in. buff(1:siz)) then 
             if (i < new%min) new%min =i
          else
             cycle
@@ -55,7 +61,7 @@ contains
          ! i+1がいずれかのセグメントの始端の場合
          flag = .false.
          do j = 1, siz
-            if (i+1 == seg_list(j)%min) flag = flag .or. .true.
+            if (i+1 == buff(j)%min) flag = flag .or. .true.
          end do
          if (flag) then
             new%max = i
@@ -65,7 +71,7 @@ contains
 
          count = 0
          do j = 1, siz
-            if (seg_list(j)%min == i) count = count + 1
+            if (buff(j)%min == i) count = count + 1
          end do
          if (count > 1) then
             new%max = i
@@ -74,7 +80,7 @@ contains
 
          count = 0
          do j = 1, siz
-            if (seg_list(j)%max == i) count = count + 1
+            if (buff(j)%max == i) count = count + 1
          end do
          if (count >0) then
             new%max = i
@@ -88,10 +94,12 @@ contains
          if (new_list(i) /= SEG_EMPTY) real_size = real_size + 1
       end do
 
-      deallocate(seg_list)
-      allocate(seg_list(real_size))
+      cache(:) = new_list(:)
 
-      seg_list = new_list(1:siz)
+      deallocate(new_list)
+      allocate(new_list(real_size))
+
+      new_list(:) = cache(1:real_size)
 
 
    contains
