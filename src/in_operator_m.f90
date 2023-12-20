@@ -27,9 +27,10 @@ contains
       to = 0
 
       root => build_syntax_tree(tape, pattern)
-
+! call print_tree(root)
       call cache%init()
       call cache%build_nfa(root)
+! call cache%print_nfa()
       call cache%convert_NFA_to_DFA()
       call cache%matching(str, from, to)
 
