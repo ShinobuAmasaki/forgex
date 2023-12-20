@@ -21,11 +21,12 @@ contains
       logical :: res
 
       type(tree_t), pointer :: root
+      type(tape_t) :: tape
 
       from = 0
       to = 0
 
-      root => parse_regex(pattern)
+      root => build_syntax_tree(tape, pattern)
 
       call cache%init()
       call cache%build_nfa(root)
@@ -37,6 +38,8 @@ contains
       else
          res = .false.
       end if
+
+      call deallocate_tree(root)
 
       ! call cache%deallocate_automaton()
 
