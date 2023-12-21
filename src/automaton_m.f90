@@ -107,6 +107,7 @@ module automaton_m
       procedure :: print_NFA_state_set
       procedure :: print_dfa
       procedure :: matching
+      procedure :: matching_exactly
       procedure :: free => deallocate_automaton
    end type 
 
@@ -726,6 +727,45 @@ contains
 
    end subroutine
 
+
+   function matching_exactly (self, str) result(res)
+      implicit none
+      class(automaton_t) :: self
+      character(*), intent(in) :: str
+      logical :: res
+
+      integer(int32) :: max_match, i, next
+      type(D_state_t), pointer :: state
+
+      ! Initialize DFA
+      max_match = 0
+      i = 1
+      state => self%initial_dfa_state
+
+      do while( associated(state))
+
+         if (state%accepted) then
+            max_match = i
+         end if
+
+         if (i > len(str)) exit
+
+         next = idxutf8(str, i) + 1
+
+         state => next_state_dfa(state, str(i:next-1))
+
+         i = next
+
+      end do
+
+      if (max_match == len(str)+1) then
+         res = .true.
+      else
+         res = .false.
+      end if
+
+   end function matching_exactly
+
 !======================================================================================!
 
    subroutine print_nfa(self)
@@ -735,12 +775,12 @@ contains
       type(nlist_t), pointer :: p
       character(:), allocatable :: cache
 
-      print *, "--- PRINT NFA ---"
+      write(stderr, *) "--- PRINT NFA ---"
 
       do i = 1, self%nfa_nstate
          if (i <= self%nfa_nstate) then
 
-            write(*, '(a, i3, a)', advance='no') "state ", i, ": "
+            write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
             p => self%nfa(i)
 
             do while (associated(p))
@@ -750,11 +790,11 @@ contains
 
                   if (p%c == SEG_EMPTY) cache = '?'
                   
-                  write(*, "(a, a, a2, i0, a1)", advance='no') "(", trim(cache),", ", p%to, ")"
+                  write(stderr, "(a, a, a2, i0, a1)", advance='no') "(", trim(cache),", ", p%to, ")"
                end if
                p => p%next
             end do
-            write(*, *) ''
+            write(stderr, *) ''
          end if
       end do
 
@@ -769,7 +809,7 @@ contains
       integer(int32) :: i
 
       do i = 1, self%nfa_nstate
-         if (check_NFA_state(p, i)) write(*, '(i0, a)', advance='no') i, ' '
+         if (check_NFA_state(p, i)) write(stderr, '(i0, a)', advance='no') i, ' '
       end do
    end subroutine print_NFA_state_set
    
@@ -781,33 +821,33 @@ contains
       integer(int32) :: i, j
       character(1) :: c_Accepted
 
-      print *, "--- PRINT DFA---"
+      write(stderr,*) "--- PRINT DFA---"
 
       do i = 1, self%dfa_nstate
          if (self%dfa(i)%accepted) then
-            write(*, '(i2,a, a)', advance='no') i, 'A', ": "
+            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
          else
-            write(*, '(i2,a, a)', advance='no') i, ' ', ": "
+            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
 
          l => self%dfa(i)%next
          do while (associated(l))
             do j = 1, size(l%c, dim=1)
-               write(*, '(a, a, i0, 1x)', advance='no') l%c(j)%print(), '=>', l%to%index
+               write(stderr, '(a, a, i0, 1x)', advance='no') l%c(j)%print(), '=>', l%to%index
             end do
             l => l%next
          end do
-         write(*, *) ""
+         write(stderr, *) ""
       end do 
 
       do i = 1, self%dfa_nstate
          if (self%dfa(i)%accepted) then
-            write(*, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
          else
-            write(*, '(a, i2, a)', advance='no') "state ", i, '  = ( '
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
          end if
          call self%print_NFA_state_set(self%dfa(i)%state)
-         write(*,'(a)') ")"
+         write(stderr,'(a)') ")"
       end do
 
    end subroutine print_dfa
