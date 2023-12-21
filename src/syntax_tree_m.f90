@@ -369,13 +369,18 @@ contains
 
       read(buf, *, iostat=ios) arg(:)
 
+      buf = adjustl(buf)
+
       if (arg(2) == 0) then
          if (buf(len_trim(buf):len_trim(buf)) == ',') then
             min = arg(1)
-         else
+         else if (buf(1:1) == ',') then
             min = 1
             max = arg(1)
-         end if
+         else
+            min = arg(1)
+            max = arg(1)
+         end if 
       else
          min = arg(1)
          max = arg(2)
