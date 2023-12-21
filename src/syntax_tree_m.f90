@@ -381,7 +381,7 @@ contains
          max = arg(2)
       end if
 
-      count = min
+      count = min+1
       tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, ptr, null()))
       do while (count < max)
          tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
@@ -390,7 +390,7 @@ contains
       end do
 
       count = 1
-      do while (count < min)
+      do while (count <= min)
          tree => make_tree_node(op_concat, tree, ptr)
          count = count + 1
       end do
