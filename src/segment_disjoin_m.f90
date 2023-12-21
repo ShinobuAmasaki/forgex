@@ -15,8 +15,6 @@ contains
 
    subroutine disjoin_kernel(seg_list, new_list)
 
-      ! 否定クラスの場合に遅すぎるので改善したい
-
       implicit none
       type(segment_t), intent(in) :: seg_list(:)
       type(priority_queue_t) :: pqueue
@@ -25,7 +23,8 @@ contains
       type(segment_t), allocatable :: cache(:)
       type(segment_t) :: new, SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
-      integer(int32) :: i, j, k, count, siz, top, bottom, real_size
+      integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
+      integer(int32), allocatable :: index_list(:)
       logical :: flag
 
       siz = size(seg_list, dim=1)
@@ -47,17 +46,22 @@ contains
          top = max(top, buff(j)%max)
       end do
 
-      allocate(new_list(top-bottom+1))
-      allocate(cache(top-bottom+1))
+      allocate(new_list(siz*2))
+      allocate(cache(siz*2))
+
+      call index_list_from_segment_list(index_list, seg_list)
 
       k = 1
       new = SEG_UPPER
-      do i = bottom, top
+      m = 1
+      do while(m <= size(index_list))
+         i = index_list(m)
 
          ! i が範囲に含まれる場合
          if (i .in. buff(1:siz)) then 
             if (i < new%min) new%min =i
          else
+            m = m + 1
             cycle
          end if
 
@@ -69,6 +73,7 @@ contains
          if (flag) then
             new%max = i
             call register_seg_list(new, new_list, k)
+            m = m + 1
             cycle
          end if
 
@@ -90,6 +95,7 @@ contains
             call register_seg_list(new, new_list, k)
          end if 
 
+         m = m + 1
       end do
 
       real_size = 0
@@ -153,5 +159,41 @@ contains
 
    end function is_overlap_to_seg_list
 
+
+   subroutine index_list_from_segment_list(index_list, seg_list)
+      use :: sort_m, only: bubble_sort
+      implicit none
+      type(segment_t), intent(in) :: seg_list(:)
+      integer(int32), intent(out), allocatable :: index_list(:)
+      integer(int32), allocatable :: cache(:)
+
+      integer :: siz, i, k
+
+      siz = size(seg_list, dim=1)
+
+      allocate(index_list(2*siz))
+      allocate(cache(2*siz))
+
+      do i = 1, siz
+         index_list(2*i-1) = seg_list(i)%min
+         index_list(2*i)   = seg_list(i)%max
+      end do
+
+      call bubble_sort(index_list)
+      
+      cache(1) = index_list(1)
+      k = 1
+      do i = 2, siz*2
+         if (index_list(i-1) /= index_list(i)) then
+            k = k + 1
+            cache(k) = index_list(i)
+         end if
+      end do 
+
+      deallocate(index_list)
+      allocate(index_list(k))
+      index_list(:) = cache(1:k)
+
+   end subroutine index_list_from_segment_list
 
 end module segment_disjoin_m
