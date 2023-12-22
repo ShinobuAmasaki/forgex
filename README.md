@@ -38,6 +38,50 @@ The engine's core algorithm uses a DFA approach. This choice was focused on runt
    - `\d`, digit character (`[0-9]`)
    - `\D`, non-digit character (`[^0-9]`)
 
+## Usage
+### Build 
+It is assumed that you will use the Fortran Package Manager(`fpm`).
+
+Add the following to your project's `fpm.toml`:
+
+```toml
+[dependencies]
+forgex = {git = "https://github.com/shinobuamasaki/forgex"}
+```
+
+### API
+When you write `use forgex` at the header on your program, `.in.` and `.match.` operators are introduced.
+
+The `.in.` operator returns true if the pattern is contained in the string.
+
+```fortran
+block
+   character(:), allocatable :: pattern, str
+
+   pattern = 'foo(bar|baz)'
+   str = "foobarbaz"
+   print *, pattern .in. str  ! .true.
+
+   str = "foofoo"
+   print *, pattern .in. str  ! .false.
+end block
+```
+
+The `.match.` operator returns true if the pattern exactly matches the string.
+
+```fortran
+block
+   character(:), allocatable :: pattern, str
+
+   pattern = '\d{3}-\d{4}'
+   str = '100-0001'
+   print *, pattern .match. str  ! .true.
+
+   str = '1234567'
+   print *, pattern .match. str  ! .false.
+end block
+```
+
 ## To do
 
 - [x] UTF-8 Support
