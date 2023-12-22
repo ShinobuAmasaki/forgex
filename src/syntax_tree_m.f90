@@ -324,7 +324,7 @@ contains
          call tape%get_token()
 
       case (tk_lsbracket)
-         call tape%get_token()
+         call tape%get_token(class=.true.)
          tree => char_class(tape)
          if (tape%current_token /= tk_rsbracket) then
             write(stderr, *) "Close square bracket is expected."
@@ -444,7 +444,7 @@ contains
       if (buf(1:1) == HAT) then
          inverted = .true.
          buf = buf(2:len(buf))
-      end if 
+      end if
 
       siz = len_utf8(buf)
 

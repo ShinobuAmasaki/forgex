@@ -48,12 +48,19 @@ contains
       buff = pattern
 
       root => build_syntax_tree(tape, buff)
-call print_tree(root)
+
+
+      ! call print_tree(root)
+      
       call cache%init()
       call cache%build_nfa(root)
-! call cache%print_nfa()
+
+      ! call cache%print_nfa()
+      
       call cache%convert_NFA_to_DFA()
-! call cache%print_dfa()
+
+      ! call cache%print_dfa()
+      
       call cache%matching(char(10)//str//char(10), from, to)
 
       call deallocate_tree(root)
@@ -78,7 +85,6 @@ call print_tree(root)
          res = .false.
       end if
 
-      write(stderr, *) from, to
 
       ! call cache%deallocate_automaton()
 
