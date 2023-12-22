@@ -42,7 +42,7 @@ contains
       if (res) then
          write(error_unit, '(a, l, a, a)', advance='no') 'result: ', res, ' '//trim(pattern),  char(13)
       else
-         write(error_unit, '(a, l, a, a)') 'result: ', res, ' '//trim(pattern)
+         write(error_unit, '(a, l, a, a)') 'result: ', res, ' '//trim(pattern), ' '//trim(str)
       end if
 
    end subroutine runner_in
