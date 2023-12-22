@@ -17,7 +17,9 @@ module enums_m
       enumerator :: tk_rcurlybrace  ! 11 right curly brace
       enumerator :: tk_dot          ! 12
       enumerator :: tk_hyphen       ! 13
-      enumerator :: tk_end          ! 14
+      enumerator :: tk_caret        ! 14
+      enumerator :: tk_dollar       ! 15
+      enumerator :: tk_end          ! 16
    end enum
 
    enum, bind(c)

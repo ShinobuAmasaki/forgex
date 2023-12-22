@@ -45,68 +45,40 @@ contains
       from = 0
       to = 0
 
-      if (is_there_caret_at_the_top(pattern)) then
-         buff = pattern(2:len(pattern))
-      else
-         buff = pattern(1:len(pattern))
-      end if
-
-      if (is_there_dollar_at_the_end(pattern)) then
-         buff = buff(1:len_trim(buff)-1)
-      end if
+      buff = pattern
 
       root => build_syntax_tree(tape, buff)
-! call print_tree(root)
+call print_tree(root)
       call cache%init()
       call cache%build_nfa(root)
 ! call cache%print_nfa()
       call cache%convert_NFA_to_DFA()
 ! call cache%print_dfa()
-      call cache%matching(str, from, to)
+      call cache%matching(char(10)//str//char(10), from, to)
 
       call deallocate_tree(root)
 
-      res = .true.
+      if (is_there_caret_at_the_top(pattern)) then
+         from = from
+      else 
+         from = from - 1
+      end if
+
+      if (is_there_dollar_at_the_end(pattern)) then
+         to = to - 2
+      else
+         to = to - 1
+      end if
+
+      ! res = .true.
       if (from  > 0 .and. to > 0) then
+         res = .true.
 
-         if (is_there_caret_at_the_top(pattern)) then
-            
-            ! 先頭にマッチした場合
-            if (from == 1) then
-               res = res .and. .true.
-   
-            ! 前の1文字が改行文字の場合
-            else if (str(from-1:from-1) == char(10) .or. str(from-1:from-1) == char(12)) then
-               res = res .and. .true.
-            
-            else
-               res = .false.
-            end if
-         else
-            res = res .and. .true.
-         end if
-
-         if (is_there_dollar_at_the_end(pattern)) then
-            ! 末尾が最後にマッチした場合
-            if (to == len(str)) then
-               res = res .and. .true.
-
-            ! 末尾の次の文字が改行文字の場合
-            else if (str(to+1:to+1) == char(10) &          ! LF
-                     .or. str(to+1:to+1) == char(13) &     ! CR
-                     .or. str(to+1:to+1) == char(12)) then ! FF
-               res = res .and. .true.
-            
-            else
-               res = .false.
-            end if
-         else
-            res = res .and. .true.
-         end if 
- 
       else
          res = .false.
       end if
+
+      write(stderr, *) from, to
 
       ! call cache%deallocate_automaton()
 
