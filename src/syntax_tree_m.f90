@@ -12,7 +12,7 @@ module syntax_tree_m
    public :: deallocate_tree
    public :: print_tree
 
-   character(3), parameter, public :: EMPTY = char(0)
+   character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
    character(1), parameter, private :: ESCAPE_T = 't'
    character(1), parameter, private :: ESCAPE_N = 'n'
@@ -25,6 +25,8 @@ module syntax_tree_m
    character(1), parameter, private :: ESCAPE_S_CAPITAL = 'S'
    character(1), parameter, private :: HAT = '^'
    character(1), parameter, private :: HYPHEN = '-'
+   character(1), parameter, private :: CARET = '^'
+   character(1), parameter, private :: DOLLAR = '$'
 
    type :: tree_t
       integer(int32) :: op
@@ -178,6 +180,10 @@ contains
                self%current_token = tk_rcurlybrace
             case ('.')
                self%current_token = tk_dot
+            case ('^')
+               self%current_token = tk_caret
+            case ('$')
+               self%current_token = tk_dollar
             case default
                self%current_token = tk_char
                self%token_char = c
@@ -331,6 +337,13 @@ contains
 
       case (tk_backslash)
          tree => shorthand(tape)
+         call tape%get_token()
+
+      case (tk_caret)
+         tree => make_tree_crlf()
+         call tape%get_token()
+      case (tk_dollar)
+         tree => make_tree_crlf()
          call tape%get_token()
 
       case default

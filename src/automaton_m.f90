@@ -675,16 +675,19 @@ contains
    end function next_state_dfa
 
 
-   subroutine matching (self, str, from, to)
+   subroutine matching (self, str_arg, from, to)
       use :: utf8_m
       implicit none
       class(automaton_t) :: self
-      character(*), intent(in) :: str
+      character(*), intent(in) :: str_arg
+      character(:), allocatable :: str 
       integer(int32), intent(inout) :: from, to
       type(D_state_t), pointer :: state
 
       integer(int32) :: start, next
       integer(int32) :: max_match, i
+
+      str = str_arg
 
       ! logical, allocatable :: is_first(:)
       ! call is_first_byte_of_character_array(str, is_first, len(str))
@@ -718,7 +721,7 @@ contains
 
          if (max_match /= 0) then
             from = start
-            to = max_match -1
+            to = max_match -1 
             return
          end if
 
