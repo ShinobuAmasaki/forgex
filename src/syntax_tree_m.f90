@@ -360,7 +360,7 @@ contains
       type(tree_t), pointer :: tree
 
       character(:), allocatable :: buf
-      integer(int32) :: arg(2), ios, min, max, count
+      integer(int32) :: arg(2), ios, min, max, count, i
 
       buf = ''
       arg(:) = 0
@@ -399,22 +399,49 @@ contains
          max = arg(2)
       end if
 
-      count = min+1
-      tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, ptr, null()))
-      do while (count < max)
-         tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
-         tree => make_tree_node(op_concat, ptr, tree)
-         count = count + 1
-      end do
+      ! 最低回数のみ指定された場合
+      if (min /= 0 .and. max == 0) then
+         count = min+1
+         tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, ptr, null()))
+         do while (count <= max)
+            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+            count = count + 1
+         end do
 
-      count = 1
-      do while (count <= min)
-         tree => make_tree_node(op_concat, tree, ptr)
-         count = count + 1
-      end do
-
-      if (max == 0) then
          tree => make_tree_node(op_concat, tree, make_tree_node(op_closure, ptr, null()))
+         return
+      end if
+
+      ! 最低回数と最高回数が指定された場合
+      if ( min /= max) then
+         count = min+1
+         tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, ptr, null()))
+         do while (count <= max)
+            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+            count = count + 1
+         end do
+
+         count = 1
+         do while (count < min)
+            tree => make_tree_node(op_concat, tree, ptr)
+            count = count + 1
+         end do
+
+      ! 繰り返し回数が指定された場合
+      else if (min == max) then
+      
+         if (min == 0) then
+            tree => make_tree_node(op_empty, null(), null())
+        
+         else
+            tree => make_tree_node(op_concat, ptr, make_tree_node(op_empty, ptr, null()))
+            do i = 2, min
+               tree => make_tree_node(op_concat, tree, ptr)
+            end do
+         end if
+
       end if
 
    end function range_min_max

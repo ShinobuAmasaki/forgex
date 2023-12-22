@@ -146,10 +146,10 @@ contains
       implicit none
       character(*), intent(in) :: pattern, str
       integer(int32), intent(inout), optional :: length
+      character(:), allocatable :: res
 
       character(:), allocatable :: buff
       integer(int32) :: from, to
-      character(:), allocatable :: res
 
       type(tree_t), pointer :: root
       type(tape_t) :: tape
