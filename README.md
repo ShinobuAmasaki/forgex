@@ -50,7 +50,7 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
 ### API
-When you write `use forgex` at the header on your program, `.in.` and `.match.` operators are introduced.
+When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
 
 The `.in.` operator returns true if the pattern is contained in the string.
 
@@ -60,10 +60,10 @@ block
 
    pattern = 'foo(bar|baz)'
    str = "foobarbaz"
-   print *, pattern .in. str  ! .true.
+   print *, pattern .in. str  ! T
 
    str = "foofoo"
-   print *, pattern .in. str  ! .false.
+   print *, pattern .in. str  ! F
 end block
 ```
 
@@ -75,13 +75,38 @@ block
 
    pattern = '\d{3}-\d{4}'
    str = '100-0001'
-   print *, pattern .match. str  ! .true.
+   print *, pattern .match. str  ! T
 
    str = '1234567'
-   print *, pattern .match. str  ! .false.
+   print *, pattern .match. str  ! F
 end block
 ```
 
+The `regex` is a function that returns the substring of a string that matches pattern.
+
+```fortran
+block
+   character(:), allocatable :: pattern, str
+   integer :: length 
+
+   pattern = 'foo(bar|baz)'
+   str = 'foobarbaz'
+
+   print *, regex(pattern, str)              ! foobar
+   ! print *, regex(pattern, str, length)    ! the value 6 stored in optional `length` variable.
+
+end block
+```
+
+The interface of `regex` function is following:
+
+```fortran
+function regex (pattern, str, length) result(res)
+   implicit none
+   character(*), intent(in) :: pattern, str
+   integer, intent(inout), optional :: length
+   character(:), allocatable :: res
+```
 ## To do
 
 - [x] UTF-8 Support
