@@ -4,6 +4,7 @@ license = "MIT"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
 copyright = "Copyright 2023, Amasaki Shinobu"
+homepage = "https://github.com/shinobuamasaki/forgex"
 [build]
 auto-executables = true
 auto-tests = true
