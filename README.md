@@ -39,7 +39,13 @@ The engine's core algorithm uses a DFA approach. This choice was focused on runt
    - `\D`, non-digit character (`[^0-9]`)
 
 ## Usage
-### Build 
+### Build
+
+Operation has been confirmed with the following compilers:
+
+- GNU Fortran (`gfortran`) v13.2.1
+- Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
+
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 
 Add the following to your project's `fpm.toml`:
