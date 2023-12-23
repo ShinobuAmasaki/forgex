@@ -110,7 +110,6 @@ function regex (pattern, str, length) result(res)
 ## To do
 
 - [x] UTF-8 Support
-- [ ] `pure` API functions. 
 - [ ] DFA construction on-the-fly. 
 - [ ] Support for CMake and Make. 
 - [ ] Parallelization on matching.
@@ -121,11 +120,12 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Kondo Yoshiyuki's book.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
 
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 
 ## References
 
-1. 近藤嘉雪 (Kondo Yoshiyuki), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
-2. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
+1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007 
+2.  近藤嘉雪 (Kondo Yoshiyuki), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
+3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
