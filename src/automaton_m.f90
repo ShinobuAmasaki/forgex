@@ -46,10 +46,6 @@ module automaton_m
    ! Initial and accepting state on NFA.
    integer(int32), public :: nfa_entry, nfa_exit
 
-   integer(int32), public :: nfa_node_count = 0
-   integer(int32), public :: dslist_node_count = 0
-
-
 !---------------------------------------------------------------------!
 
       ! Upper limit for number of DFA states instance.
@@ -114,6 +110,34 @@ module automaton_m
       procedure :: free => deallocate_automaton
    end type 
 
+   ! Pointer allocation monitoring
+
+   type :: dlist_pointer_list_t
+      type(D_list_t), pointer :: node
+   end type 
+   
+   type :: dslist_pointer_list_t
+      type(D_slist_t), pointer :: node
+   end type
+
+   type :: nlist_pointer_list_t
+      type(nlist_t), pointer :: node
+   end type
+
+   type :: dstate_pointer_list_t
+      type(D_state_t), pointer :: node
+   end type
+
+   type(dlist_pointer_list_t) :: dlist_node_list(DFA_STATE_MAX)
+   type(dslist_pointer_list_t) :: dslist_node_list(DFA_STATE_MAX)
+   type(nlist_pointer_list_t) :: nlist_node_list(NFA_STATE_MAX)
+   type(dstate_pointer_list_t) :: dstate_node_list(DFA_STATE_MAX)
+
+   integer(int32) :: dlist_node_count  = 0
+   integer(int32) :: dslist_node_count = 0
+   integer(int32) :: nlist_node_count  = 0
+   integer(int32) :: dstate_node_count = 0
+   
 
 contains
 
@@ -154,61 +178,59 @@ contains
 
    end subroutine build_nfa
 
+
    subroutine deallocate_automaton(self)
       implicit none
       class(automaton_t) :: self
-      integer :: j 
+      integer :: j, max 
 
-      do j = 1, size(self%nfa, dim=1)
-         call deallocate_nfa(self%nfa(j)%next)
+      max = nlist_node_count
+      do j = 1, max
+         if (associated(nlist_node_list(j)%node)) then
+            deallocate(nlist_node_list(j)%node)
+            nlist_node_count = nlist_node_count -1
+         end if
+      end do
+
+      max = dlist_node_count
+      do j = 1, max
+         if (associated(dlist_node_list(j)%node)) then
+            if (allocated(dlist_node_list(j)%node%c)) then
+               deallocate(dlist_node_list(j)%node%c)
+            end if
+
+            deallocate(dlist_node_list(j)%node)
+            dlist_node_count = dlist_node_count -1
+         end if
+      end do
+
+      max = dslist_node_count
+      do j = 1, max
+         if (associated(dslist_node_list(j)%node)) then
+            if (allocated(dslist_node_list(j)%node%c)) then
+               deallocate(dslist_node_list(j)%node%c)
+            end if
+
+            deallocate(dslist_node_list(j)%node)
+            dslist_node_count = dslist_node_count -1
+         end if
+      end do
+
+      max = dstate_node_count
+      do j = 1, max
+         if (associated(dstate_node_list(j)%node)) then
+            deallocate(dstate_node_list(j)%node)
+            dstate_node_count = dstate_node_count -1
+         end if
       end do
 
       deallocate(self%nfa)
-
-      do j = 1, size(self%dfa, dim=1)
-         call deallocate_dfa(self%dfa(j)%next)
-      end do
-
+ 
       deallocate(self%dfa)
+
 
    end subroutine deallocate_automaton
 
-
-   recursive subroutine deallocate_dfa(dfa)
-      implicit none
-      type(D_slist_t), pointer :: dfa
-
-      if (.not. associated(dfa)) then
-         return
-      end if
-
-      call deallocate_dfa(dfa%next)
-
-      if (allocated(dfa%c)) deallocate(dfa%c)
-      deallocate(dfa)
-
-      dslist_node_count = dslist_node_count - 1
-
-   end subroutine deallocate_dfa
-
-
-   recursive subroutine deallocate_nfa(nfa)
-      implicit none
-      type(nlist_t), pointer :: nfa
-
-      if (.not. associated(nfa)) then
-         return
-      end if
-
-      call deallocate_nfa(nfa%next)
-
-      if (associated(nfa)) then
-         deallocate(nfa)
-      end if
-
-      nfa_node_count = nfa_node_count - 1
-
-   end subroutine deallocate_nfa
 
 !=====================================================================!
 
@@ -239,7 +261,8 @@ contains
       p => null()
       allocate(p)
 
-      nfa_node_count = nfa_node_count + 1 
+      nlist_node_count = nlist_node_count + 1
+      nlist_node_list(nlist_node_count)%node => p
       
       p = self%nfa(from)
 
@@ -369,6 +392,9 @@ contains
 
 
       end do
+      call clear(queue)
+      deallocate(seg_list)
+      deallocate(new_list)
 
    end subroutine disjoin_nfa
 
@@ -398,7 +424,10 @@ contains
                      state%c = seg_list(j)
                   else
                      allocate(ptr)
-                     nfa_node_count = nfa_node_count + 1
+
+                     nlist_node_count = nlist_node_count + 1
+                     nlist_node_list(nlist_node_count)%node => ptr
+
                      ptr = state 
                      state%c = seg_list(j)
                      state%to = ptr%to
@@ -594,6 +623,9 @@ contains
                      allocate(b)
                      allocate(b%c(1))
                      
+                     dlist_node_count = dlist_node_count +1
+                     dlist_node_list(dlist_node_count)%node => b
+
                      b%c(1) = p%c
                      call add_NFA_state(b%to, p%to)
                      b%next => res
@@ -646,6 +678,8 @@ contains
             allocate(p)
 
             dslist_node_count = dslist_node_count + 1
+            dslist_node_list(dslist_node_count)%node => p
+
             p%c = x%c
 
             p%to => self%register_D_state(x%to)

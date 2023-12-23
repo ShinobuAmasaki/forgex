@@ -159,9 +159,11 @@ contains
 
       root => build_syntax_tree(tape, buff)
 
+
       ! call print_tree(root)
       
       call cache%init()
+
       call cache%build_nfa(root)
 
       ! call cache%print_nfa()

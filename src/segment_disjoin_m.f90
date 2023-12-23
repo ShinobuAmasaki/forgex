@@ -110,6 +110,10 @@ contains
 
       new_list(:) = cache(1:real_size)
 
+      call clear(pqueue)
+      deallocate(buff)
+      deallocate(cache)
+      deallocate(index_list)
 
    contains
 
