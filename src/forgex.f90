@@ -90,7 +90,7 @@ contains
          res = .false.
       end if
 
-
+      call deallocate_tree(root)
       call cache%free()
 
    end function in__matching
@@ -196,6 +196,7 @@ contains
          if (present(length)) length = 0
       end if
 
+      call deallocate_tree(root)
       call cache%free()
 
    end function regex__matching
