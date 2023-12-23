@@ -12,7 +12,10 @@ module syntax_tree_m
    public :: deallocate_tree
    public :: print_tree
 
+
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
+
+   integer(int32), parameter :: TREE_MAX_SIZE = 1024
 
    character(1), parameter, private :: ESCAPE_T = 't'
    character(1), parameter, private :: ESCAPE_N = 'n'
@@ -27,6 +30,10 @@ module syntax_tree_m
    character(1), parameter, private :: HYPHEN = '-'
    character(1), parameter, private :: CARET = '^'
    character(1), parameter, private :: DOLLAR = '$'
+
+   type :: allocated_list_t
+      type(tree_t), pointer :: node
+   end type 
 
    type :: tree_t
       integer(int32) :: op
@@ -45,6 +52,8 @@ module syntax_tree_m
    end type
 
    integer :: tree_node_count = 0
+
+   type(allocated_list_t) :: array(TREE_MAX_SIZE)
 
 contains
 
@@ -69,24 +78,21 @@ contains
    end function build_syntax_tree
 
 
-   recursive subroutine deallocate_tree(tree)
+   subroutine deallocate_tree()
       implicit none
-      type(tree_t), pointer :: tree
+      integer :: i, max
 
-      if (.not. associated(tree)) return
+      max = tree_node_count
 
-      call deallocate_tree(tree%left)
-      call deallocate_tree(tree%right)
-
-      if (associated(tree)) then
-         if (allocated(tree%c)) then
-            deallocate(tree%c)
+      do i = 1, max
+         if (associated(array(i)%node)) then
+            deallocate(array(i)%node)
+            tree_node_count = tree_node_count - 1
          end if
-         nullify(tree)
-         tree_node_count = tree_node_count -1
-      end if
-
+      end do
+         
    end subroutine deallocate_tree
+
 
    
    subroutine print_tree(tree)
@@ -212,6 +218,8 @@ contains
       node%right => right
 
       tree_node_count = tree_node_count + 1
+
+      array(tree_node_count)%node => node
    end function
 
 
@@ -228,6 +236,7 @@ contains
       node%c = segment
 
       tree_node_count = tree_node_count + 1
+      array(tree_node_count)%node => node
    end function make_atom
 
 !=====================================================================!
@@ -534,6 +543,7 @@ contains
       tree%op = op_char
 
       tree_node_count = tree_node_count + 1
+      array(tree_node_count)%node => tree
 
    end function char_class
 
@@ -553,6 +563,7 @@ contains
       cr%op = op_char
 
       tree_node_count = tree_node_count + 1
+      array(tree_node_count)%node => cr
 
       allocate(lf)
       allocate(lf%c(1))
@@ -561,6 +572,7 @@ contains
       lf%op = op_char
 
       tree_node_count = tree_node_count + 1
+      array(tree_node_count)%node => lf
 
       tree => make_tree_node(op_union, lf, make_tree_node(op_concat, cr, lf))
    end function make_tree_crlf
@@ -645,6 +657,9 @@ contains
 
       tree%c(:) = seglist(:)
       tree%op = op_char
+
+      tree_node_count = tree_node_count +1
+      array(tree_node_count)%node => tree
 
       deallocate(seglist)
 

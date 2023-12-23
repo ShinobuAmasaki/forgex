@@ -68,7 +68,6 @@ contains
       
       call cache%matching(char(10)//str//char(10), from, to)
 
-      call deallocate_tree(root)
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
@@ -90,7 +89,7 @@ contains
          res = .false.
       end if
 
-      call deallocate_tree(root)
+      call deallocate_tree()
       call cache%free()
 
    end function in__matching
@@ -135,8 +134,7 @@ contains
       res = cache%matching_exactly(str)
 
       ! write(stderr, *) from, to
-
-      call deallocate_tree(root)
+      call deallocate_tree()
       call cache%free()
 
    end function match__matching
@@ -153,7 +151,7 @@ contains
 
       type(tree_t), pointer :: root
       type(tape_t) :: tape
-
+   
       from = 0
       to = 0
 
@@ -174,7 +172,6 @@ contains
       
       call cache%matching(char(10)//str//char(10), from, to)
 
-      call deallocate_tree(root)
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
@@ -196,7 +193,8 @@ contains
          if (present(length)) length = 0
       end if
 
-      call deallocate_tree(root)
+      call deallocate_tree()
+
       call cache%free()
 
    end function regex__matching
