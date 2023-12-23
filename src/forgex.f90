@@ -91,7 +91,7 @@ contains
       end if
 
 
-      ! call cache%deallocate_automaton()
+      call cache%free()
 
    end function in__matching
    
@@ -137,7 +137,7 @@ contains
       ! write(stderr, *) from, to
 
       call deallocate_tree(root)
-      ! call cache%deallocate_automaton()
+      call cache%free()
 
    end function match__matching
 
@@ -196,7 +196,7 @@ contains
          if (present(length)) length = 0
       end if
 
-      ! call cache%deallocate_automaton()
+      call cache%free()
 
    end function regex__matching
 
