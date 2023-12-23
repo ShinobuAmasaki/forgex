@@ -46,8 +46,10 @@ module automaton_m
    ! Initial and accepting state on NFA.
    integer(int32), public :: nfa_entry, nfa_exit
 
-   ! 
-   ! integer(int32), public :: nfa_nstate = 0
+   integer(int32), public :: nfa_node_count = 0
+   integer(int32), public :: dslist_node_count = 0
+
+
 !---------------------------------------------------------------------!
 
       ! Upper limit for number of DFA states instance.
@@ -88,6 +90,7 @@ module automaton_m
       type(nlist_t), pointer :: nfa(:)
       type(D_state_t), pointer :: dfa(:)
       type(D_state_t), pointer :: initial_dfa_state => null()
+      type(D_list_t), pointer :: dlist => null()
    contains
       procedure :: init
       procedure :: generate_node
@@ -183,6 +186,9 @@ contains
 
       if (allocated(dfa%c)) deallocate(dfa%c)
       deallocate(dfa)
+
+      dslist_node_count = dslist_node_count - 1
+
    end subroutine deallocate_dfa
 
 
@@ -199,6 +205,8 @@ contains
       if (associated(nfa)) then
          deallocate(nfa)
       end if
+
+      nfa_node_count = nfa_node_count - 1
 
    end subroutine deallocate_nfa
 
@@ -230,6 +238,8 @@ contains
       
       p => null()
       allocate(p)
+
+      nfa_node_count = nfa_node_count + 1 
       
       p = self%nfa(from)
 
@@ -388,6 +398,7 @@ contains
                      state%c = seg_list(j)
                   else
                      allocate(ptr)
+                     nfa_node_count = nfa_node_count + 1
                      ptr = state 
                      state%c = seg_list(j)
                      state%to = ptr%to
@@ -582,6 +593,7 @@ contains
                   if (p%to /= 0) then 
                      allocate(b)
                      allocate(b%c(1))
+                     
                      b%c(1) = p%c
                      call add_NFA_state(b%to, p%to)
                      b%next => res
@@ -605,7 +617,7 @@ contains
       class(automaton_t) :: self
       type(NFA_state_set_t), target :: initial_state
       type(D_state_t), pointer :: t
-      type(D_list_t), pointer :: x
+      type(D_list_t), pointer :: x, ptr
       type(D_slist_t), pointer :: p
 
       integer :: j 
@@ -626,11 +638,14 @@ contains
          t%visited = .true.
 
          x => self%compute_reachable_N_state(t)
+
          do while (associated(x))
 
             call self%collect_empty_transition(x%to)
 
             allocate(p)
+
+            dslist_node_count = dslist_node_count + 1
             p%c = x%c
 
             p%to => self%register_D_state(x%to)
@@ -638,7 +653,7 @@ contains
             t%next => p
 
             x => x%next
-         end do 
+         end do
 
          t => self%fetch_unvisited_D_state()
       end do
