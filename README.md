@@ -130,8 +130,11 @@ For the algorithm of the power set construction method and syntax analysis, I re
 
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 
+The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
+
 ## References
 
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007 
 2.  近藤嘉雪 (Kondo Yoshiyuki), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
+4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi), [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
