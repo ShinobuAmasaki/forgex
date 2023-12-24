@@ -29,12 +29,14 @@ contains
       res = (pattern .match. str) .eqv. correct_answer
    end function is_valid__match
 
-   subroutine runner_in(pattern, str, answer)
+   subroutine runner_in(pattern, str, answer, result)
       implicit none
       character(*), intent(in) :: pattern, str
       logical, intent(in) :: answer
-      
+      logical, intent(inout) :: result
+
       logical :: res
+      
 
       res = is_valid__in(pattern, str, answer)
 
@@ -45,14 +47,18 @@ contains
          write(error_unit, '(a, l, a, a)') 'result: ', res, ' '//trim(pattern), ' '//trim(str)
       end if
 
+      result = result .and. res
+      
    end subroutine runner_in
 
-   subroutine runner_match(pattern, str, answer)
+   subroutine runner_match(pattern, str, answer, result)
       implicit none
       character(*), intent(in) :: pattern, str
       logical, intent(in) :: answer
-      
+      logical, intent(inout) :: result
+
       logical :: res
+      
 
       res = is_valid__match(pattern, str, answer)
 
@@ -62,6 +68,9 @@ contains
       else
          write(error_unit, '(a, l, a, a)') 'result: ', res, ' '//trim(pattern),' '//trim(str)
       end if
+
+      result = result .and. res
+
    end subroutine runner_match
 
 

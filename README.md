@@ -117,7 +117,7 @@ function regex (pattern, str, length) result(res)
 
 - [x] UTF-8 Support
 - [ ] DFA construction on-the-fly. 
-- [ ] Support for CMake and Make. 
+- [x] Support for CMake. 
 - [ ] Parallelization on matching.
 
 ## Code Convention

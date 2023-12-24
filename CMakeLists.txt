@@ -14,19 +14,41 @@ message("Description: ${PROJECT_DESCRIPTION}")
 
 add_subdirectory(src)
 
-add_executable(test001 test/test_case_001.f90)
 
-target_sources(test001
-   PRIVATE
-   src/test_m.f90
-   )
+### TESTS settings 
 
-target_include_directories(test001 PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+set(TEST001 test_case_001)
+set(TEST002 test_case_002)
+set(TEST003 test_case_003)
 
-target_link_libraries(test001 PRIVATE forgex)
+add_executable(${TEST001} test/test_case_001.f90)
+add_executable(${TEST002} test/test_case_002.f90)
+add_executable(${TEST003} test/test_case_003.f90)
+
+target_sources(${TEST001} PRIVATE src/test_m.f90)
+target_sources(${TEST002} PRIVATE src/test_m.f90)
+target_sources(${TEST003} PRIVATE src/test_m.f90)
+
+target_include_directories(${TEST001} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+target_include_directories(${TEST002} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+target_include_directories(${TEST003} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
+
+
+target_link_libraries(${TEST001} PRIVATE forgex)
+target_link_libraries(${TEST002} PRIVATE forgex)
+target_link_libraries(${TEST003} PRIVATE forgex)
 
 enable_testing()
 
 add_test(
-   NAME Forgex_test_case_001 COMMAND test001
+   NAME Forgex_test_case_001 COMMAND ${TEST001}
+)
+
+
+add_test(
+   NAME Forgex_test_case_002 COMMAND ${TEST002}
+)
+
+add_test(
+   NAME Forgex_test_case_003 COMMAND ${TEST003}
 )
