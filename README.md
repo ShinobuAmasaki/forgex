@@ -31,7 +31,7 @@ The engine's core algorithm uses a DFA approach. This choice was focused on runt
    - `\t`, tab character
    - `\n`, new line character (LF or CRLF)
    - `\r`, return character (CR)
-   - `\s`, blank character (white space, TAB, CR, LF, FF, zenkaku space)
+   - `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
    - `\S`, non-blank character
    - `\w`, (`[a-zA-Z0-9_]`)
    - `\W`, (`[^a-zA-Z0-9_]`)
