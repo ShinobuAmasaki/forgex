@@ -25,7 +25,6 @@ program test_001
    call runner_match('[a]{,2}', 'aa', .true., res)
    call runner_match('[a]{,2}', 'a', .true., res)
    call runner_match('[a]{,2}', '', .true., res)
-! goto 100
 
    call runner_match('[a]{,4}', 'aaaaa', .false., res)
    call runner_match('[a]{,4}', 'aaaa', .true., res)
@@ -33,7 +32,6 @@ program test_001
    call runner_match('[a]{,4}', 'aa', .true., res)
    call runner_match('[a]{,4}', 'a', .true., res)
    call runner_match('[a]{,4}', '', .true., res)
-
 
    
    call runner_match('[a]{2, 4}', "aaaaa", .false., res)
@@ -43,6 +41,7 @@ program test_001
    call runner_match('[a]{2, 4}', "a", .false., res)
    call runner_match('[a]{2, 4}', "", .false., res)
    
+   call runner_match("a.{1,5}g", "abgdefg", .true., res)
 
    call runner_match('[a]{7,7}', 'aaaaaa', .false., res)
    call runner_match("hoge(fuga|piyo)", 'hogepiyo', .true., res)

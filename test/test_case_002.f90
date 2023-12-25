@@ -11,6 +11,7 @@ program test_002
    call runner_in('[い]{7,7}', 'いろはにほへとち', .false., res)
    call runner_match("[い]{6}", 'いいいいいい ', .false., res)
    call runner_in("[^さ-ん]{6}",  'あいうえおか', .true., res)
+   call runner_in("夢.{1,7}胡蝶", "昔者莊周夢爲胡蝶　栩栩然胡蝶也", .true., res)
 
    call runner_match("\s", '　', .true., res)
    call runner_match('\s*', '　　', .true., res)
