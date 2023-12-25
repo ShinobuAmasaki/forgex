@@ -115,6 +115,8 @@ contains
       deallocate(cache)
       deallocate(index_list)
 
+      write(error_unit, *) new_list
+
    contains
 
       subroutine register_seg_list(new, list, k)
@@ -175,19 +177,23 @@ contains
 
       siz = size(seg_list, dim=1)
 
-      allocate(index_list(2*siz))
-      allocate(cache(2*siz))
+      allocate(index_list(6*siz))
+      allocate(cache(6*siz))
 
       do i = 1, siz
-         index_list(2*i-1) = seg_list(i)%min
-         index_list(2*i)   = seg_list(i)%max
+         index_list(6*i-5) = seg_list(i)%min - 1
+         index_list(6*i-4) = seg_list(i)%min
+         index_list(6*i-3) = seg_list(i)%min + 1
+         index_list(6*i-2) = seg_list(i)%max - 1
+         index_list(6*i-1) = seg_list(i)%max
+         index_list(6*i)   = seg_list(i)%max + 1
       end do
 
       call bubble_sort(index_list)
       
       cache(1) = index_list(1)
       k = 1
-      do i = 2, siz*2
+      do i = 2, siz*6
          if (index_list(i-1) /= index_list(i)) then
             k = k + 1
             cache(k) = index_list(i)
