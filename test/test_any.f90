@@ -15,7 +15,7 @@ program main
       print *, length
       
       pattern = "a.{1,5}g"
-      str = "abcdefg"
+      str = "abgdefg"
       print *, pattern .in. str      ! T
       print *, regex(pattern, str, length)   ! 胡蝶　栩栩然胡蝶
       print *, length

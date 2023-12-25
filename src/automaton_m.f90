@@ -371,27 +371,31 @@ contains
 
       call disjoin(seg_list, new_list)
 
+      do i = 1, self%nfa_nstate
+         p => self%nfa(i)
+
+         if (.not. is_prime_semgment(p%c, new_list)) then
+            call disjoin_nfa_state(p, new_list)
+         end if
+      end do
 
       do i = 1, self%nfa_nstate 
 
+         p => self%nfa(i)%next
 
-            p => self%nfa(i)
+         inner: do while (associated(p))
 
-            do while (associated(p))
-               if (p%to /= 0 .and. p%c /= SEG_EMPTY .and. p%index <= 0) then
+            if (.not. is_prime_semgment(p%c, new_list)) then                     
+               call disjoin_nfa_state(p, new_list)
+            end if
 
-                  if (.not. is_prime_semgment(p%c, new_list)) then
-                     call disjoin_nfa_state(p, new_list)
-                  end if
+            if (p%index > 0) exit inner
 
-                  if (p%index == 0) exit
-               end if
-               p => p%next
+            p => p%next
 
-            end do
-
-
+         end do inner
       end do
+
       call clear(queue)
       deallocate(seg_list)
       deallocate(new_list)

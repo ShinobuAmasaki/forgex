@@ -115,8 +115,6 @@ contains
       deallocate(cache)
       deallocate(index_list)
 
-      write(error_unit, *) new_list
-
    contains
 
       subroutine register_seg_list(new, list, k)
