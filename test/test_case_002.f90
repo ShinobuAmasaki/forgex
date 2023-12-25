@@ -12,9 +12,12 @@ program test_002
    call runner_match("[い]{6}", 'いいいいいい ', .false., res)
    call runner_in("[^さ-ん]{6}",  'あいうえおか', .true., res)
 
-   print *, "=== TEST CASE 2 END ===          "
+   call runner_match("\s", '　', .true., res)
+   call runner_match('\s*', '　　', .true., res)
+
 
    if (res) then
+      print *, "=== TEST CASE 2 END ===          "
       stop
    else
       error stop

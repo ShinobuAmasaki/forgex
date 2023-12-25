@@ -25,8 +25,9 @@ program test_003
    call runner_match("\d{3}-\d{4}", "100-1002", .true., res)
    call runner_match("\d{3}-\d{4}", "1234567", .false., res)
 
-   print *, "=== TEST CASE 3 END ==="
+
    if (res) then
+      print *, "=== TEST CASE 3 END ==="
       stop
    else
       error stop
