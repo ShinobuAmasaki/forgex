@@ -4,7 +4,7 @@ Fortran Regular Expression (Forgex) is a regular expression engine written entir
 
 Forgex is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
 
-The engine's core algorithm uses a DFA approach. This choice was focused on runtime performance.
+The engine's core algorithm uses a Deterministic Finite Automaton (DFA) approach. This choice was focused on runtime performance.
 
 ## Features
 
