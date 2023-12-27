@@ -108,10 +108,10 @@ end block
 The interface of `regex` function is following:
 
 ```fortran
-function regex (pattern, str, length) result(res)
+function regex (pattern, str, length, from, to) result(res)
    implicit none
    character(*), intent(in) :: pattern, str
-   integer, intent(inout), optional :: length
+   integer, intent(inout), optional :: length, from, to
    character(:), allocatable :: res
 ```
 ## To do
