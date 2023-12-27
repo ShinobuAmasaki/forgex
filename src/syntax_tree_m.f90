@@ -393,21 +393,6 @@ contains
 
       buf = adjustl(buf)
 
-      ! if (arg(2) == 0) then
-      !    if (buf(len_trim(buf):len_trim(buf)) == ',') then
-      !       min = arg(1)
-      !    else if (buf(1:1) == ',') then
-      !       write(stderr, *) 'hoge'
-      !       min = 1
-      !       max = arg(1)
-      !    else
-      !       min = arg(1)
-      !       max = arg(1)
-      !    end if 
-      ! else
-      !    min = arg(1)
-      !    max = arg(2)
-      ! end if
 
       if (arg(1) == 0) then   ! {,max}, {0,max}
          min = 0
@@ -440,15 +425,15 @@ contains
          end if
 
          if (min > 1) then
-            count = min + 1
-            do while (count < max)
-               tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+            count = 1
+            do while (count < min)
                tree => make_tree_node(op_concat, ptr, tree)
                count = count + 1
             end do
          end if
          
          return
+
 
       else if (max == 1) then
 
@@ -462,19 +447,19 @@ contains
             return
          end if
                   
-      else
+
+      else ! (max > 1)
 
          if (min == 0) then
             count = 1
-            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-            tree => make_tree_node(op_concat, ptr, tree)
-            do while (count < max-1)
+            tree => ptr
+            do while (count < max)
                tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
                tree => make_tree_node(op_concat, ptr, tree)
                count = count + 1
             end do
 
-            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, ptr, null()))
+            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
 
             return
          end if
@@ -482,6 +467,7 @@ contains
          if (min == 1) then
             count = 1
             tree => ptr
+            
             do while (count < max-1)
                tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
                tree => make_tree_node(op_concat, ptr, tree)
@@ -496,13 +482,17 @@ contains
 
          if (min > 1) then
             count = min + 1
-            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-            tree => make_tree_node(op_concat, ptr, tree)
-            do while (count < max)
+            
+            tree => ptr
+
+            do while (count < max+1)
                tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
                tree => make_tree_node(op_concat, ptr, tree)
                count = count + 1
             end do
+
+            ! tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+            ! tree => make_tree_node(op_concat, ptr, tree)
 
             count = 1
             do while (count < min)
