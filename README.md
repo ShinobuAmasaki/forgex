@@ -20,10 +20,11 @@ The engine's core algorithm uses a Deterministic Finite Automaton (DFA) approach
    - inverted character class `[^a-z]`
    - character class on UTF-8 codeset `[α-ωぁ-ん]`
 - Range of repetition
-   - `{num}`
-   - `{,max}`
-   - `{min,}`
-   - `{min, max}`
+   - `{num}`,
+   - `{,max}`,
+   - `{min,}`,
+   - `{min, max}`,
+   where `num` and `max` must NOT be zero.
 - Anchor
    - `^`
    - `$`
