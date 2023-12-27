@@ -742,6 +742,21 @@ contains
 
       str = str_arg
 
+      from = 0
+      to = 0
+
+      if (str == char(10)//char(10)) then
+         str = ''
+         state => self%initial_dfa_state
+         if (state%accepted) then
+            from = 1
+            to = 1
+         end if
+
+         return
+      end if
+
+
       ! logical, allocatable :: is_first(:)
       ! call is_first_byte_of_character_array(str, is_first, len(str))
 
@@ -797,6 +812,11 @@ contains
       max_match = 0
       i = 1
       state => self%initial_dfa_state
+
+      if (str == '') then
+         res = state%accepted
+         return
+      end if
 
       do while( associated(state))
 
