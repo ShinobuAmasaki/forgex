@@ -409,41 +409,139 @@ contains
       !    max = arg(2)
       ! end if
 
-      min = arg(1)
-      max = arg(2)
+      if (arg(1) == 0) then   ! {,max}, {0,max}
+         min = 0
+         max = arg(2)
+      else if (arg(2) == 0) then ! {min,}, {num}
+         if (buf(len_trim(buf):len_trim(buf)) == ',') then
+            min = arg(1)
+            max = 0
+         else
+            min = arg(1)
+            max = arg(1)
+         end if
 
-      if (min == 0) then
-         count = 1
-         tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-         tree => make_tree_node(op_concat, ptr, tree)
-         do while (count < max-1)
-            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
-            tree => make_tree_node(op_concat, ptr, tree)
-            count = count + 1
-         end do
-      
-      else 
-
-         count = min +1
-         tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-         tree => make_tree_node(op_concat, ptr, tree)
-         do while (count < max)
-            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
-            tree => make_tree_node(op_concat, ptr, tree)
-            count = count + 1
-         end do
-   
+      else
+         min = arg(1)
+         max = arg(2)
       end if
 
-      if (min == 0) then
-         tree => make_tree_node(op_union, tree, make_tree_node(op_empty, ptr, null()))
+
+      if (max == 0) then
+      
+         if (min == 0) then
+            tree => make_tree_node(op_closure, ptr, null())
+            return
+         end if 
+
+         if (min >= 1) then
+            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+         end if
+
+         if (min > 1) then
+            count = min + 1
+            do while (count < max)
+               tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+               tree => make_tree_node(op_concat, ptr, tree)
+               count = count + 1
+            end do
+         end if
+         
+         return
+
+      else if (max == 1) then
+
+         if (min == 0) then
+            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, ptr, null()))
+            return
+         end if
+
+         if (min >= 1) then
+            tree => ptr
+            return
+         end if
+                  
       else
-         count = 1
-         do while (count < min)
-            tree => make_tree_node(op_concat, tree, ptr)
-            count = count + 1
-         end do
+
+         if (min == 0) then
+            count = 1
+            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+            do while (count < max-1)
+               tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+               tree => make_tree_node(op_concat, ptr, tree)
+               count = count + 1
+            end do
+
+            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, ptr, null()))
+
+            return
+         end if
+         
+         if (min == 1) then
+            count = 1
+            tree => ptr
+            do while (count < max-1)
+               tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+               tree => make_tree_node(op_concat, ptr, tree)
+               count = count + 1
+            end do
+
+            tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+            return
+
+         end if
+
+         if (min > 1) then
+            count = min + 1
+            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
+            tree => make_tree_node(op_concat, ptr, tree)
+            do while (count < max)
+               tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+               tree => make_tree_node(op_concat, ptr, tree)
+               count = count + 1
+            end do
+
+            count = 1
+            do while (count < min)
+               tree => make_tree_node(op_concat, tree, ptr)
+               count = count + 1
+            end do
+
+         end if 
       end if 
+
+
+
+      ! if (max == 1) then
+      !    tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
+      !    tree => make_tree_node(op_concat, ptr, tree)
+      !    return     
+      ! else
+
+      !    count = min +1
+      !    tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
+      !    tree => make_tree_node(op_concat, ptr, tree)
+      !    do while (count < max)
+      !       tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
+      !       tree => make_tree_node(op_concat, ptr, tree)
+      !       count = count + 1
+      !    end do
+   
+      ! end if
+
+      ! if (min == 0) then
+      !    tree => make_tree_node(op_union, tree, make_tree_node(op_empty, ptr, null()))
+
+      ! else
+      !    count = 1
+      !    do while (count < min)
+      !       tree => make_tree_node(op_concat, tree, ptr)
+      !       count = count + 1
+      !    end do
+      ! end if 
 
    end function range_min_max
 
