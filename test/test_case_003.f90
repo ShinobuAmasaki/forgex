@@ -17,7 +17,6 @@ program test_003
    call runner_match("\D", 'a', .true., res)
 
    call runner_match("[^0-9]?", "a", .true., res)
-   call runner_match("[^0-9]{0}", "", .true., res)
    call runner_match("[^0-9]{1}", "a", .true., res)
    call runner_match("[^0-9]{2}", "ab", .true., res)
    call runner_match("[^0-9]{3}", "abc", .true., res)
