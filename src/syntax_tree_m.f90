@@ -366,7 +366,7 @@ contains
       implicit none
       type(tape_t), intent(inout) :: tape
       type(tree_t), pointer, intent(in) :: ptr
-      type(tree_t), pointer :: tree
+      type(tree_t), pointer :: tree, tmp
 
       character(:), allocatable :: buf
       integer(int32) :: arg(2), ios, min, max, count, i
@@ -410,7 +410,6 @@ contains
          min = arg(1)
          max = arg(2)
       end if
-
 
       if (max == 0) then
       
@@ -491,9 +490,6 @@ contains
                count = count + 1
             end do
 
-            ! tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
-            ! tree => make_tree_node(op_concat, ptr, tree)
-
             count = 1
             do while (count < min)
                tree => make_tree_node(op_concat, tree, ptr)
@@ -502,36 +498,6 @@ contains
 
          end if 
       end if 
-
-
-
-      ! if (max == 1) then
-      !    tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-      !    tree => make_tree_node(op_concat, ptr, tree)
-      !    return     
-      ! else
-
-      !    count = min +1
-      !    tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-      !    tree => make_tree_node(op_concat, ptr, tree)
-      !    do while (count < max)
-      !       tree => make_tree_node(op_union, tree, make_tree_node(op_empty, tree, null()))
-      !       tree => make_tree_node(op_concat, ptr, tree)
-      !       count = count + 1
-      !    end do
-   
-      ! end if
-
-      ! if (min == 0) then
-      !    tree => make_tree_node(op_union, tree, make_tree_node(op_empty, ptr, null()))
-
-      ! else
-      !    count = 1
-      !    do while (count < min)
-      !       tree => make_tree_node(op_concat, tree, ptr)
-      !       count = count + 1
-      !    end do
-      ! end if 
 
    end function range_min_max
 

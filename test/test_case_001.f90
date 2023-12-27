@@ -5,9 +5,23 @@ program test_001
 
    logical :: res = .true.
 
-print *, 'hoge'
    ! Test case #1. 
    ! Tests for ASCII Character set.
+
+
+   call runner_regex('[a-z]{,7}', 'aaaaaaab', 'aaaaaaa', res)
+   call runner_regex('[a-z]{,6}', 'aaaaaaab', 'aaaaaa', res)
+   call runner_regex('[a-z]{,5}', 'aaaaaaab', 'aaaaa', res)
+   call runner_regex('[a-z]{,4}', 'aaaaaaab', 'aaaa', res)
+   call runner_regex('[a-z]{,3}', 'aaaaaaab', 'aaa', res)
+   call runner_regex('[a-z]{,2}', 'aaaaaaab', 'aa', res)
+   call runner_regex('[a-z]{,1}', 'aaaaaaab', 'a', res)
+   
+   call runner_regex('[a-z]{0,3}', 'aaab', 'aaa', res)
+   call runner_regex('[a-z]{0,2}', 'aaab', 'aa', res)
+   call runner_regex('[a-z]{0,1}', 'aaab', 'a', res)
+   
+
    call runner_match('[a]{1,4}', 'aaaaa', .false., res)
    call runner_match('[a]{1,4}', 'aaaa', .true., res)
    call runner_match('[a]{1,4}', 'aaa', .true., res)
@@ -62,13 +76,12 @@ print *, 'hoge'
    call runner_regex('[a-z]{1,2}', 'aaaaaaab', 'aa', res)
    call runner_regex('[a-z]{1,1}', 'aaaaaaab', 'a', res)
 
-   call runner_regex('[a-z]{,7}', 'aaaaaaab', 'aaaaaaa', res)
-   call runner_regex('[a-z]{,6}', 'aaaaaaab', 'aaaaaa', res)
-   call runner_regex('[a-z]{,5}', 'aaaaaaab', 'aaaaa', res)
-   call runner_regex('[a-z]{,4}', 'aaaaaaab', 'aaaa', res)
-   call runner_regex('[a-z]{,3}', 'aaaaaaab', 'aaa', res)
-   call runner_regex('[a-z]{,2}', 'aaaaaaab', 'aa', res)
-   call runner_regex('[a-z]{,1}', 'aaaaaaab', 'a', res)
+   call runner_regex('[a-z]{2,7}', 'aaaaaaab', 'aaaaaaa', res)
+   call runner_regex('[a-z]{2,6}', 'aaaaaaab', 'aaaaaa', res)
+   call runner_regex('[a-z]{2,5}', 'aaaaaaab', 'aaaaa', res)
+   call runner_regex('[a-z]{2,4}', 'aaaaaaab', 'aaaa', res)
+   call runner_regex('[a-z]{2,3}', 'aaaaaaab', 'aaa', res)
+   call runner_regex('[a-z]{2,2}', 'aaaaaaab', 'aa', res)
    
    call runner_match('[a]{2, 4}', "aaaaa", .false., res)
    call runner_match('[a]{2, 4}', "aaaa", .true., res)

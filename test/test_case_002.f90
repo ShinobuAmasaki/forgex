@@ -12,7 +12,7 @@ program test_002
    call runner_in('[い]{7,7}', 'いろはにほへとち', .false., res)
 
    call runner_match("[い]{6}", 'いいいいいい ', .false., res)
-   call runner_in("[^さ-ん]{6}",  'あいうえおか', .true., res)
+   call runner_match("[^さ-ん]{6}",  'あいうえおか', .true., res)
 
    call runner_regex('[ぁ-ん]{1,7}', 'いろはにほへとちりぬるを', 'いろはにほへと', res)
 
