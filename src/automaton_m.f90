@@ -738,7 +738,7 @@ contains
       type(D_state_t), pointer :: state
 
       integer(int32) :: start, next
-      integer(int32) :: max_match, i
+      integer(int32) :: max_match, i, count
 
       str = str_arg
 
@@ -756,10 +756,6 @@ contains
          return
       end if
 
-
-      ! logical, allocatable :: is_first(:)
-      ! call is_first_byte_of_character_array(str, is_first, len(str))
-
       ! Match the pattern by shifting one character from the begining of string str.
       ! This loop should be parallelized.
       start = 1
@@ -770,7 +766,7 @@ contains
          i = start
          state => self%initial_dfa_state
 
-         ! 
+         !
          do while( associated(state))
 
             if (state%accepted) then
@@ -787,7 +783,7 @@ contains
 
          end do
 
-         if (max_match /= 0) then
+         if (max_match > 1) then
             from = start
             to = max_match -1 
             return
