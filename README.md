@@ -105,6 +105,33 @@ block
 end block
 ```
 
+By using the `from`/`to` arugments, you can extract substrings from the given string.
+
+```fortran
+block
+   character(:), allocatable :: pattern, str
+   integer :: from, to 
+
+   pattern = '[d-f]{3}'
+   str = 'abcdefghi'
+
+   print *, regex(pattern, str, from=from, to=to)  ! def
+   
+   ! The `from` and `to` variables store the indices of the start and end points
+   ! of the matched part of the string `str`, respectively.
+
+   ! Cut out before the matched part.
+   print *, str(1:from-1)        ! abc
+
+   ! Cut out the matched part that equivalent to the result of the `regex` function. 
+   print *, str(from:to)         ! def 
+
+   ! Cut out after the matched part. 
+   print *, str(to+1:len(str))   ! ghi
+
+end block
+```
+
 The interface of `regex` function is following:
 
 ```fortran
@@ -114,6 +141,28 @@ function regex (pattern, str, length, from, to) result(res)
    integer, intent(inout), optional :: length, from, to
    character(:), allocatable :: res
 ```
+
+### UTF-8 String matching
+
+UTF-8 string can be matched using regular expression patterns just like ASCII strings.
+The following example demonstrates matching Chinese characters. 
+In this example, the variable length stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
+
+```fortran
+block
+   character(:), allocatable :: pattern, str
+   integer :: length
+   
+   pattern = "夢.{1,7}胡蝶"
+   str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
+   
+   print *, pattern .in. str            ! T
+   print *, regex(pattern, str, length) ! 夢爲胡蝶　栩栩然胡蝶
+   print *, length                      ! 30 (is 3-byte * 10 characters)
+   
+end block
+```
+
 ## To do
 
 - [x] UTF-8 Support
