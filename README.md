@@ -146,7 +146,7 @@ function regex (pattern, str, length, from, to) result(res)
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters. 
-In this example, the variable length stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
+In this example, the variable `length` stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
 
 ```fortran
 block
