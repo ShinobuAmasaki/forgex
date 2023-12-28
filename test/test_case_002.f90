@@ -17,6 +17,33 @@ program test_002
    call runner_regex('[ぁ-ん]{,1}', 'あいうえおかきくけこ', 'あ', res )
 
    call runner_regex('[ぁ-んァ-ン]*', 'あイうエお', 'あイうエお', res)
+   call runner_regex('[ぁ-んァ-ン]{,5}', 'あイうエお', 'あイうエお', res)
+   call runner_regex('[ぁ-んァ-ン]{,4}', 'あイうエお', 'あイうエ', res)
+   call runner_regex('[ぁ-んァ-ン]{,3}', 'あイうエお', 'あイう', res)
+   call runner_regex('[ぁ-んァ-ン]{,2}', 'あイうエお', 'あイ', res)
+   call runner_regex('[ぁ-んァ-ン]{,1}', 'あイうエお', 'あ', res)
+
+   ! 一 U+4e00
+   ! 鿿 U+9fff
+
+   call runner_regex('[ぁ-んァ-ン一-鿿]*', 'あいうえおアイウエオ安伊宇衣於', &
+    'あいうえおアイウエオ安伊宇衣於', res) 
+   call runner_regex('[一-鿿]*', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊宇衣於', res) 
+    call runner_regex('[一-鿿]{1,10}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊宇衣於', res) 
+    call runner_regex('[一-鿿]{1,7}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊宇衣於', res) 
+    call runner_regex('[一-鿿]{1,5}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊宇衣於', res) 
+    call runner_regex('[一-鿿]{1,3}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊宇', res) 
+    call runner_regex('[一-鿿]{,2}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安伊', res) 
+    call runner_regex('[一-鿿]{,1}', 'あいうえおアイウエオ安伊宇衣於', &
+    '安', res) 
+
+   
 
 
    call runner_in('[い]{7,7}', 'いろはにほへとち', .false., res)

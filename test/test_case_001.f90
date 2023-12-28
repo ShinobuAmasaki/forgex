@@ -8,6 +8,9 @@ program test_001
    ! Test case #1. 
    ! Tests for ASCII Character set.
 
+   call runner_match('', '', .true., res)
+   call runner_regex('', '', '', res)
+
 
    call runner_regex('[a-z]{,7}', 'aaaaaaab', 'aaaaaaa', res)
    call runner_regex('[a-z]{,6}', 'aaaaaaab', 'aaaaaa', res)
