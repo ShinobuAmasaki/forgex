@@ -769,7 +769,8 @@ contains
          !
          do while( associated(state))
 
-            if (state%accepted) then
+            ! 任意の位置の空文字にはマッチさせない
+            if (state%accepted .and. i /= start) then
                max_match = i
             end if
 
