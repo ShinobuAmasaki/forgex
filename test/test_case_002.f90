@@ -8,6 +8,16 @@ program test_002
    ! Test case #2. 
    ! Tests for UTF-8 Character set.
 
+   call runner_regex('[ぁ-ん]{,7}', 'あいうえおかきくけこ', 'あいうえおかき', res )
+   call runner_regex('[ぁ-ん]{,6}', 'あいうえおかきくけこ', 'あいうえおか', res )
+   call runner_regex('[ぁ-ん]{,5}', 'あいうえおかきくけこ', 'あいうえお', res )
+   call runner_regex('[ぁ-ん]{,4}', 'あいうえおかきくけこ', 'あいうえ', res )
+   call runner_regex('[ぁ-ん]{,3}', 'あいうえおかきくけこ', 'あいう', res )
+   call runner_regex('[ぁ-ん]{,2}', 'あいうえおかきくけこ', 'あい', res )
+   call runner_regex('[ぁ-ん]{,1}', 'あいうえおかきくけこ', 'あ', res )
+
+   call runner_regex('[ぁ-んァ-ン]*', 'あイうエお', 'あイうエお', res)
+
 
    call runner_in('[い]{7,7}', 'いろはにほへとち', .false., res)
 

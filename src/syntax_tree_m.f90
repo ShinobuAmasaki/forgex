@@ -536,7 +536,8 @@ contains
 
       allocate(seglist(siz))
 
-      iend = len_utf8(buf)
+
+      iend = len(buf)
       i = 1
       j = 1
       buf = buf//char(0) !空文字を末尾に追加する。
