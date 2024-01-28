@@ -14,11 +14,11 @@ module segment_disjoin_m
 contains
 
 
-   subroutine disjoin_kernel(seg_list, new_list)
+   subroutine disjoin_kernel(new_list)
 
       implicit none
-      type(segment_t), intent(in) :: seg_list(:)
-      type(segment_t), intent(out), allocatable :: new_list(:)
+      type(segment_t), intent(inout), allocatable :: new_list(:)
+      type(segment_t), allocatable :: old_list(:)
     
       type(priority_queue_t) :: pqueue
       type(segment_t), allocatable :: buff(:)
@@ -30,11 +30,13 @@ contains
       integer(int32), allocatable :: index_list(:)
       logical :: flag
 
-      siz = size(seg_list, dim=1)
+      siz = size(new_list, dim=1)
+
+      call move_alloc(new_list, old_list)
 
       block ! heap sort
          do j = 1, siz
-            call enqueue(pqueue, seg_list(j))
+            call enqueue(pqueue, old_list(j))
          end do
 
          allocate(buff(siz))
@@ -55,7 +57,7 @@ contains
       allocate(new_list(siz*2))
       ! allocate(cache(siz*2))
 
-      call index_list_from_segment_list(index_list, seg_list)
+      call index_list_from_segment_list(index_list, old_list)
 
       new = SEG_UPPER
 

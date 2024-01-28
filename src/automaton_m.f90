@@ -339,16 +339,15 @@ contains
       type(nlist_t), pointer :: p, q
       integer(int32) :: i, j, k 
       type(priority_queue_t) :: queue
-      type(segment_t), allocatable :: seg_list(:), new_list(:)
+      type(segment_t), allocatable :: seg_list(:)
       integer :: num
 
 
       num = 0
       p => null()
 
-      do i = 1, self%nfa_nstate
-         ! if (i <= nfa_nstate) then
-
+      block ! enqueue
+         do i = 1, self%nfa_nstate
             p => self%nfa(i)
 
             do while (associated(p))
@@ -358,9 +357,8 @@ contains
                end if
                p => p%next
             end do
-
-         ! end if
-      end do
+         end do
+      end block ! enqueue
 
       num = queue%number
 
@@ -369,13 +367,15 @@ contains
          seg_list(j) = dequeue(queue)
       end do
 
-      call disjoin(seg_list, new_list)
+      !-- seg_list array is sorted.
+
+      call disjoin(seg_list)
 
       do i = 1, self%nfa_nstate
          p => self%nfa(i)
 
-         if (.not. is_prime_semgment(p%c, new_list)) then
-            call disjoin_nfa_state(p, new_list)
+         if (.not. is_prime_semgment(p%c, seg_list)) then
+            call disjoin_nfa_state(p, seg_list)
          end if
       end do
 
@@ -385,8 +385,8 @@ contains
 
          inner: do while (associated(p))
 
-            if (.not. is_prime_semgment(p%c, new_list)) then                     
-               call disjoin_nfa_state(p, new_list)
+            if (.not. is_prime_semgment(p%c, seg_list)) then                     
+               call disjoin_nfa_state(p, seg_list)
             end if
 
             if (p%index > 0) exit inner
@@ -396,9 +396,9 @@ contains
          end do inner
       end do
 
+      !-- deallocate
       call clear(queue)
       deallocate(seg_list)
-      deallocate(new_list)
 
    end subroutine disjoin_nfa
 
