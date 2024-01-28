@@ -13,15 +13,18 @@ module segment_disjoin_m
 
 contains
 
+
    subroutine disjoin_kernel(seg_list, new_list)
 
       implicit none
       type(segment_t), intent(in) :: seg_list(:)
+      type(segment_t), intent(out), allocatable :: new_list(:)
+    
       type(priority_queue_t) :: pqueue
       type(segment_t), allocatable :: buff(:)
-      type(segment_t), intent(out), allocatable :: new_list(:)
       type(segment_t), allocatable :: cache(:)
-      type(segment_t) :: new, SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
+      type(segment_t) :: new
+      type(segment_t), parameter :: SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
       integer(int32), allocatable :: index_list(:)
@@ -29,30 +32,34 @@ contains
 
       siz = size(seg_list, dim=1)
 
-      do j = 1, siz
-         call enqueue(pqueue, seg_list(j))
-      end do
+      block ! heap sort
+         do j = 1, siz
+            call enqueue(pqueue, seg_list(j))
+         end do
 
-      allocate(buff(siz))
-   
+         allocate(buff(siz))
+      
+         do j = 1, siz
+            buff(j) = dequeue(pqueue)
+         end do
+      end block
 
-      do j = 1, siz
-         buff(j) = dequeue(pqueue)
-      end do
-
-      bottom = buff(1)%min
-      top = 0
-      do j = 1, siz
-         top = max(top, buff(j)%max)
-      end do
+      block ! get the bottom and top from the segment array.
+         bottom = buff(1)%min
+         top = 0
+         do j = 1, siz
+            top = max(top, buff(j)%max)
+         end do
+      end block
 
       allocate(new_list(siz*2))
-      allocate(cache(siz*2))
+      ! allocate(cache(siz*2))
 
       call index_list_from_segment_list(index_list, seg_list)
 
-      k = 1
       new = SEG_UPPER
+
+      k = 1
       m = 1
       do while(m <= size(index_list))
          i = index_list(m)
@@ -103,13 +110,13 @@ contains
          if (new_list(i) /= SEG_EMPTY) real_size = real_size + 1
       end do
 
-      cache(:) = new_list(:)
+      call move_alloc(new_list, cache)  ! new_list is now deallocated.
 
-      deallocate(new_list)
       allocate(new_list(real_size))
 
       new_list(:) = cache(1:real_size)
 
+      ! deallocate
       call clear(pqueue)
       deallocate(buff)
       deallocate(cache)
