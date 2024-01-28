@@ -33,6 +33,7 @@ module forgex
    end interface
 
    type(automaton_t) :: cache
+   character(:), allocatable :: pattern_cache
 
 contains
 
@@ -47,24 +48,32 @@ contains
       type(tree_t), pointer :: root
       type(tape_t) :: tape
 
+
       from = 0
       to = 0
 
-      buff = pattern
+      if (pattern /= pattern_cache) then
 
-      root => build_syntax_tree(tape, buff)
+         ! initialize
+         call cache%free()
+         call cache%init()
 
+         buff = pattern
+         root => build_syntax_tree(tape, buff)
 
-      ! call print_tree(root)
-      
-      call cache%init()
-      call cache%build_nfa(root)
+         ! call print_tree(root)
+         
+         call cache%build_nfa(root)
 
-      ! call cache%print_nfa()
-      
-      call cache%convert_NFA_to_DFA()
+         ! call cache%print_nfa()
+         
+         call cache%convert_NFA_to_DFA()
 
-      ! call cache%print_dfa()
+         ! call cache%print_dfa()
+         pattern_cache = pattern
+         call deallocate_tree()
+
+      end if
       
       call cache%matching(char(10)//str//char(10), from, to)
 
@@ -89,9 +98,6 @@ contains
          res = .false.
       end if
 
-      call deallocate_tree()
-      call cache%free()
-
    end function in__matching
    
 
@@ -108,35 +114,40 @@ contains
       from = 0
       to = 0
 
-      if (is_there_caret_at_the_top(pattern)) then
-         buff = pattern(2:len(pattern))
-      else
-         buff = pattern(1:len(pattern))
+      if (pattern /= pattern_cache) then
+
+         if (is_there_caret_at_the_top(pattern)) then
+            buff = pattern(2:len(pattern))
+         else
+            buff = pattern(1:len(pattern))
+         end if
+
+         if (is_there_dollar_at_the_end(pattern)) then
+            buff = buff(1:len_trim(pattern)-1)
+         end if
+
+         root => build_syntax_tree(tape, buff)  
+
+         ! call print_tree(root)
+
+         call cache%free()
+         call cache%init()
+         call cache%build_nfa(root)
+
+         ! call cache%print_nfa()
+
+         call cache%convert_NFA_to_DFA()
+
+         ! call cache%print_dfa()
+         pattern_cache = pattern
+         call deallocate_tree()
+         
       end if
-
-      if (is_there_dollar_at_the_end(pattern)) then
-         buff = buff(1:len_trim(pattern)-1)
-      end if
-
-      root => build_syntax_tree(tape, buff)  
-
-      ! call print_tree(root)
-
-      call cache%init()
-      call cache%build_nfa(root)
-
-      ! call cache%print_nfa()
-
-      call cache%convert_NFA_to_DFA()
-
-      ! call cache%print_dfa()
-
+      
       res = cache%matching_exactly(str)
 
       ! write(stderr, *) from, to
-      call deallocate_tree()
-      call cache%free()
-
+      
    end function match__matching
 
 
@@ -156,25 +167,28 @@ contains
       from_l = 0
       to_l = 0
 
-      buff = pattern
+      if (pattern /= pattern_cache) then
+         buff = pattern
+         root => build_syntax_tree(tape, buff)
 
-      root => build_syntax_tree(tape, buff)
 
+         ! call print_tree(root)
+         call cache%free() 
+         call cache%init()
 
-      ! call print_tree(root)
-      
-      call cache%init()
+         call cache%build_nfa(root)
 
-      call cache%build_nfa(root)
+         ! call cache%print_nfa()
+         
+         call cache%convert_NFA_to_DFA()
 
-      ! call cache%print_nfa()
-      
-      call cache%convert_NFA_to_DFA()
+         ! call cache%print_dfa()
+         pattern_cache = pattern
+         call deallocate_tree()
 
-      ! call cache%print_dfa()
-      
+      end if 
+
       call cache%matching(char(10)//str//char(10), from_l, to_l)
-
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
@@ -199,10 +213,6 @@ contains
          if (present(from)) from = 0
          if (present(to)) to = 0
       end if
-
-      call deallocate_tree()
-
-      call cache%free()
 
    end function regex__matching
 

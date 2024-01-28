@@ -224,9 +224,9 @@ contains
          end if
       end do
 
-      deallocate(self%nfa)
+      if (associated(self%nfa)) deallocate(self%nfa)
  
-      deallocate(self%dfa)
+      if (associated(self%dfa)) deallocate(self%dfa)
 
 
    end subroutine deallocate_automaton
