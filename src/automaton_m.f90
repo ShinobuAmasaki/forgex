@@ -336,8 +336,8 @@ contains
       use :: segment_disjoin_m
       implicit none
       class(automaton_t) :: self
-      type(nlist_t), pointer :: p, q
-      integer(int32) :: i, j, k 
+      type(nlist_t), pointer :: p
+      integer(int32) :: i, j
       type(priority_queue_t) :: queue
       type(segment_t), allocatable :: seg_list(:)
       integer :: num
@@ -653,10 +653,8 @@ contains
       class(automaton_t) :: self
       type(NFA_state_set_t), target :: initial_state
       type(D_state_t), pointer :: t
-      type(D_list_t), pointer :: x, ptr
+      type(D_list_t), pointer :: x
       type(D_slist_t), pointer :: p
-
-      integer :: j 
 
       t => null()
       x => null()
@@ -738,7 +736,7 @@ contains
       type(D_state_t), pointer :: state
 
       integer(int32) :: start, next
-      integer(int32) :: max_match, i, count
+      integer(int32) :: max_match, i
 
       str = str_arg
 
@@ -844,7 +842,7 @@ contains
    subroutine print_nfa(self)
       implicit none
       class(automaton_t) :: self 
-      integer :: i, j
+      integer :: i
       type(nlist_t), pointer :: p
       character(:), allocatable :: cache
 
@@ -892,7 +890,6 @@ contains
       class(automaton_t) :: self
       type(D_slist_t), pointer :: l
       integer(int32) :: i, j
-      character(1) :: c_Accepted
 
       write(stderr,*) "--- PRINT DFA---"
 

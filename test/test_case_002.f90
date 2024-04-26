@@ -62,7 +62,6 @@ program test_002
    ! Zenkaku space
    call runner_match("\s", '　', .true., res)
    call runner_match('\s*', '　　', .true., res)
-100 continue
 
    if (res) then
       print *, "=== TEST CASE 2 END ===          "

@@ -33,7 +33,7 @@ contains
 
       do i = 0, 3
 
-         byte = ichar(str(curr+i:curr+i))
+         byte = int(ichar(str(curr+i:curr+i)), kind(byte))
 
          shift_3 = ishft(byte, -3)
          shift_4 = ishft(byte, -4)
@@ -95,16 +95,16 @@ contains
       bin = '0000000000000000000000000111111' ! lower 6-bit mask
       read(bin, '(b32.32)') mask
 
-      byte(1) = and(ishft(buf, -18), mask)
+      byte(1) = int(iand(ishft(buf, -18), mask),kind(byte))
       
       buf = code
-      byte(2) = and(ishft(buf, -12), mask)
+      byte(2) = int(iand(ishft(buf, -12), mask), kind(byte))
       
       buf = code
-      byte(3) = and(ishft(buf, -6), mask)
+      byte(3) = int(iand(ishft(buf, -6), mask), kind(byte))
       
       buf = code
-      byte(4) = and(buf, mask)
+      byte(4) = int(iand(buf, mask), kind(byte))
 
       if (code > 2**7-1) then
         
@@ -193,10 +193,10 @@ contains
          return
       end if
 
-      byte(1) = ichar(chara(1:1))
-      if (len(chara) >= 2) byte(2) = ichar(chara(2:2))
-      if (len(chara) >= 3) byte(3) = ichar(chara(3:3))
-      if (len(chara) >= 4) byte(4) = ichar(chara(4:4))
+      byte(1) = int(ichar(chara(1:1)),kind(byte))
+      if (len(chara) >= 2) byte(2) = int(ichar(chara(2:2)), kind(byte))
+      if (len(chara) >= 3) byte(3) = int(ichar(chara(3:3)), kind(byte))
+      if (len(chara) >= 4) byte(4) = int(ichar(chara(4:4)), kind(byte))
 
       shift_3 = ishft(byte(1), -3)
       shift_4 = ishft(byte(1), -4)
@@ -212,41 +212,41 @@ contains
       ! 4-byte character
       else if (shift_3 == 30) then
 
-         res = and(byte(1), mask_5_bit)
+         res = iand(byte(1), mask_5_bit)
 
          res = ishft(res, 6)
-         buf = and(byte(2), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(2), mask_2_bit)
+         res = ior(res, buf)
 
          res = ishft(res, 6)
-         buf = and(byte(3), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(3), mask_2_bit)
+         res = ior(res, buf)
 
          res = ishft(res, 6)
-         buf = and(byte(4), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(4), mask_2_bit)
+         res = ior(res, buf)
 
       ! 3-byte character
       else if (shift_4 == 14) then
          
-         res = and(byte(1), mask_4_bit)
+         res = iand(byte(1), mask_4_bit)
 
          res = ishft(res, 6)
-         buf = and(byte(2), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(2), mask_2_bit)
+         res = ior(res, buf)
 
          res = ishft(res, 6)
-         buf = and(byte(3), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(3), mask_2_bit)
+         res = ior(res, buf)
 
       ! 2-byte character
       else if (shift_5 == 6) then
 
-         res = and(byte(1), mask_3_bit)
+         res = iand(byte(1), mask_3_bit)
 
          res = ishft(res, 6)
-         buf = and(byte(2), mask_2_bit)
-         res = or(res, buf)
+         buf = iand(byte(2), mask_2_bit)
+         res = ior(res, buf)
 
       end if 
 
@@ -291,7 +291,7 @@ contains
       logical :: res
       integer(int8) :: byte, shift_6
 
-      byte = ichar(chara)
+      byte = int(ichar(chara), kind(byte))
 
       res = .true. 
 

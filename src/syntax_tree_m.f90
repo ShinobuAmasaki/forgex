@@ -366,10 +366,10 @@ contains
       implicit none
       type(tape_t), intent(inout) :: tape
       type(tree_t), pointer, intent(in) :: ptr
-      type(tree_t), pointer :: tree, tmp
+      type(tree_t), pointer :: tree
 
       character(:), allocatable :: buf
-      integer(int32) :: arg(2), ios, min, max, count, i
+      integer(int32) :: arg(2), ios, min, max, count
 
       buf = ''
       arg(:) = 0
@@ -509,7 +509,7 @@ contains
       type(segment_t), allocatable :: seglist(:)
 
       character(:), allocatable :: buf
-      integer :: siz, count_hyphen, i, inext, iend, j
+      integer :: siz, i, inext, iend, j
       logical :: inverted   
    
       tree => null()
@@ -717,11 +717,13 @@ contains
       implicit none
       type(segment_t), intent(inout), allocatable :: list(:)
 
-      logical :: unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
-      logical :: inverted(UTF8_CODE_MIN-1:UTF8_CODE_MAX+1)
+      logical, allocatable :: unicode(:)
+      logical, allocatable :: inverted(:)
 
       integer :: i, j, count
 
+      allocate(unicode(UTF8_CODE_MIN:UTF8_CODE_MAX))
+      allocate(inverted((UTF8_CODE_MIN-1):(UTF8_CODE_MAX+1)))
       unicode(:) = .false.
       inverted(:) = .false.
 

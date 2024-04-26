@@ -114,7 +114,6 @@ program test_001
    call runner_in("[^a-z]", "A", .true., res)
    call runner_match("[^a-z]", "B", .true., res)
 
-100 continue
 
    if (res) then
       print *, "=== TEST CASE 1 END ==="
