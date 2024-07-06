@@ -6,7 +6,7 @@
 !!     A regular expression engine for Fortran.
 !!     utf8_m module is a part of Forgex.
 
-module utf8_m
+module forgex_utf8_m
    implicit none
 
    integer, parameter :: UTF8_CODE_MAX = 2**21-1
@@ -338,4 +338,4 @@ contains
 
 
 
-end module utf8_m
+end module forgex_utf8_m

@@ -1,6 +1,6 @@
-module segment_m
+module forgex_segment_m
    use, intrinsic :: iso_fortran_env
-   use :: utf8_m
+   use :: forgex_utf8_m
    implicit none
    
    type, public :: segment_t
@@ -137,4 +137,4 @@ contains
    end function segment_is_valid
 
 
-end module segment_m
+end module forgex_segment_m

@@ -1,8 +1,8 @@
-module syntax_tree_m
+module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
-   use :: enums_m
-   use :: utf8_m
-   use :: segment_m
+   use :: forgex_enums_m
+   use :: forgex_utf8_m
+   use :: forgex_segment_m
    implicit none
    private
 
@@ -117,7 +117,7 @@ contains
 
 
    subroutine get_token(self, class)
-      use :: utf8_m
+      use :: forgex_utf8_m
       implicit none
       class(tape_t) :: self 
       logical, optional, intent(in) :: class
@@ -863,4 +863,4 @@ contains
    end function print_class_simplify
          
 
-end module syntax_tree_m
+end module forgex_syntax_tree_m

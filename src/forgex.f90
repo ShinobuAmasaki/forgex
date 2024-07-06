@@ -10,8 +10,8 @@
 module forgex
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    
-   use :: syntax_tree_m
-   use :: automaton_m
+   use :: forgex_syntax_tree_m
+   use :: forgex_automaton_m
    implicit none
    private
 

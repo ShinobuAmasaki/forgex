@@ -6,12 +6,12 @@
 !!     A regular expression engine for Fortran.
 !!     automaton_m module is a part of Forgex.
 
-module automaton_m
+module forgex_automaton_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
-   use :: segment_m 
-   use :: enums_m
-   use :: syntax_tree_m
-   use :: utf8_m
+   use :: forgex_segment_m 
+   use :: forgex_enums_m
+   use :: forgex_syntax_tree_m
+   use :: forgex_utf8_m
    implicit none
    private 
 
@@ -332,8 +332,8 @@ contains
 
 
    subroutine disjoin_nfa(self)
-      use :: priority_queue_m
-      use :: segment_disjoin_m
+      use :: forgex_priority_queue_m
+      use :: forgex_segment_disjoin_m
       implicit none
       class(automaton_t) :: self
       type(nlist_t), pointer :: p
@@ -403,7 +403,7 @@ contains
    end subroutine disjoin_nfa
 
    subroutine disjoin_nfa_state(state, seg_list)
-      use :: segment_disjoin_m
+      use :: forgex_segment_disjoin_m
       implicit none
       type(nlist_t), pointer, intent(inout) ::state 
 
@@ -699,7 +699,7 @@ contains
 !=====================================================================!
 
    function next_state_dfa(state, chara) result(res)
-      use :: utf8_m
+      use :: forgex_utf8_m
       implicit none
       type(D_state_t), intent(in) :: state
       character(*), intent(in) :: chara
@@ -727,7 +727,7 @@ contains
 
 
    subroutine matching (self, str_arg, from, to)
-      use :: utf8_m
+      use :: forgex_utf8_m
       implicit none
       class(automaton_t) :: self
       character(*), intent(in) :: str_arg
@@ -922,4 +922,4 @@ contains
 
    end subroutine print_dfa
 
-end module automaton_m
+end module forgex_automaton_m

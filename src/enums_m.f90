@@ -1,4 +1,4 @@
-module enums_m
+module forgex_enums_m
    implicit none
    
      ! These enums will be rewritten in Fortran 2023's enumerator feature. 
@@ -29,4 +29,4 @@ module enums_m
       enumerator :: op_closure
       enumerator :: op_empty
    end enum
-end module enums_m
+end module forgex_enums_m

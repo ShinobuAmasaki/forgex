@@ -1,5 +1,5 @@
 program test_003
-   use :: test_m
+   use :: forgex_test_m
    implicit none
 
    ! Test case #3. 

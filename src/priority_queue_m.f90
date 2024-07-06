@@ -11,9 +11,9 @@
 !! The original Fortran implementation of priority queue is by ue1221.
 !! cf. https://github.com/ue1221/fortran-utilities
 
-module priority_queue_m
+module forgex_priority_queue_m
    use, intrinsic :: iso_fortran_env
-   use :: segment_m
+   use :: forgex_segment_m
    implicit none
 
    type priority_queue_t
@@ -96,4 +96,4 @@ contains
    end subroutine
 
 
-end module priority_queue_m
+end module forgex_priority_queue_m

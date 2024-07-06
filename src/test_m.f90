@@ -1,4 +1,4 @@
-module test_m
+module forgex_test_m
    use, intrinsic :: iso_fortran_env
    use :: forgex
    implicit none
@@ -119,4 +119,4 @@ contains
    end subroutine runner_regex
 
 
-end module test_m
+end module forgex_test_m

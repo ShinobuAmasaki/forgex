@@ -1,4 +1,4 @@
-module sort_m
+module forgex_sort_m
    use, intrinsic :: iso_fortran_env
    implicit none
    
@@ -24,4 +24,4 @@ contains
 
    end subroutine bubble_sort
 
-end module sort_m
+end module forgex_sort_m

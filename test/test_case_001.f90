@@ -1,6 +1,6 @@
 program test_001
    use, intrinsic :: iso_fortran_env
-   use :: test_m
+   use :: forgex_test_m
    implicit none
 
    logical :: res = .true.

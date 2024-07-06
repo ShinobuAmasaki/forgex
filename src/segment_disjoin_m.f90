@@ -1,6 +1,6 @@
-module segment_disjoin_m
-   use :: segment_m
-   use :: priority_queue_m
+module forgex_segment_disjoin_m
+   use :: forgex_segment_m
+   use :: forgex_priority_queue_m
    private
 
    public :: disjoin
@@ -174,7 +174,7 @@ contains
 
 
    subroutine index_list_from_segment_list(index_list, seg_list)
-      use :: sort_m, only: bubble_sort
+      use :: forgex_sort_m, only: bubble_sort
       implicit none
       type(segment_t), intent(in) :: seg_list(:)
       integer(int32), intent(out), allocatable :: index_list(:)
@@ -213,4 +213,4 @@ contains
 
    end subroutine index_list_from_segment_list
 
-end module segment_disjoin_m
+end module forgex_segment_disjoin_m
