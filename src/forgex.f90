@@ -2,16 +2,17 @@
 !! 
 !! MIT License
 !!
-!! (C) Amasaki Shinobu, 2023
+!! (C) Amasaki Shinobu, 2023-2024
 !!     A regular expression engine for Fortran.
 !!
-!!     forgex_m defines APIs of Forgex.
+!!     forgex module defines APIs of Forgex.
 !!  
 module forgex
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    
    use :: forgex_syntax_tree_m
-   use :: forgex_automaton_m
+   use :: forgex_nfa_m
+   use :: forgex_dfa_m
    implicit none
    private
 
@@ -32,7 +33,8 @@ module forgex
       module procedure :: regex__matching
    end interface
 
-   type(automaton_t) :: cache
+   type(nfa_t) :: nfa
+   type(dfa_t) :: dfa
    character(:), allocatable :: pattern_cache
 
 contains
@@ -54,28 +56,28 @@ contains
 
       if (pattern /= pattern_cache) then
 
-         ! initialize
-         call cache%free()
-         call cache%init()
-
          buff = pattern
          root => build_syntax_tree(tape, buff)
 
          ! call print_tree(root)
          
-         call cache%build_nfa(root)
+         ! initialize
+         call nfa%free()
+         call nfa%init()
+         call nfa%build(root)
+         ! call dfa%print()
 
-         ! call cache%print_nfa()
-         
-         call cache%convert_NFA_to_DFA()
+         call dfa%free()
+         call dfa%init()
+         call dfa%convert_n2d(nfa)
+         ! call dfa%print()
 
-         ! call cache%print_dfa()
          pattern_cache = pattern
          call deallocate_tree()
 
       end if
       
-      call cache%matching(char(10)//str//char(10), from, to)
+      call dfa%matching(char(10)//str//char(10), from, to)
 
 
       if (is_there_caret_at_the_top(pattern)) then
@@ -130,21 +132,22 @@ contains
 
          ! call print_tree(root)
 
-         call cache%free()
-         call cache%init()
-         call cache%build_nfa(root)
+         call nfa%free()
+         call nfa%init()
+         call nfa%build(root)
+         ! call nfa%print_nfa()
 
-         ! call cache%print_nfa()
+         call dfa%free()
+         call dfa%init()
+         call dfa%convert_n2d(nfa)
+         ! call dfa%print_dfa()
 
-         call cache%convert_NFA_to_DFA()
-
-         ! call cache%print_dfa()
          pattern_cache = pattern
          call deallocate_tree()
          
       end if
       
-      res = cache%matching_exactly(str)
+      res = dfa%matching_exactly(str)
 
       ! write(stderr, *) from, to
       
@@ -171,24 +174,24 @@ contains
          buff = pattern
          root => build_syntax_tree(tape, buff)
 
-
          ! call print_tree(root)
-         call cache%free() 
-         call cache%init()
 
-         call cache%build_nfa(root)
+         call nfa%free() 
+         call nfa%init()
+         call nfa%build(root)
+         ! call nfa%print()
 
-         ! call cache%print_nfa()
-         
-         call cache%convert_NFA_to_DFA()
+         call dfa%free()
+         call dfa%init()
+         call dfa%convert_n2d(nfa)
+         ! call dfa%print()
 
-         ! call cache%print_dfa()
          pattern_cache = pattern
          call deallocate_tree()
 
       end if 
 
-      call cache%matching(char(10)//str//char(10), from_l, to_l)
+      call dfa%matching(char(10)//str//char(10), from_l, to_l)
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
