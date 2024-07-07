@@ -393,7 +393,6 @@ contains
 
 
    recursive subroutine mark_empty_transition(self, state, s)
-      use, intrinsic :: iso_c_binding
       implicit none
       class(nfa_t) :: self
       type(NFA_state_set_t), intent(inout) :: state
@@ -419,7 +418,6 @@ contains
 
 
    subroutine collect_empty_transition (self, state)
-      use, intrinsic :: iso_c_binding
       implicit none
       class(nfa_t) :: self
       type(NFA_state_set_t), intent(inout), target :: state
