@@ -19,7 +19,7 @@ module forgex_dfa_m
 !---------------------------------------------------------------------!
 
    ! Upper limit for number of DFA states instance.
-   integer(int32), parameter :: DFA_STATE_MAX = 1024
+   integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
    ! D_list_t is the type represents a list of transitionable NFA state.
    type :: D_list_t
@@ -53,7 +53,6 @@ module forgex_dfa_m
       integer(int32) :: dfa_nstate = 0
       type(D_state_t), pointer :: dfa(:)
       type(D_state_t), pointer :: initial_dfa_state => null()
-      type(D_list_t), pointer  :: dlist => null()
    contains
       procedure :: init              => dfa__init
       procedure :: free              => dfa__deallocate
@@ -63,6 +62,7 @@ module forgex_dfa_m
       procedure :: fetch_unvisited   => dfa__fetch_unvisited_d_state
       procedure :: matching          => dfa__matching
       procedure :: matching_exactly  => dfa__matching_exactly
+      procedure :: print             => dfa__print
    end type dfa_t 
 
    ! Pointer allocation monitoring
@@ -72,10 +72,6 @@ module forgex_dfa_m
    
    type :: dslist_pointer_list_t
       type(D_slist_t), pointer :: node
-   end type
-
-   type :: nlist_pointer_list_t
-      type(nlist_t), pointer :: node
    end type
 
    type :: dstate_pointer_list_t
@@ -188,7 +184,7 @@ contains
       use, intrinsic :: iso_c_binding
       implicit none
       class(dfa_t) :: self
-      type(nfa_t)  :: nfa
+      type(nfa_t), intent(in)  :: nfa
 
       type(D_state_t), intent(in) :: dstate
 
@@ -212,7 +208,7 @@ contains
          if (check_NFA_state(state, i)) then
 
             ! Examine all NFA states reachable from NFA state <i> and list them. 
-            p => nfa%nfa(i)
+            p => nfa%states(i)
 
             middle: do while (associated(p))
 
@@ -221,7 +217,7 @@ contains
 
                   a => res
                   inner: do while(associated(a))
-                     
+
                      do j = 1, size(a%c, dim=1)   
                         if (a%c(j) == p%c .and. p%to /= 0) then
                            call add_NFA_state(a%to, p%to)
