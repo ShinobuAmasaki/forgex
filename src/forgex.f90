@@ -12,7 +12,7 @@ module forgex
    
    use :: forgex_syntax_tree_m
    use :: forgex_nfa_m
-   use :: forgex_dfa_m
+   use :: forgex_lazy_dfa_m
    implicit none
    private
 
@@ -33,7 +33,7 @@ module forgex
       module procedure :: regex__matching
    end interface
 
-   type(nfa_t) :: nfa
+   type(nfa_t), target :: nfa
    type(dfa_t) :: dfa
    character(:), allocatable :: pattern_cache
 
@@ -49,7 +49,6 @@ contains
 
       type(tree_t), pointer :: root
       type(tape_t) :: tape
-
 
       from = 0
       to = 0
@@ -68,8 +67,7 @@ contains
          ! call dfa%print()
 
          call dfa%free()
-         call dfa%init()
-         call dfa%convert_n2d(nfa)
+         call dfa%init(nfa)
          ! call dfa%print()
 
          pattern_cache = pattern
@@ -78,6 +76,7 @@ contains
       end if
       
       call dfa%matching(char(10)//str//char(10), from, to)
+      ! call dfa%print()
 
 
       if (is_there_caret_at_the_top(pattern)) then
@@ -138,8 +137,7 @@ contains
          ! call nfa%print_nfa()
 
          call dfa%free()
-         call dfa%init()
-         call dfa%convert_n2d(nfa)
+         call dfa%init(nfa)
          ! call dfa%print_dfa()
 
          pattern_cache = pattern
@@ -148,8 +146,8 @@ contains
       end if
       
       res = dfa%matching_exactly(str)
-
-      ! write(stderr, *) from, to
+! call nfa%print()
+! call dfa%print()
       
    end function match__matching
 
@@ -182,8 +180,8 @@ contains
          ! call nfa%print()
 
          call dfa%free()
-         call dfa%init()
-         call dfa%convert_n2d(nfa)
+         call dfa%init(nfa)
+
          ! call dfa%print()
 
          pattern_cache = pattern
@@ -228,6 +226,7 @@ contains
       logical :: res
 
       buff = adjustl(pattern)
+      if (len(buff) == 0) return
 
       res = buff(1:1) == '^'
 
@@ -242,6 +241,7 @@ contains
       logical :: res
 
       buff = trim(pattern)
+      if (len(buff) == 0) return
 
       res = buff(len_trim(buff):len_trim(buff)) == '$'
 

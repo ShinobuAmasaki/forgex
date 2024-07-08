@@ -12,11 +12,12 @@ module forgex_lazy_dfa_m
    use :: forgex_enums_m
    use :: forgex_utf8_m
    use :: forgex_nfa_m
-   use :: forgex_dfa_m, only: DFA_STATE_MAX
+
    implicit none
    private
 
    public :: d_state_t
+   integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
    ! d_list_t is the type represents a list of transitionable NFA state
    type :: d_list_t
@@ -29,7 +30,6 @@ module forgex_lazy_dfa_m
    type :: d_state_t
       integer(int32) :: index
       type(NFA_state_set_t), pointer :: state_set => null()
-      ! logical :: visited = .false. 
       logical :: accepted = .false.
       type(d_transition_t), pointer :: transition => null() ! list of transition destination
    end type d_state_t
@@ -43,7 +43,7 @@ module forgex_lazy_dfa_m
 
    type, public :: dfa_t
       integer(int32) :: dfa_nstate = 0
-      type(d_state_t), pointer :: states(:)
+      type(d_state_t), pointer :: states(:) => null()
       type(nfa_t), pointer :: nfa
       type(d_state_t), pointer :: initial_dfa_state => null()
       type(d_list_t), pointer :: dlist => null()
@@ -54,10 +54,11 @@ module forgex_lazy_dfa_m
       procedure :: epsilon_closure => lazy_dfa__epsilon_closure
       procedure :: print           => lazy_dfa__print
       procedure :: move            => lazy_dfa__move
-      procedure :: construct       => lazy_dfa__construct 
-      ! procedure :: fetch_unvisited => lazy_dfa__fetch_unvisited
+      procedure :: construct       => lazy_dfa__construct
       procedure :: is_registered   => lazy_dfa__is_registered
       procedure :: reachable       => lazy_dfa__compute_reachable_n_state
+      procedure :: matching        => lazy_dfa__matching
+      procedure :: matching_exactly=> lazy_dfa__matching_exactly
    end type dfa_t
 
 
@@ -111,7 +112,9 @@ contains
 
       allocate(self%initial_dfa_state)
       allocate(self%initial_dfa_state%state_set)
+
       self%initial_dfa_state%state_set = initial_closure
+      self%initial_dfa_state%accepted = check_NFA_state(self%initial_dfa_state%state_set, nfa_exit)
       self%initial_dfa_state => self%register(self%initial_dfa_state%state_set)
 
       deallocate(initial_closure)
@@ -130,7 +133,7 @@ contains
             if (allocated(dlist_pointer_list(j)%node%c)) then
                deallocate(dlist_pointer_list(j)%node%c)
             end if
-            deallocate(dlist_pointer_list(j)%node)
+            nullify(dlist_pointer_list(j)%node)
             dlist_pointer_count = dlist_pointer_count -1
          end if
       end do
@@ -142,15 +145,16 @@ contains
                deallocate(dtransition_pointer_list(j)%node%c)
             end if
 
-            deallocate(dtransition_pointer_list(j)%node)
+            nullify(dtransition_pointer_list(j)%node)
             dtransition_pointer_count = dtransition_pointer_count -1
          end if
       end do
 
       max = dstate_pointer_count
+
       do j = 1, max
          if (associated(dstate_pointer_list(j)%node)) then
-            deallocate(dstate_pointer_list(j)%node)
+            nullify (dstate_pointer_list(j)%node)
             dstate_pointer_count = dstate_pointer_count - 1
          end if
       end do 
@@ -186,8 +190,11 @@ contains
       k = self%dfa_nstate
 
       self%states(k)%state_set => s
-      self%states(k)%accepted  = check_NFA_state(s, nfa_exit)
+      self%states(k)%accepted = check_NFA_state(s, nfa_exit)
       self%states(k)%transition => null()
+
+      dstate_pointer_count = dstate_pointer_count + 1
+      dstate_pointer_list(dstate_pointer_count)%node => self%states(k)
 
       res => self%states(k)
 
@@ -247,20 +254,21 @@ contains
 
       do i = 1, self%nfa%nfa_nstate
          t => self%nfa%states(i)
+
          do while(associated(t))
             if (t%c == SEG_EMPTY .and. t%to /= 0) then
-               call add_NFA_state(closure, t%to)
+               if (t%index == nfa_entry) call add_NFA_state(closure, t%to)
             end if
             t => t%next
-         end do 
+         end do
       end do
 
    end subroutine lazy_dfa__epsilon_closure
 
-   function lazy_dfa__compute_reachable_n_state(self, dstate, symbol) result(res)
+   function lazy_dfa__compute_reachable_n_state(self, current, symbol) result(res)
       implicit none
       class(dfa_t), intent(in) :: self
-      type(d_state_t), intent(in) :: dstate
+      type(d_state_t), intent(in) :: current
       type(d_list_t), pointer :: res
       character(*), intent(in) :: symbol
 
@@ -276,10 +284,12 @@ contains
       a => null()
       b => null()
       res => null()
-      state_set => dstate%state_set
+      state_set => current%state_set
 
       outer: do i = 1, self%nfa%nfa_nstate
+
          if (check_NFA_state(state_set, i)) then
+
             ptr_nlist => self%nfa%states(i)
 
             middle: do while(associated(ptr_nlist))
@@ -300,6 +310,7 @@ contains
                   end do inner
 
                   if (ptr_nlist%to /= 0) then
+
                      if (symbol_to_segment(symbol) .in. ptr_nlist%c) then
 
                         symbol_belong = which_segment_symbol_belong(self%nfa%all_segments, symbol)
@@ -314,7 +325,6 @@ contains
                         call add_nfa_state(b%to, ptr_nlist%to)
                         b%next => res
                         res => b
-
                      end if
                   end if
                end if
@@ -327,20 +337,23 @@ contains
    end function lazy_dfa__compute_reachable_n_state
 
 
-
    logical function lazy_dfa__is_registered(self, state_set) result(res)
       implicit none
       class(dfa_t), intent(in) :: self
       type(nfa_state_set_t), intent(in) :: state_set
 
-      integer :: i, n
+      logical :: tmp
+      integer :: i, n, j
 
       n = dstate_pointer_count
       res = .false.
       do i = 1, n
-         res = res .or. any(dstate_pointer_list(i)%node%state_set%vec .eqv. state_set%vec)
-         if (res) return
-      end do 
+         do j = 1, NFA_VECTOR_SIZE
+            tmp = tmp .and.(dstate_pointer_list(i)%node%state_set%vec(j) .eqv. state_set%vec(j))
+         end do
+         res = res .or. tmp
+         if (res) exit
+      end do
 
    end function lazy_dfa__is_registered
 
@@ -355,8 +368,12 @@ contains
       type(d_list_t), pointer :: res
       
       integer(int32) :: i, j, k, next
+      res => null()
 
-      res => self%reachable(self%states(current%index), symbol)
+      do i = 1, self%dfa_nstate
+         res => self%reachable(current, symbol)
+         if (associated(res)) exit
+      end do
 
    end function lazy_dfa__move
 
@@ -373,16 +390,24 @@ contains
       type(d_list_t) :: without_epsilon
       type(segment_t), allocatable :: all_segments(:)
 
+      x => null()
+      prev => null()
+
       ! 暗黙の配列割り付けに注意
       all_segments = self%nfa%all_segments
 
       ! 遷移前の状態へのポインタをprevに代入
       prev => current
-      
+
       ! ε遷移を除いた行き先のstate_setを取得する
       x => self%move(prev, self%nfa%all_segments, symbol)
 
-      without_epsilon = x ! deep copy
+      if (associated(x)) then
+         without_epsilon = x ! deep copy
+      else
+         current => null()
+         return
+      end if
 
       ! ε遷移との和集合を取り、x%toに格納する
       call self%nfa%collect_empty_transition(x%to)
@@ -400,7 +425,116 @@ contains
    end subroutine lazy_dfa__construct
 
 !=====================================================================!
+!  Matching procedures
 
+   subroutine lazy_dfa__matching(self, str_arg, from, to)
+      use :: forgex_utf8_m
+      implicit none
+      class(dfa_t), intent(inout) :: self
+      character(*), intent(in) :: str_arg
+      integer(int32), intent(inout) :: from, to 
+
+      type(d_state_t), pointer :: current
+      character(:), allocatable:: str
+      integer(int32) :: start, next
+      integer(int32) :: max_match, i
+
+      ! Initialize
+      str = str_arg
+      from = 0
+      to = 0
+
+      if (str == char(10)//char(10)) then
+         str = ''
+         current => self%initial_dfa_state
+         if (current%accepted) then
+            from = 1
+            to = 1
+         end if
+         return
+      end if
+
+      ! Match the pattern by shifting one character from the beginning of string str.
+      ! This loop should be parallelized.
+      start = 1
+      do while(start < len(str))
+         
+         ! Initialize DFA
+         max_match = 0
+         i = start
+         current => self%initial_dfa_state
+         do while( associated(current))
+
+            ! 任意の位置の空文字には一致させない
+            if (current%accepted .and. i /= start) then
+               max_match = i
+            end if
+            
+            if (i > len(str)) exit
+
+            next = idxutf8(str, i) + 1
+            call self%construct(current, str(i:next-1))
+            
+            i = next
+         end do
+
+         if (max_match > 1) then
+            from = start
+            to = max_match -1
+            return
+         end if
+
+         start = idxutf8(str,start) + 1
+      end do
+
+   end subroutine lazy_dfa__matching
+
+
+   function lazy_dfa__matching_exactly(self, str) result(res)
+      implicit none
+      class(dfa_t), intent(inout) :: self
+      character(*), intent(in)    :: str
+      logical :: res
+
+      integer(int32) :: max_match, i, next
+      type(d_state_t), pointer :: current => null()
+
+      ! Initialize
+      max_match = 0
+      i = 1
+      current => self%initial_dfa_state
+
+      if (len(str) == 0) then
+         res = current%accepted
+         return
+      end if
+      do while (associated(current))
+         if (current%accepted) then
+            max_match = i
+         end if
+
+         if (i > len(str)) exit
+
+         next = idxutf8(str, i) + 1
+         call self%construct(current, str(i:next-1))
+
+         if (.not. associated(current)) exit
+
+         i = next
+      end do
+
+
+      if (max_match == len(str)+1) then
+         res = .true.
+      else
+         res = .false.
+      end if
+
+   end function lazy_dfa__matching_exactly
+      
+
+!=====================================================================!
+!  Helper procedures
 
    subroutine add_dfa_transition(state, symbols, destination)
       implicit none
@@ -420,8 +554,7 @@ contains
             end do 
          end do
          p => p%next
-      end do 
-      
+      end do
 
       allocate(new_transition)
       allocate(new_transition%c(size(symbols)))
