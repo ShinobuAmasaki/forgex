@@ -33,7 +33,7 @@ module forgex_nfa_m
    ! It transits to state 'to' by character segument 'c'.
    type, public :: nlist_t
       type(segment_t) :: c = SEG_EMPTY
-      integer(int32)  :: to =0 
+      integer(int32)  :: to = 0
       type(nlist_t), pointer :: next => null()
       integer(int32) :: index
    end type
@@ -314,7 +314,7 @@ contains
    subroutine nfa__print_state_set (self, p)
       implicit none
       class(nfa_t) :: self 
-      type(NFA_state_set_t), intent(in) :: p
+      type(NFA_state_set_t), intent(in), target :: p
 
       integer(int32) :: i
 
@@ -332,8 +332,8 @@ contains
       implicit none
       type(NFA_state_set_t), intent(in) :: state
       integer(int32) :: s
-      
-      if (s /= 0) then 
+
+      if (s /= 0) then
          check_NFA_state = state%vec(s)
       else
          check_NFA_state = .false. 
@@ -398,7 +398,7 @@ contains
    recursive subroutine mark_empty_transition(self, state, s)
       implicit none
       class(nfa_t) :: self
-      type(NFA_state_set_t), intent(inout) :: state
+      type(NFA_state_set_t), intent(inout), target :: state
       integer(int32), intent(in) :: s 
 
       type(nlist_t), pointer :: p => null() 
@@ -423,8 +423,9 @@ contains
    subroutine collect_empty_transition (self, state)
       implicit none
       class(nfa_t) :: self
-      type(NFA_state_set_t), intent(inout), target :: state
+      type(NFA_state_set_t), intent(inout):: state
       integer(int32) :: i 
+
 
       do i = 1, self%nfa_nstate
 

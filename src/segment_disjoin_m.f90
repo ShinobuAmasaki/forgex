@@ -31,6 +31,9 @@ contains
       logical :: flag
 
       siz = size(new_list, dim=1)
+      if (siz <= 0) then
+         return
+      end if
 
       call move_alloc(new_list, old_list)
 
