@@ -26,7 +26,8 @@ module forgex_nfa_m
    integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
 
    ! Initial and accepting state on NFA.
-   integer(int32), public :: nfa_entry, nfa_exit
+   integer(int32), public :: nfa_entry
+   integer(int32), public :: nfa_exit
 
    ! nlist_t is a type represents a transition on NFA.
    ! It transits to state 'to' by character segument 'c'.
@@ -45,7 +46,8 @@ module forgex_nfa_m
    type, public :: nfa_t
       character(:), allocatable :: pattern
       integer(int32) :: nfa_nstate = 0    ! Number of NFA state
-      type(nlist_t), pointer :: nfa(:)
+      type(nlist_t), pointer :: states(:)
+      type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: init           => nfa__init
       procedure :: generate_node  => nfa__generate_node
@@ -77,10 +79,10 @@ contains
 
       self%nfa_nstate = 0
 
-      allocate(self%nfa(NFA_STATE_MAX))
+      allocate(self%states(NFA_STATE_MAX))
 
-      do i = 1, size(self%nfa, dim=1)
-         self%nfa(i)%index = i
+      do i = 1, size(self%states, dim=1)
+         self%states(i)%index = i
       end do
 
    end subroutine nfa__init
@@ -116,12 +118,12 @@ contains
       nlist_node_count = nlist_node_count + 1
       nlist_node_list(nlist_node_count)%node => p
       
-      p = self%nfa(from)
+      p = self%states(from)
 
-      self%nfa(from)%c%min = c%min
-      self%nfa(from)%c%max = c%max
-      self%nfa(from)%to = to
-      self%nfa(from)%next => p
+      self%states(from)%c%min = c%min
+      self%states(from)%c%max = c%max
+      self%states(from)%to = to
+      self%states(from)%next => p
 
    end subroutine nfa__add_transition
 
@@ -184,7 +186,7 @@ contains
 
       block ! enqueue
          do i = 1, self%nfa_nstate
-            p => self%nfa(i)
+            p => self%states(i)
 
             do while (associated(p))
                if (p%to /= 0 ) then
@@ -206,9 +208,10 @@ contains
       !-- seg_list array is sorted.
 
       call disjoin(seg_list)
+      self%all_segments = seg_list ! all_segments are one of the module array-variables.
 
       do i = 1, self%nfa_nstate
-         p => self%nfa(i)
+         p => self%states(i)
 
          if (.not. is_prime_semgment(p%c, seg_list)) then
             call disjoin_nfa_state(p, seg_list)
@@ -217,7 +220,7 @@ contains
 
       do i = 1, self%nfa_nstate 
 
-         p => self%nfa(i)%next
+         p => self%states(i)%next
 
          inner: do while (associated(p))
 
@@ -270,7 +273,7 @@ contains
          end if
       end do
 
-      if (associated(self%nfa)) nullify (self%nfa)
+      if (associated(self%states)) nullify (self%states)
 
    end subroutine nfa__deallocate
    
@@ -288,7 +291,7 @@ contains
          if (i <= self%nfa_nstate) then
 
             write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
-            p => self%nfa(i)
+            p => self%states(i)
 
             do while (associated(p))
                if (p%to /= 0 ) then
@@ -402,7 +405,7 @@ contains
 
       call add_NFA_state(state, s)
       
-      p => self%nfa(s)
+      p => self%states(s)
       do while (associated(p))
 
          if (p%c == SEG_EMPTY .and. .not. check_NFA_state(state, p%to) ) then
