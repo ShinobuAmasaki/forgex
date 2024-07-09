@@ -53,6 +53,8 @@ contains
       from = 0
       to = 0
 
+      if (.not. allocated(pattern_cache)) call initialize_pattern_cache
+
       if (pattern /= pattern_cache) then
 
          buff = pattern
@@ -73,10 +75,19 @@ contains
          pattern_cache = pattern
          call deallocate_tree()
 
-      end if
-      
+      end if  
       call dfa%matching(char(10)//str//char(10), from, to)
-      ! call dfa%print()
+
+      call dfa%free_dlist
+
+!! For DEBUG 
+! call nfa%free
+! call dfa%free
+! call initialize_pattern_cache
+
+! write(stderr, *) dlist_pointer_count, dtransition_pointer_count, dstate_pointer_count
+! call nfa%print()
+! call dfa%print()
 
 
       if (is_there_caret_at_the_top(pattern)) then
@@ -114,7 +125,7 @@ contains
 
       from = 0
       to = 0
-
+      if (.not. allocated(pattern_cache)) call initialize_pattern_cache
       if (pattern /= pattern_cache) then
 
          if (is_there_caret_at_the_top(pattern)) then
@@ -134,11 +145,11 @@ contains
          call nfa%free()
          call nfa%init()
          call nfa%build(root)
-         ! call nfa%print_nfa()
+
 
          call dfa%free()
          call dfa%init(nfa)
-         ! call dfa%print_dfa()
+
 
          pattern_cache = pattern
          call deallocate_tree()
@@ -167,6 +178,7 @@ contains
    
       from_l = 0
       to_l = 0
+      if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
       if (pattern /= pattern_cache) then
          buff = pattern
@@ -190,9 +202,9 @@ contains
       end if
 
       call dfa%matching(char(10)//str//char(10), from_l, to_l)
+
 ! call nfa%print()
 ! call dfa%print()
-! write(stderr, *) "L195 ", str, from_l, to_l
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
@@ -250,6 +262,9 @@ contains
 
    end function is_there_dollar_at_the_end
 
-   
+   subroutine initialize_pattern_cache()
+      implicit none
+      pattern_cache = ''
+   end subroutine initialize_pattern_cache
 
 end module forgex

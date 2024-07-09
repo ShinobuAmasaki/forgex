@@ -260,9 +260,10 @@ contains
 
    subroutine nfa__deallocate(self)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t), intent(inout) :: self
+      class(nlist_t), pointer :: ptr(:)
       integer :: j, max 
-      
+      ptr => null()
       max = nlist_node_count
       if (max < 1) return
 
@@ -273,7 +274,13 @@ contains
          end if
       end do
 
-      if (associated(self%states)) nullify (self%states)
+      ! ptr => self%states
+      ! write(stderr, *)associated(ptr)
+      ! write(stderr, *) "L276"
+      ! write(stderr, *) "L277", associated(self%states)
+      if (associated(self%states)) then
+         deallocate(self%states)
+      end if
 
    end subroutine nfa__deallocate
    

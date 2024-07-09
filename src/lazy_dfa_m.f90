@@ -50,6 +50,7 @@ module forgex_lazy_dfa_m
    contains
       procedure :: init            => lazy_dfa__init
       procedure :: free            => lazy_dfa__deallocate
+      procedure :: free_dlist      => lazy_dfa__deallocate_dlist
       procedure :: register        => lazy_dfa__register
       procedure :: epsilon_closure => lazy_dfa__epsilon_closure
       procedure :: print           => lazy_dfa__print
@@ -83,15 +84,22 @@ module forgex_lazy_dfa_m
    integer(int32) :: dtransition_pointer_count = 0
    integer(int32) :: dstate_pointer_count = 0
 
+   !! For DEBUG
+   ! integer(int32), public :: dlist_pointer_count = 0
+   ! integer(int32), public :: dtransition_pointer_count = 0
+   ! integer(int32), public :: dstate_pointer_count = 0
+
 contains
 
    subroutine lazy_dfa__init(self, nfa)
       implicit none
-      class(dfa_t) :: self
+      class(dfa_t), intent(inout) :: self
       type(nfa_t), intent(in), pointer :: nfa
+      type(d_state_t) :: initial
       type(nfa_state_set_t) :: nfa_entry_state_set
       type(nfa_state_set_t), allocatable :: initial_closure
       integer :: i
+
 
       self%dfa_nstate = 0
       allocate(self%states(DFA_STATE_MAX))
@@ -112,9 +120,15 @@ contains
 
       allocate(self%initial_dfa_state)
 
-      self%initial_dfa_state%state_set = initial_closure
-      self%initial_dfa_state%accepted = check_NFA_state(self%initial_dfa_state%state_set, nfa_exit)
-      self%initial_dfa_state => self%register(self%initial_dfa_state%state_set)
+      ! deep copy
+      initial%state_set = initial_closure
+      initial%accepted = check_NFA_state(initial%state_set, nfa_exit)
+
+      self%initial_dfa_state = self%register(initial%state_set)
+
+      ! self%initial_dfa_state%state_set = initial_closure
+      ! self%initial_dfa_state%accepted = check_NFA_state(self%initial_dfa_state%state_set, nfa_exit)
+      ! self%initial_dfa_state => self%register(self%initial_dfa_state%state_set)
 
       deallocate(initial_closure)
 
@@ -125,14 +139,18 @@ contains
       implicit none
       class(dfa_t) :: self
       integer :: j, max
-      
+
+      if (associated(self%initial_dfa_state)) then
+         deallocate(self%initial_dfa_state)
+      end if
+
       max = dlist_pointer_count
       do j = 1, max
          if (associated(dlist_pointer_list(j)%node)) then
             if (allocated(dlist_pointer_list(j)%node%c)) then
                deallocate(dlist_pointer_list(j)%node%c)
             end if
-            nullify(dlist_pointer_list(j)%node)
+            deallocate(dlist_pointer_list(j)%node)
             dlist_pointer_count = dlist_pointer_count -1
          end if
       end do
@@ -144,7 +162,7 @@ contains
                deallocate(dtransition_pointer_list(j)%node%c)
             end if
 
-            nullify(dtransition_pointer_list(j)%node)
+            deallocate(dtransition_pointer_list(j)%node)
             dtransition_pointer_count = dtransition_pointer_count -1
          end if
       end do
@@ -153,14 +171,34 @@ contains
 
       do j = 1, max
          if (associated(dstate_pointer_list(j)%node)) then
-            nullify (dstate_pointer_list(j)%node)
+            nullify (dstate_pointer_list(j)%node) ! NOT deallocate
             dstate_pointer_count = dstate_pointer_count - 1
          end if
       end do 
 
-      if (associated(self%states)) nullify(self%states)
+      if (associated(self%states)) deallocate(self%states)
 
    end subroutine lazy_dfa__deallocate
+
+
+   subroutine lazy_dfa__deallocate_dlist(self)
+      implicit none
+      class(dfa_t), intent(in) :: self
+      integer :: j, max
+      
+      max = dlist_pointer_count
+      do j = 1, max
+         if (associated(dlist_pointer_list(j)%node)) then
+            if (allocated(dlist_pointer_list(j)%node%c)) then
+               deallocate(dlist_pointer_list(j)%node%c)
+            end if
+            deallocate(dlist_pointer_list(j)%node)
+            dlist_pointer_count = dlist_pointer_count -1
+         end if
+      end do
+
+   end subroutine lazy_dfa__deallocate_dlist
+
 
    ! dfa_tの配列dfaの要素として状態を登録する
    function lazy_dfa__register(self, set) result(res)
@@ -382,7 +420,7 @@ contains
       use :: forgex_segment_m
       implicit none 
       class(dfa_t), intent(inout) :: self
-      type(d_state_t), intent(in), pointer :: current
+      type(d_state_t), intent(in) :: current
       character(*), intent(in) :: symbol
       type(d_list_t), pointer :: res
       
@@ -418,7 +456,7 @@ contains
       next => null()
       destination => null()
 
-      ! 暗黙の配列割り付けに注意
+      ! Implicit array reallocation
       all_segments = self%nfa%all_segments
 
       ! 遷移前の状態へのポインタをprevに代入
@@ -574,7 +612,7 @@ contains
          i = next
       end do
 
-
+      nullify(current)
       if (max_match == len(str)+1) then
          res = .true.
       else
