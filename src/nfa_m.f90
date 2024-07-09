@@ -335,6 +335,7 @@ contains
 
       if (s /= 0) then
          check_NFA_state = state%vec(s)
+
       else
          check_NFA_state = .false. 
       end if
@@ -395,24 +396,27 @@ contains
    end subroutine add_NFA_state
 
 
-   recursive subroutine mark_empty_transition(self, state, s)
+   recursive subroutine mark_empty_transition(self, state, idx)
       implicit none
       class(nfa_t) :: self
-      type(NFA_state_set_t), intent(inout), target :: state
-      integer(int32), intent(in) :: s 
+      type(NFA_state_set_t), intent(inout) :: state
+      integer(int32), intent(in) :: idx 
 
-      type(nlist_t), pointer :: p => null() 
+      type(nlist_t), pointer :: p
 
-      call add_NFA_state(state, s)
-      
-      p => self%states(s)
+! write(stderr, *) "L407 i =", idx
+      call add_NFA_state(state, idx)
+   
+! write(stderr, *) "L410 state =", state%vec(1:6)
+      nullify(p)
+
+      p => self%states(idx)
       do while (associated(p))
 
          if (p%c == SEG_EMPTY .and. .not. check_NFA_state(state, p%to) ) then
             if (p%to /= 0) call self%mark_empty_transition(state, p%to)
          end if 
 
-         if (.not. associated(p)) exit
          p => p%next
 
       enddo 
@@ -426,13 +430,16 @@ contains
       type(NFA_state_set_t), intent(inout):: state
       integer(int32) :: i 
 
-
+! write(stderr, *) "L430", state%vec(1:6)
       do i = 1, self%nfa_nstate
-
-         if (check_NFA_state(state, i)) call self%mark_empty_transition(state, i)
-
+         if (check_NFA_state(state, i)) then
+            call self%mark_empty_transition(state, i)       
+         end if
       end do
+! write(stderr, *) "L432", state%vec(1:6) 
+
    end subroutine collect_empty_transition
+
 
 
    function equivalent_NFA_state_set(a, b) result(res)

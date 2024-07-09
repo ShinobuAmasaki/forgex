@@ -29,7 +29,7 @@ module forgex_lazy_dfa_m
    ! d_state_t is the type represents a state of DFA.
    type :: d_state_t
       integer(int32) :: index
-      type(NFA_state_set_t), pointer :: state_set => null()
+      type(NFA_state_set_t) :: state_set
       logical :: accepted = .false.
       type(d_transition_t), pointer :: transition => null() ! list of transition destination
    end type d_state_t
@@ -111,7 +111,6 @@ contains
       call self%epsilon_closure(nfa_entry_state_set, initial_closure)
 
       allocate(self%initial_dfa_state)
-      allocate(self%initial_dfa_state%state_set)
 
       self%initial_dfa_state%state_set = initial_closure
       self%initial_dfa_state%accepted = check_NFA_state(self%initial_dfa_state%state_set, nfa_exit)
@@ -164,22 +163,21 @@ contains
    end subroutine lazy_dfa__deallocate
 
    ! dfa_tの配列dfaの要素として状態を登録する
-   function lazy_dfa__register(self, s) result(res)
+   function lazy_dfa__register(self, set) result(res)
       implicit none
       class(dfa_t) :: self
-      type(nfa_state_set_t), intent(in), target :: s
+      type(nfa_state_set_t), intent(in) :: set
       
       integer(int32) :: i, k
       type(d_state_t), pointer :: res
 
       res => null()
-
-      do i = 1, self%dfa_nstate
-         if (equivalent_NFA_state_set(self%states(i)%state_set, s)) then
-            res => self%states(i)
-            return
-         end if
-      end do
+      
+      if (self%is_registered(set, i)) then
+         write(stderr, *) "L117 not register"
+         res => self%states(i)
+         return
+      end if
 
       if (self%dfa_nstate >= DFA_STATE_MAX) then
          write(stderr, '(a)') "ERROR: Number of DFA states too large."
@@ -189,8 +187,8 @@ contains
       self%dfa_nstate = self%dfa_nstate + 1
       k = self%dfa_nstate
 
-      self%states(k)%state_set => s
-      self%states(k)%accepted = check_NFA_state(s, nfa_exit)
+      self%states(k)%state_set = set
+      self%states(k)%accepted = check_NFA_state(set, nfa_exit)
       self%states(k)%transition => null()
 
       dstate_pointer_count = dstate_pointer_count + 1
@@ -265,6 +263,7 @@ contains
 
    end subroutine lazy_dfa__epsilon_closure
 
+
    function lazy_dfa__compute_reachable_n_state(self, current, symbol) result(res)
       implicit none
       class(dfa_t), intent(in) :: self
@@ -273,7 +272,7 @@ contains
       character(*), intent(in) :: symbol
 
       integer(int32) :: i, j
-      type(nfa_state_set_t), pointer :: state_set
+      type(nfa_state_set_t) :: state_set
       type(nlist_t), pointer :: ptr_nlist
       type(d_list_t), pointer :: a, b
 
@@ -284,50 +283,70 @@ contains
       a => null()
       b => null()
       res => null()
-      state_set => current%state_set
-
+      state_set = current%state_set
+   
+      ! nfa状態をスキャン
       outer: do i = 1, self%nfa%nfa_nstate
 
+         ! state_setのi番目が真ならば、states(i)のポインタをたどる
          if (check_NFA_state(state_set, i)) then
 
+            ! この状態へのポインタをptr_nlistに代入
             ptr_nlist => self%nfa%states(i)
 
+            ! ptr_nlistをたどる
             middle: do while(associated(ptr_nlist))
+
+               ! ! Except for ε-transition.
                if (ptr_nlist%c /= SEG_EMPTY) then
+
                   a => res
-                  inner: do while (associated(a))
-                     do j = 1, size(a%c)
-                        if (a%c(j) == ptr_nlist%c .and. ptr_nlist%to /= 0) then
-                          
+                  inner: do while(associated(a))
+
+                     do j = 1, size(a%c, dim=1)   
+                        if (a%c(j) == ptr_nlist%c .and. ptr_nlist%to /= 0) then                         
                            call add_NFA_state(a%to, ptr_nlist%to)
 
+! write(stderr, *) "L307 add_NFA_state", a%to%vec(1:6), ptr_nlist%to  
+                           
+                           ! Move to next NFA state
                            ptr_nlist => ptr_nlist%next
-
                            cycle middle
+
                         end if
                      end do
                      a => a%next
+
                   end do inner
 
-                  if (ptr_nlist%to /= 0) then
+               end if
 
-                     if (symbol_to_segment(symbol) .in. ptr_nlist%c) then
+               ! ptr_nlistの行き先がある場合
+                if (ptr_nlist%to /= 0) then
 
-                        symbol_belong = which_segment_symbol_belong(self%nfa%all_segments, symbol)
+                  ! ptr_nlist%cにsymbolが含まれる場合
+                  if((symbol_to_segment(symbol) .in. ptr_nlist%c).or.(ptr_nlist%c == SEG_EMPTY)) then
 
-                        allocate(b)
-                        allocate(b%c(1))
+                     ! symbolの属するsegmentを取得する
+                     symbol_belong = which_segment_symbol_belong(self%nfa%all_segments, symbol)
 
-                        dlist_pointer_count = dlist_pointer_count + 1
-                        dlist_pointer_list(dlist_pointer_count)%node => b
+                     allocate(b)
+                     allocate(b%c(1))
 
-                        b%c(1) = symbol_belong(1)
-                        call add_nfa_state(b%to, ptr_nlist%to)
-                        b%next => res
-                        res => b
-                     end if
+                     dlist_pointer_count = dlist_pointer_count + 1
+                     dlist_pointer_list(dlist_pointer_count)%node => b
+
+                     b%c(1) = symbol_belong(1)
+                     call add_nfa_state(b%to, ptr_nlist%to)
+! write(stderr, *) "L342 add_NFA_state", b%to%vec(1:6), ptr_nlist%to
+                     ! resの先頭に挿入する
+                     b%next => res
+                     res => b
+                        
                   end if
                end if
+
+               ! 次のnfa状態へ
                ptr_nlist => ptr_nlist%next
             end do middle
 
@@ -337,33 +356,36 @@ contains
    end function lazy_dfa__compute_reachable_n_state
 
 
-   logical function lazy_dfa__is_registered(self, state_set) result(res)
+   logical function lazy_dfa__is_registered(self, state_set, idx) result(res)
       implicit none
       class(dfa_t), intent(in) :: self
       type(nfa_state_set_t), intent(in) :: state_set
+      integer(int32), intent(inout), optional :: idx
 
       logical :: tmp
       integer :: i, n, j
 
+
       n = dstate_pointer_count
       res = .false.
+      tmp = .true.
       do i = 1, n
-         do j = 1, NFA_VECTOR_SIZE
-            tmp = tmp .and.(dstate_pointer_list(i)%node%state_set%vec(j) .eqv. state_set%vec(j))
-         end do
+         tmp = equivalent_NFA_state_set(self%states(i)%state_set, state_set)
          res = res .or. tmp
-         if (res) exit
+         if (res) then
+            if(present(idx)) idx = i
+            exit
+         end if 
       end do
 
    end function lazy_dfa__is_registered
 
 
-   function lazy_dfa__move(self, current, segments, symbol) result(res)
+   function lazy_dfa__move(self, current, symbol) result(res)
       use :: forgex_segment_m
       implicit none 
       class(dfa_t), intent(inout) :: self
       type(d_state_t), intent(in), pointer :: current
-      type(segment_t), intent(in) :: segments(:)
       character(*), intent(in) :: symbol
       type(d_list_t), pointer :: res
       
@@ -378,20 +400,24 @@ contains
    end function lazy_dfa__move
 
 
-   subroutine lazy_dfa__construct(self, current, symbol)
+   subroutine lazy_dfa__construct(self, current, destination, symbol)
       use :: forgex_utf8_m
       implicit none
       class(dfa_t), intent(inout) :: self
-      type(d_state_t), pointer, intent(inout) :: current
+      type(d_state_t), target, intent(in) :: current
+      type(d_state_t), intent(inout), pointer :: destination
       character(*), intent(in) :: symbol
 
-      type(d_state_t), pointer :: prev
+      type(d_state_t), pointer :: prev, next
       type(d_list_t), pointer :: x
       type(d_list_t) :: without_epsilon
       type(segment_t), allocatable :: all_segments(:)
+      integer(int32) :: i
 
       x => null()
       prev => null()
+      next => null()
+      destination => null()
 
       ! 暗黙の配列割り付けに注意
       all_segments = self%nfa%all_segments
@@ -400,28 +426,38 @@ contains
       prev => current
 
       ! ε遷移を除いた行き先のstate_setを取得する
-      x => self%move(prev, self%nfa%all_segments, symbol)
+      x => self%move(prev, symbol)
+      x%to = dlist_reduction(x)
 
       if (associated(x)) then
          without_epsilon = x ! deep copy
       else
-         current => null()
+         next => null()
          return
       end if
 
       ! ε遷移との和集合を取り、x%toに格納する
       call self%nfa%collect_empty_transition(x%to)
-
+ 
       if (.not. self%is_registered(x%to)) then
+
          ! まだDFA状態が登録されていない場合
-         current => self%register(x%to)
-         call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), current)   
+         next => self%register(x%to)
+         call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), next)   
       else
          ! 登録されている場合
-         current => self%register(without_epsilon%to)
-         call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), current)
+         if (self%is_registered(without_epsilon%to, i)) then
+            next => self%states(i)
+         else
+
+            next => self%register(without_epsilon%to)
+         end if
+
+         call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), next)
       end if
-   
+
+      destination => next
+
    end subroutine lazy_dfa__construct
 
 !=====================================================================!
@@ -473,7 +509,7 @@ contains
             if (i > len(str)) exit
 
             next = idxutf8(str, i) + 1
-            call self%construct(current, str(i:next-1))
+            ! call self%construct(current, str(i:next-1))
             
             i = next
          end do
@@ -498,6 +534,7 @@ contains
 
       integer(int32) :: max_match, i, next
       type(d_state_t), pointer :: current => null()
+      type(d_state_t), pointer :: destination
 
       ! Initialize
       max_match = 0
@@ -515,8 +552,11 @@ contains
 
          if (i > len(str)) exit
 
+! write(stderr, *) "=============================="
          next = idxutf8(str, i) + 1
-         call self%construct(current, str(i:next-1))
+         call self%construct(current, destination, str(i:next-1))
+
+         current => destination
 
          if (.not. associated(current)) exit
 
@@ -612,6 +652,59 @@ contains
       res = SEG_EMPTY
 
    end function which_segment_symbol_belong
+
+   
+   subroutine dump_d_list(dlist)
+      implicit none
+      type(d_list_t), intent(in), target :: dlist
+      type(d_list_t), pointer :: ptr
+
+      integer :: i
+      i = 1
+      ptr => dlist 
+      do while(associated(ptr))
+         write(stderr, *) "dump dlist: ",i,  dlist%to%vec(1:6)
+         i = i +1
+         ptr => dlist%next
+      end do 
+   end subroutine dump_d_list
+
+   subroutine dump_n_list(nlist)
+      implicit none
+      type(nlist_t), intent(in), target :: nlist
+      type(nlist_t), pointer :: ptr
+
+      integer :: i
+
+      nullify(ptr)
+      i = 1
+      ptr => nlist
+      do while(associated(ptr))
+         write(stderr, *) "dump nlist: ", ptr%c%print(), ptr%to
+         i = i+1
+         ptr => ptr%next
+      end do
+   end subroutine dump_n_list
+
+   function dlist_reduction(dlist) result(res)
+      implicit none
+      type(d_list_t), pointer, intent(in) :: dlist
+      type(d_list_t), pointer :: p
+      type(nfa_state_set_t) :: res
+      p => null()
+      p => dlist
+
+      res%vec(:) = .false.
+
+      do while(associated(p))
+         res%vec(:) = res%vec(:) .or. p%to%vec(:)
+         p => p%next
+      end do
+
+   end function dlist_reduction
+
+
+      
 
 
 end module forgex_lazy_dfa_m
