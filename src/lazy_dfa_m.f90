@@ -414,6 +414,9 @@ contains
       type(segment_t), allocatable :: all_segments(:)
       integer(int32) :: i
 
+! write(stderr, *) "======================"
+! write(stderr, *) "L417 ", symbol
+
       x => null()
       prev => null()
       next => null()
@@ -427,9 +430,10 @@ contains
 
       ! ε遷移を除いた行き先のstate_setを取得する
       x => self%move(prev, symbol)
-      x%to = dlist_reduction(x)
 
       if (associated(x)) then
+         x%to = dlist_reduction(x)
+! write(stderr, *) "L434", x%to%vec(1:6)
          without_epsilon = x ! deep copy
       else
          next => null()
@@ -471,10 +475,13 @@ contains
       integer(int32), intent(inout) :: from, to 
 
       type(d_state_t), pointer :: current
+      type(d_state_t), pointer :: destination
       character(:), allocatable:: str
       integer(int32) :: start, next
       integer(int32) :: max_match, i
 
+      nullify(current)
+      nullify(destination)
       ! Initialize
       str = str_arg
       from = 0
@@ -505,11 +512,13 @@ contains
             if (current%accepted .and. i /= start) then
                max_match = i
             end if
-            
+   
             if (i > len(str)) exit
 
             next = idxutf8(str, i) + 1
-            ! call self%construct(current, str(i:next-1))
+
+            call self%construct(current, destination, str(i:next-1))
+            current => destination
             
             i = next
          end do
@@ -533,8 +542,11 @@ contains
       logical :: res
 
       integer(int32) :: max_match, i, next
-      type(d_state_t), pointer :: current => null()
+      type(d_state_t), pointer :: current
       type(d_state_t), pointer :: destination
+
+      nullify(current)
+      nullify(destination)
 
       ! Initialize
       max_match = 0
@@ -697,7 +709,9 @@ contains
       res%vec(:) = .false.
 
       do while(associated(p))
-         res%vec(:) = res%vec(:) .or. p%to%vec(:)
+         if (.not. p%c(1) == SEG_EMPTY) then
+            res%vec(:) = res%vec(:) .or. p%to%vec(:)
+         end if
          p => p%next
       end do
 

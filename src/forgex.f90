@@ -187,9 +187,12 @@ contains
          pattern_cache = pattern
          call deallocate_tree()
 
-      end if 
+      end if
 
       call dfa%matching(char(10)//str//char(10), from_l, to_l)
+! call nfa%print()
+! call dfa%print()
+! write(stderr, *) "L195 ", str, from_l, to_l
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
