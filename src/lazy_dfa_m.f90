@@ -307,8 +307,6 @@ contains
                         if (a%c(j) == ptr_nlist%c .and. ptr_nlist%to /= 0) then                         
                            call add_NFA_state(a%to, ptr_nlist%to)
 
-! write(stderr, *) "L307 add_NFA_state", a%to%vec(1:6), ptr_nlist%to  
-                           
                            ! Move to next NFA state
                            ptr_nlist => ptr_nlist%next
                            cycle middle
@@ -338,7 +336,6 @@ contains
 
                      b%c(1) = symbol_belong(1)
                      call add_nfa_state(b%to, ptr_nlist%to)
-! write(stderr, *) "L342 add_NFA_state", b%to%vec(1:6), ptr_nlist%to
                      ! resの先頭に挿入する
                      b%next => res
                      res => b
@@ -415,7 +412,6 @@ contains
       integer(int32) :: i
 
 ! write(stderr, *) "======================"
-! write(stderr, *) "L417 ", symbol
 
       x => null()
       prev => null()
@@ -433,7 +429,6 @@ contains
 
       if (associated(x)) then
          x%to = dlist_reduction(x)
-! write(stderr, *) "L434", x%to%vec(1:6)
          without_epsilon = x ! deep copy
       else
          next => null()
@@ -450,7 +445,8 @@ contains
          call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), next)   
       else
          ! 登録されている場合
-         if (self%is_registered(without_epsilon%to, i)) then
+         if (self%is_registered(x%to, i)) then
+
             next => self%states(i)
          else
 
@@ -487,16 +483,17 @@ contains
       from = 0
       to = 0
 
+      current => self%initial_dfa_state
+
       if (str == char(10)//char(10)) then
+
          str = ''
-         current => self%initial_dfa_state
          if (current%accepted) then
             from = 1
             to = 1
          end if
          return
       end if
-
       ! Match the pattern by shifting one character from the beginning of string str.
       ! This loop should be parallelized.
       start = 1
@@ -507,6 +504,7 @@ contains
          i = start
          current => self%initial_dfa_state
          do while( associated(current))
+
 
             ! 任意の位置の空文字には一致させない
             if (current%accepted .and. i /= start) then
@@ -547,6 +545,7 @@ contains
 
       nullify(current)
       nullify(destination)
+! write(stderr, *) "=============================="
 
       ! Initialize
       max_match = 0
@@ -564,7 +563,7 @@ contains
 
          if (i > len(str)) exit
 
-! write(stderr, *) "=============================="
+
          next = idxutf8(str, i) + 1
          call self%construct(current, destination, str(i:next-1))
 

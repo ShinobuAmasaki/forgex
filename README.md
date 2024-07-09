@@ -166,9 +166,10 @@ end block
 ## To do
 
 - [x] UTF-8 Support
-- [ ] DFA construction on-the-fly. 
-- [x] Support for CMake. 
-- [ ] Parallelization on matching.
+- [x] DFA construction on-the-fly
+- [x] CMake Support
+- [ ] Parallelization on matching
+- [ ] Literal search optimization
 
 ## Code Convention
 
