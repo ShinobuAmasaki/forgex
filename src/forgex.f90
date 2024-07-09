@@ -55,7 +55,7 @@ contains
 
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
-      if (pattern /= pattern_cache) then
+      if (pattern /= pattern_cache .or. pattern == '') then
 
          buff = pattern
          root => build_syntax_tree(tape, buff)
@@ -126,8 +126,9 @@ contains
       from = 0
       to = 0
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
-      if (pattern /= pattern_cache) then
-
+      
+      if (pattern /= pattern_cache .or. pattern == '') then 
+         
          if (is_there_caret_at_the_top(pattern)) then
             buff = pattern(2:len(pattern))
          else
@@ -146,7 +147,6 @@ contains
          call nfa%init()
          call nfa%build(root)
 
-
          call dfa%free()
          call dfa%init(nfa)
 
@@ -155,7 +155,7 @@ contains
          call deallocate_tree()
          
       end if
-      
+
       res = dfa%matching_exactly(str)
 ! call nfa%print()
 ! call dfa%print()
@@ -180,7 +180,7 @@ contains
       to_l = 0
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
-      if (pattern /= pattern_cache) then
+      if (pattern /= pattern_cache .or. pattern == '') then
          buff = pattern
          root => build_syntax_tree(tape, buff)
 
@@ -200,6 +200,7 @@ contains
          call deallocate_tree()
 
       end if
+
 
       call dfa%matching(char(10)//str//char(10), from_l, to_l)
 

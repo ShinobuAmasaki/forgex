@@ -7,7 +7,8 @@ program test_002
    
    ! Test case #2. 
    ! Tests for UTF-8 Character set.
-
+   print *, "=== TEST CASE 2 BEGIN ==="
+   
    call runner_regex('[ぁ-ん]{,7}', 'あいうえおかきくけこ', 'あいうえおかき', res )
    call runner_regex('[ぁ-ん]{,6}', 'あいうえおかきくけこ', 'あいうえおか', res )
    call runner_regex('[ぁ-ん]{,5}', 'あいうえおかきくけこ', 'あいうえお', res )

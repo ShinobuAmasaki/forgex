@@ -126,10 +126,6 @@ contains
 
       self%initial_dfa_state = self%register(initial%state_set)
 
-      ! self%initial_dfa_state%state_set = initial_closure
-      ! self%initial_dfa_state%accepted = check_NFA_state(self%initial_dfa_state%state_set, nfa_exit)
-      ! self%initial_dfa_state => self%register(self%initial_dfa_state%state_set)
-
       deallocate(initial_closure)
 
    end subroutine lazy_dfa__init
@@ -449,8 +445,6 @@ contains
       type(segment_t), allocatable :: all_segments(:)
       integer(int32) :: i
 
-! write(stderr, *) "======================"
-
       x => null()
       prev => null()
       next => null()
@@ -522,6 +516,9 @@ contains
       to = 0
 
       current => self%initial_dfa_state
+      if (.not. associated(current)) then
+         error stop
+      end if
 
       if (str == char(10)//char(10)) then
 
@@ -583,17 +580,20 @@ contains
 
       nullify(current)
       nullify(destination)
-! write(stderr, *) "=============================="
 
       ! Initialize
       max_match = 0
       i = 1
       current => self%initial_dfa_state
+      if (.not. associated(current)) then
+         error stop
+      end if
 
       if (len(str) == 0) then
          res = current%accepted
          return
       end if
+      
       do while (associated(current))
          if (current%accepted) then
             max_match = i

@@ -7,7 +7,9 @@ program test_001
 
    ! Test case #1. 
    ! Tests for ASCII Character set.
-print *, "=== TEST CASE 1 BEGIN ==="
+   
+   print *, "=== TEST CASE 1 BEGIN ==="
+
    call runner_match('', '', .true., res)
    call runner_regex('', '', '', res)
 
