@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 enable_language(Fortran)
 
 project(forgex
-   VERSION 1.0
+   VERSION 2.0
    DESCRIPTION "Fortran Regular Expression"
    LANGUAGES Fortran
 )
