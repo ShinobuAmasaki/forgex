@@ -1,3 +1,11 @@
+!! Fortran Regular Expression (Forgex)
+!! 
+!! MIT License
+!!
+!! (C) Amasaki Shinobu, 2023-2024
+!!     A regular expression engine for Fortran.
+!!     forgex_segment_disjoin_m module is a part of Forgex.
+!!
 module forgex_segment_disjoin_m
    use :: forgex_segment_m
    use :: forgex_priority_queue_m

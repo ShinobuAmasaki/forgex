@@ -62,17 +62,22 @@ contains
 
          ! call print_tree(root)
          
-         ! initialize
+         ! Initialize NFA
          call nfa%free()
          call nfa%init()
-         call nfa%build(root)
-         ! call dfa%print()
 
+         call nfa%build(root)
+         
+         ! Initialize DFA
          call dfa%free()
          call dfa%init(nfa)
-         ! call dfa%print()
 
+         ! call dfa%print()
+        
+         ! Remember the pattern.
          pattern_cache = pattern
+
+         ! Once the NFA is constructed, forget the unnecessary syntax tree.
          call deallocate_tree()
 
       end if  
@@ -142,16 +147,21 @@ contains
          root => build_syntax_tree(tape, buff)  
 
          ! call print_tree(root)
-
+         
+         ! Initialize NFA.
          call nfa%free()
          call nfa%init()
-         call nfa%build(root)
 
+         call nfa%build(root)
+         
+         ! Initialize DFA.
          call dfa%free()
          call dfa%init(nfa)
 
-
+         ! Remember the pattern.
          pattern_cache = pattern
+
+         ! Once the NFA is constructed, forget the unnecessary syntax tree.
          call deallocate_tree()
          
       end if
@@ -184,19 +194,20 @@ contains
          buff = pattern
          root => build_syntax_tree(tape, buff)
 
-         ! call print_tree(root)
-
+         ! Initialize NFA.
          call nfa%free() 
          call nfa%init()
+         
          call nfa%build(root)
-         ! call nfa%print()
 
+         ! Initialize DFA.
          call dfa%free()
          call dfa%init(nfa)
 
-         ! call dfa%print()
-
+         ! Remember the pattern.
          pattern_cache = pattern
+
+         ! Once the NFA is constructed, forget the unnecessary syntax tree.
          call deallocate_tree()
 
       end if

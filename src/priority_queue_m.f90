@@ -2,7 +2,7 @@
 !! 
 !! MIT License
 !!
-!! (C) Amasaki Shinobu, 2023
+!! (C) Amasaki Shinobu, 2023-2024
 !!     A regular expression engine for Fortran.
 !!     priority_queue_m module is a part of Forgex.
 !! 

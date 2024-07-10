@@ -2,10 +2,9 @@
 !! 
 !! MIT License
 !!
-!! (C) Amasaki Shinobu, 2023
+!! (C) Amasaki Shinobu, 2023-2024
 !!     A regular expression engine for Fortran.
-!!     utf8_m module is a part of Forgex.
-
+!!     forgex_utf8_m module is a part of Forgex.
 module forgex_utf8_m
    implicit none
 
