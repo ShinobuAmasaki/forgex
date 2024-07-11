@@ -1,11 +1,17 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_lazy_dfa_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_lazy_dfa_m module is a part of Forgex.
+!
+!! This file contains `dfa_t` class and its type-bound procedures.
+
+!> `forgex_lazy_dfa_m` module defines the data structure of DFA
+!> from NFA. `dfa_t` is defined as a class representing DFA 
+!> which is constructed dynamically with lazy-evaluation.
+!> This module was previously named `dfa_m`.
 module forgex_lazy_dfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_segment_m
@@ -80,14 +86,15 @@ module forgex_lazy_dfa_m
    type(dstate_pointer_list_t)       :: dstate_pointer_list(DFA_STATE_MAX)
    type(dtransition_pointer_list_t)  :: dtransition_pointer_list(DFA_STATE_MAX)
 
+#ifndef DEBUG
    integer(int32) :: dlist_pointer_count = 0
    integer(int32) :: dtransition_pointer_count = 0
    integer(int32) :: dstate_pointer_count = 0
-
-   !! For DEBUG
-   ! integer(int32), public :: dlist_pointer_count = 0
-   ! integer(int32), public :: dtransition_pointer_count = 0
-   ! integer(int32), public :: dstate_pointer_count = 0
+#else
+   integer(int32), public :: dlist_pointer_count = 0
+   integer(int32), public :: dtransition_pointer_count = 0
+   integer(int32), public :: dstate_pointer_count = 0
+#endif
 
 contains
 
@@ -127,7 +134,6 @@ contains
       self%initial_dfa_state = self%register(initial%state_set)
 
       deallocate(initial_closure)
-
    end subroutine lazy_dfa__init
 
 
@@ -173,7 +179,6 @@ contains
       end do 
 
       if (associated(self%states)) deallocate(self%states)
-
    end subroutine lazy_dfa__deallocate
 
 
@@ -192,7 +197,6 @@ contains
             dlist_pointer_count = dlist_pointer_count -1
          end if
       end do
-
    end subroutine lazy_dfa__deallocate_dlist
 
 
@@ -229,7 +233,6 @@ contains
       dstate_pointer_list(dstate_pointer_count)%node => self%states(k)
 
       res => self%states(k)
-
    end function lazy_dfa__register
 
 
@@ -267,7 +270,6 @@ contains
          call self%nfa%print_state_set(self%states(i)%state_set)
          write(stderr,'(a)') ")"
       end do
-
    end subroutine lazy_dfa__print
 
 
@@ -294,7 +296,6 @@ contains
             t => t%next
          end do
       end do
-
    end subroutine lazy_dfa__epsilon_closure
 
 
@@ -383,7 +384,6 @@ contains
 
          end if
       end do outer
-
    end function lazy_dfa__compute_reachable_n_state
 
 
@@ -408,7 +408,6 @@ contains
             exit
          end if 
       end do
-
    end function lazy_dfa__is_registered
 
 
@@ -427,7 +426,6 @@ contains
          res => self%reachable(current, symbol)
          if (associated(res)) exit
       end do
-
    end function lazy_dfa__move
 
 
@@ -489,7 +487,6 @@ contains
       end if
 
       destination => next
-
    end subroutine lazy_dfa__construct
 
 !=====================================================================!
@@ -564,7 +561,6 @@ contains
 
          start = idxutf8(str,start) + 1
       end do
-
    end subroutine lazy_dfa__matching
 
 
@@ -618,7 +614,6 @@ contains
       else
          res = .false.
       end if
-
    end function lazy_dfa__matching_exactly
       
 
@@ -657,7 +652,6 @@ contains
       new_transition%to => destination
       new_transition%next => state%transition
       state%transition => new_transition
-
    end subroutine add_dfa_transition
 
 
@@ -699,7 +693,6 @@ contains
          end if
       end do
       res = SEG_EMPTY
-
    end function which_segment_symbol_belong
 
    
@@ -718,6 +711,7 @@ contains
       end do 
    end subroutine dump_d_list
 
+
    subroutine dump_n_list(nlist)
       implicit none
       type(nlist_t), intent(in), target :: nlist
@@ -735,6 +729,7 @@ contains
       end do
    end subroutine dump_n_list
 
+
    function dlist_reduction(dlist) result(res)
       implicit none
       type(d_list_t), pointer, intent(in) :: dlist
@@ -751,11 +746,7 @@ contains
          end if
          p => p%next
       end do
-
    end function dlist_reduction
-
-
-      
 
 
 end module forgex_lazy_dfa_m
