@@ -70,7 +70,7 @@ contains
          root => build_syntax_tree(tape, buff)
 
 #ifdef DEBUG
-         ! call print_tree(root)
+         call print_tree(root)
 #endif
          call build_automaton(root, pattern)
 
@@ -149,7 +149,7 @@ contains
          root => build_syntax_tree(tape, buff)  
 
 #ifdef DEBUG
-         ! call print_tree(root)
+         call print_tree(root)
 #endif
 
          call build_automaton(root, pattern)
@@ -164,7 +164,7 @@ contains
 #ifdef DEBUG
          call nfa%print()
          call dfa%print()
-#endif     
+#endif
    end function match__matching
 
 
@@ -184,16 +184,18 @@ contains
    
       from_l = 0
       to_l = 0
+      
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
       if (pattern /= pattern_cache .or. pattern == '') then
          !!@note We will add code later to handle the case where the cache string 
          !! exists but the automatons are no longer there.
-      
+         
+         buff = pattern
          root => build_syntax_tree(tape, buff)
 
 #ifdef DEBUG
-         ! call print_tree(root)
+         call print_tree(root)
 #endif
          call build_automaton(root, pattern)
 
