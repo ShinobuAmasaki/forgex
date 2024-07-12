@@ -1,11 +1,15 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_syntax_tree_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!    `forgex_syntax_tree_m` module is a part of Forgex.
+!
+!! This file defines syntactic parsing.
+
+!> `forgex_syntax_tree_m` module defines parsing and
+!> the `tree_t` derived-type for syntax-tree.
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_enums_m
@@ -25,6 +29,7 @@ module forgex_syntax_tree_m
 
    integer(int32), parameter :: TREE_MAX_SIZE = 1024
 
+   !> Declaration of the meta-characters
    character(1), parameter, private :: ESCAPE_T = 't'
    character(1), parameter, private :: ESCAPE_N = 'n'
    character(1), parameter, private :: ESCAPE_R = 'r'
@@ -51,6 +56,7 @@ module forgex_syntax_tree_m
    end type 
 
    type :: tape_t
+
       character(:), allocatable :: str
       integer(int32) :: current_token
       character(UTF8_CHAR_SIZE) :: token_char = EMPTY
