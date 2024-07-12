@@ -1,15 +1,18 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_enums_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_enums_m module is a part of Forgex.
+!
+!! This file contains enumerators for syntactic parsing and building a syntax-tree.
+
+!> `forgex_enums_m` defines enumerators of tokens and operators for syntax-tree building.
 module forgex_enums_m
    implicit none
-   
-     ! These enums will be rewritten in Fortran 2023's enumerator feature. 
+
+   !> @note These enums below will be rewritten in Fortran 2023's enumerator in the future. 
    enum, bind(c)
       enumerator :: tk_char = 0
       enumerator :: tk_union        ! 1
@@ -37,4 +40,6 @@ module forgex_enums_m
       enumerator :: op_closure
       enumerator :: op_empty
    end enum
+
+
 end module forgex_enums_m
