@@ -1,14 +1,18 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_utf8_m module is a part of Forgex.
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_utf8_m module is a part of Forgex.
+
+!! This file contains procedures to handle UTF-8 character set.
+
+!> `forgex_utf8_m` module handles character(*, 'ASCII) strings as UTF-8 characters.
 module forgex_utf8_m
    implicit none
 
-   integer, parameter :: UTF8_CODE_MAX = 2**21-1
+   integer, parameter :: UTF8_CODE_MAX = 2**21-1 !
    integer, parameter :: UTF8_CODE_MIN = 32 ! = 0x21: '!'
    integer, parameter :: UTF8_CODE_EMPTY = 0
 
@@ -17,8 +21,8 @@ module forgex_utf8_m
 contains
 
    ! INDEX OF UTF8
-   ! This function returns the index of the end of the (multibyte) character,
-   ! given the string str and the current index curr.
+   !> This function returns the index of the end of the (multibyte) character,
+   !> given the string str and the current index curr.
    pure function idxutf8 (str, curr) result(tail) 
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -78,9 +82,11 @@ contains
    end function idxutf8
 
 
+   !> This function is like an extension of char() for the UTF-8 codeset.
    function char_utf8 (code) result(str)
       use, intrinsic :: iso_fortran_env
       implicit none
+      
       integer(int32), intent(in) :: code
       character(:), allocatable :: str
 
@@ -145,23 +151,22 @@ contains
          str = char(code)
       end if
 
-            
-   contains
-      
-      function set_continuation_byte(byte) result(res)
-         implicit none
-         integer(int8), intent(in) :: byte
-         integer(int8) :: res
-
-         res = ibset(byte, 7)
-         res = ibclr(res, 6)
-
-      end function set_continuation_byte      
-
    end function char_utf8
 
-   ! Take a UTF-8 character as an argument and
-   ! return the integer representing its Unicode code point. 
+   function set_continuation_byte(byte) result(res)
+      use, intrinsic :: iso_fortran_env, only: int8
+      implicit none
+      integer(int8), intent(in) :: byte
+      integer(int8) :: res
+
+      res = ibset(byte, 7)
+      res = ibclr(res, 6)
+
+   end function set_continuation_byte      
+
+   !> This function is like an extension of char() for the UTF-8 codeset.
+   !> Take a UTF-8 character as an argument and
+   !> return the integer representing its UTF-8 binary string. 
    function ichar_utf8 (chara) result(res)
       use, intrinsic :: iso_fortran_env
       implicit none
@@ -172,6 +177,7 @@ contains
       integer(int32) :: buf
 
       character(8) :: binary
+      !! 8-byte character string representing binary
 
       binary = '00111111'
       read(binary, '(b8.8)') mask_2_bit
