@@ -1,9 +1,8 @@
-# Fortran Regular Expression
+# Forgex—Fortran Regular Expression
 
-Fortran Regular Expression (Forgex) is a regular expression engine written entirely in Fortran.
+Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
 Forgex is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
-
 The engine's core algorithm uses a Deterministic Finite Automaton (DFA) approach. This choice was focused on runtime performance.
 
 ## Features
@@ -13,8 +12,8 @@ The engine's core algorithm uses a Deterministic Finite Automaton (DFA) approach
    - `*` Asterisk, match zero or more
    - `+` Plus, match one or more
    - `?` Question, match zero or one
-   - `\`, escape metacharacter
-   - `.`, match any character
+   - `\` escape metacharacter
+   - `.` matches any character
 - Character class
    - character class `[a-z]`
    - inverted character class `[^a-z]`
@@ -26,8 +25,8 @@ The engine's core algorithm uses a Deterministic Finite Automaton (DFA) approach
    - `{min, max}`,
    where `num` and `max` must NOT be zero.
 - Anchor
-   - `^`
-   - `$`
+   - `^`, matches the beginning of a line
+   - `$`, matches the end of a line
 - Shorthand
    - `\t`, tab character
    - `\n`, new line character (LF or CRLF)
@@ -49,7 +48,7 @@ Operation has been confirmed with the following compilers:
 
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 
-Add the following to your project's `fpm.toml`:
+First of all, add the following to your project's `fpm.toml`:
 
 ```toml
 [dependencies]
@@ -58,6 +57,12 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 
 ### API
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
+
+```fortran
+program main
+   use :: forgex
+   implicit none
+```
 
 The `.in.` operator returns true if the pattern is contained in the string.
 
@@ -146,7 +151,7 @@ function regex (pattern, str, length, from, to) result(res)
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters. 
-In this example, the variable `length` stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
+In this example, the `length` variable stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
 
 ```fortran
 block
@@ -165,6 +170,7 @@ end block
 
 ## To do
 
+- [ ] Publishing the documentation
 - [x] UTF-8 Support
 - [x] DFA construction on-the-fly
 - [x] CMake Support
@@ -178,9 +184,7 @@ All code contained herein shall be written with a three-space indentation.
 ## Acknowledgements
 
 For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
-
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
-
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 
 ## References
