@@ -59,8 +59,10 @@ module forgex_nfa_m
       procedure :: build          => nfa__build
       procedure :: add_transition => nfa__add_transition
       procedure :: disjoin        => nfa__disjoin
+#ifdef DEBUG
       procedure :: print          => nfa__print
       procedure :: print_state_set=> nfa__print_state_set
+#endif
       procedure :: free           => nfa__deallocate
       procedure :: mark_empty_transition
       procedure :: collect_empty_transition
@@ -277,7 +279,7 @@ contains
       end if
    end subroutine nfa__deallocate
    
-
+#ifdef DEBUG
    subroutine nfa__print(self)
       implicit none
       class(nfa_t) :: self 
@@ -308,7 +310,7 @@ contains
          end if
       end do
    end subroutine nfa__print
-   
+#endif   
 
    subroutine nfa__print_state_set (self, p)
       implicit none

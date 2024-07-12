@@ -22,8 +22,9 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: tape_t
    public :: deallocate_tree
+#ifdef DEBUG
    public :: print_tree
-
+#endif
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
@@ -106,17 +107,6 @@ contains
       end do
          
    end subroutine deallocate_tree
-
-
-   
-   subroutine print_tree(tree)
-      implicit none
-      type(tree_t), intent(in) :: tree
-
-      write(stderr, '(a)') "--- PRINT TREE ---"
-      call print_tree_internal(tree)
-      write(stderr, '(a)') ''
-   end subroutine print_tree
 
 
    subroutine initialize_parser(tape, str)
@@ -774,6 +764,16 @@ contains
    end subroutine invert_segment_list
 
 !=====================================================================!
+#ifdef DEBUG
+   subroutine print_tree(tree)
+      implicit none
+      type(tree_t), intent(in) :: tree
+
+      write(stderr, '(a)') "--- PRINT TREE ---"
+      call print_tree_internal(tree)
+      write(stderr, '(a)') ''
+   end subroutine print_tree
+
 
    recursive subroutine print_tree_internal(tree)
       implicit none
@@ -875,6 +875,6 @@ contains
       str = trim(buf)
 
    end function print_class_simplify
-         
+#endif     
 
 end module forgex_syntax_tree_m

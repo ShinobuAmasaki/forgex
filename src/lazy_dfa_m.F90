@@ -59,7 +59,9 @@ module forgex_lazy_dfa_m
       procedure :: free_dlist      => lazy_dfa__deallocate_dlist
       procedure :: register        => lazy_dfa__register
       procedure :: epsilon_closure => lazy_dfa__epsilon_closure
+#ifdef DEBUG
       procedure :: print           => lazy_dfa__print
+#endif
       procedure :: move            => lazy_dfa__move
       procedure :: construct       => lazy_dfa__construct
       procedure :: is_registered   => lazy_dfa__is_registered
@@ -234,43 +236,6 @@ contains
 
       res => self%states(k)
    end function lazy_dfa__register
-
-
-   subroutine lazy_dfa__print(self)
-      implicit none
-      class(dfa_t), intent(in) :: self
-      type(d_transition_t), pointer :: p
-      integer(int32) :: i, j
-
-      write(stderr,*) "--- PRINT DFA---"
-
-      do i = 1, self%dfa_nstate
-         if (self%states(i)%accepted) then
-            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
-         else
-            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
-         end if
-
-         p => self%states(i)%transition
-         do while (associated(p))
-            do j = 1, size(p%c, dim=1)
-               write(stderr, '(a, a, i0, 1x)', advance='no') p%c(j)%print(), '=>', p%to%index
-            end do
-            p => p%next
-         end do
-         write(stderr, *) ""
-      end do 
-
-      do i = 1, self%dfa_nstate
-         if (self%states(i)%accepted) then
-            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
-         else
-            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
-         end if
-         call self%nfa%print_state_set(self%states(i)%state_set)
-         write(stderr,'(a)') ")"
-      end do
-   end subroutine lazy_dfa__print
 
 
 !=====================================================================!
@@ -695,7 +660,29 @@ contains
       res = SEG_EMPTY
    end function which_segment_symbol_belong
 
-   
+
+   function dlist_reduction(dlist) result(res)
+      implicit none
+      type(d_list_t), pointer, intent(in) :: dlist
+      type(d_list_t), pointer :: p
+      type(nfa_state_set_t) :: res
+      p => null()
+      p => dlist
+
+      res%vec(:) = .false.
+
+      do while(associated(p))
+         if (.not. p%c(1) == SEG_EMPTY) then
+            res%vec(:) = res%vec(:) .or. p%to%vec(:)
+         end if
+         p => p%next
+      end do
+   end function dlist_reduction
+
+!=====================================================================!
+! Procedures for Debugging
+
+#ifdef DEBUG
    subroutine dump_d_list(dlist)
       implicit none
       type(d_list_t), intent(in), target :: dlist
@@ -730,23 +717,41 @@ contains
    end subroutine dump_n_list
 
 
-   function dlist_reduction(dlist) result(res)
+   subroutine lazy_dfa__print(self)
       implicit none
-      type(d_list_t), pointer, intent(in) :: dlist
-      type(d_list_t), pointer :: p
-      type(nfa_state_set_t) :: res
-      p => null()
-      p => dlist
+      class(dfa_t), intent(in) :: self
+      type(d_transition_t), pointer :: p
+      integer(int32) :: i, j
 
-      res%vec(:) = .false.
+      write(stderr,*) "--- PRINT DFA---"
 
-      do while(associated(p))
-         if (.not. p%c(1) == SEG_EMPTY) then
-            res%vec(:) = res%vec(:) .or. p%to%vec(:)
+      do i = 1, self%dfa_nstate
+         if (self%states(i)%accepted) then
+            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
+         else
+            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
-         p => p%next
-      end do
-   end function dlist_reduction
 
+         p => self%states(i)%transition
+         do while (associated(p))
+            do j = 1, size(p%c, dim=1)
+               write(stderr, '(a, a, i0, 1x)', advance='no') p%c(j)%print(), '=>', p%to%index
+            end do
+            p => p%next
+         end do
+         write(stderr, *) ""
+      end do 
+
+      do i = 1, self%dfa_nstate
+         if (self%states(i)%accepted) then
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
+         else
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
+         end if
+         call self%nfa%print_state_set(self%states(i)%state_set)
+         write(stderr,'(a)') ")"
+      end do
+   end subroutine lazy_dfa__print
+#endif
 
 end module forgex_lazy_dfa_m

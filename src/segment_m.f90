@@ -1,11 +1,16 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_segment_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_segment_m module is a part of Forgex.
+!
+!! This file defines `segment_t` representing subset of UTF-8 character codeset
+!! and contains procedures for that.
+
+!> `forgex_segment_m` module defines `segment_t` derived-type representing
+!> a subset of the UTF-8 character set.
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env
    use :: forgex_utf8_m
@@ -15,7 +20,9 @@ module forgex_segment_m
       integer(int32) :: min = UTF8_CODE_EMPTY ! = 0
       integer(int32) :: max = UTF8_CODE_EMPTY ! = 0
    contains
+#ifdef DEBUG
       procedure :: print => segment_for_print
+#endif
       procedure :: validate => segment_is_valid
    end type
 
@@ -72,16 +79,15 @@ contains
       do i = 1, ubound(seg_list, dim=1)
          res = res .or. (seg_list(i)%min <= a .and. a <= seg_list(i)%max)
       end do
-
    end function arg_in_segment_list
-      
+
+
    function seg_in_segment(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
 
       res =  b%min <= a%min .and. a%max <= b%max
-
    end function seg_in_segment
 
    function segment_equivalent(a, b) result(res)
@@ -99,9 +105,9 @@ contains
       logical :: res
 
       res = a%max /= b%max .or. a%min /= b%min
-
    end function segment_not_equiv
 
+#ifdef DEBUG
    function segment_for_print (seg) result(res)
       implicit none
       class(segment_t), intent(in) :: seg
@@ -131,9 +137,8 @@ contains
       else
          res = '["'//char_utf8(seg%min)//'"-"'//char_utf8(seg%max)//'"]'
       end if
-
    end function segment_for_print
-
+#endif
 
    function segment_is_valid(self) result(res)
       implicit none
@@ -141,7 +146,6 @@ contains
       logical :: res
 
       res = self%min <= self%max
-
    end function segment_is_valid
 
 
