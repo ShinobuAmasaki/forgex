@@ -1,0 +1,338 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../../favicon.png">
+
+    <title>English &ndash; Forgex—Fortran Regular Expression</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/pygments.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/local.css" rel="stylesheet">
+      <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>English</h1>
+    <div class="container p-2 mb-4 bg-light border rounded-3">
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <ul class="list-inline" style="margin-bottom:0px; display:inline">
+              <li class="list-inline-item" id="author"><i class="fa fa-pencil"></i> Amasaki Shinobu</li>
+              <li class="list-inline-item" id="date"><i class="fa fa-calendar-o"></i> 2024-07-12</li>
+          </ul>
+        </div>
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../index.html'>Documentation</a></li>
+              <li class="breadcrumb-item active" aria-current="page">English</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+      <div class="col-3">
+        <div class="card card-body bg-light" id="sidebar-toc">
+          <ul class="nav flex-column align-items">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html">Documentation</a>
+            </li>
+          </ul>
+          <hr>
+          <nav class="nav nav-pills flex-column">
+              <a class="nav-link active disabled" href="index.html">English</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="terms_of_forgex_en.html">Terms of Forgex</a>
+
+                </nav>
+              <a class="nav-link" href="../Japanese/index.html">Japanese/日本語</a>
+          </nav>
+        </div>
+      </div>
+
+    <div class="col-9" id='text'>
+      <h1>Readme</h1>
+<p>Forgex is a regular expression engine written entirely in Fortran.</p>
+<p>This project is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager (FPM)</a>, providing basic processing of regular expression, and as a freely available under the MIT license. 
+The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice was focused on runtime performance.</p>
+<h2>Features</h2>
+<h4>Metacharacter</h4>
+<ul>
+<li><code>|</code>  Vertical bar for alternation,</li>
+<li><code>*</code>  Asterisk, match zero or more,</li>
+<li><code>+</code>  Plus, match one or more,</li>
+<li><code>?</code>  Question, match zero or one,</li>
+<li><code>\</code>  escape metacharacter,</li>
+<li><code>.</code>  match any character.</li>
+</ul>
+<h4>Character class</h4>
+<ul>
+<li>character class <code>[a-z]</code></li>
+<li>inverted character class <code>[^a-z]</code></li>
+<li>character class on UTF-8 codeset <code>[α-ωぁ-ん]</code></li>
+</ul>
+<h4>Range of repetition</h4>
+<ul>
+<li><code>{num}</code>,</li>
+<li><code>{,max}</code>,</li>
+<li><code>{min,}</code>,</li>
+<li><code>{min, max}</code>,
+   where <code>num</code> and <code>max</code> must NOT be zero.</li>
+</ul>
+<h4>Anchor</h4>
+<ul>
+<li><code>^</code>, matches the beginning of a line</li>
+<li><code>$</code>, matches the end of a line</li>
+</ul>
+<h4>Shorthand</h4>
+<ul>
+<li><code>\t</code>, tab character</li>
+<li><code>\n</code>, new line character (LF or CRLF)</li>
+<li><code>\r</code>, return character (CR)</li>
+<li><code>\s</code>, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)</li>
+<li><code>\S</code>, non-blank character</li>
+<li><code>\w</code>, (<code>[a-zA-Z0-9_]</code>)</li>
+<li><code>\W</code>, (<code>[^a-zA-Z0-9_]</code>)</li>
+<li><code>\d</code>, digit character (<code>[0-9]</code>)</li>
+<li><code>\D</code>, non-digit character (<code>[^0-9]</code>)</li>
+</ul>
+<h2>Usage</h2>
+<h3>Build</h3>
+<p>Operation has been confirmed with the following compilers:</p>
+<ul>
+<li>GNU Fortran (<code>gfortran</code>) v13.2.1</li>
+<li>Intel Fortran Compiler (<code>ifx</code>) 2024.0.0 20231017</li>
+</ul>
+<p>It is assumed that you will use the Fortran Package Manager(<code>fpm</code>).</p>
+<p>First of all, add the following to your project's <code>fpm.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
+<span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">}</span>
+</code></pre></div>
+
+<h3>APIs</h3>
+<p>When you write <code>use forgex</code> at the header on your program, <code>.in.</code> and <code>.match.</code> operators, and <code>regex</code> function are introduced.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span>
+<span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex</span>
+<span class="w">   </span><span class="k">implicit none</span>
+</code></pre></div>
+
+<p>The <code>.in.</code> operator returns true if the pattern is contained in the string.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">block</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+
+<span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;foobarbaz&quot;</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">  </span><span class="c">! T</span>
+
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;foofoo&quot;</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">  </span><span class="c">! F</span>
+<span class="k">end block</span>
+</code></pre></div>
+
+<p>The <code>.match.</code> operator returns true if the pattern exactly matches the string.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">block</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+
+<span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;\d{3}-\d{4}&#39;</span>
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;100-0001&#39;</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">match</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">  </span><span class="c">! T</span>
+
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;1234567&#39;</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">match</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">  </span><span class="c">! F</span>
+<span class="k">end block</span>
+</code></pre></div>
+
+<p>The <code>regex</code> is a function that returns the substring of a string that matches pattern.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">block</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w"> </span>
+
+<span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foobarbaz&#39;</span>
+
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w">              </span><span class="c">! foobar</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w">      </span><span class="c">! foobar</span>
+<span class="w">      </span><span class="c">! the value 6 stored in optional `length` variable.</span>
+
+<span class="k">end block</span>
+</code></pre></div>
+
+<p>By using the <code>from</code>/<code>to</code> arugments, you can extract substrings from the given string.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">block</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span>
+
+<span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;[d-f]{3}&#39;</span>
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;abcdefghi&#39;</span>
+
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">=</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span><span class="w">  </span><span class="c">! def</span>
+
+<span class="w">   </span><span class="c">! The `from` and `to` variables store the indices of the start and</span>
+<span class="w">   </span><span class="c">! end points of the matched part of the string `str`, respectively.</span>
+
+<span class="w">   </span><span class="c">! Cut out before the matched part.</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">from</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">        </span><span class="c">! abc</span>
+
+<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the</span>
+<span class="w">   </span><span class="c">! `regex` function. </span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def </span>
+
+<span class="w">   </span><span class="c">! Cut out after the matched part. </span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">to</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w">   </span><span class="c">! ghi</span>
+
+<span class="k">end block</span>
+</code></pre></div>
+
+<p>The interface of <code>regex</code> function is following:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">function </span><span class="n">regex</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+</code></pre></div>
+
+<h3>UTF-8 String matching</h3>
+<p>UTF-8 string can be matched using regular expression patterns just like ASCII strings.
+The following example demonstrates matching Chinese characters. 
+In this example, the <code>length</code> variable stores the byte length, and in this case there 10 3-byte characters, so the length is 30.</p>
+<div class="codehilite"><pre><span></span><code><span class="k">block</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span>
+
+<span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;夢.{1,7}胡蝶&quot;</span>
+<span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;昔者莊周夢爲胡蝶　栩栩然胡蝶也&quot;</span>
+
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">            </span><span class="c">! T</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="c">! 夢爲胡蝶　栩栩然胡蝶</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w">                      </span><span class="c">! 30 (is 3-byte * 10 characters)</span>
+
+<span class="k">end block</span>
+</code></pre></div>
+
+<h2>To do</h2>
+<ul>
+<li>Publishing the documentation</li>
+<li>Dealing with invalid byte strings in UTF-8</li>
+<li>Literal search optimization</li>
+<li>Parallelization on matching</li>
+<li>✅️ UTF-8 basic support</li>
+<li>✅️ DFA construction on-the-fly</li>
+<li>✅️ CMake Support</li>
+</ul>
+<h2>Code Convention</h2>
+<p>All code contained herein shall be written with a three-space indentation.</p>
+<h2>Acknowledgements</h2>
+<p>For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
+The implementation of the priority queue was based on <a href="https://github.com/ue1221/fortran-utilities">the code written by ue1221</a>.
+The idea of applying the <code>.in.</code> operator to strings was inspired by kazulagi's one.</p>
+<h2>References</h2>
+<ol>
+<li>Russ Cox <a href="https://swtch.com/~rsc/regexp/regexp1.html">"Regular Expression Matching Can Be Simple And Fast"</a>, 2007 </li>
+<li>近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.</li>
+<li><a href="https://github.com/ue1221/fortran-utilities">ue1221/fortran-utilities</a></li>
+<li>Haruka Tomobe (kazulagi), <a href="https://github.com/kazulagi">https://github.com/kazulagi</a>, <a href="https://qiita.com/soybean/items/7cdd2156a9d8843c0d91">his article in Japanese</a></li>
+</ol>
+<h2>License</h2>
+<p>Forgex is as a freely available under the MIT license. See <a href="https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE">LICENSE</a>.</p>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-07-13 15:01              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

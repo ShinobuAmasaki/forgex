@@ -1,0 +1,345 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../../favicon.png">
+
+    <title>Terms of Forgex &ndash; Forgex—Fortran Regular Expression</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/pygments.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/local.css" rel="stylesheet">
+      <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>Terms of Forgex</h1>
+    <div class="container p-2 mb-4 bg-light border rounded-3">
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <ul class="list-inline" style="margin-bottom:0px; display:inline">
+              <li class="list-inline-item" id="author"><i class="fa fa-pencil"></i> Amasaki Shinobu</li>
+              <li class="list-inline-item" id="date"><i class="fa fa-calendar-o"></i> 2024-07-13</li>
+          </ul>
+        </div>
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../index.html'>Documentation</a></li>
+                <li class="breadcrumb-item"><a href='index.html'>English</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Terms of Forgex</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+      <div class="col-3">
+        <div class="card card-body bg-light" id="sidebar-toc">
+          <ul class="nav flex-column align-items">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html">Documentation</a>
+            </li>
+          </ul>
+          <hr>
+          <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="index.html">English</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link active disabled" href="terms_of_forgex_en.html">Terms of Forgex</a>
+
+                </nav>
+              <a class="nav-link" href="../Japanese/index.html">Japanese/日本語</a>
+          </nav>
+        </div>
+      </div>
+
+    <div class="col-9" id='text'>
+      <h1>Terms of Forgex</h1>
+<p>This page provides definitions of terms used in the development of Forgex.</p>
+<h2>Contents</h2>
+<ul>
+<li><a href="#ascii">ASCII</a></li>
+<li><a href="#code-point">Code Point</a></li>
+<li><a href="#dfa">DFA</a></li>
+<li><a href="#disjoin">Disjoin</a></li>
+<li><a href="#lazy-dfa">Lazy DFA</a></li>
+<li><a href="#nfa">NFA</a></li>
+<li><a href="#powerset-construction">Powerset Construction</a></li>
+<li><a href="#segment">Segment</a></li>
+<li><a href="#segment-sorting">Segment Sorting</a></li>
+<li><a href="#subset-construction">Subset Construction</a></li>
+<li><a href="#tape">Tape</a></li>
+<li><a href="#unicode">Unicode</a></li>
+<li><a href="#ucs-4">UCS-4</a></li>
+<li><a href="#utf-8">UTF-8</a></li>
+</ul>
+<h2>Details</h2>
+<h3><span id=ascii>ASCII</span></h3>
+<p><strong>ASCII</strong> is an acronym for "American Standard Code for Information Interchange", a set of rules
+established in 1963 that defines the relationship between the numbers 0 to 127 and which
+letters and symbols correspond to them.
+The first 32 characters (0-31 in decimal, and so on) are reserved as control characters,
+and the last 96 characters (32-127) are printable characters.
+The printable characters contain the Latin alphabet used in the United States, with numbers 65-90
+corresponding to uppercase letters A-Z, and numbers 97-122 corresponding to lowercase letter a-z.
+The others are symbols such as "$", "#", and "|".</p>
+<p>In Fortran, you can obtain this correspondence using the intrinsic procedures <code>char()</code> and <code>ichar()</code>.
+For example, if you give the <code>char</code> argument the number 70, it will return the letter 'F',
+and conversely, if you give the <code>ichar</code> argument the letter 'o', it will return the integer 111.</p>
+<p>In the development of Forgex, we use the UTF-8 codeset, which includes ASCII as a subset, to process
+regular expression patterns that span the entire character set, where a contiguous subset of UTF-8
+is called a Segment. </p>
+<p>See also, <a href="#code-set">Code Set</a>, <a href="#segment">Segment</a>, <a href="#unicode">Unicode</a>, <a href="#utf-8">UTF-8</a>.</p>
+<h3><span id=code-point>Code Point</span></h3>
+<p>A <strong>code point</strong> (also known as <strong>code position</strong>) is a paricular position in table that has a scripts,
+symbols, emojis and control character assigned to it.</p>
+<p>In Unicode, code points are expressed as a hexadecimal number following the U+ prefix,
+and range from U+0000 to U+10FFFF.
+For example, the code point of the Latin letter 'A' is U+0041.
+Similarly, the kanji character '雨' corresponds to U+96E8, and the emoji '👍' corresponds to U+1FF4D.</p>
+<p>Forgex represents Unicode code points as integer and defines the <code>char_utf8</code> and <code>ichar_utf8</code> procedures
+in the <code>forgex_utf8_m</code> module to convert to and from the corresponding UTF-8 encoding characters.</p>
+<p>See also, <a href="#unicode">Unicode</a>, <a href="#utf-8">UTF-8</a>.</p>
+<h3><span id=dfa>DFA</sapn></h3>
+<p>The <strong>DFA</strong> (deterministic finite automaton) is a theoretical model of computation
+in computer science used to represent and manipulate a finite set of states with
+deterministic transitions, where a deterministic transition is one in which the transition
+from state to state is uniquely determined by the input.</p>
+<p>An important aspect of to develop a regular expression processor is that the set of
+strings that match a regular expression can be computed using a DFA (or an NFA, described below).</p>
+<p>The Forgex engine first parses a regular expression into a syntax tree, then constructs an
+NFA, which is then converted into an equivalent DFA to perform matching calculations.
+The engine uses the powerset construction method to construct a DFA.
+Here, the NFA is dynamically converted to a DFA on-the-fly for input character.
+This technique is called Lazy DFA construction.
+In its implementation for executing this computation, Forgex defines the <code>dfa_t</code> derived-type
+using pointers and arrays to represent the directed graph that simulates a DFA.</p>
+<p>See also, <a href="#nfa">NFA</a>, <a href="#powerset-construction">Powerset Construction</a>, <a href="#lazy-dfa">Lazy DFA</a>.</p>
+<h3><span id=disjoin>Disjoin</span></h3>
+<p>In the development of Forgex, <strong>disjoin</strong> refers to a a set of operations that are performed on
+a set of segments to eliminate crossing segments between multiple segments.</p>
+<p>As a premise, Forgex represents a set of inputs that share a common transition as a segment.
+In this case, if crossing segments are contained in the set, the Forgex implementation of
+powerset construction cannot construct a DFA equivalent to the original NFA.
+Therefore, we need to perform a disjoin operation to convert the set of crossing segments
+into a set of non-crossing segments by spliting them at their crossing point.</p>
+<p>The disjoin operation is defined as public procedures in the <code>forgex_segment_disjoin_m</code> module,
+and in particular the <code>disjoin_kernel</code> procedure within it plays an important role.</p>
+<p>See also, <a href="#segment">Segment</a>, <a href="../../module/forgex_segment_disjoin_m.html"><code>`forgex_segment_disjoin_m</code></a>,  ref.<a href="#references">(1)</a>.</p>
+<h3><span id=lazy-dfa>Lazy DFA</span></h3>
+<p>Unlike traditional DFA construction methods, <strong>Lazy DFA</strong> is a technique that generates
+transition as needed by lazy evaluation.
+This technique is used to efficiently handle large automaton by computing and storing
+the transitions from the NFA each time an input is given, reducing memory usage.
+Compared to traditional DFA that are pre-calculates everything, for pattens that require
+a large DFA, such as <code>a{1,100}*b</code>, it is possible to avoid pre-calculating the entire DFA,
+thereby saving memory space.</p>
+<p>See also, <a href="#dfa">DFA</a>, <a href="#powerset-construction">Powerset Construction</a>. </p>
+<h3><span id=nfa>NFA</span></h3>
+<p>The <strong>NFA</strong> (Non-deterministic finite automaton) is a theoretical model of computation in
+computer science used to represent and manipulate a finite set of states with non-deterministic
+transition. A non-deterministic transition is one in where the transition from state to state
+is not uniquely determined for each input. This includes a transition that do not consume
+any input string (called ε-transition).</p>
+<p>Like the DFA, the NFA can process regular expressions, but due to its non-determinism, 
+there is not a single transition from state to state, so a technique called <strong>backtracking</strong>
+must be used to effectively simulate it. Although we will not go into details here, engines
+that use backtracking in NFA can have a wide range of functionalities, but it is difficult to
+achieve high-speed processing for all patterns. In other words, an NFA engine has weaknesses
+in some kind of patterns.</p>
+<p>Forgex focuses on high runtime performance, which is the main requirement of Fortran users.
+Therefore, instead of using NFAs directly for matching, it converts them into eqivalent
+DFAs for matching.
+The NFA before conversion is represented by the <code>nfa_t</code> derived-type.
+For the details of that conversion, you can see the Powerset Construction section.</p>
+<p>See also, <a href="#dfa">DFA</a>, <a href="#powerset-construction">Powerset Construction</a>.</p>
+<h3><span id=powerset-construction>Powerset Construction</span></h3>
+<p>The <strong>powerset construction</strong> method, also known as the <strong>subset construction</strong> method, is a process
+to convert an NFA into a DFA.
+This method allows us to convert automata with non-deterministic properties into equivalent DFAs,
+i.e. it accepts the same input strings.</p>
+<p>This approach is powerful in that it gives us a deterministic state machine.
+It has drawbacks, however, as the potentially exponential growth in the number of DFA states
+constructed by the transformation.
+This problem is a kind of problem called combinatiorial explosion.
+Fortunately, Forgex version 2.0 and later introduces a lazy DFA construction method that can dynamically
+generate a DFA state for the input characters, so we don't need to worry about this problem here.</p>
+<p>cf. <a href="https://en.wikipedia.org/wiki/Powerset_construction" target="_blank" rel="noopener noreferrer">Powerset construction - Wikipedia</a></p>
+<p>cf. <a href="https://en.wikipedia.org/wiki/Combinatorial_explosion" target="_blank" rel="noopener noreferrer">Combinatorial explosion - Wikipedia</a></p>
+<p>See also, <a href="#lazy-dfa">Lazy DFA</a>.</p>
+<h3><span id=segment>Segment</span></h3>
+<p>A <strong>segment</strong> is a contiguous interval, the subset of an entire character encoding set,
+defined by two numbers: a start and an end.
+Assigning each input single character to a transition in the simulation of a state machine would consume
+a lot of memory, especially when processing character classes, so Forgex uses a method of associating
+such intervals with a transition.
+This approach also introduces new problems; see the Disjoin explanation for more details.</p>
+<p>In Forgex's segment implementation, the <code>segment_t</code> derived-type is defined as follows:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">segment_t</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UTF8_CODE_EMPTY</span><span class="w"> </span><span class="c">! = 0</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UTF8_CODE_EMPTY</span><span class="w"> </span><span class="c">! = 0</span>
+<span class="w">   </span><span class="k">contains</span>
+<span class="k">      procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">validate</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">segment_is_valid</span>
+<span class="w">   </span><span class="k">end type</span>
+</code></pre></div>
+
+<p>The <code>segment_t</code> type has two component of <code>min</code> and <code>max</code>, and a type-bound procedures, <code>validate</code>.
+The <code>min</code> is the smallest number of characters in the interval, and max is the largest number.
+The <code>validate</code> procedure checks whether the <code>min</code> component is smaller than or equal to <code>max</code>.
+If <code>min</code> and <code>max</code> are equal, the segment refers to exactly one character.</p>
+<p>See also, <a href="#disjoin">Disjoin</a>, <a href="#segment-sorting">Seguent Sorting</a>. </p>
+<h3><span id=segment-sorting>Segment Sorting</span></h3>
+<p><strong>Sorting segments</strong> is a process required by disjoining of a set of segments, and the sorting
+procedure defined in <code>forgex_sort_m</code> is called by the disjoin_kernel in <code>forgex_segment_disjoin_m</code>.
+The currently implemented algorithm is bubble sort. This algorithm is used because the
+number of elements to be sorted is small, and its contribution to the overall performance is
+relatively minor.
+However, we plan to change it to insertion sort in the near future.</p>
+<p>See also, <a href="#disjoin">Disjoin</a>, <a href="#segment">Segment</a>, <a href="../../module/forgex_sort_m.html"><code>forgex_sort_m</code></a>,
+<a href="../../module/forgex_segment_disjoin_m"><code>forgex_segment_disjoin_m</code></a>.</p>
+<h3><span id=subset-construciton>Subset Construction</span></h3>
+<p>See <a href="#powerset-construction">Powerset Construction</a>.</p>
+<h3><span id=tape>Tape</span></h3>
+<p>In the Forgex context, a <strong>Tape</strong> mimics a storage medium (such as a magnetic tape) with sequential data access
+and a read header.
+It is defined in the syntax analysis module (<code>forgex_syntax_tree_m</code>) as the <code>tape_t</code> derived type. 
+This type contains information about the entire input pattern string (like a rolled magnetic tape) and
+the index number (read header).
+The developers of Forgex can use the currently read character and tokens through the type-bound procedure. </p>
+<p>See also, (<a href="../../module/forgex_syntax_tree_m.html"><code>forgex_syntax_tree_m</code></a>), <a href="../../type/tape_t.html"><code>tape_t</code></a></p>
+<h3><span id=unicode>Unicode</span></h3>
+<p><strong>Unicode</strong> is one of the character encoding standards, which enables consistent representation and handling of text
+across different languages and platforms.
+It assigns a unique number (code point) to every character and symbol, covering a wide range of
+scripts, symbols, and even emojis.
+Unicode characters are encoded using common encoding schemes like UTF-8, UTF-16, and UTF-32 into byte strings,
+ensuring compatibility across different platforms.</p>
+<p>Even in Fortran programming, many compilers allow us to handle Unicode characters by setting the terminal and
+source file encoding to UTF-8.</p>
+<div class="alert alert-info">
+<p class="alert-title h4">Note</p>
+<p>In the case of Microsoft's Windows operating system, the system's standard character encoding
+may not be UTF-8, so users may need to change the settings appropriately.</p>
+</div>
+<p>See also, <a href="#code-point">Code Point</a>, <a href="#utf-8">UTF-8</a></p>
+<h3><span id=ucs-4>UCS-4</span></h3>
+<p><strong>UCS-4</strong> (Universal Coded Character Set 4), or the nearly equivalent UTF-32 (defined in ISO/IEC 10646),
+is a fixed-length encoding scheme that assigns a 32-bit (4 bytes) binary string to each Unicode code point.
+In some Fortran 2003 conforming compilers, we can use these fixed-length 4-byte characters by specifying the
+<code>kind</code> type parameter in a character type declaration as the return value of <code>selected_char_kind('ISO_10646')</code>.
+For example, GNU Fortran Compiler supports this.
+Forgex currently does not provide support for UCS-4 string processing. </p>
+<p>cf. <a href="https://en.wikipedia.org/wiki/UTF-32" target="_blank" rel="noopener noreferrer">UTF-32 - Wikipedia</a></p>
+<p>See also, <a href="#unicode">Unicode</a>, <a href="#utf-8">UTF-8</a></p>
+<h3><span id=utf-8>UTF-8</span></h3>
+<p><strong>UTF-8</strong> (UCS Transformation Format 8, or Unicode Transformation Format-8) is a character encoding
+scheme that maps Unicode characters to binary strings of variable length, from 1 to 4 bytes.
+To maintain compatibility with ASCII characters, the ASCII characters part is represented in 1 byte, and other
+characters are represented in 2-4 bytes.
+Forgex processes UTF-8 encoded character strings using the procedures defined in the <code>forgex_utf8_m</code> module.</p>
+<p>See also, <a href="../../module/forgex_utf8_m.html"><code>forgex_utf8_m</code></a>.</p>
+<h2><span id=references>Refereces</span></h2>
+<ol>
+<li><a href="https://stackoverflow.com/questions/20767047/how-to-implement-regular-expression-nfa-with-character-ranges" target="_blank" rel="noopener noreferrer">How to implement regular expression NFA with character ranges? - Stack Overflow</a>, 2013</li>
+<li><a href="https://fortran-lang.discourse.group/t/using-unicode-characters-in-fortran/2764?u=amasaki203" target="_blank" rel="noopener noreferrer">Using Unicode Characters in Fortran - Fortran-lang Discourse</a></li>
+</ol>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-07-13 15:01              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>
