@@ -8,7 +8,7 @@
 !
 !! This file contains helper procedures for testing the engine.
 
-!> `forgex_test_m` module provides helper procedures to unit testing for Forgex.
+!> The `forgex_test_m` module provides helper procedures to unit testing for Forgex.
 module forgex_test_m
    use, intrinsic :: iso_fortran_env
    use :: forgex

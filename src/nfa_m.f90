@@ -8,8 +8,8 @@
 !
 !! This file contains `nfa_t` class and its type-bound procedures.
 
-!> `forgex_nfa_m` module defines the data structure of NFA.
-!> `nfa_t` is defined as a class representing NFAs.
+!> The `forgex_nfa_m` module defines the data structure of NFA.
+!> The `nfa_t` is defined as a class representing NFA.
 module forgex_nfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_segment_m

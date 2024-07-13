@@ -8,7 +8,7 @@
 !
 !! This file contains sorting algorithm implementations.
 
-!> `forgex_sort_m` module provides an implementation of
+!> The `forgex_sort_m` module provides an implementation of
 !> sorting algorithms for integer arrays.
 !>
 module forgex_sort_m

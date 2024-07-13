@@ -9,7 +9,7 @@
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
 
-!> `forgex_segment_m` module defines `segment_t` derived-type representing
+!> The `forgex_segment_m` module defines `segment_t` derived-type representing
 !> a subset of the UTF-8 character set.
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env
