@@ -175,6 +175,7 @@ end block
 ## To do
 
 - [ ] Dealing with invalid byte strings in UTF-8
+- [ ] Implementing a time measurement tool
 - [ ] Literal search optimization
 - [ ] Parallelization on matching
 - [x] Publishing the documentation
