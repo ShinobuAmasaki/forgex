@@ -8,7 +8,7 @@
 !
 !! This file contains procedures to disjoin overlapping segments.
 
-!> `forgex_segment_disjoin_m` module support to disjoin and split overlapping segments.
+!> The `forgex_segment_disjoin_m` module support to disjoin and split overlapping segments.
 !> Without these procedures, we cannot building a valid DFA from NFA.
 module forgex_segment_disjoin_m
    use :: forgex_segment_m

@@ -8,8 +8,8 @@
 !
 !! This file contains `dfa_t` class and its type-bound procedures.
 
-!> `forgex_lazy_dfa_m` module defines the data structure of DFA
-!> from NFA. `dfa_t` is defined as a class representing DFA 
+!> The `forgex_lazy_dfa_m` module defines the data structure of DFA
+!> from NFA. The `dfa_t` is defined as a class representing DFA 
 !> which is constructed dynamically with lazy-evaluation.
 !> This module was previously named `dfa_m`.
 module forgex_lazy_dfa_m
