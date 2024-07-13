@@ -8,11 +8,11 @@
 !
 !! This file contains enumerators for syntactic parsing and building a syntax-tree.
 
-!> `forgex_enums_m` defines enumerators of tokens and operators for syntax-tree building.
+!> The `forgex_enums_m` defines enumerators of tokens and operators for syntax-tree building.
+!> @note These enums will be rewritten in Fortran 2023's enumerator in the future. 
 module forgex_enums_m
    implicit none
 
-   !> @note These enums below will be rewritten in Fortran 2023's enumerator in the future. 
    enum, bind(c)
       enumerator :: tk_char = 0
       enumerator :: tk_union        ! 1
