@@ -171,10 +171,10 @@ end block
 
 ## To do
 
-- Publishing the documentation
 - Dealing with invalid byte strings in UTF-8
 - Literal search optimization
 - Parallelization on matching
+- ✅️ Publishing the documentation
 - ✅️ UTF-8 basic support
 - ✅️ DFA construction on-the-fly
 - ✅️ CMake Support
