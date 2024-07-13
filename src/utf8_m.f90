@@ -11,12 +11,20 @@
 !> `forgex_utf8_m` module handles character(*, 'ASCII) strings as UTF-8 characters.
 module forgex_utf8_m
    implicit none
+   private
 
-   integer, parameter :: UTF8_CODE_MAX = 2**21-1 !
-   integer, parameter :: UTF8_CODE_MIN = 32 ! = 0x21: '!'
-   integer, parameter :: UTF8_CODE_EMPTY = 0
+   public :: idxutf8
+   public :: char_utf8, ichar_utf8
+   public :: count_token
+   public :: is_first_byte_of_character
+   public :: is_first_byte_of_character_array
+   public :: len_trim_utf8, len_utf8
 
-   integer, parameter :: UTF8_CHAR_SIZE = 4
+   integer, parameter, public :: UTF8_CODE_MAX = 2**21-1 !
+   integer, parameter, public :: UTF8_CODE_MIN = 32 ! = 0x21: '!'
+   integer, parameter, public :: UTF8_CODE_EMPTY = 0
+
+   integer, parameter, public :: UTF8_CHAR_SIZE = 4
 
 contains
 
@@ -153,6 +161,7 @@ contains
 
    end function char_utf8
 
+
    function set_continuation_byte(byte) result(res)
       use, intrinsic :: iso_fortran_env, only: int8
       implicit none
@@ -162,7 +171,8 @@ contains
       res = ibset(byte, 7)
       res = ibclr(res, 6)
 
-   end function set_continuation_byte      
+   end function set_continuation_byte
+
 
    !> This function is like an extension of char() for the UTF-8 codeset.
    !> Take a UTF-8 character as an argument and
