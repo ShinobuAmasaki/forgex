@@ -8,7 +8,7 @@
 
 !! This file contains procedures to handle UTF-8 character set.
 
-!> `forgex_utf8_m` module handles character(*, 'ASCII) strings as UTF-8 characters.
+!> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
    implicit none
    private
