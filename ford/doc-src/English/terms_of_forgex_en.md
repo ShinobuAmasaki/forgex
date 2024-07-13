@@ -6,7 +6,7 @@ date: 2024-07-13
 
 # Terms of Forgex
 
-This page provides definitions of terms used in the development of Forgex.
+This page provides details of terms used in the development of Forgex.
 
 ## Contents
 
