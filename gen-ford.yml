@@ -11,7 +11,7 @@ website:             https://shinobuamasaki.github.io
 src_dir:             ./src
 exclude_dir:         ./test
 md_base_dir:         ./
-output_dir:          ./docs
+output_dir:          ./doc
 page_dir:            ./ford/doc-src
 favicon:             ./ford/favicon.ico
 css:                 ./ford/common.css
