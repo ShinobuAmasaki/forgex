@@ -1,11 +1,18 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_syntax_tree_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!    `forgex_syntax_tree_m` module is a part of Forgex.
+!
+!! This file defines syntactic parsing.
+
+!> The`forgex_syntax_tree_m` module defines parsing and
+!> the `tree_t` derived-type for syntax-tree.
+!> 
+!> The parser is implemented as a recursive descent parser 
+!> to construct the syntax tree of a regular expression.
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_enums_m
@@ -18,13 +25,15 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: tape_t
    public :: deallocate_tree
+#ifdef DEBUG
    public :: print_tree
-
+#endif
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
    integer(int32), parameter :: TREE_MAX_SIZE = 1024
 
+   !> Declaration of the meta-characters
    character(1), parameter, private :: ESCAPE_T = 't'
    character(1), parameter, private :: ESCAPE_N = 'n'
    character(1), parameter, private :: ESCAPE_R = 'r'
@@ -40,10 +49,13 @@ module forgex_syntax_tree_m
    character(1), parameter, private :: DOLLAR = '$'
 
    type :: allocated_list_t
+      !! This type is used to monitor allocation of pointer variables.
       type(tree_t), pointer :: node
    end type 
 
    type :: tree_t
+      !! This type is used to construct a concrete syntax tree,
+      !! later converted to NFA.
       integer(int32) :: op
       type(segment_t), allocatable :: c(:)
       type(tree_t), pointer :: left => null()
@@ -51,20 +63,27 @@ module forgex_syntax_tree_m
    end type 
 
    type :: tape_t
-      character(:), allocatable :: str
-      integer(int32) :: current_token
-      character(UTF8_CHAR_SIZE) :: token_char = EMPTY
+      !! This type holds the input pattern string and manages the index
+      !! of the character it is currently focused.
+      character(:), allocatable :: str                ! input pattern string
+      integer(int32) :: current_token                 ! token enumerator (cf. enums_m.f90)
+      character(UTF8_CHAR_SIZE) :: token_char = EMPTY 
+         ! initialized as ASCII character number 0
       integer(int32) :: idx = 1
+         ! index of the character that is currently focused 
    contains
       procedure :: get_token
    end type
 
+   !> for monitoring allocation of pointer variables.
    integer :: tree_node_count = 0
-
    type(allocated_list_t) :: array(TREE_MAX_SIZE)
 
 contains
 
+   !> Copies the input pattern to `tape_t` type and builds a concrete syntax tree.
+   !> The result returns a pointer to the root of the tree.
+   !> Expected to be used by the forgex module.
    function build_syntax_tree(tape, str) result(root)
       implicit none
       character(*), intent(in) :: str
@@ -85,7 +104,7 @@ contains
 
    end function build_syntax_tree
 
-
+   !> Access the monitor array and deallocate all allocated nodes.
    subroutine deallocate_tree()
       implicit none
       integer :: i, max
@@ -102,17 +121,7 @@ contains
    end subroutine deallocate_tree
 
 
-   
-   subroutine print_tree(tree)
-      implicit none
-      type(tree_t), intent(in) :: tree
-
-      write(stderr, '(a)') "--- PRINT TREE ---"
-      call print_tree_internal(tree)
-      write(stderr, '(a)') ''
-   end subroutine print_tree
-
-
+   !> Copy the pattern string to tape and initialize it by reading the first token.
    subroutine initialize_parser(tape, str)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -123,7 +132,10 @@ contains
       call get_token(tape)
    end subroutine initialize_parser
 
-
+   !| Get the currently focused character (1 to 4 bytes) from the entire string inside
+   !  the `type_t` derived-type, and store the enumerator's numeric value in the 
+   !  `current_token` component. 
+   !  This is a type-bound procedure of `tape_t`.
    subroutine get_token(self, class)
       use :: forgex_utf8_m
       implicit none
@@ -144,10 +156,19 @@ contains
          self%current_token = tk_end
          self%token_char = ''
       else
+         !!### Internal implementation
+         !!@note It is importrant to note that the pattern may contain UTF-8 characters,
+         !! and therefore, the character representing the next token to focus may be
+         !! multibyte neighbor. Because of this rule, we must use the `idxutf8` function
+         !! to get the index of the next character.
          nexti = idxutf8(self%str, i) + 1
 
+         ! Assign the single character of interest to the `c` variable
          c = self%str(i:nexti-1)
 
+         !!
+         !!@note If the character class flag is true, the process branches to perform
+         !! character class-specific parsing.
          if (class_flag) then
 
             select case (trim(c))
@@ -163,6 +184,8 @@ contains
          
          else
 
+            !! If we are focusing a character that is not in square brackets,
+            !! generate a token from the current character ordinarily.
             select case (trim(c))
             case ('|')
                self%current_token = tk_union
@@ -177,6 +200,8 @@ contains
             case ('?')
                self%current_token = tk_question
             case ('\')
+
+               !!
                self%current_token = tk_backslash
             
                i = nexti
@@ -206,6 +231,8 @@ contains
 
          self%idx = nexti
       end if
+
+      !! cf. [[forgex_enums_m(module)]]
 
    end subroutine get_token
 
@@ -768,6 +795,16 @@ contains
    end subroutine invert_segment_list
 
 !=====================================================================!
+#ifdef DEBUG
+   subroutine print_tree(tree)
+      implicit none
+      type(tree_t), intent(in) :: tree
+
+      write(stderr, '(a)') "--- PRINT TREE ---"
+      call print_tree_internal(tree)
+      write(stderr, '(a)') ''
+   end subroutine print_tree
+
 
    recursive subroutine print_tree_internal(tree)
       implicit none
@@ -869,6 +906,6 @@ contains
       str = trim(buf)
 
    end function print_class_simplify
-         
+#endif     
 
 end module forgex_syntax_tree_m

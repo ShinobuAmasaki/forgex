@@ -1,11 +1,15 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_segment_disjoin_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_segment_disjoin_m module is a part of Forgex.
+!
+!! This file contains procedures to disjoin overlapping segments.
+
+!> `forgex_segment_disjoin_m` module support to disjoin and split overlapping segments.
+!> Without these procedures, we cannot building a valid DFA from NFA.
 module forgex_segment_disjoin_m
    use :: forgex_segment_m
    use :: forgex_priority_queue_m
@@ -14,6 +18,8 @@ module forgex_segment_disjoin_m
    public :: disjoin
    public :: is_prime_semgment
    public :: is_overlap_to_seg_list
+
+   type(segment_t), parameter :: SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
    interface disjoin
       module procedure :: disjoin_kernel
@@ -32,7 +38,6 @@ contains
       type(segment_t), allocatable :: buff(:)
       type(segment_t), allocatable :: cache(:)
       type(segment_t) :: new
-      type(segment_t), parameter :: SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
       integer(int32), allocatable :: index_list(:)
@@ -135,23 +140,21 @@ contains
       deallocate(cache)
       deallocate(index_list)
 
-   contains
-
-      subroutine register_seg_list(new, list, k)
-         implicit none
-         type(segment_t), intent(inout) :: new, list(:)
-         integer(int32), intent(inout) :: k
-
-         if (new%validate()) then
-            list(k) = new
-            k = k + 1
-         end if
-         new = SEG_UPPER
-      end subroutine register_seg_list
-         
-
    end subroutine disjoin_kernel
 
+
+   subroutine register_seg_list(new, list, k)
+      implicit none
+      type(segment_t), intent(inout) :: new, list(:)
+      integer(int32), intent(inout) :: k
+
+      if (new%validate()) then
+         list(k) = new
+         k = k + 1
+      end if
+      new = SEG_UPPER
+   end subroutine register_seg_list
+         
 
    function is_prime_semgment(seg, disjoined_list) result(res)
       implicit none 

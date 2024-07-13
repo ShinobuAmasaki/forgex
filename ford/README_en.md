@@ -1,33 +1,32 @@
-# Forgex—Fortran Regular Expression
+Forgex is a regular expression engine written entirely in Fortran.
 
-Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
-
-Forgex is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
+This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice was focused on runtime performance.
 
 ## Features
 
-- Metacharacter
-   - `|` Vertical bar, alternation
-   - `*` Asterisk, match zero or more
-   - `+` Plus, match one or more
-   - `?` Question, match zero or one
-   - `\` escape metacharacter
-   - `.` matches any character
-- Character class
+
+#### Metacharacter
+   - `|`  Vertical bar for alternation,
+   - `*`  Asterisk, match zero or more,
+   - `+`  Plus, match one or more,
+   - `?`  Question, match zero or one,
+   - `\`  escape metacharacter,
+   - `.`  match any character.
+#### Character class
    - character class `[a-z]`
    - inverted character class `[^a-z]`
    - character class on UTF-8 codeset `[α-ωぁ-ん]`
-- Range of repetition
+#### Range of repetition
    - `{num}`,
    - `{,max}`,
    - `{min,}`,
    - `{min, max}`,
    where `num` and `max` must NOT be zero.
-- Anchor
+#### Anchor
    - `^`, matches the beginning of a line
    - `$`, matches the end of a line
-- Shorthand
+#### Shorthand
    - `\t`, tab character
    - `\n`, new line character (LF or CRLF)
    - `\r`, return character (CR)
@@ -37,9 +36,6 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
    - `\W`, (`[^a-zA-Z0-9_]`)
    - `\d`, digit character (`[0-9]`)
    - `\D`, non-digit character (`[^0-9]`)
-
-## Documentation
-The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
 
 ## Usage
 ### Build
@@ -58,7 +54,7 @@ First of all, add the following to your project's `fpm.toml`:
 forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
-### API
+### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
 
 ```fortran
@@ -108,7 +104,8 @@ block
    str = 'foobarbaz'
 
    print *, regex(pattern, str)              ! foobar
-   ! print *, regex(pattern, str, length)    ! the value 6 stored in optional `length` variable.
+   print *, regex(pattern, str, length)      ! foobar
+      ! the value 6 stored in optional `length` variable.
 
 end block
 ```
@@ -125,13 +122,14 @@ block
 
    print *, regex(pattern, str, from=from, to=to)  ! def
    
-   ! The `from` and `to` variables store the indices of the start and end points
-   ! of the matched part of the string `str`, respectively.
+   ! The `from` and `to` variables store the indices of the start and
+   ! end points of the matched part of the string `str`, respectively.
 
    ! Cut out before the matched part.
    print *, str(1:from-1)        ! abc
 
-   ! Cut out the matched part that equivalent to the result of the `regex` function. 
+   ! Cut out the matched part that equivalent to the result of the
+   ! `regex` function. 
    print *, str(from:to)         ! def 
 
    ! Cut out after the matched part. 
@@ -154,8 +152,7 @@ function regex (pattern, str, length, from, to) result(res)
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters. 
-In this example, the `length` variable stores the byte length, and in this case there
-10 3-byte characters, so the length is 30.
+In this example, the `length` variable stores the byte length, and in this case there 10 3-byte characters, so the length is 30.
 
 ```fortran
 block
@@ -174,13 +171,13 @@ end block
 
 ## To do
 
-- [ ] Publishing the documentation
-- [ ] Dealing with invalid byte strings in UTF-8
-- [ ] Literal search optimization
-- [ ] Parallelization on matching
-- [x] UTF-8 basic support
-- [x] DFA construction on-the-fly
-- [x] CMake Support
+- Publishing the documentation
+- Dealing with invalid byte strings in UTF-8
+- Literal search optimization
+- Parallelization on matching
+- ✅️ UTF-8 basic support
+- ✅️ DFA construction on-the-fly
+- ✅️ CMake Support
 
 ## Code Convention
 
@@ -197,8 +194,7 @@ The idea of applying the `.in.` operator to strings was inspired by kazulagi's o
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007 
 2. 近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
-4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi), 
-[his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
+4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi), [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
 
 ## License
 Forgex is as a freely available under the MIT license. See [LICENSE](https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE).

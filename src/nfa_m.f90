@@ -1,11 +1,15 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     forgex_nfa_m module is a part of Forgex.
-!!
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_nfa_m module is a part of Forgex.
+!
+!! This file contains `nfa_t` class and its type-bound procedures.
+
+!> `forgex_nfa_m` module defines the data structure of NFA.
+!> `nfa_t` is defined as a class representing NFAs.
 module forgex_nfa_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_segment_m
@@ -15,9 +19,9 @@ module forgex_nfa_m
    implicit none
    private
 
-   public :: equivalent_NFA_state_set
-   public :: check_NFA_state
-   public :: add_NFA_state
+   public :: equivalent_nfa_state_set
+   public :: check_nfa_state
+   public :: add_nfa_state
 
    ! Upper limit of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_MAX = 1024
@@ -55,8 +59,10 @@ module forgex_nfa_m
       procedure :: build          => nfa__build
       procedure :: add_transition => nfa__add_transition
       procedure :: disjoin        => nfa__disjoin
+#ifdef DEBUG
       procedure :: print          => nfa__print
       procedure :: print_state_set=> nfa__print_state_set
+#endif
       procedure :: free           => nfa__deallocate
       procedure :: mark_empty_transition
       procedure :: collect_empty_transition
@@ -84,13 +90,12 @@ contains
       do i = 1, size(self%states, dim=1)
          self%states(i)%index = i
       end do
-
    end subroutine nfa__init
 
 
    function nfa__generate_node(self)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t), intent(inout) :: self
       integer(int32) :: nfa__generate_node
 
       if (self%nfa_nstate >= NFA_STATE_MAX) then
@@ -100,13 +105,12 @@ contains
 
       self%nfa_nstate = self%nfa_nstate + 1 
       nfa__generate_node = self%nfa_nstate
-      
    end function nfa__generate_node
 
    
    subroutine nfa__add_transition(self, from, to, c)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t), intent(inout) :: self
       integer(int32), intent(in) :: from, to
       type(segment_t), intent(in) :: c
 
@@ -124,7 +128,6 @@ contains
       self%states(from)%c%max = c%max
       self%states(from)%to = to
       self%states(from)%next => p
-
    end subroutine nfa__add_transition
 
 
@@ -166,20 +169,20 @@ contains
          write(stderr, *) "This will not happen in 'generate_nfa'."
          error stop
       end select
-
    end subroutine nfa__generate_nfa
+
 
    subroutine nfa__disjoin(self)
       use :: forgex_priority_queue_m
       use :: forgex_segment_disjoin_m
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t), intent(inout) :: self
+ 
       type(nlist_t), pointer :: p
       integer(int32) :: i, j
       type(priority_queue_t) :: queue
       type(segment_t), allocatable :: seg_list(:)
       integer :: num
-
 
       num = 0
       p => null()
@@ -204,7 +207,6 @@ contains
       do j = 1, num
          seg_list(j) = dequeue(queue)
       end do
-
       !-- seg_list array is sorted.
 
       call disjoin(seg_list)
@@ -238,7 +240,6 @@ contains
       !-- deallocate
       call clear(queue)
       deallocate(seg_list)
-
    end subroutine nfa__disjoin
 
 
@@ -254,16 +255,15 @@ contains
       call self%generate_nfa(tree, nfa_entry, nfa_exit)
 
       call self%disjoin()
-
    end subroutine nfa__build
 
 
    subroutine nfa__deallocate(self)
       implicit none
       class(nfa_t), intent(inout) :: self
-      class(nlist_t), pointer :: ptr(:)
+
       integer :: j, max 
-      ptr => null()
+      
       max = nlist_node_count
       if (max < 1) return
 
@@ -274,17 +274,12 @@ contains
          end if
       end do
 
-      ! ptr => self%states
-      ! write(stderr, *)associated(ptr)
-      ! write(stderr, *) "L276"
-      ! write(stderr, *) "L277", associated(self%states)
       if (associated(self%states)) then
          deallocate(self%states)
       end if
-
    end subroutine nfa__deallocate
    
-
+#ifdef DEBUG
    subroutine nfa__print(self)
       implicit none
       class(nfa_t) :: self 
@@ -314,9 +309,8 @@ contains
             write(stderr, *) ''
          end if
       end do
-
    end subroutine nfa__print
-   
+#endif   
 
    subroutine nfa__print_state_set (self, p)
       implicit none
@@ -335,19 +329,18 @@ contains
 !==========================================================================================!
 
    ! Is the arguement 'state' (set of NFA state) includes state 's'?
-   logical function check_NFA_state(state, s)
+   logical function check_nfa_state(state, s)
       implicit none
-      type(NFA_state_set_t), intent(in) :: state
+      type(nfa_state_set_t), intent(in) :: state
       integer(int32) :: s
 
       if (s /= 0) then
-         check_NFA_state = state%vec(s)
+         check_nfa_state = state%vec(s)
 
       else
-         check_NFA_state = .false. 
-      end if
-      
-   end function check_NFA_state
+         check_nfa_state = .false. 
+      end if    
+   end function check_nfa_state
 
 
    subroutine disjoin_nfa_state(state, seg_list)
@@ -390,69 +383,61 @@ contains
             end if 
          end do 
       end block
-
    end subroutine disjoin_nfa_state 
 
    
-   subroutine add_NFA_state(state, s)
+   subroutine add_nfa_state(state, s)
       implicit none
-      type(NFA_state_set_t), intent(inout) :: state
+      type(nfa_state_set_t), intent(inout) :: state
       integer(int32), intent(in):: s
 
       state%vec(s) = .true.
-   end subroutine add_NFA_state
+   end subroutine add_nfa_state
 
 
    recursive subroutine mark_empty_transition(self, state, idx)
       implicit none
       class(nfa_t) :: self
-      type(NFA_state_set_t), intent(inout) :: state
+      type(nfa_state_set_t), intent(inout) :: state
       integer(int32), intent(in) :: idx 
 
       type(nlist_t), pointer :: p
 
-! write(stderr, *) "L407 i =", idx
-      call add_NFA_state(state, idx)
-   
-! write(stderr, *) "L410 state =", state%vec(1:6)
       nullify(p)
+
+      call add_nfa_state(state, idx)
 
       p => self%states(idx)
       do while (associated(p))
 
-         if (p%c == SEG_EMPTY .and. .not. check_NFA_state(state, p%to) ) then
+         if (p%c == SEG_EMPTY .and. .not. check_nfa_state(state, p%to) ) then
             if (p%to /= 0) call self%mark_empty_transition(state, p%to)
          end if 
 
          p => p%next
 
-      enddo 
-
+      enddo
    end subroutine mark_empty_transition
 
 
    subroutine collect_empty_transition (self, state)
       implicit none
       class(nfa_t) :: self
-      type(NFA_state_set_t), intent(inout):: state
+      type(nfa_state_set_t), intent(inout):: state
       integer(int32) :: i 
 
-! write(stderr, *) "L430", state%vec(1:6)
       do i = 1, self%nfa_nstate
          if (check_NFA_state(state, i)) then
             call self%mark_empty_transition(state, i)       
          end if
       end do
-! write(stderr, *) "L432", state%vec(1:6) 
-
    end subroutine collect_empty_transition
 
 
-
-   function equivalent_NFA_state_set(a, b) result(res)
+   function equivalent_nfa_state_set(a, b) result(res)
       implicit none
-      type(NFA_state_set_t), intent(in), pointer  :: a
-      type(NFA_state_set_t), intent(in)  :: b
+      type(nfa_state_set_t), intent(in), pointer  :: a
+      type(nfa_state_set_t), intent(in)  :: b
       integer(int32) :: i
       logical :: res
 
@@ -464,8 +449,6 @@ contains
          end if
       end do
       res = .true.
-
-   end function equivalent_NFA_state_set
-
+   end function equivalent_nfa_state_set
 
 end module forgex_nfa_m

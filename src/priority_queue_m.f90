@@ -1,21 +1,28 @@
-!! Fortran Regular Expression (Forgex)
-!! 
-!! MIT License
-!!
-!! (C) Amasaki Shinobu, 2023-2024
-!!     A regular expression engine for Fortran.
-!!     priority_queue_m module is a part of Forgex.
-!! 
-!! (C) ue1221, 2021
-!! 
-!! The original Fortran implementation of priority queue is by ue1221.
-!! cf. https://github.com/ue1221/fortran-utilities
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_priority_queue_m module is a part of Forgex.
+! 
+! (C) ue1221, 2021
+! 
+! The original Fortran implementation of priority queue is by ue1221.
+! cf. https://github.com/ue1221/fortran-utilities
 
+!! This file defines the `priority_queue_t` derived-type.
+
+!> `forgex_priority_queue_m` module defines `priority_queue_t`.
+!> This implementation was originally provided by ue1221.
 module forgex_priority_queue_m
    use, intrinsic :: iso_fortran_env
    use :: forgex_segment_m
    implicit none
 
+   !> The `priority_queue_t` derived-type has an array containing segment data
+   !> and the number of data. The array component is allocatable (with `pointer`
+   !> attribute).
    type priority_queue_t
       integer(int32) :: number = 0
       type(segment_t), pointer :: heap(:) => null()
@@ -23,6 +30,8 @@ module forgex_priority_queue_m
 
 contains
    
+   !> The `enqueue` subroutine is responsible for allocating heap structure and
+   !> holding the disjoined segment data with ascending priority order.
    subroutine enqueue(pq, seg)
       implicit none
       type(priority_queue_t), intent(inout) :: pq
@@ -33,6 +42,8 @@ contains
 
       if (.not. associated(pq%heap)) allocate(pq%heap(1))
 
+      !  Managing the size of array in the queue.
+      !! @note This implementation shall be rewritten using the `move_alloc` statement.
       n = pq%number
       if (n == size(pq%heap)) then
          allocate(tmp(n))
@@ -45,6 +56,8 @@ contains
       pq%number = pq%number + 1
       pq%heap(pq%number) = seg
 
+      ! Implementing a queue using arrays.
+      ! The following loop ensures that the data structure is a heap:
       n = pq%number
       do while (n > 1)
          i = n/2
@@ -56,22 +69,29 @@ contains
          end if 
          n = i
       end do
-
    end subroutine enqueue
 
-
+   !> The `dequeue` function takes out and returns the prior segment from the queue. 
    function dequeue(pq) result(res)
       implicit none
       type(priority_queue_t), intent(inout) :: pq
       type(segment_t) :: res, tmp 
 
       integer :: n, i, j
-
+      
+      ! Hold the number of data in a temporary variable.
       n = pq%number
+      
+      ! The prior element of the array is returned.
       res = pq%heap(1)
+
+      ! The tailing data is moved to the beginning. 
       pq%heap(1) = pq%heap(n)
+      
+      ! Reduce the number of data by one.
       pq%number = pq%number - 1
 
+      ! The following loop ensures that the data structure is a heap:
       i = 1
       do while (2*i < n)
          j = 2*i
@@ -83,10 +103,9 @@ contains
          end if
          i = j
       end do
-
    end function dequeue
 
-   
+   !> The `clear` subroutine deallocates the queue.
    subroutine clear(pq)
       implicit none
       type(priority_queue_t), intent(inout) :: pq
