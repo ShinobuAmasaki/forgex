@@ -1,5 +1,5 @@
 ---
-title: Terms of Forgex
+title: Terms related to Forgex
 author: Amasaki Shinobu
 date: 2024-07-13
 --- 
