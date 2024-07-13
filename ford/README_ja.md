@@ -194,7 +194,7 @@ end block
 
 ## 参考文献
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007年
-2. 近藤嘉雪 (Kondo Yoshiyuki), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998年, SB Creative.
+2. 近藤嘉雪, "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998年, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. [kazulagi, @soybean](https://github.com/kazulagi), [Fortranでユーザー定義演算子.in.を作る - Qiita.com](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91), 2022年
 
