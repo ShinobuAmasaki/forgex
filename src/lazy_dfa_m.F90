@@ -131,6 +131,7 @@ contains
       type(nfa_t), intent(in), pointer   :: nfa
 
       type(d_state_t)                    :: initial
+      type(d_state_t), pointer           :: tmp
       type(nfa_state_set_t)              :: nfa_entry_state_set
       type(nfa_state_set_t), allocatable :: initial_closure       ! for computing epsilon closure. 
 
@@ -164,7 +165,9 @@ contains
       ! Do DEEP copy
       initial%state_set = initial_closure
       initial%accepted = check_NFA_state(initial%state_set, nfa_exit)
-      self%initial_dfa_state = self%register(initial%state_set)
+      
+      tmp => self%register(initial%state_set)
+      self%initial_dfa_state = tmp  ! Do DEEP copy
 
       deallocate(initial_closure)
    end subroutine lazy_dfa__init
@@ -235,47 +238,55 @@ contains
    end subroutine lazy_dfa__deallocate_dlist
 
 
-   ! dfa_tの配列dfaの要素として状態を登録する
+   !> Take `nfa_state_set_t` as input and register the set as the DFA state in the DFA.  
+   !> The result is returned as a pointer to the DFA state.
    function lazy_dfa__register(self, set) result(res)
       implicit none
-      class(dfa_t) :: self
+      class(dfa_t), intent(inout)       :: self
       type(nfa_state_set_t), intent(in) :: set
       
-      integer(int32) :: i, k
+      integer(int32)           :: i, k
       type(d_state_t), pointer :: res
 
       res => null()
       
+      ! If the set is already registered, returns a pointer to the corresponding DFA state.
       if (self%is_registered(set, i)) then
          res => self%states(i)
          return
       end if
 
+      ! Execute an error stop statement if the counter exceeds a limit. 
       if (self%dfa_nstate >= DFA_STATE_MAX) then
          write(stderr, '(a)') "ERROR: Number of DFA states too large."
          error stop
       end if
 
-      self%dfa_nstate = self%dfa_nstate + 1
-      k = self%dfa_nstate
+      self%dfa_nstate = self%dfa_nstate + 1 ! count up
+      k = self%dfa_nstate                   ! Assigning to a short variable
 
+      ! Register the NFA state set as a DFA state in the k-th element of the array component.
       self%states(k)%state_set = set
       self%states(k)%accepted = check_NFA_state(set, nfa_exit)
-      self%states(k)%transition => null()
+      self%states(k)%transition => null()   
+         ! At this point the new DFA state has no transition (due to lazy evaluation).
 
+      ! Also register this in the monitor array. 
       dstate_pointer_count = dstate_pointer_count + 1
       dstate_pointer_list(dstate_pointer_count)%node => self%states(k)
 
+      ! Return a pointer reference to the registered DFA state.
       res => self%states(k)
    end function lazy_dfa__register
 
 
 !=====================================================================!
 
-
+   !> Compute the ε-closure for a set of NFA states.
    subroutine lazy_dfa__epsilon_closure (self, state_set, closure)
-      class(dfa_t), intent(in) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
+      implicit none
+      class(dfa_t),          intent(in)    :: self
+      type(nfa_state_set_t), intent(in)    :: state_set
       type(nfa_state_set_t), intent(inout) :: closure
 
       type(nlist_t), pointer :: t
@@ -295,21 +306,24 @@ contains
       end do
    end subroutine lazy_dfa__epsilon_closure
 
-
+   
+   !> Calculate a set of possible NFA states from the current DFA state by the input
+   !> character `symbol`. 
    function lazy_dfa__compute_reachable_n_state(self, current, symbol) result(res)
       implicit none
-      class(dfa_t), intent(in) :: self
+      class(dfa_t),    intent(in) :: self
       type(d_state_t), intent(in) :: current
+      character(*),    intent(in) :: symbol
+
       type(d_list_t), pointer :: res
-      character(*), intent(in) :: symbol
 
-      integer(int32) :: i, j
-      type(nfa_state_set_t) :: state_set
-      type(nlist_t), pointer :: ptr_nlist
+      type(nfa_state_set_t)   :: state_set         ! a set of NFA state
+      type(nlist_t),  pointer :: ptr_nlist         ! 
       type(d_list_t), pointer :: a, b
+      type(segment_t)         :: symbol_belong(1)  ! Holds the segment to which the symbol belongs
+      integer(int32)          :: i, j
 
-      type(segment_t) :: symbol_belong(1)
-
+      ! Initialize
       symbol_belong = SEG_EMPTY
       ptr_nlist => null()
       a => null()
@@ -384,44 +398,52 @@ contains
    end function lazy_dfa__compute_reachable_n_state
 
 
+   ! Returns `.true.` if the set of NFA states is already registered. 
    logical function lazy_dfa__is_registered(self, state_set, idx) result(res)
       implicit none
-      class(dfa_t), intent(in) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
-      integer(int32), intent(inout), optional :: idx
+      class(dfa_t),             intent(in)    :: self
+      type(nfa_state_set_t),    intent(in)    :: state_set
+      integer(int32), optional, intent(inout) :: idx
 
       logical :: tmp
-      integer :: i, n, j
-
-
-      n = dstate_pointer_count
+      integer :: i, n
+      
+      ! Initialize
       res = .false.
       tmp = .true.
+      n = dstate_pointer_count ! Store the value into a short varibale. 
+
+      ! Scan all DFA states.
       do i = 1, n
+         ! 入力の集合と、登録された集合が等しいかどうかを比較して`tmp`に結果を格納する。
          tmp = equivalent_NFA_state_set(self%states(i)%state_set, state_set)
-         res = res .or. tmp
+         res = res .or. tmp ! 論理和をとる
+
          if (res) then
-            if(present(idx)) idx = i
-            exit
+            ! 真の場合、ループを抜ける
+            if(present(idx)) idx = i  ! Store index infomation in optional arguments.
+            return
          end if 
       end do
    end function lazy_dfa__is_registered
 
 
+   ! 現在のDFA状態から、入力シンボルに対して、遷移可能ならば遷移する。
    function lazy_dfa__move(self, current, symbol) result(res)
-      use :: forgex_segment_m
       implicit none 
-      class(dfa_t), intent(inout) :: self
-      type(d_state_t), intent(in) :: current
-      character(*), intent(in) :: symbol
-      type(d_list_t), pointer :: res
-      
-      integer(int32) :: i, j, k, next
-      res => null()
+      class(dfa_t),    intent(inout) :: self
+      type(d_state_t), intent(in)    :: current
+      character(*),    intent(in)    :: symbol
 
+      type(d_list_t), pointer :: res
+      integer(int32) :: i
+
+      res => null()  ! Initialize
+
+      ! Scan the array of DFA states.
       do i = 1, self%dfa_nstate
-         res => self%reachable(current, symbol)
-         if (associated(res)) exit
+         res => self%reachable(current, symbol) ! 
+         if (associated(res)) return ! Returns a reference to the destination DFA state.
       end do
    end function lazy_dfa__move
 
@@ -488,6 +510,7 @@ contains
 
 !=====================================================================!
 !  Matching procedures
+!     ...should I extract them into a separate module?
 
    subroutine lazy_dfa__matching(self, str_arg, from, to)
       use :: forgex_utf8_m
