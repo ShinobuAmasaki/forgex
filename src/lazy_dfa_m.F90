@@ -22,7 +22,13 @@ module forgex_lazy_dfa_m
    implicit none
    private
 
+   interface free_dlist
+      procedure :: lazy_dfa__deallocate_dlist
+   end interface
+   
    public :: d_state_t
+   public:: free_dlist
+   
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
    !> The `d_list_t` is the type represents a list of transitionable NFA state
@@ -67,7 +73,6 @@ module forgex_lazy_dfa_m
    contains
       procedure :: init            => lazy_dfa__init
       procedure :: free            => lazy_dfa__deallocate
-      procedure :: free_dlist      => lazy_dfa__deallocate_dlist
       procedure :: register        => lazy_dfa__register
       procedure :: epsilon_closure => lazy_dfa__epsilon_closure
 #ifdef DEBUG
@@ -220,9 +225,8 @@ contains
    end subroutine lazy_dfa__deallocate
 
 
-   subroutine lazy_dfa__deallocate_dlist(self)
+   subroutine lazy_dfa__deallocate_dlist
       implicit none
-      class(dfa_t), intent(in) :: self
       integer :: j, max
       
       max = dlist_pointer_count
