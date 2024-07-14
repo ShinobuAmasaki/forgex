@@ -25,14 +25,19 @@ module forgex_lazy_dfa_m
    public :: d_state_t
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
-   ! d_list_t is the type represents a list of transitionable NFA state
+   !> The `d_list_t` is the type represents a list of transitionable NFA state
+   !> This type holds a linked list of possible NFA states for a range of input characters.
+   !> This is a component of the `dfa_t` type.
    type :: d_list_t
       type(segment_t), allocatable :: c(:)
       type(nfa_state_set_t) :: to
       type(d_list_t), pointer :: next => null()
    end type d_list_t
 
-   ! d_state_t is the type represents a state of DFA.
+   !> The `d_state_t` is the type represents a state of DFA.
+   !> This type has a set of NFA states that can be constructed by the powerset construction
+   !> method as the `nfa_state_set_t` type component, which is internally composed of logical array.
+   !> In addition, it has a flag indicating whether it is an accepting state and a list of transitions.
    type :: d_state_t
       integer(int32) :: index
       type(NFA_state_set_t) :: state_set
@@ -40,19 +45,25 @@ module forgex_lazy_dfa_m
       type(d_transition_t), pointer :: transition => null() ! list of transition destination
    end type d_state_t
 
-   ! d_transition_t
+   !> The `d_transition_t` is the type represents a transition a transition from a DFA state
+   !> to the next DFA state.
+   !> The set of transitions for a particular DFA state (represented as a node of `d_state_t` type) 
+   !> is kept in a linked list. 
    type :: d_transition_t
-      type(segment_t), allocatable :: c(:)
-      type(d_state_t), pointer :: to => null()
+      type(segment_t), allocatable :: c(:)            ! range of input characters involved in the transition
+      type(d_state_t), pointer :: to => null()        ! destination
       type(d_transition_t), pointer :: next => null() ! pointer of next data
    end type d_transition_t
 
+   !> The `dfa_t` class represents a single automaton as a set of DFA states.
+   !> A DFA constructed by the powerset method has one initial state and 
    type, public :: dfa_t
-      integer(int32) :: dfa_nstate = 0
-      type(d_state_t), pointer :: states(:) => null()
-      type(nfa_t), pointer :: nfa
-      type(d_state_t), pointer :: initial_dfa_state => null()
-      type(d_list_t), pointer :: dlist => null()
+      integer(int32)           :: dfa_nstate        = 0        ! counter
+      type(d_state_t), pointer :: states(:)         => null()  ! DFA states of the DFA
+      type(nfa_t), pointer     :: nfa               => null()  ! an NFA before powerset construction 
+      type(d_state_t), pointer :: initial_dfa_state => null()  ! initial state of the DFA 
+         ! Pointer attribute of this component is necessaryto realize a pointer reference to a derived-type component. 
+      type(d_list_t), pointer  :: dlist             => null()  ! a linked list of reachable NFA states
    contains
       procedure :: init            => lazy_dfa__init
       procedure :: free            => lazy_dfa__deallocate
@@ -71,27 +82,39 @@ module forgex_lazy_dfa_m
    end type dfa_t
 
 
-!= Array to monitor for allocation to pointer variables
+!== Array to monitor for allocation to pointer variables
+   !> Derived type definition for element that make up the pointer array
+   !> for the monitor of the `d_list_t` type. 
    type :: dlist_pointer_list_t
       type(d_list_t), pointer :: node
    end type dlist_pointer_list_t
 
+   !> Derived type definition for element that make up the pointer array
+   !> for the monitor of the `d_state_t` type.
    type :: dstate_pointer_list_t
       type(d_state_t), pointer :: node
    end type dstate_pointer_list_t
 
+   !> Derived type definition for element that make up the pointer array
+   !> for the monitor of the `d_transition_t` type.
    type :: dtransition_pointer_list_t
       type(d_transition_t), pointer :: node
    end type dtransition_pointer_list_t
 
+   !> The monitor array of the `d_list_t` type.
    type(dlist_pointer_list_t)        :: dlist_pointer_list(DFA_STATE_MAX)
+   !> The monitor array of the `d_state_t` type.
    type(dstate_pointer_list_t)       :: dstate_pointer_list(DFA_STATE_MAX)
+   !> The monitor array of the `d_transition_t` type.
    type(dtransition_pointer_list_t)  :: dtransition_pointer_list(DFA_STATE_MAX)
 
 #ifndef DEBUG
+   !> The number of nodes registered in the monitor array of the `dlist_pointer_list`.
    integer(int32) :: dlist_pointer_count = 0
-   integer(int32) :: dtransition_pointer_count = 0
+   !> The number of nodes registered in the monitor array of the `dstate_pointer_list`.
    integer(int32) :: dstate_pointer_count = 0
+   !> The number of nodes registered in the monitor array of the `dtransition_pointer_list`.
+   integer(int32) :: dtransition_pointer_count = 0
 #else
    integer(int32), public :: dlist_pointer_count = 0
    integer(int32), public :: dtransition_pointer_count = 0
@@ -100,54 +123,64 @@ module forgex_lazy_dfa_m
 
 contains
 
+   !> The constructor of the `dfa_t` class that initialize DFA by powerset construciton
+   !> of the NFA of argument.
    subroutine lazy_dfa__init(self, nfa)
       implicit none
-      class(dfa_t), intent(inout) :: self
-      type(nfa_t), intent(in), pointer :: nfa
-      type(d_state_t) :: initial
-      type(nfa_state_set_t) :: nfa_entry_state_set
-      type(nfa_state_set_t), allocatable :: initial_closure
+      class(dfa_t), intent(inout)        :: self
+      type(nfa_t), intent(in), pointer   :: nfa
+
+      type(d_state_t)                    :: initial
+      type(nfa_state_set_t)              :: nfa_entry_state_set
+      type(nfa_state_set_t), allocatable :: initial_closure       ! for computing epsilon closure. 
+
       integer :: i
 
-
+      ! Initialize
       self%dfa_nstate = 0
       allocate(self%states(DFA_STATE_MAX))
-
-      do i = 1, size(self%states, dim=1)
-         self%states(i)%index = i
-      end do
-
-      self%nfa => nfa
-
       allocate(initial_closure)
       initial_closure%vec(:) = .false.
       nfa_entry_state_set%vec(:) = .false.
 
+      ! Indexing of DFA states
+      do i = 1, size(self%states, dim=1)
+         self%states(i)%index = i
+      end do
+
+      ! Associate a reference to the NFA of an argument to the derived-type component.
+      self%nfa => nfa
+
+      ! Using `nfa_entry_state_set` as input, calculate the ε-closure and store
+      ! the result in `initial_closure`.
       call add_nfa_state(nfa_entry_state_set, nfa_entry)
       
+      ! Compute epsilon closure 
       call self%epsilon_closure(nfa_entry_state_set, initial_closure)
 
+      ! Create the initial state of the DFA
       allocate(self%initial_dfa_state)
 
-      ! deep copy
+      ! Do DEEP copy
       initial%state_set = initial_closure
       initial%accepted = check_NFA_state(initial%state_set, nfa_exit)
-
       self%initial_dfa_state = self%register(initial%state_set)
 
       deallocate(initial_closure)
    end subroutine lazy_dfa__init
 
-
+   !> Deallocates all nodes registered in the monitor pointer arrays.
    subroutine  lazy_dfa__deallocate(self)
       implicit none
-      class(dfa_t) :: self
+      class(dfa_t), intent(inout) :: self
       integer :: j, max
 
+      ! Deallocate the initial node.
       if (associated(self%initial_dfa_state)) then
          deallocate(self%initial_dfa_state)
       end if
 
+      ! 
       max = dlist_pointer_count
       do j = 1, max
          if (associated(dlist_pointer_list(j)%node)) then
@@ -214,7 +247,6 @@ contains
       res => null()
       
       if (self%is_registered(set, i)) then
-         write(stderr, *) "L117 not register"
          res => self%states(i)
          return
       end if
