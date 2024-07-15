@@ -27,48 +27,48 @@ contains
    function is_valid__in(pattern, str, correct_answer) result(res)
       implicit none
       character(*), intent(in) :: pattern, str
-      logical, intent(in) :: correct_answer
+      logical,      intent(in) :: correct_answer
+
       logical :: res
       
       res = (pattern .in. str) .eqv. correct_answer
-
    end function is_valid__in
+
 
    function is_valid__match(pattern, str, correct_answer) result(res)
       implicit none
       character(*), intent(in) :: pattern, str
-      logical, intent(in) :: correct_answer
+      logical,      intent(in) :: correct_answer
+
       logical :: res
 
       res = (pattern .match. str) .eqv. correct_answer
    end function is_valid__match
 
+
    function is_valid__regex(pattern, str, answer, substr) result(res)
       implicit none
-      character(*), intent(in) :: pattern, str
-      character(*), intent(in) :: answer
+      character(*),              intent(in)    :: pattern, str
+      character(*),              intent(in)    :: answer
       character(:), allocatable, intent(inout) :: substr
-      character(:), allocatable :: local
-      integer(int32) :: length
-      logical :: res 
 
+      character(:), allocatable :: local
+      integer(int32)            :: length
+      logical                   :: res 
 
       local = regex(pattern, str, length)
-
       substr = local
 
       res = trim(local) == trim(answer)
-
    end function is_valid__regex
+
 
    subroutine runner_in(pattern, str, answer, result)
       implicit none
-      character(*), intent(in) :: pattern, str
-      logical, intent(in) :: answer
-      logical, intent(inout) :: result
-
+      character(*), intent(in)    :: pattern, str
+      logical,      intent(in)    :: answer
+      logical,      intent(inout) :: result
       logical :: res
-      
 
       res = is_valid__in(pattern, str, answer)
 
@@ -79,17 +79,15 @@ contains
       end if
 
       result = result .and. res
-      
    end subroutine runner_in
+
 
    subroutine runner_match(pattern, str, answer, result)
       implicit none
-      character(*), intent(in) :: pattern, str
-      logical, intent(in) :: answer
-      logical, intent(inout) :: result
-
+      character(*), intent(in)    :: pattern, str
+      logical,      intent(in)    :: answer
+      logical,      intent(inout) :: result
       logical :: res
-      
 
       res = is_valid__match(pattern, str, answer)
 
@@ -107,13 +105,12 @@ contains
 
    subroutine runner_regex(pattern, str, answer, result)
       implicit none
-      character(*), intent(in) :: pattern, str
-      character(*), intent(in) :: answer
-      logical, intent(inout) :: result
+      character(*), intent(in)    :: pattern, str
+      character(*), intent(in)    :: answer
+      logical,      intent(inout) :: result
 
       character(:), allocatable :: substr
-
-      logical :: res
+      logical                   :: res
 
       res = is_valid__regex(pattern, str, answer, substr)
 
@@ -126,7 +123,6 @@ contains
       end if
 
       result = result .and. res
-
    end subroutine runner_regex
 
 

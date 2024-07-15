@@ -33,7 +33,7 @@ module forgex_nfa_m
    integer(int32), public :: nfa_entry
    integer(int32), public :: nfa_exit
 
-   ! nlist_t is a type represents a transition on NFA.
+   ! The `nlist_t` is a type represents a transition on NFA.
    ! It transits to state 'to' by character segument 'c'.
    type, public :: nlist_t
       type(segment_t) :: c = SEG_EMPTY
@@ -80,7 +80,8 @@ contains
 
    subroutine nfa__init(self)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t), intent(inout) :: self
+      
       integer :: i
 
       self%nfa_nstate = 0
@@ -110,9 +111,9 @@ contains
    
    subroutine nfa__add_transition(self, from, to, c)
       implicit none
-      class(nfa_t), intent(inout) :: self
-      integer(int32), intent(in) :: from, to
-      type(segment_t), intent(in) :: c
+      class(nfa_t),    intent(inout) :: self
+      integer(int32),  intent(in)    :: from, to
+      type(segment_t), intent(in)    :: c
 
       type(nlist_t), pointer :: p
       
@@ -133,9 +134,9 @@ contains
 
    recursive subroutine nfa__generate_nfa(self, tree, entry, way_out)
       implicit none
-      class(nfa_t) :: self
-      type(tree_t), intent(in) :: tree
-      integer(int32), intent(in) :: entry, way_out
+      class(nfa_t),   intent(inout) :: self
+      type(tree_t),   intent(in)    :: tree
+      integer(int32), intent(in)    :: entry, way_out
 
       integer :: a1, a2, j
 
@@ -178,11 +179,10 @@ contains
       implicit none
       class(nfa_t), intent(inout) :: self
  
-      type(nlist_t), pointer :: p
-      integer(int32) :: i, j
-      type(priority_queue_t) :: queue
+      type(nlist_t), pointer       :: p
+      type(priority_queue_t)       :: queue
       type(segment_t), allocatable :: seg_list(:)
-      integer :: num
+      integer(int32)               :: i, j, num
 
       num = 0
       p => null()
@@ -245,7 +245,7 @@ contains
 
    subroutine nfa__build(self, tree)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t)              :: self
       type(tree_t), intent(in)  :: tree
 
       nfa_entry = self%generate_node()
@@ -278,14 +278,16 @@ contains
          deallocate(self%states)
       end if
    end subroutine nfa__deallocate
-   
+
+
 #ifdef DEBUG
    subroutine nfa__print(self)
       implicit none
-      class(nfa_t) :: self 
-      integer :: i
-      type(nlist_t), pointer :: p
+      class(nfa_t), intent(in) :: self
+
+      type(nlist_t), pointer    :: p
       character(:), allocatable :: cache
+      integer                   :: i
 
       write(stderr, *) "--- PRINT NFA ---"
 
@@ -314,7 +316,7 @@ contains
 
    subroutine nfa__print_state_set (self, p)
       implicit none
-      class(nfa_t) :: self 
+      class(nfa_t),          intent(in)         :: self 
       type(NFA_state_set_t), intent(in), target :: p
 
       integer(int32) :: i
@@ -332,6 +334,7 @@ contains
    logical function check_nfa_state(state, s)
       implicit none
       type(nfa_state_set_t), intent(in) :: state
+
       integer(int32) :: s
 
       if (s /= 0) then
@@ -346,9 +349,8 @@ contains
    subroutine disjoin_nfa_state(state, seg_list)
       use :: forgex_segment_disjoin_m
       implicit none
-      type(nlist_t), pointer, intent(inout) ::state 
-
-      type(segment_t), intent(inout) :: seg_list(:)
+      type(nlist_t),   intent(inout), pointer :: state 
+      type(segment_t), intent(inout)          :: seg_list(:)
       
       integer :: j, k, siz
       siz = size(seg_list, dim=1)
@@ -389,7 +391,7 @@ contains
    subroutine add_nfa_state(state, s)
       implicit none
       type(nfa_state_set_t), intent(inout) :: state
-      integer(int32), intent(in):: s
+      integer(int32),        intent(in)    :: s
 
       state%vec(s) = .true.
    end subroutine add_nfa_state
@@ -397,9 +399,9 @@ contains
 
    recursive subroutine mark_empty_transition(self, state, idx)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t),          intent(in)    :: self
       type(nfa_state_set_t), intent(inout) :: state
-      integer(int32), intent(in) :: idx 
+      integer(int32),        intent(in)    :: idx 
 
       type(nlist_t), pointer :: p
 
@@ -422,8 +424,9 @@ contains
 
    subroutine collect_empty_transition (self, state)
       implicit none
-      class(nfa_t) :: self
+      class(nfa_t),          intent(in)   :: self
       type(nfa_state_set_t), intent(inout):: state
+
       integer(int32) :: i 
 
       do i = 1, self%nfa_nstate
@@ -437,10 +440,10 @@ contains
    function equivalent_nfa_state_set(a, b) result(res)
       implicit none
       type(nfa_state_set_t), intent(in), pointer  :: a
-      type(nfa_state_set_t), intent(in)  :: b
-      integer(int32) :: i
-      logical :: res
+      type(nfa_state_set_t), intent(in)           :: b
 
+      integer(int32) :: i
+      logical        :: res
 
       do i = 1, NFA_VECTOR_SIZE
          if (a%vec(i) .neqv. b%vec(i)) then
