@@ -145,6 +145,8 @@
 </h2>
     
 
+    <p>Calculate a set of possible NFA states from the current DFA state by the input
+character <code>symbol</code>.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/dfa_t.html'>dfa_t</a></p>
@@ -162,7 +164,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~18"></span>
+              <span class="anchor" id="variable-self~7"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -210,7 +212,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~6"></span>
+          <span class="anchor" id="variable-res~20"></span>
           type(<a href='../type/d_list_t.html'>d_list_t</a>), pointer
         </small>
       </h3>
@@ -231,18 +233,19 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">lazy_dfa__compute_reachable_n_state</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">current</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol</span>
+
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol</span>
 
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nlist_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ptr_nlist</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w">   </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span><span class="w">         </span><span class="c">! a set of NFA state</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nlist_t</span><span class="p">),</span><span class="w">  </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ptr_nlist</span><span class="w">         </span><span class="c">! </span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">b</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">)</span><span class="w">         </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol_belong</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">  </span><span class="c">! Holds the segment to which the symbol belongs</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">          </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
 
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol_belong</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
+<span class="w">      </span><span class="c">! Initialize</span>
 <span class="w">      </span><span class="n">symbol_belong</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SEG_EMPTY</span>
 <span class="w">      </span><span class="n">ptr_nlist</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
 <span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
@@ -338,7 +341,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

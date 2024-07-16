@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.7% of total for procedures.">14 statements</a>
+                 title=" 0.7% of total for procedures.">13 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -143,19 +143,7 @@
     <div class="col-md-9" id='text'>
     <h2>private  function lazy_dfa__move(self, current, symbol) result(res)  
 </h2>
-        <div class="card mb-4">
-      <h3 class="card-header card-title bg-light">Uses</h3>
-      <div class="card-body">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">
-              <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
-              </ul>
-            </li>
-        </ul>
-      </div>
-    </div>
-
+    
 
 
     <h3>Type Bound</h3>
@@ -174,7 +162,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~20"></span>
+              <span class="anchor" id="variable-self~9"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -222,7 +210,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~8"></span>
+          <span class="anchor" id="variable-res~22"></span>
           type(<a href='../type/d_list_t.html'>d_list_t</a>), pointer
         </small>
       </h3>
@@ -242,20 +230,21 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">lazy_dfa__move</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_segment_m</span>
 <span class="w">      </span><span class="k">implicit none </span>
-<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">current</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">      </span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">next</span>
-<span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">current</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol</span>
 
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
+
+<span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w">  </span><span class="c">! Initialize</span>
+
+<span class="w">      </span><span class="c">! Scan the array of DFA states.</span>
 <span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span>
-<span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">reachable</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">res</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
-<span class="k">      end do</span>
+<span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">reachable</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span><span class="w"> </span><span class="c">! </span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">res</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="c">! Returns a reference to the destination DFA state.</span>
+<span class="w">      </span><span class="k">end do</span>
 <span class="k">   end function </span><span class="n">lazy_dfa__move</span>
 </pre></div>
 
@@ -280,7 +269,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

@@ -80,7 +80,7 @@ contains
       end if  
       call dfa%matching(char(10)//str//char(10), from, to)
 
-      call dfa%free_dlist
+      call free_dlist
 
 #ifdef DEBUG
       call nfa%print()

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.3% of total for procedures.">25 statements</a>
+                 title=" 1.2% of total for procedures.">24 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -145,6 +145,8 @@
 </h2>
     
 
+    <p>Take <code>nfa_state_set_t</code> as input and register the set as the DFA state in the DFA.
+The result is returned as a pointer to the DFA state.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/dfa_t.html'>dfa_t</a></p>
@@ -162,10 +164,10 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
-              class(<a href='../type/dfa_t.html'>dfa_t</a>)
+              <span class="anchor" id="variable-self~5"></span>
+              class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -195,7 +197,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~5"></span>
+          <span class="anchor" id="variable-res~19"></span>
           type(<a href='../type/d_state_t.html'>d_state_t</a>), pointer
         </small>
       </h3>
@@ -216,35 +218,40 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">lazy_dfa__register</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">set</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">set</span>
 <span class="w">      </span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">k</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">           </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">k</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 
 <span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
 <span class="w">      </span>
+<span class="w">      </span><span class="c">! If the set is already registered, returns a pointer to the corresponding DFA state.</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">is_registered</span><span class="p">(</span><span class="n">set</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;L117 not register&quot;</span>
-<span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      end if</span>
 
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DFA_STATE_MAX</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="c">! Execute an error stop statement if the counter exceeds a limit. </span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">DFA_STATE_MAX</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;ERROR: Number of DFA states too large.&quot;</span>
 <span class="w">         </span><span class="k">error stop</span>
 <span class="k">      end if</span>
 
-<span class="k">      </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span>
+<span class="k">      </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! count up</span>
+<span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_nstate</span><span class="w">                   </span><span class="c">! Assigning to a short variable</span>
 
+<span class="w">      </span><span class="c">! Register the NFA state set as a DFA state in the k-th element of the array component.</span>
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">state_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set</span>
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">accepted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">check_NFA_state</span><span class="p">(</span><span class="n">set</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_exit</span><span class="p">)</span>
-<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">transition</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">transition</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w">   </span>
+<span class="w">         </span><span class="c">! At this point the new DFA state has no transition (due to lazy evaluation).</span>
 
+<span class="w">      </span><span class="c">! Also register this in the monitor array. </span>
 <span class="w">      </span><span class="n">dstate_pointer_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dstate_pointer_count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">dstate_pointer_list</span><span class="p">(</span><span class="n">dstate_pointer_count</span><span class="p">)%</span><span class="n">node</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 
+<span class="w">      </span><span class="c">! Return a pointer reference to the registered DFA state.</span>
 <span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end function </span><span class="n">lazy_dfa__register</span>
 </pre></div>
@@ -270,7 +277,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

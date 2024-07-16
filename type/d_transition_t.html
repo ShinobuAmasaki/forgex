@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p> 4.9% of total for derived types.</p>Including implementation: 5 statements,  0.7% of total for derived types.">5 statements</a>
+                 title="<p> 5.0% of total for derived types.</p>Including implementation: 5 statements,  0.7% of total for derived types.">5 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -116,9 +116,9 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/d_transition_t.html#variable-c~6">c</a>
-            <a class="list-group-item" href="../type/d_transition_t.html#variable-next~3">next</a>
-            <a class="list-group-item" href="../type/d_transition_t.html#variable-to~4">to</a>
+            <a class="list-group-item" href="../type/d_transition_t.html#variable-c~4">c</a>
+            <a class="list-group-item" href="../type/d_transition_t.html#variable-next~2">next</a>
+            <a class="list-group-item" href="../type/d_transition_t.html#variable-to~5">to</a>
         </div>
       </div>
     </div>
@@ -156,7 +156,10 @@
     <div class="col-md-9" id='text'>
       <h2 id="type-def-statement">
         type, private :: d_transition_t</h2>
-    
+    <p>The <code>d_transition_t</code> is the type represents a transition a transition from a DFA state
+to the next DFA state.
+The set of transitions for a particular DFA state (represented as a node of <code>d_state_t</code> type)
+is kept in a linked list.</p>
     <br>
 
     <section>
@@ -173,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-c~6"></span>
+              <span class="anchor" id="variable-c~4"></span>
               type(<a href='segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -190,7 +193,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next~3"></span>
+              <span class="anchor" id="variable-next~2"></span>
               type(<a href='d_transition_t.html'>d_transition_t</a>),
             </td>
               <td>public,</td>
@@ -207,7 +210,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~4"></span>
+              <span class="anchor" id="variable-to~5"></span>
               type(<a href='d_state_t.html'>d_state_t</a>),
             </td>
               <td>public,</td>
@@ -234,8 +237,8 @@
     <section>
     <h3><span class="anchor" id="src"></span>Source Code</h3>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">type</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">d_transition_t</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">c</span><span class="p">(:)</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">c</span><span class="p">(:)</span><span class="w">            </span><span class="c">! range of input characters involved in the transition</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w">        </span><span class="c">! destination</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_transition_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span><span class="w"> </span><span class="c">! pointer of next data</span>
 <span class="w">   </span><span class="k">end type </span><span class="n">d_transition_t</span>
 </pre></div>
@@ -260,7 +263,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

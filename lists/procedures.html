@@ -202,6 +202,12 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../interface/free_dlist.html'>free_dlist</a></td>
+                 <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/get_token.html'>get_token</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
@@ -318,7 +324,8 @@ at the end that matches the ending of a line.</p></td>
                  <td><a href='../proc/lazy_dfa__compute_reachable_n_state.html'>lazy_dfa__compute_reachable_n_state</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>Calculate a set of possible NFA states from the current DFA state by the input
+character <code>symbol</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__construct.html'>lazy_dfa__construct</a></td>
@@ -330,7 +337,7 @@ at the end that matches the ending of a line.</p></td>
                  <td><a href='../proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>Deallocates all nodes registered in the monitor pointer arrays.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__deallocate_dlist.html'>lazy_dfa__deallocate_dlist</a></td>
@@ -342,13 +349,14 @@ at the end that matches the ending of a line.</p></td>
                  <td><a href='../proc/lazy_dfa__epsilon_closure.html'>lazy_dfa__epsilon_closure</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>Compute the ε-closure for a set of NFA states.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__init.html'>lazy_dfa__init</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>The constructor of the <code>dfa_t</code> class that initialize DFA by powerset construciton
+of the NFA of argument.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__is_registered.html'>lazy_dfa__is_registered</a></td>
@@ -378,7 +386,8 @@ at the end that matches the ending of a line.</p></td>
                  <td><a href='../proc/lazy_dfa__register.html'>lazy_dfa__register</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>Take <code>nfa_state_set_t</code> as input and register the set as the DFA state in the DFA.
+The result is returned as a pointer to the DFA state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/len_trim_utf8.html'>len_trim_utf8</a></td>
@@ -478,15 +487,15 @@ at the end that matches the ending of a line.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Interface</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -543,16 +552,16 @@ at the end that matches the ending of a line.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/regex.html'>regex</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../interface/regex.html'>regex</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>The generic name for the <code>regex</code> function implemented as <code>regex__matching</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/regex.html'>regex</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/regex__matching.html'>regex__matching</a></td>
@@ -663,7 +672,7 @@ at the end that matches the ending of a line.</p></td>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

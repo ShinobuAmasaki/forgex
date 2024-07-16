@@ -144,7 +144,7 @@
       </a>
       <div id="inters-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28.in.%29">operator(.in.)</a>
+            <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28.in.%29~2">operator(.in.)</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28SLASH%3D%29">operator(/=)</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28%3D%3D%29">operator(==)</a>
         </div>
@@ -444,8 +444,8 @@ parameter
           <h2>Interfaces</h2>
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.in.%29"></span>
-      <h3>public        interface <a href='../interface/operator(.in.).html'>operator(.in.)</a> 
+      <span class="anchor" id="interface-operator%28.in.%29~2"></span>
+      <h3>public        interface <a href='../interface/operator(.in.)~2.html'>operator(.in.)</a> 
       </h3>
     </div>
     <ul class="list-group">
@@ -470,7 +470,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~3"></span>
+              <span class="anchor" id="variable-a"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -529,7 +529,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~4"></span>
+              <span class="anchor" id="variable-a~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -544,7 +544,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg_list~3"></span>
+              <span class="anchor" id="variable-seg_list~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -570,6 +570,75 @@ parameter
           <li class="list-group-item">
                 <h3>
     public  function <a href='../proc/seg_in_segment.html'>seg_in_segment</a>(a, b) result(res)  
+
+    </h3>
+    
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~3"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%28SLASH%3D%29"></span>
+      <h3>public        interface <a href='../interface/operator(SLASH=).html'>operator(/=)</a> 
+      </h3>
+    </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    public  function <a href='../proc/segment_not_equiv.html'>segment_not_equiv</a>(a, b) result(res)  
 
     </h3>
     
@@ -631,75 +700,6 @@ parameter
 
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28SLASH%3D%29"></span>
-      <h3>public        interface <a href='../interface/operator(SLASH=).html'>operator(/=)</a> 
-      </h3>
-    </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    public  function <a href='../proc/segment_not_equiv.html'>segment_not_equiv</a>(a, b) result(res)  
-
-    </h3>
-    
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-a~7"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>a</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-b~5"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>b</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
       <span class="anchor" id="interface-operator%28%3D%3D%29"></span>
       <h3>public        interface <a href='../interface/operator(==).html'>operator(==)</a> 
       </h3>
@@ -726,7 +726,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~6"></span>
+              <span class="anchor" id="variable-a~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -741,7 +741,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~4"></span>
+              <span class="anchor" id="variable-b~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -798,7 +798,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-max~6"></span>
+              <span class="anchor" id="variable-max"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -815,7 +815,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-min~2"></span>
+              <span class="anchor" id="variable-min"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -841,7 +841,7 @@ parameter
           <tbody>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/segment_t.html#boundprocedure-print~2'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/segment_for_print.html'>segment_for_print</a></td>
+  <strong><a href='../type/segment_t.html#boundprocedure-print'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/segment_for_print.html'>segment_for_print</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -879,7 +879,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~3"></span>
+              <span class="anchor" id="variable-a"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -939,7 +939,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~4"></span>
+              <span class="anchor" id="variable-a~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -954,7 +954,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg_list~3"></span>
+              <span class="anchor" id="variable-seg_list~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -999,7 +999,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~5"></span>
+              <span class="anchor" id="variable-a~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1014,7 +1014,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~3"></span>
+              <span class="anchor" id="variable-b"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1059,7 +1059,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~6"></span>
+              <span class="anchor" id="variable-a~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1074,7 +1074,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~4"></span>
+              <span class="anchor" id="variable-b~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1164,7 +1164,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~24"></span>
+              <span class="anchor" id="variable-self"></span>
               class(<a href='../type/segment_t.html'>segment_t</a>)
             </td>
 <td></td>
@@ -1209,7 +1209,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~7"></span>
+              <span class="anchor" id="variable-a~5"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1224,7 +1224,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~5"></span>
+              <span class="anchor" id="variable-b~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1273,7 +1273,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p>17.6% of total for derived types.</p>Including implementation: 220 statements, 29.7% of total for derived types.">18 statements</a>
+                 title="<p>17.8% of total for derived types.</p>Including implementation: 219 statements, 30.2% of total for derived types.">18 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -116,10 +116,10 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/nfa_t.html#variable-all_segments">all_segments</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-all_segments~2">all_segments</a>
             <a class="list-group-item" href="../type/nfa_t.html#variable-nfa_nstate">nfa_nstate</a>
-            <a class="list-group-item" href="../type/nfa_t.html#variable-pattern">pattern</a>
-            <a class="list-group-item" href="../type/nfa_t.html#variable-states">states</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-pattern~7">pattern</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-states~2">states</a>
         </div>
       </div>
     </div>
@@ -150,12 +150,12 @@
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-build">build</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-collect_empty_transition">collect_empty_transition</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-disjoin">disjoin</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-free">free</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-free~2">free</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-generate_nfa">generate_nfa</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-generate_node">generate_node</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-init">init</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-init~2">init</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-mark_empty_transition">mark_empty_transition</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print">print</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print~2">print</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print_state_set">print_state_set</a>
         </div>
       </div>
@@ -189,7 +189,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-all_segments"></span>
+              <span class="anchor" id="variable-all_segments~2"></span>
               type(<a href='segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -223,7 +223,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern"></span>
+              <span class="anchor" id="variable-pattern~7"></span>
               character(len=:),
             </td>
               <td>public,</td>
@@ -240,7 +240,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-states"></span>
+              <span class="anchor" id="variable-states~2"></span>
               type(<a href='nlist_t.html'>nlist_t</a>),
             </td>
               <td>public,</td>
@@ -466,9 +466,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
@@ -559,7 +559,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-free"></span>
+      <span class="anchor" id="boundprocedure-free~2"></span>
       <h3>
           procedure, public ::
   <strong>free</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__deallocate.html'>nfa__deallocate</a>
@@ -643,9 +643,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -771,7 +771,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-init"></span>
+      <span class="anchor" id="boundprocedure-init~2"></span>
       <h3>
           procedure, public ::
   <strong>init</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__init.html'>nfa__init</a>
@@ -801,9 +801,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -855,9 +855,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
@@ -909,7 +909,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-print"></span>
+      <span class="anchor" id="boundprocedure-print~2"></span>
       <h3>
           procedure, public ::
   <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__print.html'>nfa__print</a>
@@ -939,9 +939,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
@@ -993,9 +993,9 @@
         <tr>
             <td>
               <span class="anchor" ></span>
-              class(<a href='nfa_t.html'>nfa_t</a>)
+              class(<a href='nfa_t.html'>nfa_t</a>),
             </td>
-<td></td>
+<td>intent(in)</td>
               <td></td>            <td>
               
             </td>
@@ -1050,7 +1050,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-13 20:38              </p>
+ on 2024-07-16 00:46              </p>
           </div>
         </div>
         <br>
