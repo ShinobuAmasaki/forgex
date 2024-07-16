@@ -23,18 +23,20 @@ module forgex_nfa_m
    public :: check_nfa_state
    public :: add_nfa_state
 
-   ! Upper limit of NFA state instance
+   !> Upper limit of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_MAX = 1024
 
-   ! Upper limit of NFA transition instance
+   !> Upper limit of NFA transition instance
    integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
-
-   ! Initial and accepting state on NFA.
+   
+   !> Initial state on NFA.
    integer(int32), public :: nfa_entry
+   !> Accepting state on NFA. 
    integer(int32), public :: nfa_exit
 
-   ! The `nlist_t` is a type represents a transition on NFA.
-   ! It transits to state 'to' by character segument 'c'.
+   !| The `nlist_t` type represents a transition on NFA.
+   !  It transits to state 'to' by character segument 'c'.
+   ! 
    type, public :: nlist_t
       type(segment_t) :: c = SEG_EMPTY
       integer(int32)  :: to = 0
@@ -42,11 +44,13 @@ module forgex_nfa_m
       integer(int32) :: index
    end type
 
-   ! nfa_state_set_t represents set of NFA states.
+   !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
       logical :: vec(NFA_VECTOR_SIZE) = .false.
    end type
 
+   !> The `nfa_t` class represents a single automaton as a set of NFA states.
+   !> An NFA is built from the input syntax-tree.
    type, public :: nfa_t
       character(:), allocatable :: pattern
       integer(int32) :: nfa_nstate = 0    ! Number of NFA state
@@ -68,12 +72,15 @@ module forgex_nfa_m
       procedure :: collect_empty_transition
    end type 
 
+   !> An derived-type definition for element that make up the pointer array
+   !> for the monitor of the `nlist_t` type.
    type :: nlist_pointer_list_t
       type(nlist_t), pointer :: node
    end type
 
-   ! private variables
+   !> The monitor array of the `nlist` type.
    type(nlist_pointer_list_t) :: nlist_node_list(NFA_STATE_MAX)
+   !> The number of nodes registered in the monitor array of the `nlist_node_list`.
    integer(int32) :: nlist_node_count  = 0
 
 contains
