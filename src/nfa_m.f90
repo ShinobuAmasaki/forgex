@@ -78,27 +78,33 @@ module forgex_nfa_m
 
 contains
 
+   !> The `nfa__init`  subroutine initialize an `nfa_t` type instance.
+   !> This procedure belongs to the class of `nfa_t` derived-type and is called as `init`. 
    subroutine nfa__init(self)
       implicit none
       class(nfa_t), intent(inout) :: self
       
       integer :: i
 
+      ! Initialize the counter of an instance. 
       self%nfa_nstate = 0
 
       allocate(self%states(NFA_STATE_MAX))
 
+      ! Initialize the index of states conteined in an instance.
       do i = 1, size(self%states, dim=1)
          self%states(i)%index = i
       end do
    end subroutine nfa__init
 
 
+   !> The `nfa__generate_node` function generates an node and counts `nfa_state` in an instance of the class. 
    function nfa__generate_node(self)
       implicit none
       class(nfa_t), intent(inout) :: self
       integer(int32) :: nfa__generate_node
 
+      !! If the counter exceeds NFA_STATE_MAX, an error stop will occur. 
       if (self%nfa_nstate >= NFA_STATE_MAX) then
          write(stderr, *) "Number of NFA states too large."
          error stop
@@ -109,6 +115,7 @@ contains
    end function nfa__generate_node
 
    
+   !> The
    subroutine nfa__add_transition(self, from, to, c)
       implicit none
       class(nfa_t),    intent(inout) :: self
