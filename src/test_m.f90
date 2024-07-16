@@ -114,8 +114,6 @@ contains
 
       res = is_valid__regex(pattern, str, answer, substr)
 
-      ! write(error_unit, '(a)', advance='no') '                                          '//char(13)
-
       if (res) then
          write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
       else
