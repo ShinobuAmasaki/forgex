@@ -12,13 +12,13 @@
 !> The `forgex_segment_m` module defines `segment_t` derived-type representing
 !> a subset of the UTF-8 character set.
 module forgex_segment_m
-   use, intrinsic :: iso_fortran_env
+   use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_utf8_m
    implicit none
    
    type, public :: segment_t
       integer(int32) :: min = UTF8_CODE_EMPTY ! = 0
-      integer(int32) :: max = UTF8_CODE_EMPTY ! = 0
+      integer(int32) :: max = UTF8_CODE_EMPTY ! = 0`
    contains
 #ifdef DEBUG
       procedure :: print => segment_for_print
