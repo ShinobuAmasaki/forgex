@@ -9,10 +9,8 @@
 !! This file defines syntactic parsing.
 
 !> The`forgex_syntax_tree_m` module defines parsing and
-!> the `tree_t` derived-type for syntax-tree.
+!> the `tree_t` derived-type for building syntax-tree.
 !> 
-!> The parser is implemented as a recursive descent parser 
-!> to construct the syntax tree of a regular expression.
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr=>error_unit
    use :: forgex_enums_m
@@ -20,6 +18,9 @@ module forgex_syntax_tree_m
    use :: forgex_segment_m
    implicit none
    private
+
+   !! The regular expression parsing performed by this module is done using recursive descent
+   !! parsing.
 
    public :: tree_t
    public :: build_syntax_tree
@@ -31,9 +32,10 @@ module forgex_syntax_tree_m
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
+   !> The maximum size of nodes for building the syntax tree.
    integer(int32), parameter :: TREE_MAX_SIZE = 1024
 
-   !> Declaration of the meta-characters
+   ! Declaration of the meta-characters
    character(1), parameter, private :: ESCAPE_T = 't'
    character(1), parameter, private :: ESCAPE_N = 'n'
    character(1), parameter, private :: ESCAPE_R = 'r'
@@ -56,10 +58,10 @@ module forgex_syntax_tree_m
    type :: tree_t
       !! This type is used to construct a concrete syntax tree,
       !! later converted to NFA.
-      integer(int32) :: op
-      type(segment_t), allocatable :: c(:)
-      type(tree_t), pointer :: left => null()
-      type(tree_t), pointer :: right => null()
+      integer(int32) :: op                      ! Operation
+      type(segment_t), allocatable :: c(:)      ! Character range
+      type(tree_t), pointer :: left => null()   ! Pointer to the left-hand node
+      type(tree_t), pointer :: right => null()  ! Pointer to the right-hand node
    end type 
 
    type :: tape_t
@@ -75,13 +77,16 @@ module forgex_syntax_tree_m
       procedure :: get_token
    end type
 
-   !> for monitoring allocation of pointer variables.
+   !> Global counter for monitoring the number of allocation.
    integer :: tree_node_count = 0
+
+   !> This `array` array is to monitor the allocation of pointer variables.
    type(allocated_list_t) :: array(TREE_MAX_SIZE)
+
 
 contains
 
-   !> Copies the input pattern to `tape_t` type and builds a concrete syntax tree.
+   !> Copies the input pattern to `tape_t` type and builds a syntax tree.
    !> The result returns a pointer to the root of the tree.
    !> Expected to be used by the forgex module.
    function build_syntax_tree(tape, str) result(root)
@@ -132,6 +137,7 @@ contains
       call get_token(tape)
    end subroutine initialize_parser
 
+   
    !| Get the currently focused character (1 to 4 bytes) from the entire string inside
    !  the `type_t` derived-type, and store the enumerator's numeric value in the 
    !  `current_token` component. 
@@ -238,44 +244,59 @@ contains
 
 !=====================================================================!
 
+   !> This function creates a new tree node with the specified operation and child node.
+   !> It allocates memory for the node, assign operation and child node pointers, and
+   !> updates a global count of tree node.
    function make_tree_node(op, left, right) result(node)
       implicit none
-      integer(int32), intent(in) :: op
+      integer(int32),        intent(in) :: op
       type(tree_t), pointer, intent(in) :: left, right
+      
       type(tree_t), pointer :: node
 
       node => null()
 
       allocate(node)
 
+      ! Assign operation and child node pointers
       node%op = op
       node%left => left
       node%right => right
 
+      ! Increment the global tree_node_count and store the node in the global array for monitoring.
       tree_node_count = tree_node_count + 1
-
       array(tree_node_count)%node => node
-   end function
+   end function make_tree_node
 
 
+   !> This function creates an atom node in a tree structure using a segment.
+   !> It allocates  memory for the node and assigns the segment to the node's content
+   !> (`c` array).
    function make_atom (segment) result(node)
       implicit none
-      type(segment_t), intent(in) :: segment
-      type(tree_t), pointer :: node
+      type(segment_t), intent(in) :: segment    ! Input segment of type `segment_t`.
+      type(tree_t), pointer       :: node       ! Resulting pointer to newly created.
 
+      ! Initialize and allocate
       node => null()
       allocate(node)
       allocate(node%c(1))
 
+      ! Assign operation code `op_char` to the node (cf. `forgex_enum_m`)
       node%op = op_char
+      ! Assign the segment to the characters array `c` of the node. 
       node%c = segment
 
+      ! Increment the global `tree_node_count` and Store the node in the global array for monitoring.
       tree_node_count = tree_node_count + 1
       array(tree_node_count)%node => node
    end function make_atom
 
-!=====================================================================!
 
+!=====================================================================!
+  
+
+   !> This function constructs a regular expression tree starting form a `term`.
    function regex(tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -291,7 +312,8 @@ contains
 
    end function regex
 
-
+   !> This function constructs a `term` in the regular expression, which can
+   !> involve concatenation of postfix operations.
    function term(tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -314,6 +336,8 @@ contains
    end function term
 
 
+   !> This function handles postfix operations such as Kleene star (`*`), plus (`+`),
+   !> question mark (`+`), and range (`{m,n}`). 
    function postfix_op(tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -344,6 +368,8 @@ contains
    end function postfix_op
 
 
+   !> This function constructs primary expression, which can be characters, groups, character classes,
+   !> or special characters.
    function primary (tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -393,10 +419,10 @@ contains
       case default
          write(stderr, *) "Pattern includes some syntax error."
       end select
-
    end function primary 
 
 
+   !> This function constructs nodes for minimum-maximum range expression (`{m,n}`).
    function range_min_max(tape, ptr) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -533,10 +559,10 @@ contains
 
          end if 
       end if 
-
    end function range_min_max
 
 
+   !> This function constructs nodes for character classes, including inverted character classes.
    function char_class(tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -626,10 +652,10 @@ contains
 
       tree_node_count = tree_node_count + 1
       array(tree_node_count)%node => tree
-
    end function char_class
 
-      
+   
+   !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
    function make_tree_crlf() result(tree)
       implicit none
       type(tree_t), pointer :: tree
@@ -660,6 +686,8 @@ contains
    end function make_tree_crlf
 
 
+   !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`, 
+   !> `\w`, `\W`, `\s`, `\S`).
    function shorthand(tape) result(tree)
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -748,38 +776,52 @@ contains
    end function shorthand
 
    
+   !> This subroutine inverts a list of segment ranges representing Unicode characters.
+   !> It compute the complement of the given ranges and modifies the list accordingly.
+   !>
+   !> @note The algorithms implemented in this (especially the loops) are brute force
+   !> and we would like to change them with a more lightweight way of handling inverted classes.
    subroutine invert_segment_list(list)
       implicit none
-      type(segment_t), intent(inout), allocatable :: list(:)
+      type(segment_t), intent(inout), allocatable :: list(:)   ! Input list of segments
 
-      logical, allocatable :: unicode(:)
-      logical, allocatable :: inverted(:)
+      logical, allocatable :: unicode(:)     ! Array to mark Unicode code points covered by segments.
+      logical, allocatable :: inverted(:)    ! Array to store inverted coverage of Unicode code points.
 
-      integer :: i, j, count
+      integer :: i, j   ! Loop variables
+      integer :: count  ! Count of new segments
 
+      ! Allocate arrays to mark Unicode code points and their inverted coverage
       allocate(unicode(UTF8_CODE_MIN:UTF8_CODE_MAX))
       allocate(inverted((UTF8_CODE_MIN-1):(UTF8_CODE_MAX+1)))
+
+      ! Initialize arrays to `.false.`
       unicode(:) = .false.
       inverted(:) = .false.
 
+      ! Mark Unicode code points covered by the segments as `.true.`
       do i = UTF8_CODE_MIN, UTF8_CODE_MAX
          do j = 1, size(list, dim=1)
             unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
          end do
       end do 
 
+      ! Compute inverted coverage of Unicode code points.
       inverted(UTF8_CODE_MIN-1) = .false.
       inverted(UTF8_CODE_MAX+1) = .false.
       inverted(UTF8_CODE_MIN:UTF8_CODE_MAX) = .not. unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
 
+      ! Count the number of new segments needed in the inverted list.
       count = 0
       do i = UTF8_CODE_MIN, UTF8_CODE_MAX
          if (.not. inverted(i-1) .and. inverted(i)) count = count + 1
       end do
 
+      ! Deallocate the original list and allocate a new list with the new number of inverted segments.
       deallocate(list)
       allocate(list(count))
 
+      ! Reconstruct the inverted list of segments based on the inverted coverage.
       count = 1
       do i = UTF8_CODE_MIN, UTF8_CODE_MAX+1
          if (.not. inverted(i-1) .and. inverted(i)) then
@@ -794,7 +836,10 @@ contains
 
    end subroutine invert_segment_list
 
+
 !=====================================================================!
+! Procedures for debugging. 
+
 #ifdef DEBUG
    subroutine print_tree(tree)
       implicit none
@@ -906,6 +951,7 @@ contains
       str = trim(buf)
 
    end function print_class_simplify
-#endif     
+#endif
+
 
 end module forgex_syntax_tree_m
