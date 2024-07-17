@@ -76,19 +76,19 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="27.8% of total for modules and submodules.">634 statements</a>
+                 title="25.6% of total for modules and submodules.">553 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/syntax_tree_m.f90"> Source File</a>
+              <a href="../src/syntax_tree_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.F90</a></li>
             <li class="breadcrumb-item active" aria-current="page">forgex_syntax_tree_m</li>
           </ol>
         </nav>
@@ -172,7 +172,6 @@
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-make_tree_node">make_tree_node</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-postfix_op">postfix_op</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-primary">primary</a>
-            <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-print_class_simplify">print_class_simplify</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-range_min_max">range_min_max</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-regex">regex</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-shorthand">shorthand</a>
@@ -189,11 +188,9 @@
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-deallocate_tree">deallocate_tree</a>
-            <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-print_tree">print_tree</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-get_token">get_token</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-initialize_parser">initialize_parser</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-invert_segment_list">invert_segment_list</a>
-            <a class="list-group-item" href="../module/forgex_syntax_tree_m.html#proc-print_tree_internal">print_tree_internal</a>
         </div>
       </div>
     </div>
@@ -213,19 +210,19 @@
 
     <div class="col-md-9" id='text'>
       <p>The<code>forgex_syntax_tree_m</code> module defines parsing and
-the <code>tree_t</code> derived-type for syntax-tree.</p>
-<p>The parser is implemented as a recursive descent parser 
-to construct the syntax tree of a regular expression.</p>
+the <code>tree_t</code> derived-type for building syntax-tree.</p>
+<p>The regular expression parsing performed by this module is done using recursive descent
+parsing.</p>
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
       <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
                   <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
                   <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
               </ul>
             </li>
         </ul>
@@ -415,7 +412,7 @@ parameter
 <td> =</td>
                 <td>&#39;t&#39;</td>
             <td>
-                <p>Declaration of the meta-characters</p>
+                
             </td>
         </tr>
         <tr>
@@ -500,7 +497,7 @@ parameter
 <td> =</td>
                 <td>1024</td>
             <td>
-                
+                <p>The maximum size of nodes for building the syntax tree.</p>
             </td>
         </tr>
         <tr>
@@ -517,7 +514,7 @@ parameter
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>This <code>array</code> array is to monitor the allocation of pointer variables.</p>
             </td>
         </tr>
         <tr>
@@ -534,7 +531,7 @@ parameter
 <td> =</td>
                 <td>0</td>
             <td>
-                <p>for monitoring allocation of pointer variables.</p>
+                <p>Global counter for monitoring the number of allocation.</p>
             </td>
         </tr>
     </tbody>
@@ -591,7 +588,7 @@ of the character it is currently focused.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-idx~3"></span>
+              <span class="anchor" id="variable-idx"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -608,7 +605,7 @@ of the character it is currently focused.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~15"></span>
+              <span class="anchor" id="variable-str~16"></span>
               character(len=:),
             </td>
               <td>public,</td>
@@ -685,7 +682,7 @@ later converted to NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-c~5"></span>
+              <span class="anchor" id="variable-c"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -785,7 +782,7 @@ later converted to NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~5"></span>
+              <span class="anchor" id="variable-node"></span>
               type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
               <td>public,</td>
@@ -819,7 +816,7 @@ later converted to NFA.</p>
 </h3></div>
     <div class="card-body">
           
-  <p>Copies the input pattern to <code>tape_t</code> type and builds a concrete syntax tree.
+  <p>Copies the input pattern to <code>tape_t</code> type and builds a syntax tree.
 The result returns a pointer to the root of the tree.
 Expected to be used by the forgex module.</p>
 
@@ -836,7 +833,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape"></span>
+              <span class="anchor" id="variable-tape~4"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -851,7 +848,7 @@ Expected to be used by the forgex module.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~16"></span>
+              <span class="anchor" id="variable-str~17"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -881,7 +878,7 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs nodes for character classes, including inverted character classes.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -896,7 +893,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~8"></span>
+              <span class="anchor" id="variable-tape~11"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -926,7 +923,9 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function creates an atom node in a tree structure using a segment.
+It allocates  memory for the node and assigns the segment to the node's content
+(<code>c</code> array).</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -971,7 +970,7 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs a tree node for carriage return (CR) and line feed (LF) characters.</p>
 
   <h4>Arguments</h4>
     <em>None</em>
@@ -989,7 +988,9 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function creates a new tree node with the specified operation and child node.
+It allocates memory for the node, assign operation and child node pointers, and
+updates a global count of tree node.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1064,7 +1065,8 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function handles postfix operations such as Kleene star (<code>*</code>), plus (<code>+</code>),
+question mark (<code>+</code>), and range (<code>{m,n}</code>).</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1079,7 +1081,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~5"></span>
+              <span class="anchor" id="variable-tape~8"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1109,7 +1111,8 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs primary expression, which can be characters, groups, character classes,
+or special characters.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1124,7 +1127,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~6"></span>
+              <span class="anchor" id="variable-tape~9"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1150,56 +1153,11 @@ Expected to be used by the forgex module.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-print_class_simplify"></span> <h3>private  function <a href='../proc/print_class_simplify.html'>print_class_simplify</a>(p) result(str)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-p~8"></span>
-              type(<a href='../type/tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>p</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>character(len=:), allocatable</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-range_min_max"></span> <h3>private  function <a href='../proc/range_min_max.html'>range_min_max</a>(tape, ptr) result(tree)  
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs nodes for minimum-maximum range expression (<code>{m,n}</code>).</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1214,7 +1172,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~7"></span>
+              <span class="anchor" id="variable-tape~10"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1259,7 +1217,7 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs a regular expression tree starting form a <code>term</code>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1274,7 +1232,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~3"></span>
+              <span class="anchor" id="variable-tape~6"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1304,7 +1262,8 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
+<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1319,7 +1278,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~9"></span>
+              <span class="anchor" id="variable-tape~12"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1349,7 +1308,8 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function constructs a <code>term</code> in the regular expression, which can
+involve concatenation of postfix operations.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1364,7 +1324,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~4"></span>
+              <span class="anchor" id="variable-tape~7"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1408,53 +1368,13 @@ Expected to be used by the forgex module.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-print_tree"></span> <h3>public  subroutine <a href='../proc/print_tree.html'>print_tree</a>(tree)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tree~11"></span>
-              type(<a href='../type/tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>tree</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-get_token"></span> <h3>private  subroutine <a href='../proc/get_token.html'>get_token</a>(self, class)  
 </h3></div>
     <div class="card-body">
           
   <p>Get the currently focused character (1 to 4 bytes) from the entire string inside
-  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the 
-  <code>current_token</code> component. 
+  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
+  <code>current_token</code> component.
   This is a type-bound procedure of <code>tape_t</code>.</p><a href="../proc/get_token.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
@@ -1470,7 +1390,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~23"></span>
+              <span class="anchor" id="variable-self~2"></span>
               class(<a href='../type/tape_t.html'>tape_t</a>)
             </td>
 <td></td>
@@ -1525,7 +1445,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tape~2"></span>
+              <span class="anchor" id="variable-tape~5"></span>
               type(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1540,7 +1460,7 @@ Expected to be used by the forgex module.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~17"></span>
+              <span class="anchor" id="variable-str~18"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1565,7 +1485,8 @@ Expected to be used by the forgex module.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This subroutine inverts a list of segment ranges representing Unicode characters.
+It compute the complement of the given ranges and modifies the list accordingly.</p><a href="../proc/invert_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1580,7 +1501,7 @@ Expected to be used by the forgex module.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~2"></span>
+              <span class="anchor" id="variable-list"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -1589,46 +1510,6 @@ Expected to be used by the forgex module.</p>
             </td>
             <td>::</td>
             <td><strong>list</strong>(:)</td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-print_tree_internal"></span> <h3>private recursive subroutine <a href='../proc/print_tree_internal.html'>print_tree_internal</a>(tree)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tree~12"></span>
-              type(<a href='../type/tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>tree</strong></td>
             <td>
 
             </td>
@@ -1663,7 +1544,7 @@ Expected to be used by the forgex module.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

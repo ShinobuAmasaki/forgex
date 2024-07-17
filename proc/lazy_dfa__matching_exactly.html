@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.9% of total for procedures.">38 statements</a>
+                 title=" 2.1% of total for procedures.">40 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -145,6 +145,11 @@
 </h2>
     
 
+    <p>This function returns <code>.true.</code> when the entire text string is accepted by DFA,
+otherwise returns <code>.false.</code>.
+If the DFA does not have an initial state, execute an <code>error stop</code> statement.
+If the input string is an empty string, returns a logical value indicating
+whether the current state is accepting or not.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/dfa_t.html'>dfa_t</a></p>
@@ -162,7 +167,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~22"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -177,7 +182,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~14"></span>
+              <span class="anchor" id="variable-str~20"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -195,7 +200,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~23"></span>
+          <span class="anchor" id="variable-res~28"></span>
           logical
         </small>
       </h3>
@@ -217,54 +222,77 @@
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">lazy_dfa__matching_exactly</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span><span class="w">     </span><span class="c">! an input character string.</span>
 <span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">max_match</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">next</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">current</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">destination</span>
 
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">max_match</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">next</span>
+
+<span class="w">      </span><span class="c">! Initialize the pointers.</span>
 <span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
 <span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
 
-<span class="w">      </span><span class="c">! Initialize</span>
-<span class="w">      </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="c">! Initialize the pointer</span>
 <span class="w">      </span><span class="n">current</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">initial_dfa_state</span>
+
+<span class="w">      </span><span class="c">!! If the DFA does not have an initial state, execute an `error stop` statement.</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">associated</span><span class="p">(</span><span class="n">current</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         error stop</span>
 <span class="k">      end if</span>
 
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="c">!! If the input string is an empty string, returns a logical value indicating </span>
+<span class="w">      </span><span class="c">!! whether the current state is accepting or not.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="p">%</span><span class="n">accepted</span>
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      end if</span>
-<span class="k">      </span>
-<span class="k">      do while</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">current</span><span class="p">))</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="c">! Initialize the loop variables.</span>
+<span class="w">      </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="c">! Loop as long as the current state is associated.</span>
+<span class="w">      </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">current</span><span class="p">))</span>
+
+<span class="w">         </span><span class="c">! If the current state acceptable, the value of `max_match` is updated with `i`.</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">current</span><span class="p">%</span><span class="n">accepted</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
 <span class="w">         </span><span class="k">end if</span>
 
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
+<span class="w">         </span><span class="c">! If the index of the string larger than the length, exit the loop.</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
 
+<span class="w">         </span><span class="c">! Get the index of the next character and assign it to `next`.</span>
+<span class="w">         </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="k">         </span><span class="n">next</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">         </span><span class="c">! Lazy evaluation is performed by calling this procedure here. </span>
+<span class="w">         </span><span class="c">! The transition destination is stored in `destination`.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">current</span><span class="p">,</span><span class="w"> </span><span class="n">destination</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">next</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
+<span class="w">         </span><span class="c">! Update the current state. </span>
 <span class="w">         </span><span class="n">current</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">destination</span>
 
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">associated</span><span class="p">(</span><span class="n">current</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
+<span class="w">         </span><span class="c">! !If the `current` is not associated, exit the loop.</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">associated</span><span class="p">(</span><span class="n">current</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span><span class="w">    </span><span class="c">! Is this statement necessary? </span>
 
-<span class="k">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next</span>
+<span class="w">         </span><span class="c">! Update the index to the index of the next character. </span>
+<span class="w">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next</span>
 <span class="w">      </span><span class="k">end do</span>
 
-<span class="k">      nullify</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+<span class="w">      </span><span class="c">! If the maximum index of the match is one larger than the lenght of the string,</span>
+<span class="w">      </span><span class="c">! the function returns `.true.`, otherwise it returns `.false.`</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">      </span><span class="k">else</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">      </span><span class="k">end if</span>
-<span class="k">   end function </span><span class="n">lazy_dfa__matching_exactly</span>
+
+<span class="w">      </span><span class="c">! Finalize</span>
+<span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+<span class="w">   </span><span class="k">end function </span><span class="n">lazy_dfa__matching_exactly</span>
 </pre></div>
 
     </section>
@@ -288,7 +316,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

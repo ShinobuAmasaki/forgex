@@ -81,14 +81,14 @@
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/syntax_tree_m.f90"> Source File</a>
+              <a href="../src/syntax_tree_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">make_tree_node</li>
           </ol>
@@ -128,6 +128,12 @@
   
   
   
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../proc/make_tree_node.html#src">make_tree_node</a>
+      </div>
+    </div>
 
 
   </div>
@@ -139,6 +145,9 @@
 </h2>
     
 
+    <p>This function creates a new tree node with the specified operation and child node.
+It allocates memory for the node, assign operation and child node pointers, and
+updates a global count of tree node.</p>
 
 
     <h3>Arguments</h3>
@@ -202,7 +211,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-node~6"></span>
+          <span class="anchor" id="variable-node~2"></span>
           type(<a href='../type/tree_t.html'>tree_t</a>), pointer
         </small>
       </h3>
@@ -219,6 +228,32 @@
 
 
     
+    <section>
+    <h2><span class="anchor" id="src"></span>Source Code</h2>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">make_tree_node</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">right</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+<span class="w">      </span><span class="k">implicit none</span>
+<span class="k">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">right</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">node</span>
+
+<span class="w">      </span><span class="n">node</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+
+<span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+<span class="w">      </span><span class="c">! Assign operation and child node pointers</span>
+<span class="w">      </span><span class="n">node</span><span class="p">%</span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">op</span>
+<span class="w">      </span><span class="n">node</span><span class="p">%</span><span class="n">left</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">left</span>
+<span class="w">      </span><span class="n">node</span><span class="p">%</span><span class="n">right</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">right</span>
+
+<span class="w">      </span><span class="c">! Increment the global tree_node_count and store the node in the global array for monitoring.</span>
+<span class="w">      </span><span class="n">tree_node_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_node_count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="k">array</span><span class="p">(</span><span class="n">tree_node_count</span><span class="p">)%</span><span class="n">node</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">node</span>
+<span class="w">   </span><span class="k">end function </span><span class="n">make_tree_node</span>
+</pre></div>
+
+    </section>
+    <br>
     
     </div>
   </div>
@@ -238,7 +273,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

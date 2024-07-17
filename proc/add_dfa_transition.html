@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.4% of total for procedures.">28 statements</a>
+                 title=" 1.5% of total for procedures.">29 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -145,6 +145,11 @@
 </h2>
     
 
+    <p>This function does nothing if the input symbol is already in the
+list of transition of the state, otherwise it registers a new transition in the list.
+Is the symbol included in existing transitions?</p>
+<p>If the question is false, allocate an new transition into <code>new_transition</code> variable.
+Here, it is registered into the monitor array of <code>dtransition_pointer_list</code>.</p>
 
 
     <h3>Arguments</h3>
@@ -160,7 +165,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~6"></span>
+              <span class="anchor" id="variable-state"></span>
               type(<a href='../type/d_state_t.html'>d_state_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -222,35 +227,50 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">add_dfa_transition</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">symbols</span><span class="p">,</span><span class="w"> </span><span class="n">destination</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbols</span><span class="p">(:)</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">destination</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_transition_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">new_transition</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state</span><span class="w">            </span><span class="c">! a DFA state</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w">          </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">symbols</span><span class="p">(:)</span>
+<span class="w">          </span><span class="c">! input symbols represented as segments</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_state_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">destination</span>
+<span class="w">         </span><span class="c">! the destinational DFA state of current state.</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_transition_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w">           </span><span class="kd">::</span><span class="w"> </span><span class="n">new_transition</span>
+<span class="w">         </span><span class="c">! A pointer to the location where the new transition is allocated.</span>
 
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_transition_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
 
+<span class="w">      </span><span class="c">! Initialize</span>
+<span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+
+<span class="w">      </span><span class="c">!! Is the symbol included in existing transitions?</span>
+<span class="w">      </span><span class="c">! About the transitions that the current state object has,</span>
 <span class="w">      </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">transition</span>
 <span class="w">      </span><span class="k">do while</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+
+<span class="w">         </span><span class="c">! scan the segment array of the transition currently in focus.</span>
 <span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="p">)</span>
 <span class="w">            </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span>
+<span class="w">               </span><span class="c">! If the j-th symbol is conteined in it, return immediately. </span>
 <span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">symbols</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
 <span class="k">            end do </span>
 <span class="k">         end do</span>
 <span class="k">         </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">next</span>
 <span class="w">      </span><span class="k">end do</span>
 
-<span class="k">      allocate</span><span class="p">(</span><span class="n">new_transition</span><span class="p">)</span>
+<span class="w">      </span><span class="c">!! If the question is false, allocate an new transition into `new_transition` variable. </span>
+<span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">new_transition</span><span class="p">)</span>
+<span class="w">      </span><span class="c">!  Allocate a segment array to `new_transition` whose size is equal to the size of the segment array.</span>
 <span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">new_transition</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="n">symbols</span><span class="p">)))</span>
 
+<span class="w">      </span><span class="c">!! Here, it is registered into the monitor array of `dtransition_pointer_list`.</span>
 <span class="w">      </span><span class="n">dtransition_pointer_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtransition_pointer_count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">dtransition_pointer_list</span><span class="p">(</span><span class="n">dtransition_pointer_count</span><span class="p">)%</span><span class="n">node</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">new_transition</span>
 
+<span class="w">      </span><span class="c">! Loading the new transition with values that define itself.</span>
 <span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">symbols</span><span class="p">)</span>
 <span class="w">         </span><span class="n">new_transition</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">symbols</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 <span class="w">      </span><span class="k">end do</span>
 <span class="k">      </span><span class="n">new_transition</span><span class="p">%</span><span class="n">to</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">destination</span>
-<span class="w">      </span><span class="n">new_transition</span><span class="p">%</span><span class="n">next</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">transition</span>
+<span class="w">      </span><span class="n">new_transition</span><span class="p">%</span><span class="n">next</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">%</span><span class="n">transition</span><span class="w">  </span><span class="c">! Add to the beginning of the linked list of the state.</span>
 <span class="w">      </span><span class="n">state</span><span class="p">%</span><span class="n">transition</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">new_transition</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">add_dfa_transition</span>
 </pre></div>
@@ -276,7 +296,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

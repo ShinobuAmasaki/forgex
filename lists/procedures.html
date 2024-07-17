@@ -74,13 +74,16 @@
                  <td><a href='../proc/add_dfa_transition.html'>add_dfa_transition</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This function does nothing if the input symbol is already in the
+list of transition of the state, otherwise it registers a new transition in the list.
+Is the symbol included in existing transitions?</p><a href="../proc/add_dfa_transition.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/add_nfa_state.html'>add_nfa_state</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine adds a specified state (<code>s</code>) to an NFA state set <code>state_set</code>
+by setting the corresponding element in <code>state%vec</code> to true.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/arg_in_segment.html'>arg_in_segment</a></td>
@@ -112,7 +115,7 @@ Also, an assignment to the <code>pattern_cache</code> variable is done here.</p>
                  <td><a href='../proc/build_syntax_tree.html'>build_syntax_tree</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td><p>Copies the input pattern to <code>tape_t</code> type and builds a concrete syntax tree.
+                 <td><p>Copies the input pattern to <code>tape_t</code> type and builds a syntax tree.
 The result returns a pointer to the root of the tree.
 Expected to be used by the forgex module.</p></td>
                </tr>
@@ -120,7 +123,7 @@ Expected to be used by the forgex module.</p></td>
                  <td><a href='../proc/char_class.html'>char_class</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function constructs nodes for character classes, including inverted character classes.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/char_utf8.html'>char_utf8</a></td>
@@ -145,7 +148,8 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
                  <td><a href='../proc/collect_empty_transition.html'>collect_empty_transition</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine collects all states reachable by empty transition starting from a given
+state set in an NFA.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/count_token.html'>count_token</a></td>
@@ -187,7 +191,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
                  <td><a href='../proc/dlist_reduction.html'>dlist_reduction</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function performs reduction operation on the logical sum of the transition destinations of <code>dlist</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/enqueue.html'>enqueue</a></td>
@@ -200,7 +204,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../proc/equivalent_nfa_state_set.html'>equivalent_nfa_state_set</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function determines if two NFA state sets (logical vectors) are equivalent.</p><a href="../proc/equivalent_nfa_state_set.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/free_dlist.html'>free_dlist</a></td>
@@ -213,8 +217,8 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Get the currently focused character (1 to 4 bytes) from the entire string inside
-  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the 
-  <code>current_token</code> component. 
+  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
+  <code>current_token</code> component.
   This is a type-bound procedure of <code>tape_t</code>.</p><a href="../proc/get_token.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
@@ -263,7 +267,8 @@ about comparison with unallocated character variable.</p></td>
                  <td><a href='../proc/invert_segment_list.html'>invert_segment_list</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine inverts a list of segment ranges representing Unicode characters.
+It compute the complement of the given ranges and modifies the list accordingly.</p><a href="../proc/invert_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_first_byte_of_character.html'>is_first_byte_of_character</a></td>
@@ -382,7 +387,11 @@ of the NFA of argument.</p></td>
                  <td><a href='../proc/lazy_dfa__matching_exactly.html'>lazy_dfa__matching_exactly</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function returns <code>.true.</code> when the entire text string is accepted by DFA,
+otherwise returns <code>.false.</code>.
+If the DFA does not have an initial state, execute an <code>error stop</code> statement.
+If the input string is an empty string, returns a logical value indicating
+whether the current state is accepting or not.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__move.html'>lazy_dfa__move</a></td>
@@ -413,25 +422,29 @@ The result is returned as a pointer to the DFA state.</p></td>
                  <td><a href='../proc/make_atom.html'>make_atom</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function creates an atom node in a tree structure using a segment.
+It allocates  memory for the node and assigns the segment to the node's content
+(<code>c</code> array).</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/make_tree_crlf.html'>make_tree_crlf</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function constructs a tree node for carriage return (CR) and line feed (LF) characters.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/make_tree_node.html'>make_tree_node</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function creates a new tree node with the specified operation and child node.
+It allocates memory for the node, assign operation and child node pointers, and
+updates a global count of tree node.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/mark_empty_transition.html'>mark_empty_transition</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>Recursively marks empty transitions from a given state in an NFA.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/match__matching.html'>match__matching</a></td>
@@ -443,7 +456,7 @@ The result is returned as a pointer to the DFA state.</p></td>
                  <td><a href='../proc/nfa__add_transition.html'>nfa__add_transition</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Subroutine</td>
-                 <td><p>The</p></td>
+                 <td><p>This subroutine</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/nfa__build.html'>nfa__build</a></td>
@@ -473,26 +486,14 @@ The result is returned as a pointer to the DFA state.</p></td>
                  <td><a href='../proc/nfa__generate_node.html'>nfa__generate_node</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Function</td>
-                 <td><p>The <code>nfa__generate_node</code> function generates an node and counts <code>nfa_state</code> in an instance of the class. </p></td>
+                 <td><p>The <code>nfa__generate_node</code> function generates an node and counts <code>nfa_state</code> in an instance of the class.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/nfa__init.html'>nfa__init</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Subroutine</td>
                  <td><p>The <code>nfa__init</code>  subroutine initialize an <code>nfa_t</code> type instance.
-This procedure belongs to the class of <code>nfa_t</code> derived-type and is called as <code>init</code>. </p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/nfa__print.html'>nfa__print</a></td>
-                 <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/nfa__print_state_set.html'>nfa__print_state_set</a></td>
-                 <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
+This procedure belongs to the class of <code>nfa_t</code> derived-type and is called as <code>init</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
@@ -530,49 +531,33 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../proc/postfix_op.html'>postfix_op</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function handles postfix operations such as Kleene star (<code>*</code>), plus (<code>+</code>),
+question mark (<code>+</code>), and range (<code>{m,n}</code>).</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/primary.html'>primary</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/print_class_simplify.html'>print_class_simplify</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/print_tree.html'>print_tree</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/print_tree_internal.html'>print_tree_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This function constructs primary expression, which can be characters, groups, character classes,
+or special characters.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/range_min_max.html'>range_min_max</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/regex.html'>regex</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Function</td>
-                 <td></td>
+                 <td><p>This function constructs nodes for minimum-maximum range expression (<code>{m,n}</code>).</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/regex.html'>regex</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>The generic name for the <code>regex</code> function implemented as <code>regex__matching</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/regex.html'>regex</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Function</td>
+                 <td><p>This function constructs a regular expression tree starting form a <code>term</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/regex__matching.html'>regex__matching</a></td>
@@ -645,25 +630,29 @@ returns one byte of the continuation part. </p></td>
                  <td><a href='../proc/shorthand.html'>shorthand</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
+<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/symbol_to_segment.html'>symbol_to_segment</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function convert an input symbol into the segment corresponding it.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/term.html'>term</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function constructs a <code>term</code> in the regular expression, which can
+involve concatenation of postfix operations.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/which_segment_symbol_belong.html'>which_segment_symbol_belong</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function takes an array of segments and a character as arguments,
+and returns the segment as rank=1 array to which symbol belongs
+(included in the segment interval).</p></td>
                </tr>
 			 </tbody></table>
              
@@ -684,7 +673,7 @@ returns one byte of the continuation part. </p></td>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="20.6% of total for modules and submodules.">470 statements</a>
+                 title="21.8% of total for modules and submodules.">471 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -225,10 +225,10 @@ This module was previously named <code>dfa_m</code>.</p>
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
                   <li class="list-inline-item"><a href='forgex_nfa_m.html'>forgex_nfa_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
               </ul>
             </li>
         </ul>
@@ -452,7 +452,7 @@ In addition, it has a flag indicating whether it is an accepting state and a lis
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-index~2"></span>
+              <span class="anchor" id="variable-index"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -587,7 +587,7 @@ A DFA constructed by the powerset method has one initial state and accepting sta
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa"></span>
+              <span class="anchor" id="variable-nfa~2"></span>
               type(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
               <td>public,</td>
@@ -604,7 +604,7 @@ A DFA constructed by the powerset method has one initial state and accepting sta
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-states~2"></span>
+              <span class="anchor" id="variable-states"></span>
               type(<a href='../type/d_state_t.html'>d_state_t</a>),
             </td>
               <td>public,</td>
@@ -640,12 +640,12 @@ A DFA constructed by the powerset method has one initial state and accepting sta
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_t.html#boundprocedure-free~2'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
+  <strong><a href='../type/dfa_t.html#boundprocedure-free'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_t.html#boundprocedure-init~2'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__init.html'>lazy_dfa__init</a></td>
+  <strong><a href='../type/dfa_t.html#boundprocedure-init'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__init.html'>lazy_dfa__init</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -727,7 +727,7 @@ This is a component of the <code>dfa_t</code> type.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next~2"></span>
+              <span class="anchor" id="variable-next"></span>
               type(<a href='../type/d_list_t.html'>d_list_t</a>),
             </td>
               <td>public,</td>
@@ -744,7 +744,7 @@ This is a component of the <code>dfa_t</code> type.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
+              <span class="anchor" id="variable-to~4"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
               <td>public</td>
@@ -813,7 +813,7 @@ is kept in a linked list.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next~3"></span>
+              <span class="anchor" id="variable-next~2"></span>
               type(<a href='../type/d_transition_t.html'>d_transition_t</a>),
             </td>
               <td>public,</td>
@@ -830,7 +830,7 @@ is kept in a linked list.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~4"></span>
+              <span class="anchor" id="variable-to~5"></span>
               type(<a href='../type/d_state_t.html'>d_state_t</a>),
             </td>
               <td>public,</td>
@@ -880,7 +880,7 @@ for the monitor of the <code>d_list_t</code> type.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~2"></span>
+              <span class="anchor" id="variable-node~4"></span>
               type(<a href='../type/d_list_t.html'>d_list_t</a>),
             </td>
               <td>public,</td>
@@ -930,7 +930,7 @@ for the monitor of the <code>d_state_t</code> type.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~3"></span>
+              <span class="anchor" id="variable-node~5"></span>
               type(<a href='../type/d_state_t.html'>d_state_t</a>),
             </td>
               <td>public,</td>
@@ -980,7 +980,7 @@ for the monitor of the <code>d_transition_t</code> type.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~4"></span>
+              <span class="anchor" id="variable-node~6"></span>
               type(<a href='../type/d_transition_t.html'>d_transition_t</a>),
             </td>
               <td>public,</td>
@@ -1014,7 +1014,7 @@ for the monitor of the <code>d_transition_t</code> type.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function performs reduction operation on the logical sum of the transition destinations of <code>dlist</code>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1075,7 +1075,7 @@ character <code>symbol</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~17"></span>
+              <span class="anchor" id="variable-self~7"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1150,7 +1150,7 @@ character <code>symbol</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~18"></span>
+              <span class="anchor" id="variable-self~8"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1210,7 +1210,11 @@ character <code>symbol</code>.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function returns <code>.true.</code> when the entire text string is accepted by DFA,
+otherwise returns <code>.false.</code>.
+If the DFA does not have an initial state, execute an <code>error stop</code> statement.
+If the input string is an empty string, returns a logical value indicating
+whether the current state is accepting or not.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1225,7 +1229,7 @@ character <code>symbol</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~22"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1240,7 +1244,7 @@ character <code>symbol</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~14"></span>
+              <span class="anchor" id="variable-str~20"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1285,7 +1289,7 @@ character <code>symbol</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~19"></span>
+              <span class="anchor" id="variable-self~9"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1361,7 +1365,7 @@ The result is returned as a pointer to the DFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~15"></span>
+              <span class="anchor" id="variable-self~5"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1406,7 +1410,7 @@ The result is returned as a pointer to the DFA state.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function convert an input symbol into the segment corresponding it.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1451,7 +1455,9 @@ The result is returned as a pointer to the DFA state.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function takes an array of segments and a character as arguments,
+and returns the segment as rank=1 array to which symbol belongs
+(included in the segment interval).</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1516,7 +1522,9 @@ The result is returned as a pointer to the DFA state.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function does nothing if the input symbol is already in the
+list of transition of the state, otherwise it registers a new transition in the list.
+Is the symbol included in existing transitions?</p><a href="../proc/add_dfa_transition.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1531,7 +1539,7 @@ The result is returned as a pointer to the DFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~6"></span>
+              <span class="anchor" id="variable-state"></span>
               type(<a href='../type/d_state_t.html'>d_state_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -1601,7 +1609,7 @@ The result is returned as a pointer to the DFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~20"></span>
+              <span class="anchor" id="variable-self~10"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1686,7 +1694,7 @@ The result is returned as a pointer to the DFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~14"></span>
+              <span class="anchor" id="variable-self~4"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1739,7 +1747,7 @@ The result is returned as a pointer to the DFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
+              <span class="anchor" id="variable-self~6"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1810,7 +1818,7 @@ of the NFA of argument.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~13"></span>
+              <span class="anchor" id="variable-self~3"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1825,7 +1833,7 @@ of the NFA of argument.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa~2"></span>
+              <span class="anchor" id="variable-nfa~3"></span>
               type(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in),</td>
@@ -1865,7 +1873,7 @@ of the NFA of argument.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~21"></span>
+              <span class="anchor" id="variable-self~11"></span>
               class(<a href='../type/dfa_t.html'>dfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1895,7 +1903,7 @@ of the NFA of argument.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~2"></span>
+              <span class="anchor" id="variable-from~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -1910,7 +1918,7 @@ of the NFA of argument.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~5"></span>
+              <span class="anchor" id="variable-to~6"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -1953,7 +1961,7 @@ of the NFA of argument.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

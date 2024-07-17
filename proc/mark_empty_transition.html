@@ -81,14 +81,14 @@
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/nfa_m.f90"> Source File</a>
+              <a href="../src/nfa_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/nfa_m.f90.html'>nfa_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/nfa_m.f90.html'>nfa_m.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">mark_empty_transition</li>
           </ol>
@@ -141,10 +141,11 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private recursive subroutine mark_empty_transition(self, state, idx)  
+    <h2>private recursive subroutine mark_empty_transition(self, state_set, idx)  
 </h2>
     
 
+    <p>Recursively marks empty transitions from a given state in an NFA.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/nfa_t.html'>nfa_t</a></p>
@@ -162,7 +163,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~10"></span>
+              <span class="anchor" id="variable-self~20"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -177,7 +178,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~4"></span>
+              <span class="anchor" id="variable-state_set~7"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -185,14 +186,14 @@
               
             </td>
             <td>::</td>
-            <td><strong>state</strong></td>
+            <td><strong>state_set</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-idx"></span>
+              <span class="anchor" id="variable-idx~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -222,27 +223,28 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">recursive subroutine </span><span class="n">mark_empty_transition</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">recursive subroutine </span><span class="n">mark_empty_transition</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">nfa_t</span><span class="p">),</span><span class="w">          </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span><span class="w"> </span>
+<span class="k">      class</span><span class="p">(</span><span class="n">nfa_t</span><span class="p">),</span><span class="w">          </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span><span class="w">       </span><span class="c">! Instance of the NFA class</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span><span class="w">  </span><span class="c">! NFA state set to mark empty transition</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span><span class="w">        </span><span class="c">! Index of the current state in self%states</span>
 
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nlist_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span>
 
 <span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-<span class="w">      </span><span class="k">call </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
+<span class="w">      </span><span class="c">! Add the current state to the state set.</span>
+<span class="w">      </span><span class="k">call </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
 
+<span class="w">      </span><span class="c">! Traverse the linked list of transition from the `idx`-th state.</span>
 <span class="w">      </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 <span class="w">      </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
-
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">check_nfa_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">mark_empty_transition</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">)</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">check_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">            </span><span class="c">! Recursively mark empty transitions from state `p%to`.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">mark_empty_transition</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">)</span>
 <span class="w">         </span><span class="k">end if </span>
 
 <span class="k">         </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">next</span>
-
 <span class="w">      </span><span class="k">enddo</span>
 <span class="k">   end subroutine </span><span class="n">mark_empty_transition</span>
 </pre></div>
@@ -268,7 +270,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

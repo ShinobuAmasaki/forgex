@@ -81,14 +81,14 @@
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/nfa_m.f90"> Source File</a>
+              <a href="../src/nfa_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/nfa_m.f90.html'>nfa_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/nfa_m.f90.html'>nfa_m.F90</a></li>
                 <li class="breadcrumb-item"><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">add_nfa_state</li>
           </ol>
@@ -141,10 +141,12 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public  subroutine add_nfa_state(state, s)  
+    <h2>public  subroutine add_nfa_state(state_set, s)  
 </h2>
     
 
+    <p>This subroutine adds a specified state (<code>s</code>) to an NFA state set <code>state_set</code>
+by setting the corresponding element in <code>state%vec</code> to true.</p>
 
 
     <h3>Arguments</h3>
@@ -160,7 +162,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~3"></span>
+              <span class="anchor" id="variable-state_set~6"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -168,7 +170,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>state</strong></td>
+            <td><strong>state_set</strong></td>
             <td>
                 
             </td>
@@ -205,12 +207,13 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">s</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span><span class="w">  </span><span class="c">! NFA state set to modify.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">        </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">s</span><span class="w">          </span><span class="c">! State index to add to the state set</span>
 
-<span class="w">      </span><span class="n">state</span><span class="p">%</span><span class="n">vec</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
+<span class="w">      </span><span class="c">! Set the state `s` in the `state_set` to `.true.`</span>
+<span class="w">      </span><span class="n">state_set</span><span class="p">%</span><span class="n">vec</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">add_nfa_state</span>
 </pre></div>
 
@@ -235,7 +238,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>

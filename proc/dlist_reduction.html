@@ -145,6 +145,7 @@
 </h2>
     
 
+    <p>This function performs reduction operation on the logical sum of the transition destinations of <code>dlist</code>.</p>
 
 
     <h3>Arguments</h3>
@@ -178,7 +179,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~26"></span>
+          <span class="anchor" id="variable-res~31"></span>
           type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>)
         </small>
       </h3>
@@ -200,16 +201,23 @@
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">dlist_reduction</span><span class="p">(</span><span class="n">dlist</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dlist</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">      </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">d_list_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w">             </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="c">! Initialize the scanning pointer</span>
+<span class="w">      </span><span class="k">nullify</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 <span class="w">      </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">dlist</span>
 
+<span class="w">      </span><span class="c">! Initialize the return value so that all of its components have the value `.false.`</span>
 <span class="w">      </span><span class="n">res</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 
+<span class="w">      </span><span class="c">! Scan the linked-list of the dlist argument.</span>
 <span class="w">      </span><span class="k">do while</span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+<span class="w">         </span><span class="c">! If the segment of the `dlist` is not `SEG_EMPTY`,</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">res</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span>
+<span class="w">            </span><span class="c">! take logical OR of each individual element of `nfa_state_set_t`.</span>
+<span class="w">            </span><span class="n">res</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">res</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">to</span><span class="p">%</span><span class="n">vec</span><span class="p">(:)</span><span class="w"> </span>
 <span class="w">         </span><span class="k">end if</span>
 <span class="k">         </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">next</span>
 <span class="w">      </span><span class="k">end do</span>
@@ -237,7 +245,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 16:52              </p>
+ on 2024-07-17 19:13              </p>
           </div>
         </div>
         <br>
