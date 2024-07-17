@@ -141,10 +141,14 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine disjoin_kernel(new_list)  
+    <h2>private  subroutine disjoin_kernel(list)  
 </h2>
     
 
+    <p>Disjoins overlapping segments and creates a new list of non-overlapping segments.</p>
+<p>This subroutine takes a list of segments, disjoins any overlapping segments,
+and creates a new list of non-overlapping segments. It uses a priority queue
+to sort the segments and processes them to ensure they are disjoined.</p>
 
 
     <h3>Arguments</h3>
@@ -160,7 +164,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-new_list"></span>
+              <span class="anchor" id="variable-list"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -168,7 +172,7 @@
               allocatable
             </td>
             <td>::</td>
-            <td><strong>new_list</strong>(:)</td>
+            <td><strong>list</strong>(:)</td>
             <td>
                 
             </td>
@@ -190,118 +194,146 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">disjoin_kernel</span><span class="p">(</span><span class="n">new_list</span><span class="p">)</span>
-
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">disjoin_kernel</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">new_list</span><span class="p">(:)</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">list</span><span class="p">(:)</span>
+<span class="w">      </span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">old_list</span><span class="p">(:)</span>
-<span class="w">    </span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">priority_queue_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pqueue</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">priority_queue_t</span><span class="p">)</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">pqueue</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">buff</span><span class="p">(:)</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cache</span><span class="p">(:)</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">new</span>
-
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="n">new</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">index_list</span><span class="p">(:)</span>
+<span class="w">      </span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="nb">count</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span><span class="p">,</span><span class="w"> </span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">bottom</span><span class="p">,</span><span class="w"> </span><span class="n">real_size</span><span class="p">,</span><span class="w"> </span><span class="n">m</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">index_list</span><span class="p">(:)</span>
-<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">flag</span>
+<span class="w">      </span><span class="kt">logical</span><span class="w">        </span><span class="kd">::</span><span class="w"> </span><span class="n">flag</span>
 
-<span class="w">      </span><span class="n">siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">      </span><span class="n">siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">siz</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         return</span>
 <span class="k">      end if</span>
 
-<span class="k">      call </span><span class="nb">move_alloc</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="n">old_list</span><span class="p">)</span>
+<span class="w">      </span><span class="c">! Move the currnet list to `old_list`</span>
+<span class="w">      </span><span class="k">call </span><span class="nb">move_alloc</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">old_list</span><span class="p">)</span>
 
-<span class="w">      </span><span class="k">block</span><span class="w"> </span><span class="c">! heap sort</span>
+<span class="w">      </span><span class="c">! Sort segments using a priority queue (heap sort)</span>
+<span class="w">      </span><span class="k">block</span>
+<span class="k">         allocate</span><span class="p">(</span><span class="n">buff</span><span class="p">(</span><span class="n">siz</span><span class="p">))</span>
+
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
 <span class="w">            </span><span class="k">call </span><span class="n">enqueue</span><span class="p">(</span><span class="n">pqueue</span><span class="p">,</span><span class="w"> </span><span class="n">old_list</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
 <span class="w">         </span><span class="k">end do</span>
-
-<span class="k">         allocate</span><span class="p">(</span><span class="n">buff</span><span class="p">(</span><span class="n">siz</span><span class="p">))</span>
-<span class="w">      </span>
-<span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
-<span class="w">            </span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dequeue</span><span class="p">(</span><span class="n">pqueue</span><span class="p">)</span>
+<span class="k">      </span>
+<span class="k">         do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
+<span class="w">            </span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dequeue</span><span class="p">(</span><span class="n">pqueue</span><span class="p">)</span><span class="w">  </span><span class="c">! The `buff` is sorted array.</span>
 <span class="w">         </span><span class="k">end do</span>
 <span class="k">      end block</span>
 
-<span class="k">      block</span><span class="w"> </span><span class="c">! get the bottom and top from the segment array.</span>
-<span class="w">         </span><span class="n">bottom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="mi">1</span><span class="p">)%</span><span class="nb">min</span>
+<span class="w">      </span><span class="c">! Determine the bottom and top value from the segment array.</span>
+<span class="w">      </span><span class="k">block</span>
+<span class="k">         </span><span class="n">bottom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="mi">1</span><span class="p">)%</span><span class="nb">min</span>
 <span class="nb">         </span><span class="n">top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
 <span class="w">            </span><span class="n">top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">max</span><span class="p">(</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="nb">max</span><span class="p">)</span>
 <span class="w">         </span><span class="k">end do</span>
 <span class="k">      end block</span>
 
-<span class="k">      allocate</span><span class="p">(</span><span class="n">new_list</span><span class="p">(</span><span class="n">siz</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
-<span class="w">      </span><span class="c">! allocate(cache(siz*2))</span>
+<span class="k">      allocate</span><span class="p">(</span><span class="n">list</span><span class="p">(</span><span class="n">siz</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
 
+<span class="w">      </span><span class="c">! Generate a list of unique indices from the `old_list`. </span>
 <span class="w">      </span><span class="k">call </span><span class="n">index_list_from_segment_list</span><span class="p">(</span><span class="n">index_list</span><span class="p">,</span><span class="w"> </span><span class="n">old_list</span><span class="p">)</span>
 
-<span class="w">      </span><span class="n">new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SEG_UPPER</span>
-
+<span class="w">      </span><span class="c">! Initialize </span>
+<span class="w">      </span><span class="n">new</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SEG_UPPER</span><span class="w">   </span><span class="c">! segment_t(2**21, 2**21)</span>
 <span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+
+<span class="w">      </span><span class="c">! NOTE: this is a complex loop with multiple counters, so HANDLE WITH CARE.</span>
+<span class="w">      </span><span class="c">!</span>
 <span class="w">      </span><span class="k">do while</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span>
-<span class="w">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index_list</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="w">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index_list</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="w">    </span><span class="c">! Get the current value of `index_list`.</span>
+<span class="w">         </span>
+<span class="w">         </span><span class="c">! NOTE: the `index_list` is in ASCENDING order.</span>
 
-<span class="w">         </span><span class="c">! i が範囲に含まれる場合</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">siz</span><span class="p">))</span><span class="w"> </span><span class="k">then </span>
-<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">new</span><span class="p">%</span><span class="nb">min</span><span class="p">)</span><span class="w"> </span><span class="n">new</span><span class="p">%</span><span class="nb">min</span><span class="w"> </span><span class="o">=</span><span class="n">i</span>
+<span class="w">         </span><span class="c">! Check if `i` is within any of the segments.</span>
+<span class="w">         </span><span class="c">!</span>
+<span class="w">         </span><span class="c">! This loop iterates over each value in the `index_list` and checks if the current</span>
+<span class="w">         </span><span class="c">! value `i` is present in any of the segments stored in the `buff` array.</span>
+<span class="w">         </span><span class="c">! If it is present and less than the current minimum value of the new segment, it</span>
+<span class="w">         </span><span class="c">! updates the new segment&#39;s minimum value.</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">siz</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">new</span><span class="p">%</span><span class="nb">min</span><span class="p">)</span><span class="w"> </span><span class="n">new</span><span class="p">%</span><span class="nb">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
 <span class="w">         </span><span class="k">else</span>
-<span class="k">            </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">            </span><span class="k">cycle</span>
-<span class="k">         end if</span>
-
-<span class="w">         </span><span class="c">! i+1がいずれかのセグメントの始端の場合</span>
-<span class="w">         </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
-<span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="nb">min</span><span class="p">)</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
-<span class="w">         </span><span class="k">end do</span>
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">new</span><span class="p">%</span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
-<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">            </span><span class="c">! Otherwise, advance the index in `index_list` and move to the next cycle.</span>
 <span class="w">            </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">            </span><span class="k">cycle</span>
 <span class="k">         end if</span>
 
-<span class="k">         </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">         </span><span class="c">! Check if `i+1` is the start of any segment.</span>
+<span class="w">         </span><span class="c">!</span>
+<span class="w">         </span><span class="c">! This section checks if the value `i+1` is the starting point (`min`) of any segment</span>
+<span class="w">         </span><span class="c">! in the `buff` array. If it is, then it sets the new segment&#39;s `max` value to `i` and</span>
+<span class="w">         </span><span class="c">! registers the new segment.</span>
+<span class="w">         </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="nb">min</span><span class="p">)</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">flag</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
+<span class="w">               </span><span class="c">! This `if` statement is redundant and should be fixed.</span>
+<span class="w">         </span><span class="k">end do</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">new</span><span class="p">%</span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
+<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">            </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="k">cycle</span>
+<span class="k">         end if</span>
+
+<span class="w">         </span><span class="c">! Check for multiple segments starting at `i`.</span>
+<span class="w">         </span><span class="c">!</span>
+<span class="w">         </span><span class="c">! This part counts how many segments start at the current value `i`. If more than</span>
+<span class="w">         </span><span class="c">! one segment starts at `i`, it sets the new segment&#39;s max value to `i` and register</span>
+<span class="w">         </span><span class="c">! the new segment.</span>
+<span class="w">         </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="nb">min</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">         </span><span class="k">end do</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="nb">count</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">new</span><span class="p">%</span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
-<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
-<span class="w">         </span><span class="k">end if </span>
+<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">         </span><span class="k">end if</span><span class="w"> </span>
 
-<span class="k">         </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">         </span><span class="c">! Check for any segments ending at `i`.</span>
+<span class="w">         </span><span class="c">!</span>
+<span class="w">         </span><span class="c">! This part counts how many segments end at the current value `i`.</span>
+<span class="w">         </span><span class="c">! If any segment ends at `i`, it sets the new segment&#39;s max value to `i`</span>
+<span class="w">         </span><span class="c">! and registers the new segment.</span>
+<span class="w">         </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">siz</span>
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">buff</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="nb">max</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="nb">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">count</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">         </span><span class="k">end do</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="nb">count</span><span class="w"> </span><span class="o">&gt;</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">new</span><span class="p">%</span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
-<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="w">            </span><span class="k">call </span><span class="n">register_seg_list</span><span class="p">(</span><span class="n">new</span><span class="p">,</span><span class="w"> </span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
 <span class="w">         </span><span class="k">end if </span>
 
 <span class="k">         </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="k">end do</span>
 
-<span class="k">      </span><span class="n">real_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">new_list</span><span class="p">)</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">new_list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span><span class="w"> </span><span class="n">real_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real_size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="c">! Determine the real size of the new list.</span>
+<span class="w">      </span><span class="c">! This loop calculates the actual number of non-empty segments in the new `list`.</span>
+<span class="w">      </span><span class="n">real_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">list</span><span class="p">)</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span><span class="w"> </span><span class="n">real_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">real_size</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="k">end do</span>
 
-<span class="k">      call </span><span class="nb">move_alloc</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span><span class="w">  </span><span class="c">! new_list is now deallocated.</span>
+<span class="w">      </span><span class="c">! Move `list` to `cache` and reallocate `list` to the real size.</span>
+<span class="w">      </span><span class="k">call </span><span class="nb">move_alloc</span><span class="p">(</span><span class="n">list</span><span class="p">,</span><span class="w"> </span><span class="n">cache</span><span class="p">)</span><span class="w">  </span><span class="c">! list is now deallocated.</span>
+<span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">list</span><span class="p">(</span><span class="n">real_size</span><span class="p">))</span>
+<span class="w">      </span><span class="n">list</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">real_size</span><span class="p">)</span>
 
-<span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">new_list</span><span class="p">(</span><span class="n">real_size</span><span class="p">))</span>
-
-<span class="w">      </span><span class="n">new_list</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cache</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">real_size</span><span class="p">)</span>
-
-<span class="w">      </span><span class="c">! deallocate</span>
+<span class="w">      </span><span class="c">! Deallocate used arrays and clear the priority queue</span>
 <span class="w">      </span><span class="k">call </span><span class="n">clear</span><span class="p">(</span><span class="n">pqueue</span><span class="p">)</span>
 <span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 <span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">cache</span><span class="p">)</span>
 <span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">index_list</span><span class="p">)</span>
-
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">disjoin_kernel</span>
 </pre></div>
 
@@ -326,7 +358,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 11:59              </p>
+ on 2024-07-17 14:02              </p>
           </div>
         </div>
         <br>
