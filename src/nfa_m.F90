@@ -122,7 +122,7 @@ contains
    end function nfa__generate_node
 
    
-   !> The
+   !> This subroutine 
    subroutine nfa__add_transition(self, from, to, c)
       implicit none
       class(nfa_t),    intent(inout) :: self
@@ -187,6 +187,7 @@ contains
    end subroutine nfa__generate_nfa
 
 
+   ! This subroutine 
    subroutine nfa__disjoin(self)
       use :: forgex_priority_queue_m
       use :: forgex_segment_disjoin_m
@@ -326,7 +327,7 @@ contains
          end if
       end do
    end subroutine nfa__print
-#endif   
+
 
    subroutine nfa__print_state_set (self, p)
       implicit none
@@ -339,20 +340,20 @@ contains
          if (check_NFA_state(p, i)) write(stderr, '(i0, a)', advance='no') i, ' '
       end do
    end subroutine nfa__print_state_set
-
+#endif   
    
 
 !==========================================================================================!
 
-   ! Is the arguement 'state' (set of NFA state) includes state 's'?
-   logical function check_nfa_state(state, s)
+   ! This function checks if the arguement 'state' (set of NFA state) includes state 's'.
+   logical function check_nfa_state(state_set, s)
       implicit none
-      type(nfa_state_set_t), intent(in) :: state
+      type(nfa_state_set_t), intent(in) :: state_set
 
       integer(int32) :: s
 
       if (s /= 0) then
-         check_nfa_state = state%vec(s)
+         check_nfa_state = state_set%vec(s)
 
       else
          check_nfa_state = .false. 
@@ -401,56 +402,69 @@ contains
       end block
    end subroutine disjoin_nfa_state 
 
-   
-   subroutine add_nfa_state(state, s)
-      implicit none
-      type(nfa_state_set_t), intent(inout) :: state
-      integer(int32),        intent(in)    :: s
 
-      state%vec(s) = .true.
+   !> This subroutine adds a specified state (`s`) to an NFA state set `state_set`
+   !> by setting the corresponding element in `state%vec` to true.
+   subroutine add_nfa_state(state_set, s)
+      implicit none
+      type(nfa_state_set_t), intent(inout) :: state_set  ! NFA state set to modify.
+      integer(int32),        intent(in)    :: s          ! State index to add to the state set
+
+      ! Set the state `s` in the `state_set` to `.true.`
+      state_set%vec(s) = .true.
    end subroutine add_nfa_state
 
 
-   recursive subroutine mark_empty_transition(self, state, idx)
+   !> Recursively marks empty transitions from a given state in an NFA.
+   recursive subroutine mark_empty_transition(self, state_set, idx)
       implicit none
-      class(nfa_t),          intent(in)    :: self
-      type(nfa_state_set_t), intent(inout) :: state
-      integer(int32),        intent(in)    :: idx 
+      class(nfa_t),          intent(in)    :: self       ! Instance of the NFA class
+      type(nfa_state_set_t), intent(inout) :: state_set  ! NFA state set to mark empty transition
+      integer(int32),        intent(in)    :: idx        ! Index of the current state in self%states
 
       type(nlist_t), pointer :: p
 
       nullify(p)
 
-      call add_nfa_state(state, idx)
+      ! Add the current state to the state set.
+      call add_nfa_state(state_set, idx)
 
+      ! Traverse the linked list of transition from the `idx`-th state.
       p => self%states(idx)
       do while (associated(p))
-
-         if (p%c == SEG_EMPTY .and. .not. check_nfa_state(state, p%to) ) then
-            if (p%to /= 0) call self%mark_empty_transition(state, p%to)
+         if (p%c == SEG_EMPTY .and. .not. check_nfa_state(state_set, p%to) ) then
+            ! Recursively mark empty transitions from state `p%to`.
+            if (p%to /= 0) call self%mark_empty_transition(state_set, p%to)
          end if 
 
          p => p%next
-
       enddo
    end subroutine mark_empty_transition
 
 
+   !> This subroutine collects all states reachable by empty transition starting from a given
+   !> state set in an NFA.
    subroutine collect_empty_transition (self, state)
       implicit none
       class(nfa_t),          intent(in)   :: self
       type(nfa_state_set_t), intent(inout):: state
 
       integer(int32) :: i 
-
+      
+      ! Iterate over all states in the NFA.
       do i = 1, self%nfa_nstate
          if (check_NFA_state(state, i)) then
+            ! If state `i` is in the state set `state_set`, mark empty transitions from state `i`.
             call self%mark_empty_transition(state, i)       
          end if
       end do
    end subroutine collect_empty_transition
 
 
+   !> This function determines if two NFA state sets (logical vectors) are equivalent.
+   !>
+   !> It takes a pointer to NFA state set and NFA state set, and returns logical result
+   !> indicating equivalent (`.true.` if equivalent, `.false.` otherwise).
    function equivalent_nfa_state_set(a, b) result(res)
       implicit none
       type(nfa_state_set_t), intent(in), pointer  :: a
@@ -459,12 +473,15 @@ contains
       integer(int32) :: i
       logical        :: res
 
+      ! Compare each element of the logical vectors in a and b.
       do i = 1, NFA_VECTOR_SIZE
          if (a%vec(i) .neqv. b%vec(i)) then
             res = .false.
             return
          end if
       end do
+      
+      ! If all elements match, set the result `res` to `.true.` indicating equivalence. 
       res = .true.
    end function equivalent_nfa_state_set
 
