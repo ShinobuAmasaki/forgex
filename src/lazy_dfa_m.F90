@@ -453,7 +453,6 @@ contains
 
 
    subroutine lazy_dfa__construct(self, current, destination, symbol)
-      use :: forgex_utf8_m
       implicit none
       class(dfa_t), intent(inout) :: self
       type(d_state_t), target, intent(in) :: current
@@ -587,152 +586,214 @@ contains
       end do
    end subroutine lazy_dfa__matching
 
-
+   !> This function returns `.true.` when the entire text string is accepted by DFA,
+   !> otherwise returns `.false.`.
    function lazy_dfa__matching_exactly(self, str) result(res)
       implicit none
       class(dfa_t), intent(inout) :: self
-      character(*), intent(in)    :: str
+      character(*), intent(in)    :: str     ! an input character string.
       logical :: res
 
-      integer(int32) :: max_match, i, next
       type(d_state_t), pointer :: current
       type(d_state_t), pointer :: destination
 
+      integer(int32) :: max_match
+      integer(int32) :: i
+      integer(int32) :: next
+
+      ! Initialize the pointers.
       nullify(current)
       nullify(destination)
 
-      ! Initialize
-      max_match = 0
-      i = 1
+      ! Initialize the pointer
       current => self%initial_dfa_state
+
+      !! If the DFA does not have an initial state, execute an `error stop` statement.
       if (.not. associated(current)) then
          error stop
       end if
 
+      !! If the input string is an empty string, returns a logical value indicating 
+      !! whether the current state is accepting or not.
       if (len(str) == 0) then
          res = current%accepted
          return
       end if
       
+      ! Initialize the loop variables.
+      max_match = 0
+      i = 1
+      ! Loop as long as the current state is associated.
       do while (associated(current))
+
+         ! If the current state acceptable, the value of `max_match` is updated with `i`.
          if (current%accepted) then
             max_match = i
          end if
 
+         ! If the index of the string larger than the length, exit the loop.
          if (i > len(str)) exit
 
-
+         ! Get the index of the next character and assign it to `next`.
          next = idxutf8(str, i) + 1
+
+         ! Lazy evaluation is performed by calling this procedure here. 
+         ! The transition destination is stored in `destination`.
          call self%construct(current, destination, str(i:next-1))
 
+         ! Update the current state. 
          current => destination
 
-         if (.not. associated(current)) exit
+         ! !If the `current` is not associated, exit the loop.
+         if (.not. associated(current)) exit    ! Is this statement necessary? 
 
+         ! Update the index to the index of the next character. 
          i = next
       end do
 
-      nullify(current)
+      ! If the maximum index of the match is one larger than the lenght of the string,
+      ! the function returns `.true.`, otherwise it returns `.false.`
       if (max_match == len(str)+1) then
          res = .true.
       else
          res = .false.
       end if
+
+      ! Finalize
+      nullify(current)
    end function lazy_dfa__matching_exactly
       
 
 !=====================================================================!
 !  Helper procedures
 
+   !> This function does nothing if the input symbol is already in the
+   !> list of transition of the state, otherwise it registers a new transition in the list. 
    subroutine add_dfa_transition(state, symbols, destination)
       implicit none
-      type(d_state_t), pointer, intent(inout) :: state
-      type(segment_t), intent(in) :: symbols(:)
-      type(d_state_t), pointer, intent(in) :: destination
-      type(d_transition_t), pointer :: new_transition
+      type(d_state_t), pointer, intent(inout) :: state            ! a DFA state
+      type(segment_t),          intent(in)    :: symbols(:)
+          ! input symbols represented as segments
+      type(d_state_t), pointer, intent(in)    :: destination
+         ! the destinational DFA state of current state.
+      type(d_transition_t), pointer           :: new_transition
+         ! A pointer to the location where the new transition is allocated.
 
-      integer(int32) :: i, j
       type(d_transition_t), pointer :: p
+      integer(int32) :: i, j
 
+      ! Initialize
+      nullify(p)
+
+      !! Is the symbol included in existing transitions?
+      ! About the transitions that the current state object has,
       p => state%transition
       do while(associated(p))
+
+         ! scan the segment array of the transition currently in focus.
          do i = 1, size(p%c)
             do j = 1, size(symbols)
+               ! If the j-th symbol is conteined in it, return immediately. 
                if (symbols(j) .in. p%c(i)) return
             end do 
          end do
          p => p%next
       end do
 
+      !! If the question is false, allocate an new transition into `new_transition` variable. 
       allocate(new_transition)
+      !  Allocate a segment array to `new_transition` whose size is equal to the size of the segment array.
       allocate(new_transition%c(size(symbols)))
 
+      !! Here, it is registered into the monitor array of `dtransition_pointer_list`.
       dtransition_pointer_count = dtransition_pointer_count + 1
       dtransition_pointer_list(dtransition_pointer_count)%node => new_transition
 
+      ! Loading the new transition with values that define itself.
       do j = 1, size(symbols)
          new_transition%c(j) = symbols(j)
       end do
       new_transition%to => destination
-      new_transition%next => state%transition
+      new_transition%next => state%transition  ! Add to the beginning of the linked list of the state.
       state%transition => new_transition
    end subroutine add_dfa_transition
 
 
+   !> This function convert an input symbol into the segment corresponding it.
    function symbol_to_segment(symbol) result(res)
       use :: forgex_segment_m
       implicit none
       character(*), intent(in) :: symbol
-      type(segment_t) :: res
+      type(segment_t)          :: res
 
-      integer(int32) :: i, i_end
+      integer(int32) :: i, i_end, code
 
+      ! Initialize indices
       i = 1
       i_end = idxutf8(symbol, i)
-      res = segment_t(ichar_utf8(symbol(i:i_end)), ichar_utf8(symbol(i:i_end)))
+
+      ! Get the code point of the input character.
+      code = ichar_utf8(symbol(i:i_end))
+
+      ! Create a segment corresponding to the code, and return it.
+      res = segment_t(code, code)
    end function symbol_to_segment
    
 
-   ! rank=1 のsegment_t型配列を返す関数
+   !> This function takes an array of segments and a character as arguments,
+   !> and returns the segment as rank=1 array to which symbol belongs
+   !> (included in the segment interval).
    function which_segment_symbol_belong (segments, symbol) result(res)
       implicit none
       type(segment_t), intent(in) :: segments(:)
-      character(*), intent(in)    :: symbol
-      type(segment_t) :: res(1)
+      character(*),    intent(in) :: symbol
+      type(segment_t)             :: res(1)
 
-      integer :: i, i_end, j
-      type(segment_t) :: symbol_s_t
-      logical :: is_belong
+      integer         :: i, i_end, j
+      type(segment_t) :: target_for_comparison
 
+      ! Initialize indices.
       i = 1
       i_end = idxutf8(symbol, i)
 
-      symbol_s_t = symbol_to_segment(symbol(i:i_end))
+      ! The target to check for inclusion.
+      target_for_comparison = symbol_to_segment(symbol(i:i_end))
 
+      ! Scan the segments array. 
       do j = 1, size(segments)
-         is_belong = symbol_s_t .in. segments(j)
-         if (is_belong) then
+         ! Compare segments and return the later element of the segments, which contains the target segment.
+         if (target_for_comparison .in. segments(j)) then
             res = segments(j)
             return
          end if
       end do
+
+      ! If not found, returns SEG_EMPTY.
       res = SEG_EMPTY
    end function which_segment_symbol_belong
 
 
+   !> This function performs reduction operation on the logical sum of the transition destinations of `dlist`.
    function dlist_reduction(dlist) result(res)
       implicit none
       type(d_list_t), pointer, intent(in) :: dlist
-      type(d_list_t), pointer :: p
-      type(nfa_state_set_t) :: res
-      p => null()
+      type(nfa_state_set_t)               :: res
+
+      type(d_list_t), pointer             :: p
+      
+      ! Initialize the scanning pointer
+      nullify(p)
       p => dlist
 
+      ! Initialize the return value so that all of its components have the value `.false.`
       res%vec(:) = .false.
 
+      ! Scan the linked-list of the dlist argument.
       do while(associated(p))
+         ! If the segment of the `dlist` is not `SEG_EMPTY`,
          if (.not. p%c(1) == SEG_EMPTY) then
-            res%vec(:) = res%vec(:) .or. p%to%vec(:)
+            ! take logical OR of each individual element of `nfa_state_set_t`.
+            res%vec(:) = res%vec(:) .or. p%to%vec(:) 
          end if
          p => p%next
       end do
