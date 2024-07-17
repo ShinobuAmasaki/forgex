@@ -86,17 +86,17 @@ body {
      sans-serif;
 }
 /* 1668px is the width of iPad Pro 10.5" 2nd */
-@media (max-width: 1200px) {
+@media (max-width: 1200px) and (min-width: {
    #text.row {
       justify-content: center;
-   };
+   }
    .col-md-4 {
       display: flex;
       flex: 0 0 auto;
       width: 100%;
       max-width: 480px;
-   };
+   }
    .col-md-8 {
       width: 100%;
-   };
+   }
 }
