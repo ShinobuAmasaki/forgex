@@ -86,7 +86,7 @@ body {
      sans-serif;
 }
 /* 1668px is the width of iPad Pro 10.5" 2nd */
-@media (orientation: portrait) {
+@media (max-width: 1200px) {
    #text.row {
       justify-content: center;
    };
