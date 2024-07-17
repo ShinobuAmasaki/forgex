@@ -55,7 +55,7 @@ First of all, add the following to your project's `fpm.toml`:
 
 ```toml
 [dependencies]
-forgex = {git = "https://github.com/shinobuamasaki/forgex"}
+forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 ```
 
 ### API
