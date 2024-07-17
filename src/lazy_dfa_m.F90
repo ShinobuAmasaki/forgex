@@ -62,7 +62,7 @@ module forgex_lazy_dfa_m
    end type d_transition_t
 
    !> The `dfa_t` class represents a single automaton as a set of DFA states.
-   !> A DFA constructed by the powerset method has one initial state and accepting states.
+   !> A DFA constructed by the powerset method has one initial state and 
    type, public :: dfa_t
       integer(int32)           :: dfa_nstate        = 0        ! counter
       type(d_state_t), pointer :: states(:)         => null()  ! DFA states of the DFA

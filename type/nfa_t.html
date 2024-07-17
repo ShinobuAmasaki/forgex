@@ -116,10 +116,10 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/nfa_t.html#variable-all_segments~2">all_segments</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-all_segments">all_segments</a>
             <a class="list-group-item" href="../type/nfa_t.html#variable-nfa_nstate">nfa_nstate</a>
-            <a class="list-group-item" href="../type/nfa_t.html#variable-pattern~13">pattern</a>
-            <a class="list-group-item" href="../type/nfa_t.html#variable-states~2">states</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-pattern~7">pattern</a>
+            <a class="list-group-item" href="../type/nfa_t.html#variable-states">states</a>
         </div>
       </div>
     </div>
@@ -150,12 +150,12 @@
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-build">build</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-collect_empty_transition">collect_empty_transition</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-disjoin">disjoin</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-free~2">free</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-free">free</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-generate_nfa">generate_nfa</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-generate_node">generate_node</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-init~2">init</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-init">init</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-mark_empty_transition">mark_empty_transition</a>
-            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print~2">print</a>
+            <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print">print</a>
             <a class="list-group-item" href="../type/nfa_t.html#boundprocedure-print_state_set">print_state_set</a>
         </div>
       </div>
@@ -172,8 +172,7 @@
     <div class="col-md-9" id='text'>
       <h2 id="type-def-statement">
         type, public :: nfa_t</h2>
-    <p>The <code>nfa_t</code> class represents a single automaton as a set of NFA states.
-An NFA is built from the input syntax-tree.</p>
+    
     <br>
 
     <section>
@@ -190,7 +189,7 @@ An NFA is built from the input syntax-tree.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-all_segments~2"></span>
+              <span class="anchor" id="variable-all_segments"></span>
               type(<a href='segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -224,7 +223,7 @@ An NFA is built from the input syntax-tree.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~13"></span>
+              <span class="anchor" id="variable-pattern~7"></span>
               character(len=:),
             </td>
               <td>public,</td>
@@ -241,7 +240,7 @@ An NFA is built from the input syntax-tree.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-states~2"></span>
+              <span class="anchor" id="variable-states"></span>
               type(<a href='nlist_t.html'>nlist_t</a>),
             </td>
               <td>public,</td>
@@ -283,7 +282,7 @@ An NFA is built from the input syntax-tree.</p>
 </h3>
     
 
-  <p>The</p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -560,7 +559,7 @@ An NFA is built from the input syntax-tree.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-free~2"></span>
+      <span class="anchor" id="boundprocedure-free"></span>
       <h3>
           procedure, public ::
   <strong>free</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__deallocate.html'>nfa__deallocate</a>
@@ -727,7 +726,7 @@ An NFA is built from the input syntax-tree.</p>
 </h3>
     
 
-  <p>The <code>nfa__generate_node</code> function generates an node and counts <code>nfa_state</code> in an instance of the class. </p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -762,7 +761,7 @@ An NFA is built from the input syntax-tree.</p>
     Return Value
     <small>integer(kind=int32)</small>
     </h4>
-    <p>If the counter exceeds NFA_STATE_MAX, an error stop will occur. </p>
+    
 
         </li>
     </ul>
@@ -772,7 +771,7 @@ An NFA is built from the input syntax-tree.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-init~2"></span>
+      <span class="anchor" id="boundprocedure-init"></span>
       <h3>
           procedure, public ::
   <strong>init</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__init.html'>nfa__init</a>
@@ -786,8 +785,7 @@ An NFA is built from the input syntax-tree.</p>
 </h3>
     
 
-  <p>The <code>nfa__init</code>  subroutine initialize an <code>nfa_t</code> type instance.
-This procedure belongs to the class of <code>nfa_t</code> derived-type and is called as <code>init</code>. </p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -911,7 +909,7 @@ This procedure belongs to the class of <code>nfa_t</code> derived-type and is ca
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-print~2"></span>
+      <span class="anchor" id="boundprocedure-print"></span>
       <h3>
           procedure, public ::
   <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__print.html'>nfa__print</a>
@@ -1052,7 +1050,7 @@ This procedure belongs to the class of <code>nfa_t</code> derived-type and is ca
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 04:56              </p>
+ on 2024-07-17 05:59              </p>
           </div>
         </div>
         <br>
