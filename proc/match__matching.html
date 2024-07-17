@@ -181,7 +181,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~16"></span>
+              <span class="anchor" id="variable-str~18"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -199,7 +199,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~21"></span>
+          <span class="anchor" id="variable-res~13"></span>
           logical
         </small>
       </h3>
@@ -235,13 +235,13 @@
 <span class="w">      </span><span class="c">! If the pattern_cache variable haven&#39;t been initialized,</span>
 <span class="w">      </span><span class="c">! allocate and assign the empty character</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">pattern_cache</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">initialize_pattern_cache</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="c">! If pattern is not equivalent to pattern_cache, build its syntax-tree and automatons.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span>
-<span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string </span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string</span>
 <span class="w">         </span><span class="c">!! exists but the automatons are no longer there.</span>
-<span class="w">      </span>
-<span class="w">         </span><span class="c">! If the pattern begins with a caret character and ends with </span>
+
+<span class="w">         </span><span class="c">! If the pattern begins with a caret character and ends with</span>
 <span class="w">         </span><span class="c">! a doller character, they are removed and assigned to the string buffer.</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_there_caret_at_the_top</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">buff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pattern</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
@@ -255,7 +255,7 @@
 
 <span class="w">         </span><span class="c">! build the syntax tree from buff and tape,</span>
 <span class="w">         </span><span class="c">! and assign the result to root pointer</span>
-<span class="w">         </span><span class="n">root</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">build_syntax_tree</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">)</span><span class="w">  </span>
+<span class="w">         </span><span class="n">root</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">build_syntax_tree</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">)</span>
 
 <span class="cp">#ifdef DEBUG</span>
 <span class="w">         </span><span class="k">call </span><span class="n">print_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -265,7 +265,7 @@
 
 <span class="w">         </span><span class="c">! Once the NFA is constructed, forget the syntax tree, we don&#39;t need them anymore.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">deallocate_tree</span><span class="p">()</span>
-<span class="w">         </span>
+
 <span class="w">      </span><span class="k">end if</span>
 
 <span class="k">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dfa</span><span class="p">%</span><span class="n">matching_exactly</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
@@ -298,7 +298,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 04:55              </p>
+ on 2024-07-17 04:56              </p>
           </div>
         </div>
         <br>

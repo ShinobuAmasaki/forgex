@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -21,25 +21,25 @@ module forgex
    public :: regex
 
    interface operator(.in.)
-      !! Interface for user-defined operator of `.in.` 
+      !! Interface for user-defined operator of `.in.`
       module procedure :: in__matching
    end interface
 
    interface operator(.match.)
       !! Interface for user-defined operator of `.match.`
       module procedure :: match__matching
-   end interface 
+   end interface
 
    interface regex
       !! The generic name for the `regex` function implemented as `regex__matching`.
       module procedure :: regex__matching
    end interface
 
-   ! Module variables 
+   ! Module variables
    type(nfa_t), target :: nfa
-   
+
    type(dfa_t) :: dfa
-   
+
    character(:), allocatable :: pattern_cache
 
 contains
@@ -63,7 +63,7 @@ contains
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
       if (pattern /= pattern_cache .or. pattern == '') then
-        !!@note We will add code later to handle the case where the cache string 
+        !!@note We will add code later to handle the case where the cache string
         !! exists but the automatons are no longer there.
 
          buff = pattern
@@ -77,7 +77,7 @@ contains
          ! Once the NFA is constructed, forget the unnecessary syntax tree.
          call deallocate_tree()
 
-      end if  
+      end if
       call dfa%matching(char(10)//str//char(10), from, to)
 
       call free_dlist
@@ -89,7 +89,7 @@ contains
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
-      else 
+      else
          from = from - 1
       end if
 
@@ -107,7 +107,7 @@ contains
          res = .false.
       end if
    end function in__matching
-   
+
 
    function match__matching(pattern, str) result(res)
        !! The function implemented for the `.match.` operator.
@@ -126,13 +126,13 @@ contains
       ! If the pattern_cache variable haven't been initialized,
       ! allocate and assign the empty character
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
-      
+
       ! If pattern is not equivalent to pattern_cache, build its syntax-tree and automatons.
-      if (pattern /= pattern_cache .or. pattern == '') then 
-         !!@note We will add code later to handle the case where the cache string 
+      if (pattern /= pattern_cache .or. pattern == '') then
+         !!@note We will add code later to handle the case where the cache string
          !! exists but the automatons are no longer there.
-      
-         ! If the pattern begins with a caret character and ends with 
+
+         ! If the pattern begins with a caret character and ends with
          ! a doller character, they are removed and assigned to the string buffer.
          if (is_there_caret_at_the_top(pattern)) then
             buff = pattern(2:len(pattern))
@@ -146,7 +146,7 @@ contains
 
          ! build the syntax tree from buff and tape,
          ! and assign the result to root pointer
-         root => build_syntax_tree(tape, buff)  
+         root => build_syntax_tree(tape, buff)
 
 #ifdef DEBUG
          call print_tree(root)
@@ -156,7 +156,7 @@ contains
 
          ! Once the NFA is constructed, forget the syntax tree, we don't need them anymore.
          call deallocate_tree()
-         
+
       end if
 
       res = dfa%matching_exactly(str)
@@ -181,16 +181,16 @@ contains
 
       type(tree_t), pointer :: root
       type(tape_t) :: tape
-   
+
       from_l = 0
       to_l = 0
-      
+
       if (.not. allocated(pattern_cache)) call initialize_pattern_cache
 
       if (pattern /= pattern_cache .or. pattern == '') then
-         !!@note We will add code later to handle the case where the cache string 
+         !!@note We will add code later to handle the case where the cache string
          !! exists but the automatons are no longer there.
-         
+
          buff = pattern
          root => build_syntax_tree(tape, buff)
 
@@ -213,7 +213,7 @@ contains
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
-      else 
+      else
          from_l = from_l - 1
       end if
 
@@ -238,9 +238,9 @@ contains
 
 !---------------------------------------------------------------------!
 ! Private procedures
-!  
+!
 
-   !> This function returns .true. if the pattern contains the caret character 
+   !> This function returns .true. if the pattern contains the caret character
    !> at the top that matches the beginning of a line.
    function is_there_caret_at_the_top(pattern) result(res)
       implicit none
@@ -290,9 +290,9 @@ contains
       type(tree_t), intent(in) :: syntax_root
       character(*), intent(in) :: pattern
 
-      call nfa%free() 
+      call nfa%free()
       call nfa%init()
-      
+
       call nfa%build(syntax_root)
 
       ! Initialize DFA.
