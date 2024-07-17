@@ -269,19 +269,17 @@
 <a id="ln-114" name="ln-114" href="#ln-114"></a>
 <a id="ln-115" name="ln-115" href="#ln-115"></a><span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_valid__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">answer</span><span class="p">,</span><span class="w"> </span><span class="n">substr</span><span class="p">)</span>
 <a id="ln-116" name="ln-116" href="#ln-116"></a>
-<a id="ln-117" name="ln-117" href="#ln-117"></a><span class="w">      </span><span class="c">! write(error_unit, &#39;(a)&#39;, advance=&#39;no&#39;) &#39;                                          &#39;//char(13)</span>
-<a id="ln-118" name="ln-118" href="#ln-118"></a>
-<a id="ln-119" name="ln-119" href="#ln-119"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<a id="ln-120" name="ln-120" href="#ln-120"></a><span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, a, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(regex): Success&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
-<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">      </span><span class="k">else</span>
-<a id="ln-122" name="ln-122" href="#ln-122"></a><span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, a, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(regex): FAILED &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
-<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="w">      </span><span class="k">end if</span>
-<a id="ln-124" name="ln-124" href="#ln-124"></a>
-<a id="ln-125" name="ln-125" href="#ln-125"></a><span class="k">      result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">res</span>
-<a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">   </span><span class="k">end subroutine </span><span class="n">runner_regex</span>
-<a id="ln-127" name="ln-127" href="#ln-127"></a>
-<a id="ln-128" name="ln-128" href="#ln-128"></a>
-<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="k">end module </span><span class="n">forgex_test_m</span>
+<a id="ln-117" name="ln-117" href="#ln-117"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-118" name="ln-118" href="#ln-118"></a><span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, a, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(regex): Success&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
+<a id="ln-119" name="ln-119" href="#ln-119"></a><span class="w">      </span><span class="k">else</span>
+<a id="ln-120" name="ln-120" href="#ln-120"></a><span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, a, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(regex): FAILED &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">substr</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
+<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">      </span><span class="k">end if</span>
+<a id="ln-122" name="ln-122" href="#ln-122"></a>
+<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="k">      result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">res</span>
+<a id="ln-124" name="ln-124" href="#ln-124"></a><span class="w">   </span><span class="k">end subroutine </span><span class="n">runner_regex</span>
+<a id="ln-125" name="ln-125" href="#ln-125"></a>
+<a id="ln-126" name="ln-126" href="#ln-126"></a>
+<a id="ln-127" name="ln-127" href="#ln-127"></a><span class="k">end module </span><span class="n">forgex_test_m</span>
 </pre></div>
 
       </section>
@@ -303,7 +301,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 06:16              </p>
+ on 2024-07-17 07:23              </p>
           </div>
         </div>
         <br>

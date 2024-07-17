@@ -208,9 +208,9 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
                   <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
                   <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
               </ul>
             </li>
@@ -248,7 +248,7 @@ parameter
 <td> =</td>
                 <td>1024</td>
             <td>
-                
+                <p>Upper limit of NFA state instance</p>
             </td>
         </tr>
         <tr>
@@ -265,7 +265,7 @@ parameter
 <td> =</td>
                 <td>NFA_STATE_MAX</td>
             <td>
-                
+                <p>Upper limit of NFA transition instance</p>
             </td>
         </tr>
         <tr>
@@ -282,7 +282,7 @@ parameter
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Initial state on NFA.</p>
             </td>
         </tr>
         <tr>
@@ -299,7 +299,7 @@ parameter
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>Accepting state on NFA. </p>
             </td>
         </tr>
         <tr>
@@ -316,7 +316,7 @@ parameter
 <td> =</td>
                 <td>0</td>
             <td>
-                
+                <p>The number of nodes registered in the monitor array of the <code>nlist_node_list</code>.</p>
             </td>
         </tr>
         <tr>
@@ -333,7 +333,7 @@ parameter
                 <td></td>
                 <td></td>
             <td>
-                
+                <p>The monitor array of the <code>nlist</code> type.</p>
             </td>
         </tr>
     </tbody>
@@ -357,7 +357,7 @@ parameter
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>The <code>nfa_state_set_t</code> type represents set of NFA states.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -406,7 +406,8 @@ parameter
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>The <code>nfa_t</code> class represents a single automaton as a set of NFA states.
+An NFA is built from the input syntax-tree.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -421,7 +422,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-all_segments~2"></span>
+              <span class="anchor" id="variable-all_segments"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -472,7 +473,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-states~2"></span>
+              <span class="anchor" id="variable-states"></span>
               type(<a href='../type/nlist_t.html'>nlist_t</a>),
             </td>
               <td>public,</td>
@@ -518,7 +519,7 @@ parameter
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/nfa_t.html#boundprocedure-free~2'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__deallocate.html'>nfa__deallocate</a></td>
+  <strong><a href='../type/nfa_t.html#boundprocedure-free'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__deallocate.html'>nfa__deallocate</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -533,7 +534,7 @@ parameter
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/nfa_t.html#boundprocedure-init~2'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__init.html'>nfa__init</a></td>
+  <strong><a href='../type/nfa_t.html#boundprocedure-init'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__init.html'>nfa__init</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -543,7 +544,7 @@ parameter
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/nfa_t.html#boundprocedure-print'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__print.html'>nfa__print</a></td>
+  <strong><a href='../type/nfa_t.html#boundprocedure-print~2'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__print.html'>nfa__print</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -566,7 +567,8 @@ parameter
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>The <code>nlist_t</code> type represents a transition on NFA.
+ It transits to state 'to' by character segument 'c'.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -581,7 +583,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-c~3"></span>
+              <span class="anchor" id="variable-c"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
               <td>public</td>
@@ -598,7 +600,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-index~2"></span>
+              <span class="anchor" id="variable-index"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -615,7 +617,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next~6"></span>
+              <span class="anchor" id="variable-next"></span>
               type(<a href='../type/nlist_t.html'>nlist_t</a>),
             </td>
               <td>public,</td>
@@ -632,7 +634,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~7"></span>
+              <span class="anchor" id="variable-to~4"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -666,7 +668,8 @@ parameter
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>An derived-type definition for element that make up the pointer array
+for the monitor of the <code>nlist_t</code> type.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -681,7 +684,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~4"></span>
+              <span class="anchor" id="variable-node"></span>
               type(<a href='../type/nlist_t.html'>nlist_t</a>),
             </td>
               <td>public,</td>
@@ -730,7 +733,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~2"></span>
+              <span class="anchor" id="variable-state"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -790,7 +793,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~2"></span>
+              <span class="anchor" id="variable-a~6"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in),</td>
@@ -805,7 +808,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~2"></span>
+              <span class="anchor" id="variable-b~4"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -835,7 +838,7 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  
+  <p>The <code>nfa__generate_node</code> function generates an node and counts <code>nfa_state</code> in an instance of the class. </p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -850,7 +853,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~12"></span>
+              <span class="anchor" id="variable-self~3"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -870,7 +873,7 @@ parameter
     Return Value
     <small>integer(kind=int32)</small>
     </h4>
-    
+    <p>If the counter exceeds NFA_STATE_MAX, an error stop will occur. </p>
 
     </div>
   </div>
@@ -900,7 +903,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~4"></span>
+              <span class="anchor" id="variable-state~3"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -955,7 +958,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~21"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -970,7 +973,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~6"></span>
+              <span class="anchor" id="variable-state~5"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1010,7 +1013,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~3"></span>
+              <span class="anchor" id="variable-state~2"></span>
               type(<a href='../type/nlist_t.html'>nlist_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -1025,7 +1028,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg_list~3"></span>
+              <span class="anchor" id="variable-seg_list~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1065,7 +1068,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~20"></span>
+              <span class="anchor" id="variable-self~11"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1080,7 +1083,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state~5"></span>
+              <span class="anchor" id="variable-state~4"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1095,7 +1098,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-idx~2"></span>
+              <span class="anchor" id="variable-idx"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1120,7 +1123,7 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  
+  <p>The</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1135,7 +1138,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~13"></span>
+              <span class="anchor" id="variable-self~4"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1150,7 +1153,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~5"></span>
+              <span class="anchor" id="variable-from~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1165,7 +1168,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~8"></span>
+              <span class="anchor" id="variable-to~5"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1180,7 +1183,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-c~4"></span>
+              <span class="anchor" id="variable-c~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1220,7 +1223,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
+              <span class="anchor" id="variable-self~7"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>)
             </td>
 <td></td>
@@ -1275,7 +1278,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~17"></span>
+              <span class="anchor" id="variable-self~8"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1315,7 +1318,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~15"></span>
+              <span class="anchor" id="variable-self~6"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1355,7 +1358,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~14"></span>
+              <span class="anchor" id="variable-self~5"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1425,7 +1428,8 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  
+  <p>The <code>nfa__init</code>  subroutine initialize an <code>nfa_t</code> type instance.
+This procedure belongs to the class of <code>nfa_t</code> derived-type and is called as <code>init</code>. </p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1440,7 +1444,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~11"></span>
+              <span class="anchor" id="variable-self~2"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1480,7 +1484,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~18"></span>
+              <span class="anchor" id="variable-self~9"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1520,7 +1524,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~19"></span>
+              <span class="anchor" id="variable-self~10"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1535,7 +1539,7 @@ parameter
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-p~6"></span>
+              <span class="anchor" id="variable-p~4"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in),</td>
@@ -1578,7 +1582,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 06:16              </p>
+ on 2024-07-17 07:23              </p>
           </div>
         </div>
         <br>

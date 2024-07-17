@@ -154,7 +154,7 @@
       <section>
         <h2><span class="anchor" id="src"></span>Source Code</h2>
         <div class="hl codehilite"><pre><span></span><a id="ln-1" name="ln-1" href="#ln-1"></a><span class="c">! Fortran Regular Expression (Forgex)</span>
-<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="c">! </span>
+<a id="ln-2" name="ln-2" href="#ln-2"></a><span class="c">!</span>
 <a id="ln-3" name="ln-3" href="#ln-3"></a><span class="c">! MIT License</span>
 <a id="ln-4" name="ln-4" href="#ln-4"></a><span class="c">!</span>
 <a id="ln-5" name="ln-5" href="#ln-5"></a><span class="c">! (C) Amasaki Shinobu, 2023-2024</span>
@@ -176,25 +176,25 @@
 <a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">regex</span>
 <a id="ln-22" name="ln-22" href="#ln-22"></a>
 <a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">   </span><span class="k">interface </span><span class="n">operator</span><span class="p">(.</span><span class="n">in</span><span class="p">.)</span>
-<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">      </span><span class="c">!! Interface for user-defined operator of `.in.` </span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">      </span><span class="c">!! Interface for user-defined operator of `.in.`</span>
 <a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">      </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">in__matching</span>
 <a id="ln-26" name="ln-26" href="#ln-26"></a><span class="w">   </span><span class="k">end interface</span>
 <a id="ln-27" name="ln-27" href="#ln-27"></a>
 <a id="ln-28" name="ln-28" href="#ln-28"></a><span class="k">   interface </span><span class="n">operator</span><span class="p">(.</span><span class="n">match</span><span class="p">.)</span>
 <a id="ln-29" name="ln-29" href="#ln-29"></a><span class="w">      </span><span class="c">!! Interface for user-defined operator of `.match.`</span>
 <a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">      </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">match__matching</span>
-<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">   </span><span class="k">end interface </span>
+<a id="ln-31" name="ln-31" href="#ln-31"></a><span class="w">   </span><span class="k">end interface</span>
 <a id="ln-32" name="ln-32" href="#ln-32"></a>
 <a id="ln-33" name="ln-33" href="#ln-33"></a><span class="k">   interface </span><span class="n">regex</span>
 <a id="ln-34" name="ln-34" href="#ln-34"></a><span class="w">      </span><span class="c">!! The generic name for the `regex` function implemented as `regex__matching`.</span>
 <a id="ln-35" name="ln-35" href="#ln-35"></a><span class="w">      </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">regex__matching</span>
 <a id="ln-36" name="ln-36" href="#ln-36"></a><span class="w">   </span><span class="k">end interface</span>
 <a id="ln-37" name="ln-37" href="#ln-37"></a>
-<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">   </span><span class="c">! Module variables </span>
+<a id="ln-38" name="ln-38" href="#ln-38"></a><span class="w">   </span><span class="c">! Module variables</span>
 <a id="ln-39" name="ln-39" href="#ln-39"></a><span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">target</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa</span>
-<a id="ln-40" name="ln-40" href="#ln-40"></a><span class="w">   </span>
+<a id="ln-40" name="ln-40" href="#ln-40"></a>
 <a id="ln-41" name="ln-41" href="#ln-41"></a><span class="w">   </span><span class="k">type</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dfa</span>
-<a id="ln-42" name="ln-42" href="#ln-42"></a><span class="w">   </span>
+<a id="ln-42" name="ln-42" href="#ln-42"></a>
 <a id="ln-43" name="ln-43" href="#ln-43"></a><span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern_cache</span>
 <a id="ln-44" name="ln-44" href="#ln-44"></a>
 <a id="ln-45" name="ln-45" href="#ln-45"></a><span class="k">contains</span>
@@ -218,7 +218,7 @@
 <a id="ln-63" name="ln-63" href="#ln-63"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">pattern_cache</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">initialize_pattern_cache</span>
 <a id="ln-64" name="ln-64" href="#ln-64"></a>
 <a id="ln-65" name="ln-65" href="#ln-65"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<a id="ln-66" name="ln-66" href="#ln-66"></a><span class="w">        </span><span class="c">!!@note We will add code later to handle the case where the cache string </span>
+<a id="ln-66" name="ln-66" href="#ln-66"></a><span class="w">        </span><span class="c">!!@note We will add code later to handle the case where the cache string</span>
 <a id="ln-67" name="ln-67" href="#ln-67"></a><span class="w">        </span><span class="c">!! exists but the automatons are no longer there.</span>
 <a id="ln-68" name="ln-68" href="#ln-68"></a>
 <a id="ln-69" name="ln-69" href="#ln-69"></a><span class="w">         </span><span class="n">buff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pattern</span>
@@ -232,7 +232,7 @@
 <a id="ln-77" name="ln-77" href="#ln-77"></a><span class="w">         </span><span class="c">! Once the NFA is constructed, forget the unnecessary syntax tree.</span>
 <a id="ln-78" name="ln-78" href="#ln-78"></a><span class="w">         </span><span class="k">call </span><span class="n">deallocate_tree</span><span class="p">()</span>
 <a id="ln-79" name="ln-79" href="#ln-79"></a>
-<a id="ln-80" name="ln-80" href="#ln-80"></a><span class="w">      </span><span class="k">end if  </span>
+<a id="ln-80" name="ln-80" href="#ln-80"></a><span class="w">      </span><span class="k">end if</span>
 <a id="ln-81" name="ln-81" href="#ln-81"></a><span class="k">      call </span><span class="n">dfa</span><span class="p">%</span><span class="n">matching</span><span class="p">(</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">//</span><span class="n">str</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
 <a id="ln-82" name="ln-82" href="#ln-82"></a>
 <a id="ln-83" name="ln-83" href="#ln-83"></a><span class="w">      </span><span class="k">call </span><span class="n">free_dlist</span>
@@ -244,7 +244,7 @@
 <a id="ln-89" name="ln-89" href="#ln-89"></a>
 <a id="ln-90" name="ln-90" href="#ln-90"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_there_caret_at_the_top</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-91" name="ln-91" href="#ln-91"></a><span class="k">         </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from</span>
-<a id="ln-92" name="ln-92" href="#ln-92"></a><span class="w">      </span><span class="k">else </span>
+<a id="ln-92" name="ln-92" href="#ln-92"></a><span class="w">      </span><span class="k">else</span>
 <a id="ln-93" name="ln-93" href="#ln-93"></a><span class="k">         </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
 <a id="ln-94" name="ln-94" href="#ln-94"></a><span class="w">      </span><span class="k">end if</span>
 <a id="ln-95" name="ln-95" href="#ln-95"></a>
@@ -262,7 +262,7 @@
 <a id="ln-107" name="ln-107" href="#ln-107"></a><span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <a id="ln-108" name="ln-108" href="#ln-108"></a><span class="w">      </span><span class="k">end if</span>
 <a id="ln-109" name="ln-109" href="#ln-109"></a><span class="k">   end function </span><span class="n">in__matching</span>
-<a id="ln-110" name="ln-110" href="#ln-110"></a><span class="w">   </span>
+<a id="ln-110" name="ln-110" href="#ln-110"></a>
 <a id="ln-111" name="ln-111" href="#ln-111"></a>
 <a id="ln-112" name="ln-112" href="#ln-112"></a><span class="w">   </span><span class="k">function </span><span class="n">match__matching</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <a id="ln-113" name="ln-113" href="#ln-113"></a><span class="w">       </span><span class="c">!! The function implemented for the `.match.` operator.</span>
@@ -281,13 +281,13 @@
 <a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">      </span><span class="c">! If the pattern_cache variable haven&#39;t been initialized,</span>
 <a id="ln-127" name="ln-127" href="#ln-127"></a><span class="w">      </span><span class="c">! allocate and assign the empty character</span>
 <a id="ln-128" name="ln-128" href="#ln-128"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">pattern_cache</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">initialize_pattern_cache</span>
-<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="w">      </span>
+<a id="ln-129" name="ln-129" href="#ln-129"></a>
 <a id="ln-130" name="ln-130" href="#ln-130"></a><span class="w">      </span><span class="c">! If pattern is not equivalent to pattern_cache, build its syntax-tree and automatons.</span>
-<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span>
-<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string </span>
+<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string</span>
 <a id="ln-133" name="ln-133" href="#ln-133"></a><span class="w">         </span><span class="c">!! exists but the automatons are no longer there.</span>
-<a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">      </span>
-<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">         </span><span class="c">! If the pattern begins with a caret character and ends with </span>
+<a id="ln-134" name="ln-134" href="#ln-134"></a>
+<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">         </span><span class="c">! If the pattern begins with a caret character and ends with</span>
 <a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">         </span><span class="c">! a doller character, they are removed and assigned to the string buffer.</span>
 <a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_there_caret_at_the_top</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-138" name="ln-138" href="#ln-138"></a><span class="k">            </span><span class="n">buff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pattern</span><span class="p">(</span><span class="mi">2</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
@@ -301,7 +301,7 @@
 <a id="ln-146" name="ln-146" href="#ln-146"></a>
 <a id="ln-147" name="ln-147" href="#ln-147"></a><span class="w">         </span><span class="c">! build the syntax tree from buff and tape,</span>
 <a id="ln-148" name="ln-148" href="#ln-148"></a><span class="w">         </span><span class="c">! and assign the result to root pointer</span>
-<a id="ln-149" name="ln-149" href="#ln-149"></a><span class="w">         </span><span class="n">root</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">build_syntax_tree</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">)</span><span class="w">  </span>
+<a id="ln-149" name="ln-149" href="#ln-149"></a><span class="w">         </span><span class="n">root</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">build_syntax_tree</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-150" name="ln-150" href="#ln-150"></a>
 <a id="ln-151" name="ln-151" href="#ln-151"></a><span class="cp">#ifdef DEBUG</span>
 <a id="ln-152" name="ln-152" href="#ln-152"></a><span class="w">         </span><span class="k">call </span><span class="n">print_tree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
@@ -311,7 +311,7 @@
 <a id="ln-156" name="ln-156" href="#ln-156"></a>
 <a id="ln-157" name="ln-157" href="#ln-157"></a><span class="w">         </span><span class="c">! Once the NFA is constructed, forget the syntax tree, we don&#39;t need them anymore.</span>
 <a id="ln-158" name="ln-158" href="#ln-158"></a><span class="w">         </span><span class="k">call </span><span class="n">deallocate_tree</span><span class="p">()</span>
-<a id="ln-159" name="ln-159" href="#ln-159"></a><span class="w">         </span>
+<a id="ln-159" name="ln-159" href="#ln-159"></a>
 <a id="ln-160" name="ln-160" href="#ln-160"></a><span class="w">      </span><span class="k">end if</span>
 <a id="ln-161" name="ln-161" href="#ln-161"></a>
 <a id="ln-162" name="ln-162" href="#ln-162"></a><span class="k">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dfa</span><span class="p">%</span><span class="n">matching_exactly</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
@@ -336,16 +336,16 @@
 <a id="ln-181" name="ln-181" href="#ln-181"></a>
 <a id="ln-182" name="ln-182" href="#ln-182"></a><span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">pointer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">root</span>
 <a id="ln-183" name="ln-183" href="#ln-183"></a><span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tape_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tape</span>
-<a id="ln-184" name="ln-184" href="#ln-184"></a><span class="w">   </span>
+<a id="ln-184" name="ln-184" href="#ln-184"></a>
 <a id="ln-185" name="ln-185" href="#ln-185"></a><span class="w">      </span><span class="n">from_l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <a id="ln-186" name="ln-186" href="#ln-186"></a><span class="w">      </span><span class="n">to_l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<a id="ln-187" name="ln-187" href="#ln-187"></a><span class="w">      </span>
+<a id="ln-187" name="ln-187" href="#ln-187"></a>
 <a id="ln-188" name="ln-188" href="#ln-188"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">pattern_cache</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">initialize_pattern_cache</span>
 <a id="ln-189" name="ln-189" href="#ln-189"></a>
 <a id="ln-190" name="ln-190" href="#ln-190"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">pattern_cache</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<a id="ln-191" name="ln-191" href="#ln-191"></a><span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string </span>
+<a id="ln-191" name="ln-191" href="#ln-191"></a><span class="w">         </span><span class="c">!!@note We will add code later to handle the case where the cache string</span>
 <a id="ln-192" name="ln-192" href="#ln-192"></a><span class="w">         </span><span class="c">!! exists but the automatons are no longer there.</span>
-<a id="ln-193" name="ln-193" href="#ln-193"></a><span class="w">         </span>
+<a id="ln-193" name="ln-193" href="#ln-193"></a>
 <a id="ln-194" name="ln-194" href="#ln-194"></a><span class="w">         </span><span class="n">buff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pattern</span>
 <a id="ln-195" name="ln-195" href="#ln-195"></a><span class="w">         </span><span class="n">root</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">build_syntax_tree</span><span class="p">(</span><span class="n">tape</span><span class="p">,</span><span class="w"> </span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-196" name="ln-196" href="#ln-196"></a>
@@ -368,7 +368,7 @@
 <a id="ln-213" name="ln-213" href="#ln-213"></a>
 <a id="ln-214" name="ln-214" href="#ln-214"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_there_caret_at_the_top</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-215" name="ln-215" href="#ln-215"></a><span class="k">         </span><span class="n">from_l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from_l</span>
-<a id="ln-216" name="ln-216" href="#ln-216"></a><span class="w">      </span><span class="k">else </span>
+<a id="ln-216" name="ln-216" href="#ln-216"></a><span class="w">      </span><span class="k">else</span>
 <a id="ln-217" name="ln-217" href="#ln-217"></a><span class="k">         </span><span class="n">from_l</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">from_l</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
 <a id="ln-218" name="ln-218" href="#ln-218"></a><span class="w">      </span><span class="k">end if</span>
 <a id="ln-219" name="ln-219" href="#ln-219"></a>
@@ -393,9 +393,9 @@
 <a id="ln-238" name="ln-238" href="#ln-238"></a>
 <a id="ln-239" name="ln-239" href="#ln-239"></a><span class="c">!---------------------------------------------------------------------!</span>
 <a id="ln-240" name="ln-240" href="#ln-240"></a><span class="c">! Private procedures</span>
-<a id="ln-241" name="ln-241" href="#ln-241"></a><span class="c">!  </span>
+<a id="ln-241" name="ln-241" href="#ln-241"></a><span class="c">!</span>
 <a id="ln-242" name="ln-242" href="#ln-242"></a>
-<a id="ln-243" name="ln-243" href="#ln-243"></a><span class="w">   </span><span class="c">!&gt; This function returns .true. if the pattern contains the caret character </span>
+<a id="ln-243" name="ln-243" href="#ln-243"></a><span class="w">   </span><span class="c">!&gt; This function returns .true. if the pattern contains the caret character</span>
 <a id="ln-244" name="ln-244" href="#ln-244"></a><span class="w">   </span><span class="c">!&gt; at the top that matches the beginning of a line.</span>
 <a id="ln-245" name="ln-245" href="#ln-245"></a><span class="w">   </span><span class="k">function </span><span class="n">is_there_caret_at_the_top</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <a id="ln-246" name="ln-246" href="#ln-246"></a><span class="w">      </span><span class="k">implicit none</span>
@@ -445,9 +445,9 @@
 <a id="ln-290" name="ln-290" href="#ln-290"></a><span class="k">      type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">syntax_root</span>
 <a id="ln-291" name="ln-291" href="#ln-291"></a><span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span>
 <a id="ln-292" name="ln-292" href="#ln-292"></a>
-<a id="ln-293" name="ln-293" href="#ln-293"></a><span class="w">      </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">free</span><span class="p">()</span><span class="w"> </span>
+<a id="ln-293" name="ln-293" href="#ln-293"></a><span class="w">      </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
 <a id="ln-294" name="ln-294" href="#ln-294"></a><span class="w">      </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">init</span><span class="p">()</span>
-<a id="ln-295" name="ln-295" href="#ln-295"></a><span class="w">      </span>
+<a id="ln-295" name="ln-295" href="#ln-295"></a>
 <a id="ln-296" name="ln-296" href="#ln-296"></a><span class="w">      </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">syntax_root</span><span class="p">)</span>
 <a id="ln-297" name="ln-297" href="#ln-297"></a>
 <a id="ln-298" name="ln-298" href="#ln-298"></a><span class="w">      </span><span class="c">! Initialize DFA.</span>
@@ -481,7 +481,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 06:16              </p>
+ on 2024-07-17 07:23              </p>
           </div>
         </div>
         <br>
