@@ -58,8 +58,11 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 
 ```toml
 [dependencies]
-forgex = {git = "https://github.com/shinobuamasaki/forgex"}
+forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 ```
+注意：
+Intelのコンパイラを使用していて、メインブランチの`forgex`を使用する場合は、ビルド時にプリプロセッサオプションを有効にしてください。
+つまり、fpm コマンドに Windows では `--flag "/fpp"`、Unix では `--flag "-fpp"` を追加してください。
 
 ### APIの使い方
 そのプロジェクトのプログラムのヘッダーに`use forgex`と記述すると、`.in.`と`.match.`の演算子と
