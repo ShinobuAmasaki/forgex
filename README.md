@@ -55,8 +55,13 @@ First of all, add the following to your project's `fpm.toml`:
 
 ```toml
 [dependencies]
-forgex = {git = "https://github.com/shinobuamasaki/forgex"}
+forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 ```
+
+**NOTE:**
+
+If you are using the Intel compiler and want to use forgex from the main branch, please enable the preprocessor option when building.
+That is, add `--flag "/fpp"` on Windows and `--flag "-fpp"` on Unix for `fpm` commands.
 
 ### API
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
