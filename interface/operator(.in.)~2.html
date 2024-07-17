@@ -76,20 +76,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p> 0.2% of total for procedures.</p>Including implementation: 38 statements,  1.9% of total for procedures.">3 statements</a>
+                 title="<p> 0.3% of total for procedures.</p>Including implementation: 29 statements,  1.5% of total for procedures.">5 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/forgex.F90"> Source File</a>
+              <a href="../src/segment_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/forgex.f90.html'>forgex.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex.html'>forgex</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/segment_m.f90.html'>segment_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">operator(.in.)</li>
           </ol>
         </nav>
@@ -133,7 +133,9 @@
       </a>
       <div id="modprocs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../interface/operator(.in.)~2.html#moduleprocedure-in__matching">in__matching</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~2.html#moduleprocedure-arg_in_segment">arg_in_segment</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~2.html#moduleprocedure-arg_in_segment_list">arg_in_segment_list</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~2.html#moduleprocedure-seg_in_segment">seg_in_segment</a>
         </div>
       </div>
     </div>
@@ -147,17 +149,19 @@
 
     <div class="col-md-9" id='text'>
       <h2>public interface operator(.in.)</h2>
-      <p>Interface for user-defined operator of <code>.in.</code></p>
+      <p>This interface block provides the <code>.in.</code> operator, which checks whether
+an integer and a segment, an integer and a list of segments, or a segment
+and a segment, is contained in the latter, respectively.</p>
 <br>
 
 
         <h2>Module Procedures</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-in__matching"></span> <h3>private  function <a href='../proc/in__matching.html'>in__matching</a>(pattern, str) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-arg_in_segment"></span> <h3>public  function <a href='../proc/arg_in_segment.html'>arg_in_segment</a>(a, seg) result(res)  
 </h3></div>
     <div class="card-body">
           
-  <p>The function implemented for the <code>.in.</code> operator.</p><a href="../proc/in__matching.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>Checks if the given integer is within the specified segment.</p><a href="../proc/arg_in_segment.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -172,30 +176,150 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~8"></span>
-              character(len=*),
+              <span class="anchor" id="variable-a~2"></span>
+              integer(kind=int32),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>pattern</strong></td>
+            <td><strong>a</strong></td>
             <td>
 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~19"></span>
-              character(len=*),
+              <span class="anchor" id="variable-seg~5"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>str</strong></td>
+            <td><strong>seg</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-arg_in_segment_list"></span> <h3>public  function <a href='../proc/arg_in_segment_list.html'>arg_in_segment_list</a>(a, seg_list) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Check if the ginve integer is within any of specified segments in a list.</p><a href="../proc/arg_in_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~3"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-seg_list~4"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>seg_list</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-seg_in_segment"></span> <h3>public  function <a href='../proc/seg_in_segment.html'>seg_in_segment</a>(a, b) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Check if the one segment is completely within another segment.</p><a href="../proc/seg_in_segment.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-a~4"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>a</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-b~2"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>b</strong></td>
             <td>
 
             </td>
@@ -229,7 +353,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 11:45              </p>
+ on 2024-07-17 11:55              </p>
           </div>
         </div>
         <br>

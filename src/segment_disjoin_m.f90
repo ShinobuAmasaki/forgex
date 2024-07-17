@@ -29,11 +29,12 @@ contains
 
 
    subroutine disjoin_kernel(new_list)
+
       implicit none
       type(segment_t), intent(inout), allocatable :: new_list(:)
       type(segment_t), allocatable :: old_list(:)
     
-      type(priority_queue_t)       :: pqueue
+      type(priority_queue_t) :: pqueue
       type(segment_t), allocatable :: buff(:)
       type(segment_t), allocatable :: cache(:)
       type(segment_t) :: new
@@ -42,17 +43,14 @@ contains
       integer(int32), allocatable :: index_list(:)
       logical :: flag
 
-      ! 最初にリストの長さを確認して0以下ならばreturnする。
       siz = size(new_list, dim=1)
       if (siz <= 0) then
          return
       end if
 
-      ! 引数のリストをold_listへ割り付けを変更する。
       call move_alloc(new_list, old_list)
 
-      ! 優先度付きキューにエンキューして、バッファを割り付けし、デキューしてソートされた結果バッファに格納をする。
-      block ! heap sort with the `min` values order
+      block ! heap sort
          do j = 1, siz
             call enqueue(pqueue, old_list(j))
          end do
@@ -64,7 +62,6 @@ contains
          end do
       end block
 
-      ! 最低値をbottomに格納し、バッファを走査して最大値をtopに格納する。
       block ! get the bottom and top from the segment array.
          bottom = buff(1)%min
          top = 0
@@ -73,17 +70,13 @@ contains
          end do
       end block
 
-      ! new_listを改めて2倍のサイズで割り付ける
       allocate(new_list(siz*2))
       ! allocate(cache(siz*2))
 
-      ! old_listを入力にindex_listを生成する。
       call index_list_from_segment_list(index_list, old_list)
 
-      ! segment_t型の変数newに定数SEG_UPPERを代入する。
       new = SEG_UPPER
 
-      ! インデックス変数に1を代入して初期化する
       k = 1
       m = 1
       do while(m <= size(index_list))
@@ -146,6 +139,7 @@ contains
       deallocate(buff)
       deallocate(cache)
       deallocate(index_list)
+
    end subroutine disjoin_kernel
 
 
@@ -173,8 +167,8 @@ contains
       do j = 1, size(disjoined_list)
          res = res .or. ( disjoined_list(j)%min <= seg%min .and. seg%max <= disjoined_list(j)%max)
       end do
-   end function is_prime_semgment
 
+   end function is_prime_semgment
 
    function is_overlap_to_seg_list(seg, list, len) result(res)
       implicit none
@@ -189,14 +183,10 @@ contains
       do i = 1, len
          res(i) = list(i) .in. seg
       end do
+
    end function is_overlap_to_seg_list
 
 
-   !| Extracts a sorted list of unique indices from a list of segments.
-   !
-   !  This subroutine takes a list of segments and generates a sorted list of
-   !  unique indices from the `min` and `max` values of each segment, including
-   !  values just before and after the `min` and `max`
    subroutine index_list_from_segment_list(index_list, seg_list)
       use :: forgex_sort_m, only: bubble_sort
       implicit none
@@ -206,15 +196,12 @@ contains
 
       integer :: siz, i, k
 
-      siz = size(seg_list, dim=1)   ! Get the size of the input list.
+      siz = size(seg_list, dim=1)
 
-      allocate(index_list(6*siz))   ! Allocate an index list of the required size.
-      allocate(cache(6*siz))        ! Allocate an array for the cache.
+      allocate(index_list(6*siz))
+      allocate(cache(6*siz))
 
-      ! Scan the list of segments.
       do i = 1, siz
-         ! Add the `min` and `max` values of the segment, as well as the values
-         ! before and after them, to the `index_list`.
          index_list(6*i-5) = seg_list(i)%min - 1
          index_list(6*i-4) = seg_list(i)%min
          index_list(6*i-3) = seg_list(i)%min + 1
@@ -223,13 +210,10 @@ contains
          index_list(6*i)   = seg_list(i)%max + 1
       end do
 
-      call bubble_sort(index_list) ! Sort the `index_list`.
+      call bubble_sort(index_list)
       
-      ! From the sorted index_list, remove duplicates and extract unique values,
-      ! then add them to the `cache` array.
-      ! At the same time, count the number of elements in the `cache` array.
       cache(1) = index_list(1)
-      k = 1    ! Initialize the counter `k`.
+      k = 1
       do i = 2, siz*6
          if (index_list(i-1) /= index_list(i)) then
             k = k + 1
@@ -237,10 +221,10 @@ contains
          end if
       end do 
 
-      deallocate(index_list)     ! Deallocate the old `index_list`.
+      deallocate(index_list)
+      allocate(index_list(k))
+      index_list(:) = cache(1:k)
 
-      allocate(index_list(k))    ! Allocate a new index list based on the number of unique indices.
-      index_list(:) = cache(1:k) ! Copy from the `cache(1:k)` into the new `index_list`. 
    end subroutine index_list_from_segment_list
 
 end module forgex_segment_disjoin_m
