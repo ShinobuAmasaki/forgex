@@ -24,6 +24,8 @@ module forgex_test_m
 
 contains
 
+   !> This function checks if a pattern is found within a string and
+   !> compares the result to the `correct_answer`.
    function is_valid__in(pattern, str, correct_answer) result(res)
       implicit none
       character(*), intent(in) :: pattern, str
@@ -35,6 +37,8 @@ contains
    end function is_valid__in
 
 
+   !> This function checks if a pattern matches exactly a string and
+   !> compares the result to the correct answer.
    function is_valid__match(pattern, str, correct_answer) result(res)
       implicit none
       character(*), intent(in) :: pattern, str
@@ -46,6 +50,8 @@ contains
    end function is_valid__match
 
 
+   !> This function checks if a pattern matches a string using the `regex` 
+   !> function and compares the result to the expected answer.
    function is_valid__regex(pattern, str, answer, substr) result(res)
       implicit none
       character(*),              intent(in)    :: pattern, str
@@ -63,6 +69,7 @@ contains
    end function is_valid__regex
 
 
+   !> This subroutine runs the `is_valid__in` function and prints the result.
    subroutine runner_in(pattern, str, answer, result)
       implicit none
       character(*), intent(in)    :: pattern, str
@@ -82,6 +89,7 @@ contains
    end subroutine runner_in
 
 
+   !> This subroutine runs the `is_valid__match` function and prints the result.
    subroutine runner_match(pattern, str, answer, result)
       implicit none
       character(*), intent(in)    :: pattern, str
@@ -103,6 +111,7 @@ contains
    end subroutine runner_match
 
 
+   !> This subroutine runs the `is_valid__regex` function and prints the result.
    subroutine runner_regex(pattern, str, answer, result)
       implicit none
       character(*), intent(in)    :: pattern, str

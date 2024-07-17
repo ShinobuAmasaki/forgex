@@ -126,7 +126,8 @@ Expected to be used by the forgex module.</p></td>
                  <td><a href='../proc/char_utf8.html'>char_utf8</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td><p>This function is like an extension of char() for the UTF-8 codeset.</p></td>
+                 <td><p>The <code>char_utf8</code> function takes a code point as integer in Unicode character set,
+and returns the corresponding character as UTF-8 binary string.</p><a href="../proc/char_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/check_nfa_state.html'>check_nfa_state</a></td>
@@ -150,7 +151,7 @@ Expected to be used by the forgex module.</p></td>
                  <td><a href='../proc/count_token.html'>count_token</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function counts the occurrence of a spcified character(token) in a given string.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/deallocate_tree.html'>deallocate_tree</a></td>
@@ -220,9 +221,9 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../proc/ichar_utf8.html'>ichar_utf8</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td><p>This function is like an extension of char() for the UTF-8 codeset.
-Take a UTF-8 character as an argument and
-return the integer representing its UTF-8 binary string. </p></td>
+                 <td><p>Take a UTF-8 character as an argument and
+return the integer (also known as "code point" in Unicode) representing 
+its UTF-8 binary string. </p><a href="../proc/ichar_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/idxutf8.html'>idxutf8</a></td>
@@ -268,13 +269,17 @@ about comparison with unallocated character variable.</p></td>
                  <td><a href='../proc/is_first_byte_of_character.html'>is_first_byte_of_character</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function determines if a given character is the first byte of 
+a UTF-8 multibyte character. It takes a 1-byte character as input
+and returns a logical value indicating if it is the first byte of
+an UTF-8 binary string.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_first_byte_of_character_array.html'>is_first_byte_of_character_array</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine determines if each character in a given string is the first byte of a UTF-8 multibyte character.
+It takes a UTF-8 string and return a logical array indicating for each position if it is the first byte.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_overlap_to_seg_list.html'>is_overlap_to_seg_list</a></td>
@@ -306,19 +311,22 @@ at the end that matches the ending of a line.</p></td>
                  <td><a href='../proc/is_valid__in.html'>is_valid__in</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function checks if a pattern is found within a string and
+compares the result to the <code>correct_answer</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_valid__match.html'>is_valid__match</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function checks if a pattern matches exactly a string and
+compares the result to the correct answer.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_valid__regex.html'>is_valid__regex</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function checks if a pattern matches a string using the <code>regex</code> 
+function and compares the result to the expected answer.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__compute_reachable_n_state.html'>lazy_dfa__compute_reachable_n_state</a></td>
@@ -393,13 +401,13 @@ The result is returned as a pointer to the DFA state.</p></td>
                  <td><a href='../proc/len_trim_utf8.html'>len_trim_utf8</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function calculates the length of a UTF-8 string excluding tailing spaces.</p><a href="../proc/len_trim_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/len_utf8.html'>len_utf8</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function calculates the length of a UTF-8 string.</p><a href="../proc/len_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/make_atom.html'>make_atom</a></td>
@@ -582,19 +590,19 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../proc/runner_in.html'>runner_in</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine runs the <code>is_valid__in</code> function and prints the result.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_match.html'>runner_match</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine runs the <code>is_valid__match</code> function and prints the result.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_regex.html'>runner_regex</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine runs the <code>is_valid__regex</code> function and prints the result.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/seg_in_segment.html'>seg_in_segment</a></td>
@@ -630,7 +638,8 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../proc/set_continuation_byte.html'>set_continuation_byte</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function take one byte, set the first two bits to 10, and
+returns one byte of the continuation part. </p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/shorthand.html'>shorthand</a></td>
@@ -675,7 +684,7 @@ and a segment, is contained in the latter, respectively.</p></td>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 14:32              </p>
+ on 2024-07-17 16:52              </p>
           </div>
         </div>
         <br>

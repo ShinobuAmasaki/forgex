@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="10.3% of total for modules and submodules.">235 statements</a>
+                 title="10.5% of total for modules and submodules.">238 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -280,7 +280,8 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  <p>This function is like an extension of char() for the UTF-8 codeset.</p>
+  <p>The <code>char_utf8</code> function takes a code point as integer in Unicode character set,
+and returns the corresponding character as UTF-8 binary string.</p><a href="../proc/char_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -325,7 +326,7 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function counts the occurrence of a spcified character(token) in a given string.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -340,7 +341,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~12"></span>
+              <span class="anchor" id="variable-str~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -385,9 +386,9 @@ parameter
 </h3></div>
     <div class="card-body">
           
-  <p>This function is like an extension of char() for the UTF-8 codeset.
-Take a UTF-8 character as an argument and
-return the integer representing its UTF-8 binary string. </p>
+  <p>Take a UTF-8 character as an argument and
+return the integer (also known as "code point" in Unicode) representing 
+its UTF-8 binary string. </p><a href="../proc/ichar_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -448,7 +449,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~7"></span>
+              <span class="anchor" id="variable-str"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -493,7 +494,10 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function determines if a given character is the first byte of 
+a UTF-8 multibyte character. It takes a 1-byte character as input
+and returns a logical value indicating if it is the first byte of
+an UTF-8 binary string.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -538,7 +542,7 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function calculates the length of a UTF-8 string excluding tailing spaces.</p><a href="../proc/len_trim_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -553,7 +557,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~9"></span>
+              <span class="anchor" id="variable-str~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -583,7 +587,7 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function calculates the length of a UTF-8 string.</p><a href="../proc/len_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -598,7 +602,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~10"></span>
+              <span class="anchor" id="variable-str~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -628,7 +632,8 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function take one byte, set the first two bits to 10, and
+returns one byte of the continuation part. </p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -678,7 +683,8 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This subroutine determines if each character in a given string is the first byte of a UTF-8 multibyte character.
+It takes a UTF-8 string and return a logical array indicating for each position if it is the first byte.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -693,7 +699,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~11"></span>
+              <span class="anchor" id="variable-str~5"></span>
               character(len=length),
             </td>
 <td>intent(in)</td>
@@ -708,7 +714,7 @@ given the string str and the current index curr.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~2"></span>
+              <span class="anchor" id="variable-array"></span>
               logical,
             </td>
 <td>intent(inout),</td>
@@ -766,7 +772,7 @@ given the string str and the current index curr.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 14:32              </p>
+ on 2024-07-17 16:52              </p>
           </div>
         </div>
         <br>
