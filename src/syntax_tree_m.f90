@@ -157,7 +157,7 @@ contains
          self%token_char = ''
       else
          !!### Internal implementation
-         !!@note It is importrant to note that the pattern may contain UTF-8 characters,
+         !!@note It is importrant to note that patterns may contain UTF-8 characters,
          !! and therefore, the character representing the next token to focus may be
          !! multibyte neighbor. Because of this rule, we must use the `idxutf8` function
          !! to get the index of the next character.
