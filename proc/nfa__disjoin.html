@@ -158,6 +158,8 @@
     </div>
 
 
+    <p>This subroutine disjoins the segments of an NFA.
+It ensures that the segments of the NFA are disjoined, meacning no two segemnts overlap.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/nfa_t.html'>nfa_t</a></p>
@@ -175,7 +177,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~17"></span>
+              <span class="anchor" id="variable-self~8"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -219,6 +221,7 @@
 <span class="w">      </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="nb">null</span><span class="p">()</span>
 
+<span class="w">      </span><span class="c">! Traverse through all states and enqueue their segments into a priority queue.</span>
 <span class="w">      </span><span class="k">block</span><span class="w"> </span><span class="c">! enqueue</span>
 <span class="w">         </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_nstate</span>
 <span class="w">            </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -233,17 +236,19 @@
 <span class="k">         end do</span>
 <span class="k">      end block</span><span class="w"> </span><span class="c">! enqueue</span>
 
+<span class="w">      </span><span class="c">! Allocate memory for the segment list and dequeue all segments for the priority queue.</span>
 <span class="w">      </span><span class="n">num</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">queue</span><span class="p">%</span><span class="n">number</span>
-
 <span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">seg_list</span><span class="p">(</span><span class="n">num</span><span class="p">))</span>
 <span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">num</span>
 <span class="w">         </span><span class="n">seg_list</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dequeue</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
 <span class="w">      </span><span class="k">end do</span>
-<span class="w">      </span><span class="c">!-- seg_list array is sorted.</span>
+<span class="w">      </span><span class="c">!--- The seg_list array is now sorted.</span>
 
+<span class="w">      </span><span class="c">! Disjoin the segments to ensure no overlaps.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">disjoin</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)</span>
-<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">seg_list</span><span class="w"> </span><span class="c">! all_segments are one of the module array-variables.</span>
+<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">seg_list</span><span class="w"> </span><span class="c">! Store the disjoined segments in the NFA.</span>
 
+<span class="w">      </span><span class="c">! Traverse through all states and disjoin their segments if necessary.</span>
 <span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_nstate</span>
 <span class="w">         </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
@@ -252,8 +257,8 @@
 <span class="w">         </span><span class="k">end if</span>
 <span class="k">      end do</span>
 
-<span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_nstate</span><span class="w"> </span>
-
+<span class="w">      </span><span class="c">! Repeat the process for the rest of the states.</span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_nstate</span><span class="w"> </span>
 <span class="w">         </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">next</span>
 
 <span class="w">         </span><span class="n">inner</span><span class="p">:</span><span class="w"> </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
@@ -261,15 +266,13 @@
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">is_prime_semgment</span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">seg_list</span><span class="p">))</span><span class="w"> </span><span class="k">then                     </span>
 <span class="k">               call </span><span class="n">disjoin_nfa_state</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="w"> </span><span class="n">seg_list</span><span class="p">)</span>
 <span class="w">            </span><span class="k">end if</span>
-
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="nb">index</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">exit </span><span class="n">inner</span>
-
 <span class="w">            </span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">next</span>
 
 <span class="w">         </span><span class="k">end do </span><span class="n">inner</span>
 <span class="w">      </span><span class="k">end do</span>
 
-<span class="w">      </span><span class="c">!-- deallocate</span>
+<span class="w">      </span><span class="c">! Deallocate memory resources. </span>
 <span class="w">      </span><span class="k">call </span><span class="n">clear</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
 <span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">nfa__disjoin</span>
@@ -296,7 +299,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 19:13              </p>
+ on 2024-07-18 02:25              </p>
           </div>
         </div>
         <br>

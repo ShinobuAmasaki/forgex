@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.7% of total for procedures.">32 statements</a>
+                 title=" 1.7% of total for procedures.">33 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -145,6 +145,7 @@
 </h2>
     
 
+    <p>This subroutine recursively generates an NFA from a syntax tree.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/nfa_t.html'>nfa_t</a></p>
@@ -162,7 +163,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
+              <span class="anchor" id="variable-self~7"></span>
               class(<a href='../type/nfa_t.html'>nfa_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -177,7 +178,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~9"></span>
+              <span class="anchor" id="variable-tree~10"></span>
               type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -239,39 +240,50 @@
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">recursive subroutine </span><span class="n">nfa__generate_nfa</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">nfa_t</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span>
-
+<span class="k">      class</span><span class="p">(</span><span class="n">nfa_t</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span><span class="w">           </span><span class="c">! The NFA object to modify.</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="w">           </span><span class="c">! The syntax tree representing the regular expression.</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="k">entry</span><span class="w">          </span><span class="c">! The entry state of the NFA</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">way_out</span><span class="w">        </span><span class="c">! The exit state of NFA</span>
+<span class="w">      </span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
 
+<span class="w">      </span><span class="c">! Determine the operation type of the current node in the syntax tree.</span>
 <span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">op</span><span class="p">)</span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_char</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle character operations by adding transitions for each character.</span>
 <span class="w">         </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="w">            </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="n">j</span><span class="p">))</span>
 <span class="w">         </span><span class="k">end do </span>
 <span class="k">     </span>
 <span class="k">      case</span><span class="w"> </span><span class="p">(</span><span class="n">op_empty</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle empty operation by adding an empty transition.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span>
 
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_union</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle union operation by recursively generating NFAs for left and right subtrees.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">)</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">right</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">)</span>
 <span class="w">      </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_closure</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle closure (Kleene star) operations by creating new node and adding appropriate transition.</span>
 <span class="w">         </span><span class="n">a1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">generate_node</span><span class="p">()</span>
 <span class="w">         </span><span class="n">a2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">generate_node</span><span class="p">()</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span>
+
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">a2</span><span class="p">)</span>
+
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">a2</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EMPTY</span><span class="p">)</span>
 <span class="w">      </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_concat</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle concatenation operations by recursively generating NFAs for left and right subtrees.</span>
 <span class="w">         </span><span class="n">a1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">generate_node</span><span class="p">()</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">left</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">)</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">right</span><span class="p">,</span><span class="w"> </span><span class="n">a1</span><span class="p">,</span><span class="w"> </span><span class="n">way_out</span><span class="p">)</span>
 <span class="w">      </span>
 <span class="w">      </span><span class="k">case </span><span class="n">default</span>
+<span class="w">         </span><span class="c">! Handle unexpected cases.</span>
+<span class="w">         </span><span class="c">! If this case is encountered, it prints an error message and stop execution</span>
 <span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;This will not happen in &#39;generate_nfa&#39;.&quot;</span>
 <span class="w">         </span><span class="k">error stop</span>
 <span class="k">      end select</span>
@@ -299,7 +311,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-17 19:13              </p>
+ on 2024-07-18 02:25              </p>
           </div>
         </div>
         <br>

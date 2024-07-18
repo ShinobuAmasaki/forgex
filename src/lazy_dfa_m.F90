@@ -31,6 +31,7 @@ module forgex_lazy_dfa_m
    
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
+
    !> The `d_list_t` is the type represents a list of transitionable NFA state
    !> This type holds a linked list of possible NFA states for a range of input characters.
    !> This is a component of the `dfa_t` type.
@@ -39,6 +40,7 @@ module forgex_lazy_dfa_m
       type(nfa_state_set_t) :: to
       type(d_list_t), pointer :: next => null()
    end type d_list_t
+
 
    !> The `d_state_t` is the type represents a state of DFA.
    !> This type has a set of NFA states that can be constructed by the powerset construction
@@ -51,6 +53,7 @@ module forgex_lazy_dfa_m
       type(d_transition_t), pointer :: transition => null() ! list of transition destination
    end type d_state_t
 
+
    !> The `d_transition_t` is the type represents a transition a transition from a DFA state
    !> to the next DFA state.
    !> The set of transitions for a particular DFA state (represented as a node of `d_state_t` type) 
@@ -60,6 +63,7 @@ module forgex_lazy_dfa_m
       type(d_state_t), pointer :: to => null()        ! destination
       type(d_transition_t), pointer :: next => null() ! pointer of next data
    end type d_transition_t
+
 
    !> The `dfa_t` class represents a single automaton as a set of DFA states.
    !> A DFA constructed by the powerset method has one initial state and accepting states.
@@ -94,11 +98,13 @@ module forgex_lazy_dfa_m
       type(d_list_t), pointer :: node
    end type dlist_pointer_list_t
 
+
    !> Derived type definition for element that make up the pointer array
    !> for the monitor of the `d_state_t` type.
    type :: dstate_pointer_list_t
       type(d_state_t), pointer :: node
    end type dstate_pointer_list_t
+
 
    !> Derived type definition for element that make up the pointer array
    !> for the monitor of the `d_transition_t` type.
@@ -106,12 +112,14 @@ module forgex_lazy_dfa_m
       type(d_transition_t), pointer :: node
    end type dtransition_pointer_list_t
 
+
    !> The monitor array of the `d_list_t` type.
    type(dlist_pointer_list_t)        :: dlist_pointer_list(DFA_STATE_MAX)
    !> The monitor array of the `d_state_t` type.
    type(dstate_pointer_list_t)       :: dstate_pointer_list(DFA_STATE_MAX)
    !> The monitor array of the `d_transition_t` type.
    type(dtransition_pointer_list_t)  :: dtransition_pointer_list(DFA_STATE_MAX)
+
 
 #ifndef DEBUG
    !> The number of nodes registered in the monitor array of the `dlist_pointer_list`.
@@ -142,38 +150,45 @@ contains
 
       integer :: i
 
-      ! Initialize
+      ! Initialize the number of DFA states.
       self%dfa_nstate = 0
+
+      ! Allocate memory for the DFA states array.
       allocate(self%states(DFA_STATE_MAX))
+
+      ! Allocate memory for the initialclosure set.
       allocate(initial_closure)
       initial_closure%vec(:) = .false.
       nfa_entry_state_set%vec(:) = .false.
 
-      ! Indexing of DFA states
+      ! Assign unique indices to each DFA state.
       do i = 1, size(self%states, dim=1)
          self%states(i)%index = i
       end do
 
-      ! Associate a reference to the NFA of an argument to the derived-type component.
+      ! Associate the provided NFA with the component of DFA
       self%nfa => nfa
 
-      ! Using `nfa_entry_state_set` as input, calculate the ε-closure and store
-      ! the result in `initial_closure`.
+      ! Add the entry state of the NFA to the entry state set.
       call add_nfa_state(nfa_entry_state_set, nfa_entry)
       
-      ! Compute epsilon closure 
+      ! Compute the epsilon closure of the entry state set and store in `initial_closure`.
       call self%epsilon_closure(nfa_entry_state_set, initial_closure)
 
-      ! Create the initial state of the DFA
+      ! Allocate memory for the initial DFA state.
       allocate(self%initial_dfa_state)
 
-      ! Do DEEP copy
+      ! Perform a deep copy of the `initial_closure` set to the `initial%state_set`.
       initial%state_set = initial_closure
+
+      ! Determine if the `initial_state` is an accepting state.
       initial%accepted = check_NFA_state(initial%state_set, nfa_exit)
       
+      ! Register the initial state set and assign it to the initial DFA state.
       tmp => self%register(initial%state_set)
-      self%initial_dfa_state = tmp  ! Do DEEP copy
+      self%initial_dfa_state = tmp  ! Perform a deep copy
 
+      ! Deallocate the initial closure set.
       deallocate(initial_closure)
    end subroutine lazy_dfa__init
 
@@ -225,6 +240,7 @@ contains
    end subroutine lazy_dfa__deallocate
 
 
+   !> This subroutine deallocates all the node in the monitor array.
    subroutine lazy_dfa__deallocate_dlist
       implicit none
       integer :: j, max
@@ -452,6 +468,7 @@ contains
    end function lazy_dfa__move
 
 
+   !> 
    subroutine lazy_dfa__construct(self, current, destination, symbol)
       implicit none
       class(dfa_t), intent(inout) :: self
