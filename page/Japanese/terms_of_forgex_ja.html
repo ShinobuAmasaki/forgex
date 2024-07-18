@@ -1,0 +1,252 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../../favicon.png">
+
+    <title>Forgexの用語 &ndash; Forgex—Fortran Regular Expression</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/pygments.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/local.css" rel="stylesheet">
+      <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>Forgexの用語</h1>
+    <div class="container p-2 mb-4 bg-light border rounded-3">
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <ul class="list-inline" style="margin-bottom:0px; display:inline">
+              <li class="list-inline-item" id="author"><i class="fa fa-pencil"></i> 雨崎しのぶ</li>
+              <li class="list-inline-item" id="date"><i class="fa fa-calendar-o"></i> 2024-07-18</li>
+          </ul>
+        </div>
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../index.html'>Documentation</a></li>
+                <li class="breadcrumb-item"><a href='index.html'>Japanese/日本語</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Forgexの用語</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+      <div class="col-3">
+        <div class="card card-body bg-light" id="sidebar-toc">
+          <ul class="nav flex-column align-items">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html">Documentation</a>
+            </li>
+          </ul>
+          <hr>
+          <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="../English/index.html">English</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="../English/terms_related_to_forgex_en.html">Terms related to Forgex</a>
+
+                </nav>
+              <a class="nav-link" href="index.html">Japanese/日本語</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link active disabled" href="terms_of_forgex_ja.html">Forgexの用語</a>
+
+                </nav>
+          </nav>
+        </div>
+      </div>
+
+    <div class="col-9" id='text'>
+      <h1>Forgexの開発における用語</h1>
+<p>このページには、Forgexの開発に関わる用語についての解説が含まれています。</p>
+<h2>目次</h2>
+<ul>
+<li><a href="#ascii">ASCII</a></li>
+<li><a href="#code-point">コードポイント</a></li>
+<li><a href="#dfa">DFA</a></li>
+<li><a href="#disjoin">Disjoin</a></li>
+<li><a href="#lazy-dfa">Lazy DFA</a></li>
+<li><a href="#nfa">NFA</a></li>
+<li><a href="#powerset-construction">冪集合構成法</a></li>
+<li><a href="#segment">セグメント</a></li>
+<li><a href="#segment-sorting">セグメントのソート</a></li>
+<li><a href="#subset-construction">部分集合構成法</a></li>
+<li><a href="#tape">テープ</a></li>
+<li><a href="#unicode">Unicode</a></li>
+<li><a href="#ucs-4">UCS-4</a></li>
+<li><a href="#utf-8">UTF-8</a></li>
+</ul>
+<h2>詳細</h2>
+<h3><span id=ascii>ASCII</span></h3>
+<p>ASCII（American Standard Code for Information Interchange）は、1963年に制定された文字符号化に関する規則で、0から127の数字とそれらに対応する文字および記号の関係を定義しています。最初の32文字（10進数の0から31）は制御文字として予約されており、最後の96文字（32から127）は印刷可能（Printable）な文字です。印刷可能文字には、アメリカで使用されているラテン文字が含まれており、数字65～90は大文字のA~Zに対応し、数字97～122は小文字のa～zに対応します。その他は「$」、「#」、「|」などの記号です。</p>
+<p>Fortranでは、組込み手続<code>char()</code>や<code>ichar()</code>を使用してこの対応関係を取得することができます。例えば<code>char</code>の引数に数値70を指定すると文字「F」が返され、逆に<code>ichar</code>の引数に文字「o」を指定すると、整数111が返されます。</p>
+<p>Forgexの開発では、ASCIIを部分集合として含むUTF-8コードセットを使用して、文字集合全体にわたる正規表現パターンを処理します。UTF-8の連続したサブセットは、その数値に対応する「セグメント」を定義し、これを使用してUTF-8文字の処理を実現しています。</p>
+<p>cf.  <a href="#segment">セグメント</a>、 <a href="#unicode">Unicode</a>、 <a href="#utf-8">UTF-8</a></p>
+<h3><span id=code-point>コードポイント（Code Point）</span></h3>
+<p>コードポイント（コードポジションとも呼ばれる）は文字、記号、絵文字及び制御文字が割り当てられている表の中の特定の位置を指します。</p>
+<p>Unicodeでは、コードポイントは「U+」の接頭辞に続く16進数で表現され、その範囲はU+0000からU+10FFFFです。例えば、ラテン文字「A」のコードポイントはU+0041です。同様に漢字「雨」はU+96E8に対応し、絵文字「👍」は U+1FF4D に対応します。</p>
+<p>ForgexはUnicodeコードポイントを整数として表現し、<code>forgex_utf8_m</code>モジュールで<code>char_utf8</code>及び<code>ichar_utf8</code>の手続を定義して、コードポイントとそれに対応するUTF-8文字との間での変換を行います。</p>
+<p>cf.  <a href="#unicode">Unicode</a>、 <a href="#utf-8">UTF-8</a></p>
+<h3><span id=dfa>DFA</span></h3>
+<p>決定性有限オートマトン（Deterministic Finite Automaton、 <strong>DFA</strong>）は、決定論的遷移を持つ有限の状態集合について、表現及び操作するために使用される計算機科学における計算の理論モデルです。決定論的遷移とは、状態から状態への遷移が入力文字によって一意に決定されるものを指します。</p>
+<p>正規表現処理系の開発における重要な点は、正規表現に一致する文字列集合はDFA（または後述のNFA）を使用して計算することができることです。</p>
+<p>Forgexの正規表現エンジンは、まず正規表現のパターンから構文木を作成し、次にNFAを構築します。そしてそのNFAが等価なDFAに変換されて、マッチングの計算が行われます。このとき、構築されたNFAから冪集合構成法（後述）を使用してDFAを構築しますが、現在のバージョンのForgexでは、NFAと入力文字列に対して遅延評価（つまり入力がある前にDFA全体を構築しない）を行い、DFAを構築していきます。この手法はLazy DFAと呼ばれています。この計算を実行するためのForgexの実装では、DFAをシミュレートするラベル付き有向グラフを表すポインタと配列を使用して<code>dfa_t</code>派生型を定義しています。</p>
+<p>cf. <a href="#nfa">NFA</a>、 <a href="#powerset-construction">冪集合構成法</a>、 <a href="#lazy-dfa">Lazy DFA</a></p>
+<h3><span id=disjoin>Disjoin</span></h3>
+<p>Forgexの開発において、Disjoinとは、複数のセグメントの間で、互いに交差するセグメントをなくすために、一連のセグメントに対して行われる操作をさす。</p>
+<p>前提として、Forgexは共通の遷移を共有する入力の集合をセグメントとして表現しています。この場合、交差するセグメントがその集合に含まれていると、Forgexの冪集合構成法の実装では、元のNFAと等価なDFAを構築することはできません。したがって、交差するセグメントの集合を交差点で分割することにより、交差しないセグメントの集合に変換する分割の操作を実行する必要があります。</p>
+<p>Disjoinの操作は、<code>forgex_segment_disjoin_m</code>モジュール内の公開手続として定義されており、特にその中で<code>disjoin_kernel</code>手続が重要な役割を果たします。</p>
+<p>cf. <a href="#segment">セグメント</a>、 <a href="../../module/forgex_segment_disjoin_m.html"><code>`forgex_segment_disjoin_m</code></a>、</p>
+<h3><span id=lazy-dfa>Lazy DFA</span></h3>
+<p>Lazy DFAは、通常のDFA構築手法とは異なり、遅延評価によって必要に応じて遷移と遷移先を生成する手法です。この手法は、入力が与えられるたびにNFAからの遷移を計算して保存することで大規模なオートマトンを効率的に処理するために使用され、記憶領域の消費量を削減します。すべてのDFA状態を事前に計算する通常のDFA構成の場合と比較して、<code>a{1、100}*b</code>などの大規模なDFAを必要とするパターンの場合についてDFA全体の事前計算を回避できるため、メモリスペースを節約することができます。</p>
+<p>cf. <a href="#dfa">DFA</a>、 <a href="#powerset-construction">冪集合構成法</a>. </p>
+<h3><span id=nfa>NFA</span></h3>
+<p>非決定性有限オートマトン（Non-deterministic Finite Automaton、<strong>NFA</strong>）は、非決定的遷移を伴う有限の状態集合について、表現及び操作するために使用される計算機科学における計算の理論モデルです。非決定的遷移とは、状態から状態への遷移が入力ごとに一意に決定されない遷移です。これには入力文字列を消費しない遷移（ε遷移）も含まれます。</p>
+<p>DFAと同様に、NFAは正規表現を処理できますが、効果的にシミュレートするためにはバックトラックと呼ばれる手法を使用する必要があります。ここでは詳細に説明できませんが、NFAについてバックトラックを利用した正規表現処理系は幅広い機能を搭載できる一方で、すべてのパターンで高速な処理を実現することは困難です。つまり、NFAによるエンジンには苦手なパターンというものが存在しています。</p>
+<p>Forgexは、多くのFortranユーザーが主眼においている要件である、高い実行時のパフォーマンスに重点をおいています。したがって、NFAをマッチングに直接使うのではなく、NFAと同等のDFAに変換してマッチングを行います。変換前のNFAは<code>nfa_t</code>派生型として定義されています。その変換の詳細については、後述の「冪集合構成法」を参照してください。</p>
+<p>cf. <a href="#dfa">DFA</a>、 <a href="#powerset-construction">冪集合構成法</a></p>
+<h3><span id=powerset-construction>冪集合構成法（Powerset Construciton Method）</span></h3>
+<p>冪集合構成法（Powerset Construction Method）または部分集合構成法（Subset Construction Method）は、NFAをDFAをに変換する処理です。この方法を使用すると非決定的性質を持つオートマトンをそれと等価な、つまり同じ入力文字列を受理するDFAに変換することができます。</p>
+<p>このアプローチは、決定性状態機械を構築できるという点で強力なものですが、しかしながら、変換によって構築されるDFA状態の数が指数関数的に増加する可能性があるという欠点を持ちます。この問題は組合せ爆発と呼ばれる問題の一種です。Forgexのバージョン2.0以降では入力文字に対応するDFA状態を動的に生成できるLazy DFAが導入されているので、この問題について心配する必要はありません。</p>
+<p>cf. <a href="https://ja.wikipedia.org/wiki/%E9%83%A8%E5%88%86%E9%9B%86%E5%90%88%E6%A7%8B%E6%88%90%E6%B3%95">部分集合構成法 - Wikipedia</a>、<a href="https://ja.wikipedia.org/wiki/%E7%B5%84%E5%90%88%E3%81%9B%E7%88%86%E7%99%BA">組合せ爆発- Wikipedia</a></p>
+<h3><span id=segment>セグメント（Segment）</span></h3>
+<p>セグメント（segment）とは、文字集合全体の部分集合であり連続した区間として、開始点と終了点の2つの数字で定義されます。状態機械をシミュレートにおいて、単一の入力文字を計算するべき遷移に割り当てると、（特に文字クラスおよび否定クラスを処理する場合に）大量のメモリを消費するため、Forgexは文字集合の部分的な区間を遷移に関連付ける方法を使用して、メモリの消費を低減しています。ただし、このアプローチを導入することによって新たな問題が生じることにも注意してください。その詳細についてはDisjoinの説明を参照してください。</p>
+<p>Forgexのセグメントの実装では、<code>segment_t</code>派生型として次のように定義されています。</p>
+<div class="codehilite"><pre><span></span><code><span class="w">   </span><span class="k">type</span><span class="err">、</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">segment_t</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">min</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UTF8_CODE_EMPTY</span><span class="w"> </span><span class="c">! = 0</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UTF8_CODE_EMPTY</span><span class="w"> </span><span class="c">! = 0</span>
+<span class="w">   </span><span class="k">contains</span>
+<span class="k">      procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">validate</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">segment_is_valid</span>
+<span class="w">   </span><span class="k">end type</span>
+</code></pre></div>
+
+<p><code>segment_t</code>型には、<code>min</code>と<code>max</code>の2つの成分と型束縛手続の<code>validate</code>が含まれます。<code>min</code>は区間内で最小のコードポイント値、<code>max</code>は最大のコードポイント値を保持します。手続<code>validate</code>は成分<code>min</code>が成分<code>max</code>以下であるかどうかを確認します。<code>min</code>と<code>max</code>が等しい場合、そのセグメントはただ1文字のみを表現します。</p>
+<p>cf. <a href="#disjoin">Disjoin</a>、 <a href="#segment-sorting">セグメントのソート</a> </p>
+<h3><span id=segment-sorting>セグメントのソート</span></h3>
+<p>セグメントのソートには、セグメントの集合をDisjoinな状態に再構築するために必要な処理で、<code>forgex_sort_m</code>モジュールで定義されたソート手順は、<code>forgex_segment_disjoin_m</code>モジュールの<code>disjoin_kernel</code>手続によって呼び出されます。現在実装されているアルゴリズムはバブルソートです。このアルゴリズムが使用されているのは、ソートされる要素の数が少なく、実行時間に対するこの処理の寄与が比較的小さいためです。ただし、近い将来に挿入ソートに変更することを予定しています。</p>
+<p>cf. <a href="#disjoin">Disjoin</a>、 <a href="#segment">セグメント</a>、 <a href="../../module/forgex_sort_m.html"><code>forgex_sort_m</code></a>、 <a href="../../module/forgex_segment_disjoin_m"><code>forgex_segment_disjoin_m</code></a>.</p>
+<h3><span id="subset-construction">部分集合構成法（Subset Construction Method）</span></h3>
+<p><a href="#powerset-construction">冪集合構成法</a>を参照してください。</p>
+<h3><span id=tape>テープ（Tape）</span></h3>
+<p>Forgexの実装において、テープ（tape）とは、シーケンシャルなデータアクセスと読み取りヘッダーを備えたストレージ（磁気テープなど）に例えて、それを模倣した派生型を使用しています。これは構文解析モジュール（<code>forgex_syntax_tree_m</code>）において<code>tape_t</code>派生型として定義されています。この型には、入力パターンの文字列全体（巻かれた磁気テープの例え）とインデックス番号（読み取りヘッダーの例え）に関する情報が含まれています。Forgexの開発者は、現在読み込まれている文字とトークンを、それの型束縛手続を通じて使用することができます。</p>
+<p>cf. forgex_syntax_tree_m<code>](../../module/forgex_syntax_tree_m.html)、 [</code>tape_t`](../../type/tape_t.html)</p>
+<h3><span id=unicode>Unicode</span></h3>
+<p>Unicodeは文字符号化の標準規格の一つであり、これを使用することで、さまざまな言語やプラットフォーム間でテキストの一貫した表現と処理が可能となる。すべての文字と記号に一意の番号（コードポイント）を割り当てて、広範囲の文字、記号、さらに絵文字をカバーしている。Unicode文字は、UTF-8、UTF-16、UTF-32などの共通の符号化方式を使用してバイト列にエンコードされ、様々なプラットフォーム間での互換性が確保されています。</p>
+<div class="alert alert-info">
+<p class="alert-title h4">Note</p>
+<p>MicrosoftのWindowsオペレーティングシステムの場合、システムの標準の文字コードがUTF-8でない場合があるため、ユーザーが設定を適切な変更を行う必要があるかもしれません。</p>
+</div>
+<p>cf. <a href="#code-point">コードポイント</a>、 <a href="#utf-8">UTF-8</a></p>
+<h3><span id=ucs-4>UCS-4</span></h3>
+<p>UCS-4（Universal Coded Character Set 4）もしくはほぼ同等のUTF-32（ISO/IEC 10646で定義されたされている）は、それぞれのUnicodeのコードポジションに32ビット（4バイト）のバイナリ列を割り当てる固定長の符号化方式です。Fortran 2003準拠のコンパイラの一部では、文字列型の宣言において型パラメーター<code>kind</code>を<code>selected_char_kind('ISO_10646')</code>の戻り値に指定することで、この固定長4バイト文字を使用することができる。例えば GNUのFortranコンパイラはこれをサポートしています。</p>
+<p>Forgexは現在のところ、UCS-4文字列の処理をサポートしていません。</p>
+<p>cf. <a href="#unicode">Unicode</a>、 <a href="#utf-8">UTF-8</a>、<a href="https://ja.wikipedia.org/wiki/UTF-32" target="_blank" rel="noopener noreferrer">UTF-32 - Wikipedia</a></p>
+<h3><span id=utf-8>UTF-8</span></h3>
+<p>UTF-8（UCS Transformation Format 8、または Unicode Transformation Format-8）は、Unicode文字を1バイトから4バイトの可変長バイト列に対応させる文字符号化の方式の1つです。ASCII文字との互換性を維持するために、ASCII文字の部分は1バイトで表現され、その他の文字は2バイトから4バイトで表現されます。Forgexは<code>forgex_utf8_m</code>モジュールで定義された手続を使用して、UTF-8で符号化された文字列を処理します。</p>
+<p>cf. <a href="../../module/forgex_utf8_m.html"><code>forgex_utf8_m</code></a></p>
+<h2><span id=references>参考文献</span></h2>
+<ol>
+<li><a href="https://stackoverflow.com/questions/20767047/how-to-implement-regular-expression-nfa-with-character-ranges" target="_blank" rel="noopener noreferrer">How to implement regular expression NFA with character ranges? - Stack Overflow</a>、 2013</li>
+<li><a href="https://fortran-lang.discourse.group/t/using-unicode-characters-in-fortran/2764?u=amasaki203" target="_blank" rel="noopener noreferrer">Using Unicode Characters in Fortran - Fortran-lang Discourse</a></li>
+</ol>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-07-18 07:58              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>
