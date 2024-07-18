@@ -302,8 +302,7 @@ contains
 
 
 
-   !> This subroutine deallocates all the nodes in the monitor array and their associated 
-   !> linked-list nodes.
+   !> This subroutine deallocates all the nodes in the monitor array.
    subroutine nfa__deallocate(self)
       implicit none
       class(nfa_t), intent(inout) :: self

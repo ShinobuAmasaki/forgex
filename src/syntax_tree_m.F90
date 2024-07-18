@@ -109,6 +109,7 @@ contains
 
    end function build_syntax_tree
 
+
    !> Access the monitor array and deallocate all allocated nodes.
    subroutine deallocate_tree()
       implicit none
@@ -311,6 +312,7 @@ contains
       end do
 
    end function regex
+
 
    !> This function constructs a `term` in the regular expression, which can
    !> involve concatenation of postfix operations.
