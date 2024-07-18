@@ -46,7 +46,7 @@ In the development of Forgex, we use the UTF-8 codeset, which includes ASCII as 
 regular expression patterns that span the entire character set, where a contiguous subset of UTF-8
 is called a Segment. 
 
-See also, [Code Set](#code-set), [Segment](#segment), [Unicode](#unicode), [UTF-8](#utf-8).
+See also, [Segment](#segment), [Unicode](#unicode), [UTF-8](#utf-8).
 
 
 ### <span id=code-point>Code Point</span>
