@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="21.8% of total for modules and submodules.">471 statements</a>
+                 title="21.8% of total for modules and submodules.">472 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -190,9 +190,9 @@
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-add_dfa_transition">add_dfa_transition</a>
+            <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-deallocate_dlist">deallocate_dlist</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__construct">lazy_dfa__construct</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__deallocate">lazy_dfa__deallocate</a>
-            <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__deallocate_dlist">lazy_dfa__deallocate_dlist</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__epsilon_closure">lazy_dfa__epsilon_closure</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__init">lazy_dfa__init</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_m.html#proc-lazy_dfa__matching">lazy_dfa__matching</a>
@@ -225,10 +225,10 @@ This module was previously named <code>dfa_m</code>.</p>
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
                   <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
                   <li class="list-inline-item"><a href='forgex_nfa_m.html'>forgex_nfa_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
         </ul>
@@ -265,7 +265,7 @@ parameter
 <td> =</td>
                 <td>1024</td>
             <td>
-                
+                <p>Upper limit of DFA state instance.</p>
             </td>
         </tr>
         <tr>
@@ -385,10 +385,13 @@ parameter
       <h3>public        interface <a href='../interface/free_dlist.html'>free_dlist</a> 
       </h3>
     </div>
+      <div class="card-body">
+        <p>Interface for the procedure <code>deallocate_dlist</code>.</p>
+      </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  subroutine <a href='../proc/lazy_dfa__deallocate_dlist.html'>lazy_dfa__deallocate_dlist</a>()  
+    private  subroutine <a href='../proc/deallocate_dlist.html'>deallocate_dlist</a>()  
 
     </h3>
     
@@ -1059,8 +1062,8 @@ for the monitor of the <code>d_transition_t</code> type.</p>
 </h3></div>
     <div class="card-body">
           
-  <p>Calculate a set of possible NFA states from the current DFA state by the input
-character <code>symbol</code>.</p>
+  <p>This function calculates a set of possible NFA states from the current DFA state by the input
+character <code>symbol</code>.</p><a href="../proc/lazy_dfa__compute_reachable_n_state.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1135,7 +1138,10 @@ character <code>symbol</code>.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>Returns <code>.true.</code> if the set of NFA states is already registered.
+It scans through the DFA states to check if the given NFA states set
+is already present in the DFA. If found, it sets the optional index parameter
+to the position of the registered state.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1274,7 +1280,9 @@ whether the current state is accepting or not.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This funciton performs a transition form the <code>current</code> DFA state based on the input <code>symbol</code>.
+It scans through the array of DFA states to find the state that can be reached from
+the <code>current</code> state for the given symbol, and returns a reference to the resulting state.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1590,11 +1598,24 @@ Is the symbol included in existing transitions?</p><a href="../proc/add_dfa_tran
   </div>
 
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-deallocate_dlist"></span> <h3>private  subroutine <a href='../proc/deallocate_dlist.html'>deallocate_dlist</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine deallocates all the node in the monitor array.</p>
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__construct"></span> <h3>private  subroutine <a href='../proc/lazy_dfa__construct.html'>lazy_dfa__construct</a>(self, current, destination, symbol)  
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This subroutine constructs a DFA state transition for a given <code>symbol</code> from the <code>current</code> state to the <code>destination</code> state.</p><a href="../proc/lazy_dfa__construct.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1715,24 +1736,11 @@ Is the symbol included in existing transitions?</p><a href="../proc/add_dfa_tran
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__deallocate_dlist"></span> <h3>private  subroutine <a href='../proc/lazy_dfa__deallocate_dlist.html'>lazy_dfa__deallocate_dlist</a>()  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This subroutine deallocates all the node in the monitor array.</p>
-
-  <h4>Arguments</h4>
-    <em>None</em>
-
-    </div>
-  </div>
-
-              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__epsilon_closure"></span> <h3>private  subroutine <a href='../proc/lazy_dfa__epsilon_closure.html'>lazy_dfa__epsilon_closure</a>(self, state_set, closure)  
 </h3></div>
     <div class="card-body">
           
-  <p>Compute the ε-closure for a set of NFA states.</p>
+  <p>Compute the ε-closure for a set of NFA states.</p><a href="../proc/lazy_dfa__epsilon_closure.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1858,7 +1866,10 @@ of the NFA of argument.</p>
 </h3></div>
     <div class="card-body">
           
-  
+  <p>Matches a given string against the DFA pattern and finds the starting and ending positions
+of the match. The function iterates over the input string and attempt to match the pattern
+from each possible starting position. If a match is found, the starting and ending positions
+are returned.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1961,7 +1972,7 @@ of the NFA of argument.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-18 02:25              </p>
+ on 2024-07-18 05:15              </p>
           </div>
         </div>
         <br>

@@ -136,7 +136,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
                  <td><a href='../proc/check_nfa_state.html'>check_nfa_state</a></td>
                  <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function checks if the arguement 'state' (set of NFA state) includes state 's'.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/clear.html'>clear</a></td>
@@ -158,6 +158,12 @@ state set in an NFA.</p></td>
                  <td><p>This function counts the occurrence of a spcified character(token) in a given string.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/deallocate_dlist.html'>deallocate_dlist</a></td>
+                 <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This subroutine deallocates all the node in the monitor array.</p></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/deallocate_tree.html'>deallocate_tree</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
@@ -173,7 +179,7 @@ state set in an NFA.</p></td>
                  <td><a href='../interface/disjoin.html'>disjoin</a></td>
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td>Interface</td>
-                 <td></td>
+                 <td><p>Interface for the procedure <code>disjoin_kernel</code>. </p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/disjoin_kernel.html'>disjoin_kernel</a></td>
@@ -210,7 +216,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../interface/free_dlist.html'>free_dlist</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Interface</td>
-                 <td></td>
+                 <td><p>Interface for the procedure <code>deallocate_dlist</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_token.html'>get_token</a></td>
@@ -337,14 +343,14 @@ function and compares the result to the expected answer.</p></td>
                  <td><a href='../proc/lazy_dfa__compute_reachable_n_state.html'>lazy_dfa__compute_reachable_n_state</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td><p>Calculate a set of possible NFA states from the current DFA state by the input
-character <code>symbol</code>.</p></td>
+                 <td><p>This function calculates a set of possible NFA states from the current DFA state by the input
+character <code>symbol</code>.</p><a href="../proc/lazy_dfa__compute_reachable_n_state.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__construct.html'>lazy_dfa__construct</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine constructs a DFA state transition for a given <code>symbol</code> from the <code>current</code> state to the <code>destination</code> state.</p><a href="../proc/lazy_dfa__construct.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
@@ -353,16 +359,10 @@ character <code>symbol</code>.</p></td>
                  <td><p>Deallocates all nodes registered in the monitor pointer arrays.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/lazy_dfa__deallocate_dlist.html'>lazy_dfa__deallocate_dlist</a></td>
-                 <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine deallocates all the node in the monitor array.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/lazy_dfa__epsilon_closure.html'>lazy_dfa__epsilon_closure</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td><p>Compute the ε-closure for a set of NFA states.</p></td>
+                 <td><p>Compute the ε-closure for a set of NFA states.</p><a href="../proc/lazy_dfa__epsilon_closure.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__init.html'>lazy_dfa__init</a></td>
@@ -375,13 +375,19 @@ of the NFA of argument.</p></td>
                  <td><a href='../proc/lazy_dfa__is_registered.html'>lazy_dfa__is_registered</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>Returns <code>.true.</code> if the set of NFA states is already registered.
+It scans through the DFA states to check if the given NFA states set
+is already present in the DFA. If found, it sets the optional index parameter
+to the position of the registered state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__matching.html'>lazy_dfa__matching</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>Matches a given string against the DFA pattern and finds the starting and ending positions
+of the match. The function iterates over the input string and attempt to match the pattern
+from each possible starting position. If a match is found, the starting and ending positions
+are returned.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__matching_exactly.html'>lazy_dfa__matching_exactly</a></td>
@@ -397,7 +403,9 @@ whether the current state is accepting or not.</p></td>
                  <td><a href='../proc/lazy_dfa__move.html'>lazy_dfa__move</a></td>
                  <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This funciton performs a transition form the <code>current</code> DFA state based on the input <code>symbol</code>.
+It scans through the array of DFA states to find the state that can be reached from
+the <code>current</code> state for the given symbol, and returns a reference to the resulting state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__register.html'>lazy_dfa__register</a></td>
@@ -499,17 +507,17 @@ This procedure belongs to the class of <code>nfa_t</code> derived-type and is ca
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
 an integer and a segment, an integer and a list of segments, or a segment
 and a segment, is contained in the latter, respectively.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
-                 <td>Interface</td>
-                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -550,16 +558,16 @@ or special characters.</p></td>
                  <td><p>This function constructs nodes for minimum-maximum range expression (<code>{m,n}</code>).</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/regex.html'>regex</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Function</td>
-                 <td><p>This function constructs a regular expression tree starting form a <code>term</code>.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../interface/regex.html'>regex</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>The generic name for the <code>regex</code> function implemented as <code>regex__matching</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/regex.html'>regex</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Function</td>
+                 <td><p>This function constructs a regular expression tree starting form a <code>term</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/regex__matching.html'>regex__matching</a></td>
@@ -675,7 +683,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-18 02:25              </p>
+ on 2024-07-18 05:15              </p>
           </div>
         </div>
         <br>

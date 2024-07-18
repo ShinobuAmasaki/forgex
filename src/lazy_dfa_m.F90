@@ -23,12 +23,14 @@ module forgex_lazy_dfa_m
    private
 
    interface free_dlist
-      procedure :: lazy_dfa__deallocate_dlist
+      !! Interface for the procedure `deallocate_dlist`. 
+      procedure :: deallocate_dlist
    end interface
    
    public :: d_state_t
    public:: free_dlist
    
+   !> Upper limit of DFA state instance. 
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
 
@@ -192,70 +194,65 @@ contains
       deallocate(initial_closure)
    end subroutine lazy_dfa__init
 
+
    !> Deallocates all nodes registered in the monitor pointer arrays.
    subroutine  lazy_dfa__deallocate(self)
       implicit none
       class(dfa_t), intent(inout) :: self
       integer :: j, max
 
-      ! Deallocate the initial node.
+      ! Deallocate the initial dfa state node if it is associated.
       if (associated(self%initial_dfa_state)) then
          deallocate(self%initial_dfa_state)
       end if
 
-      ! 
+      ! Deallocate all nodes in the `dlist_pointer_list` array.
       max = dlist_pointer_count
       do j = 1, max
          if (associated(dlist_pointer_list(j)%node)) then
+            ! Deallocate the character segment array if it is allocated.
             if (allocated(dlist_pointer_list(j)%node%c)) then
-               deallocate(dlist_pointer_list(j)%node%c)
+               deallocate(dlist_pointer_list(j)%node%c) 
             end if
+
+            ! Deallocate the node itself.
             deallocate(dlist_pointer_list(j)%node)
+            ! Decrement the count of allocated `dlist` pointers.
             dlist_pointer_count = dlist_pointer_count -1
          end if
       end do
 
+      ! Deallocate all nodes in the `dtransition_pointer_list` array.
       max = dtransition_pointer_count
       do j = 1, max
          if (associated(dtransition_pointer_list(j)%node)) then
+            ! Deallocate the character segment array if it is allocated.
             if (allocated(dtransition_pointer_list(j)%node%c)) then
                deallocate(dtransition_pointer_list(j)%node%c)
             end if
 
+            ! Deallocate the node itself.
             deallocate(dtransition_pointer_list(j)%node)
+            ! Decrement the count of allocated dtransition pointers.
             dtransition_pointer_count = dtransition_pointer_count -1
          end if
       end do
 
+      ! Nullify all nodes in the `dstate_pointer_list` array.
       max = dstate_pointer_count
-
       do j = 1, max
          if (associated(dstate_pointer_list(j)%node)) then
-            nullify (dstate_pointer_list(j)%node) ! NOT deallocate
+            nullify (dstate_pointer_list(j)%node) ! DO NOT use `deallocate`
+
+            ! Decrement the count of allocated dstate pointers.
             dstate_pointer_count = dstate_pointer_count - 1
          end if
       end do 
 
+      ! Deallocate the array of DFA states if it is associated.
       if (associated(self%states)) deallocate(self%states)
    end subroutine lazy_dfa__deallocate
 
-
-   !> This subroutine deallocates all the node in the monitor array.
-   subroutine lazy_dfa__deallocate_dlist
-      implicit none
-      integer :: j, max
-      
-      max = dlist_pointer_count
-      do j = 1, max
-         if (associated(dlist_pointer_list(j)%node)) then
-            if (allocated(dlist_pointer_list(j)%node%c)) then
-               deallocate(dlist_pointer_list(j)%node%c)
-            end if
-            deallocate(dlist_pointer_list(j)%node)
-            dlist_pointer_count = dlist_pointer_count -1
-         end if
-      end do
-   end subroutine lazy_dfa__deallocate_dlist
 
 
    !> Take `nfa_state_set_t` as input and register the set as the DFA state in the DFA.  
@@ -303,6 +300,9 @@ contains
 !=====================================================================!
 
    !> Compute the ε-closure for a set of NFA states.
+   !>
+   !> The ε-closure is the set of NFA states reachable from a given set of NFA states via ε-transition.
+   !> This subroutine calculates the ε-closure and stores it in the `closure` parameter.
    subroutine lazy_dfa__epsilon_closure (self, state_set, closure)
       implicit none
       class(dfa_t),          intent(in)    :: self
@@ -312,23 +312,33 @@ contains
       type(nlist_t), pointer :: t
       integer(int32) :: i
 
+      ! Initialize the `closure` with the input state set.
       closure = state_set
 
+      ! Iterate over all NFA states.
       do i = 1, self%nfa%nfa_nstate
+         ! Get the list of transitions for the current state.
          t => self%nfa%states(i)
 
+         ! Process each transition in the list.
          do while(associated(t))
+            ! Check if the transition is an ε-transition and leads to a valid state.
             if (t%c == SEG_EMPTY .and. t%to /= 0) then
+               ! If the transition starts from the NFA entry state, add the destination state to the `closure`.
                if (t%index == nfa_entry) call add_NFA_state(closure, t%to)
             end if
+            
+            ! Move to the next transition in the list.
             t => t%next
          end do
       end do
    end subroutine lazy_dfa__epsilon_closure
 
    
-   !> Calculate a set of possible NFA states from the current DFA state by the input
+   !> This function calculates a set of possible NFA states from the current DFA state by the input
    !> character `symbol`. 
+   !>
+   !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`, excluding ε-transitions.
    function lazy_dfa__compute_reachable_n_state(self, current, symbol) result(res)
       implicit none
       class(dfa_t),    intent(in) :: self
@@ -337,13 +347,13 @@ contains
 
       type(d_list_t), pointer :: res
 
-      type(nfa_state_set_t)   :: state_set         ! a set of NFA state
-      type(nlist_t),  pointer :: ptr_nlist         ! 
+      type(nfa_state_set_t)   :: state_set         ! A set of NFA state
+      type(nlist_t),  pointer :: ptr_nlist         ! Pointer to list of NFA states
       type(d_list_t), pointer :: a, b
       type(segment_t)         :: symbol_belong(1)  ! Holds the segment to which the symbol belongs
       integer(int32)          :: i, j
 
-      ! Initialize
+      ! Initialize variables
       symbol_belong = SEG_EMPTY
       ptr_nlist => null()
       a => null()
@@ -352,33 +362,41 @@ contains
       state_set = current%state_set
    
       ! nfa状態をスキャン
+      ! Scan through NFA states
       outer: do i = 1, self%nfa%nfa_nstate
 
          ! state_setのi番目が真ならば、states(i)のポインタをたどる
+         ! If the `i`-th element fo state_set is true, follow the pointer of states(i)
          if (check_NFA_state(state_set, i)) then
 
             ! この状態へのポインタをptr_nlistに代入
+            ! Assign pointer to this state to `ptr_nlist`.
             ptr_nlist => self%nfa%states(i)
 
             ! ptr_nlistをたどる
+            ! Traverse through the list of transtions.
             middle: do while(associated(ptr_nlist))
 
-               ! ! Except for ε-transition.
+               ! ! Exclude ε-transitions
                if (ptr_nlist%c /= SEG_EMPTY) then
 
                   a => res
                   inner: do while(associated(a))
 
-                     do j = 1, size(a%c, dim=1)   
-                        if (a%c(j) == ptr_nlist%c .and. ptr_nlist%to /= 0) then                         
+                     ! Check if the current transition segment matches the input symbol segment
+                     do j = 1, size(a%c, dim=1)
+                        if (a%c(j) == ptr_nlist%c .and. ptr_nlist%to /= 0) then    
+                           ! Add the destination NFA state to the result set.                     
                            call add_NFA_state(a%to, ptr_nlist%to)
 
-                           ! Move to next NFA state
+                           ! Move to the next transition in the list.
                            ptr_nlist => ptr_nlist%next
                            cycle middle
 
                         end if
                      end do
+
+                     ! Move to the next transition in the result set.
                      a => a%next
 
                   end do inner
@@ -386,23 +404,31 @@ contains
                end if
 
                ! ptr_nlistの行き先がある場合
+               ! If there is a valid destination state,
                 if (ptr_nlist%to /= 0) then
 
                   ! ptr_nlist%cにsymbolが含まれる場合
+                  ! check if the symbol belongs to the transition segment
                   if((symbol_to_segment(symbol) .in. ptr_nlist%c).or.(ptr_nlist%c == SEG_EMPTY)) then
 
                      ! symbolの属するsegmentを取得する
+                     ! Get the segment to which the symbol belongs.
                      symbol_belong = which_segment_symbol_belong(self%nfa%all_segments, symbol)
 
+                     ! Allocate a new `d_list_t` derived-type.
                      allocate(b)
                      allocate(b%c(1))
 
+                     ! Update the monitor array and count.
                      dlist_pointer_count = dlist_pointer_count + 1
                      dlist_pointer_list(dlist_pointer_count)%node => b
 
+                     ! Store the segment and add the destination state.
                      b%c(1) = symbol_belong(1)
                      call add_nfa_state(b%to, ptr_nlist%to)
+
                      ! resの先頭に挿入する
+                     ! Insert the new object at the head of the result list.
                      b%next => res
                      res => b
                         
@@ -410,6 +436,7 @@ contains
                end if
 
                ! 次のnfa状態へ
+               ! Move to the next transition in the list.
                ptr_nlist => ptr_nlist%next
             end do middle
 
@@ -418,7 +445,10 @@ contains
    end function lazy_dfa__compute_reachable_n_state
 
 
-   ! Returns `.true.` if the set of NFA states is already registered. 
+   !> Returns `.true.` if the set of NFA states is already registered.
+   !> It scans through the DFA states to check if the given NFA states set
+   !> is already present in the DFA. If found, it sets the optional index parameter
+   !> to the position of the registered state. 
    logical function lazy_dfa__is_registered(self, state_set, idx) result(res)
       implicit none
       class(dfa_t),             intent(in)    :: self
@@ -428,7 +458,7 @@ contains
       logical :: tmp
       integer :: i, n
       
-      ! Initialize
+      ! Initialize the result to `.false.`
       res = .false.
       tmp = .true.
       n = dstate_pointer_count ! Store the value into a short varibale. 
@@ -436,11 +466,13 @@ contains
       ! Scan all DFA states.
       do i = 1, n
          ! 入力の集合と、登録された集合が等しいかどうかを比較して`tmp`に結果を格納する。
+         ! Compare the input `state_set` with the registered state sets and store the result in `tmp`.
          tmp = equivalent_NFA_state_set(self%states(i)%state_set, state_set)
+         ! Update the result with the logical OR of current result and `tmp`.
          res = res .or. tmp ! 論理和をとる
 
          if (res) then
-            ! 真の場合、ループを抜ける
+            ! If true, return this function.
             if(present(idx)) idx = i  ! Store index infomation in optional arguments.
             return
          end if 
@@ -449,6 +481,9 @@ contains
 
 
    ! 現在のDFA状態から、入力シンボルに対して、遷移可能ならば遷移する。
+   !> This funciton performs a transition form the `current` DFA state based on the input `symbol`.
+   !> It scans through the array of DFA states to find the state that can be reached from
+   !> the `current` state for the given symbol, and returns a reference to the resulting state.
    function lazy_dfa__move(self, current, symbol) result(res)
       implicit none 
       class(dfa_t),    intent(inout) :: self
@@ -462,103 +497,129 @@ contains
 
       ! Scan the array of DFA states.
       do i = 1, self%dfa_nstate
+         ! Get the reachable state for the `current` state and `symbol`.
          res => self%reachable(current, symbol) ! 
-         if (associated(res)) return ! Returns a reference to the destination DFA state.
+         ! If a reachable state is found, return the reference.
+         if (associated(res)) return
       end do
    end function lazy_dfa__move
 
 
-   !> 
+   !> This subroutine constructs a DFA state transition for a given `symbol` from the `current` state to the `destination` state.
+   !>
+   !> It calculates the set of NFA states that can be reached from the `current` state for the given `symbol`, 
+   !> excluding epsilon transitions, and then registers the new DFA state if it has not already been registered.
+   !> Finally, it adds the transition from the `current` state to the `destination` state in the DFA.
    subroutine lazy_dfa__construct(self, current, destination, symbol)
       implicit none
-      class(dfa_t), intent(inout) :: self
-      type(d_state_t), target, intent(in) :: current
-      type(d_state_t), intent(inout), pointer :: destination
-      character(*), intent(in) :: symbol
+      class(dfa_t),             intent(inout) :: self
+      type(d_state_t), target,  intent(in)    :: current
+      type(d_state_t), pointer, intent(inout) :: destination
+      character(*),             intent(in)    :: symbol
 
-      type(d_state_t), pointer :: prev, next
-      type(d_list_t), pointer :: x
-      type(d_list_t) :: without_epsilon
-      type(segment_t), allocatable :: all_segments(:)
+      type(d_state_t), pointer      :: prev, next
+      type(d_list_t), pointer       :: x
+      type(d_list_t)                :: without_epsilon
+      type(segment_t), allocatable  :: all_segments(:)
       integer(int32) :: i
 
+      ! Initialize pointers to `null`.
       x => null()
       prev => null()
       next => null()
       destination => null()
 
-      ! Implicit array reallocation
+      ! Implicit array reallocation for `all_segments`
       all_segments = self%nfa%all_segments
 
       ! 遷移前の状態へのポインタをprevに代入
+      ! Assign the pointer to the current state to prev.
       prev => current
 
       ! ε遷移を除いた行き先のstate_setを取得する
+      ! Get the state set for the destination excluding epsilon-transition.
       x => self%move(prev, symbol)
 
       if (associated(x)) then
+         ! Reduce the list to a single state set.
          x%to = dlist_reduction(x)
+         ! Deep copy of the state list excluding epsilon-transition.
          without_epsilon = x ! deep copy
       else
+         ! If no transition is found, set `next` to `null` and return.
          next => null()
          return
       end if
 
       ! ε遷移との和集合を取り、x%toに格納する
+      ! Combine the state set with epsilon-transitions and store in `x%to`.
       call self%nfa%collect_empty_transition(x%to)
  
       if (.not. self%is_registered(x%to)) then
-
          ! まだDFA状態が登録されていない場合
+         ! If the state is not registered, register it.
          next => self%register(x%to)
+         ! Add a DFA transition from `prev` to `next` for the given `symbol`.
          call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), next)   
       else
          ! 登録されている場合
+         ! If the state is already registered.
          if (self%is_registered(x%to, i)) then
-
+            ! Set `next` to the registered state.
             next => self%states(i)
          else
-
+            ! Register the state excluding epsilon-transitions.
             next => self%register(without_epsilon%to)
          end if
 
+         ! Add a DFA transition from `prev` to `next` for the given `symbol`.
          call add_dfa_transition(prev, which_segment_symbol_belong(all_segments, symbol), next)
       end if
 
+      ! Assign the pointer to the `destination` state. 
       destination => next
    end subroutine lazy_dfa__construct
+   
 
 !=====================================================================!
 !  Matching procedures
-!     ...should I extract them into a separate module?
+!     ...should we extract them into a separate module?
 
+   !> Matches a given string against the DFA pattern and finds the starting and ending positions
+   !> of the match. The function iterates over the input string and attempt to match the pattern
+   !> from each possible starting position. If a match is found, the starting and ending positions
+   !> are returned.
    subroutine lazy_dfa__matching(self, str_arg, from, to)
       use :: forgex_utf8_m
       implicit none
-      class(dfa_t), intent(inout) :: self
-      character(*), intent(in) :: str_arg
+      class(dfa_t),   intent(inout) :: self
+      character(*),   intent(in)    :: str_arg
       integer(int32), intent(inout) :: from, to 
 
-      type(d_state_t), pointer :: current
-      type(d_state_t), pointer :: destination
-      character(:), allocatable:: str
-      integer(int32) :: start, next
-      integer(int32) :: max_match, i
+      type(d_state_t), pointer  :: current      ! Pointer to the current DFA state
+      type(d_state_t), pointer  :: destination  ! Pointer to the next DFA state
+      character(:), allocatable :: str          ! The input string to be matched
+      integer(int32)            :: start, next  ! Indices for string traversal
+      integer(int32)            :: max_match    ! Variables to store match information
+      integer(int32)            :: i            ! Loop index variable.
 
+      ! Initialize pointers
       nullify(current)
       nullify(destination)
-      ! Initialize
+
+      ! Initialize variables
       str = str_arg
       from = 0
       to = 0
 
+      ! Set the initial DFA state
       current => self%initial_dfa_state
       if (.not. associated(current)) then
          error stop
       end if
 
+      ! Handle the case of empty input string.
       if (str == char(10)//char(10)) then
-
          str = ''
          if (current%accepted) then
             from = 1
@@ -566,42 +627,52 @@ contains
          end if
          return
       end if
-      ! Match the pattern by shifting one character from the beginning of string str.
-      ! This loop should be parallelized.
+
+      ! Match the pattern by shifting one character from the beginning of string `str`.
+      !-- This loop should be parallelized.
       start = 1
       do while(start < len(str))
          
-         ! Initialize DFA
+         ! Initialize DFA for each new starting position.
          max_match = 0
          i = start
          current => self%initial_dfa_state
+
+         ! Traverse the DFA with the input string from the `current` starting position.
          do while( associated(current))
 
 
             ! 任意の位置の空文字には一致させない
+            ! Do not match empty string at any arbitrary position.
             if (current%accepted .and. i /= start) then
                max_match = i
             end if
    
+            ! Exit if the end of the string is reached.
             if (i > len(str)) exit
 
+            ! Move to the next character.
             next = idxutf8(str, i) + 1
 
+            ! Construct the DFA for the current character.
             call self%construct(current, destination, str(i:next-1))
             current => destination
-            
+
             i = next
          end do
 
+         ! Update match position if a match is found.
          if (max_match > 1) then
             from = start
             to = max_match -1
             return
          end if
 
+         ! Move to the next starting position in the input string.
          start = idxutf8(str,start) + 1
       end do
    end subroutine lazy_dfa__matching
+
 
    !> This function returns `.true.` when the entire text string is accepted by DFA,
    !> otherwise returns `.false.`.
@@ -683,6 +754,29 @@ contains
 
 !=====================================================================!
 !  Helper procedures
+
+   
+   !> This subroutine deallocates all the node in the monitor array.
+   subroutine deallocate_dlist
+      implicit none
+      integer :: j, max
+      
+      ! Get the current count of allocated dlist pointers.
+      max = dlist_pointer_count
+      do j = 1, max
+         ! Check if the node is associated.
+         if (associated(dlist_pointer_list(j)%node)) then
+            ! Deallocate the character segment array if it is allocated.
+            if (allocated(dlist_pointer_list(j)%node%c)) then
+               deallocate(dlist_pointer_list(j)%node%c)
+            end if
+            ! Deallocate the node itself.
+            deallocate(dlist_pointer_list(j)%node)
+            ! Decrement the count of allocated `dlist` pointers.
+            dlist_pointer_count = dlist_pointer_count -1
+         end if
+      end do
+   end subroutine deallocate_dlist
 
    !> This function does nothing if the input symbol is already in the
    !> list of transition of the state, otherwise it registers a new transition in the list. 

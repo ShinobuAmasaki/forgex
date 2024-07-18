@@ -22,6 +22,7 @@ module forgex_segment_disjoin_m
    type(segment_t), parameter :: SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
 
    interface disjoin
+      !! Interface for the procedure `disjoin_kernel`. 
       module procedure :: disjoin_kernel
    end interface 
 
