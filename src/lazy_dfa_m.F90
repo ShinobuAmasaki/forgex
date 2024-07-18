@@ -23,12 +23,14 @@ module forgex_lazy_dfa_m
    private
 
    interface free_dlist
-      procedure :: lazy_dfa__deallocate_dlist
+      !! Interface for the procedure `deallocate_dlist`. 
+      procedure :: deallocate_dlist
    end interface
    
    public :: d_state_t
    public:: free_dlist
    
+   !> Upper limit of DFA state instance. 
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
 
@@ -251,28 +253,6 @@ contains
       if (associated(self%states)) deallocate(self%states)
    end subroutine lazy_dfa__deallocate
 
-
-   !> This subroutine deallocates all the node in the monitor array.
-   subroutine lazy_dfa__deallocate_dlist
-      implicit none
-      integer :: j, max
-      
-      ! Get the current count of allocated dlist pointers.
-      max = dlist_pointer_count
-      do j = 1, max
-         ! Check if the node is associated.
-         if (associated(dlist_pointer_list(j)%node)) then
-            ! Deallocate the character segment array if it is allocated.
-            if (allocated(dlist_pointer_list(j)%node%c)) then
-               deallocate(dlist_pointer_list(j)%node%c)
-            end if
-            ! Deallocate the node itself.
-            deallocate(dlist_pointer_list(j)%node)
-            ! Decrement the count of allocated `dlist` pointers.
-            dlist_pointer_count = dlist_pointer_count -1
-         end if
-      end do
-   end subroutine lazy_dfa__deallocate_dlist
 
 
    !> Take `nfa_state_set_t` as input and register the set as the DFA state in the DFA.  
@@ -599,39 +579,47 @@ contains
       ! Assign the pointer to the `destination` state. 
       destination => next
    end subroutine lazy_dfa__construct
-
+   
 
 !=====================================================================!
 !  Matching procedures
 !     ...should we extract them into a separate module?
 
+   !> Matches a given string against the DFA pattern and finds the starting and ending positions
+   !> of the match. The function iterates over the input string and attempt to match the pattern
+   !> from each possible starting position. If a match is found, the starting and ending positions
+   !> are returned.
    subroutine lazy_dfa__matching(self, str_arg, from, to)
       use :: forgex_utf8_m
       implicit none
-      class(dfa_t), intent(inout) :: self
-      character(*), intent(in) :: str_arg
+      class(dfa_t),   intent(inout) :: self
+      character(*),   intent(in)    :: str_arg
       integer(int32), intent(inout) :: from, to 
 
-      type(d_state_t), pointer :: current
-      type(d_state_t), pointer :: destination
-      character(:), allocatable:: str
-      integer(int32) :: start, next
-      integer(int32) :: max_match, i
+      type(d_state_t), pointer  :: current      ! Pointer to the current DFA state
+      type(d_state_t), pointer  :: destination  ! Pointer to the next DFA state
+      character(:), allocatable :: str          ! The input string to be matched
+      integer(int32)            :: start, next  ! Indices for string traversal
+      integer(int32)            :: max_match    ! Variables to store match information
+      integer(int32)            :: i            ! Loop index variable.
 
+      ! Initialize pointers
       nullify(current)
       nullify(destination)
-      ! Initialize
+
+      ! Initialize variables
       str = str_arg
       from = 0
       to = 0
 
+      ! Set the initial DFA state
       current => self%initial_dfa_state
       if (.not. associated(current)) then
          error stop
       end if
 
+      ! Handle the case of empty input string.
       if (str == char(10)//char(10)) then
-
          str = ''
          if (current%accepted) then
             from = 1
@@ -639,39 +627,48 @@ contains
          end if
          return
       end if
-      ! Match the pattern by shifting one character from the beginning of string str.
-      ! This loop should be parallelized.
+
+      ! Match the pattern by shifting one character from the beginning of string `str`.
+      !-- This loop should be parallelized.
       start = 1
       do while(start < len(str))
          
-         ! Initialize DFA
+         ! Initialize DFA for each new starting position.
          max_match = 0
          i = start
          current => self%initial_dfa_state
+
+         ! Traverse the DFA with the input string from the `current` starting position.
          do while( associated(current))
 
 
             ! 任意の位置の空文字には一致させない
+            ! Do not match empty string at any arbitrary position.
             if (current%accepted .and. i /= start) then
                max_match = i
             end if
    
+            ! Exit if the end of the string is reached.
             if (i > len(str)) exit
 
+            ! Move to the next character.
             next = idxutf8(str, i) + 1
 
+            ! Construct the DFA for the current character.
             call self%construct(current, destination, str(i:next-1))
             current => destination
-            
+
             i = next
          end do
 
+         ! Update match position if a match is found.
          if (max_match > 1) then
             from = start
             to = max_match -1
             return
          end if
 
+         ! Move to the next starting position in the input string.
          start = idxutf8(str,start) + 1
       end do
    end subroutine lazy_dfa__matching
@@ -757,6 +754,29 @@ contains
 
 !=====================================================================!
 !  Helper procedures
+
+   
+   !> This subroutine deallocates all the node in the monitor array.
+   subroutine deallocate_dlist
+      implicit none
+      integer :: j, max
+      
+      ! Get the current count of allocated dlist pointers.
+      max = dlist_pointer_count
+      do j = 1, max
+         ! Check if the node is associated.
+         if (associated(dlist_pointer_list(j)%node)) then
+            ! Deallocate the character segment array if it is allocated.
+            if (allocated(dlist_pointer_list(j)%node%c)) then
+               deallocate(dlist_pointer_list(j)%node%c)
+            end if
+            ! Deallocate the node itself.
+            deallocate(dlist_pointer_list(j)%node)
+            ! Decrement the count of allocated `dlist` pointers.
+            dlist_pointer_count = dlist_pointer_count -1
+         end if
+      end do
+   end subroutine deallocate_dlist
 
    !> This function does nothing if the input symbol is already in the
    !> list of transition of the state, otherwise it registers a new transition in the list. 

@@ -328,7 +328,7 @@ contains
 !==========================================================================================!
 
 
-   ! This function checks if the arguement 'state' (set of NFA state) includes state 's'.
+   !> This function checks if the arguement 'state' (set of NFA state) includes state 's'.
    logical function check_nfa_state(state_set, state_index)
       implicit none
       type(nfa_state_set_t), intent(in) :: state_set
