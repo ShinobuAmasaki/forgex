@@ -2,8 +2,8 @@
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
-Forgex is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
-The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice was focused on runtime performance.
+This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
+The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.
 
 ## Features
 
@@ -179,14 +179,17 @@ end block
 
 ## To do
 
-- [ ] Dealing with invalid byte strings in UTF-8
-- [ ] Implementing a time measurement tool
-- [ ] Literal search optimization
-- [ ] Parallelization on matching
-- [x] Publishing the documentation
-- [x] UTF-8 basic support
-- [x] DFA construction on-the-fly
-- [x] CMake Support
+The following features are planned to be implemented in the future: 
+
+- [ ] Deal with invalid byte strings in UTF-8
+- [ ] Implement time measurement tools
+- [ ] Optimize by literal searching method
+- [ ] Make the all API procedures `pure`
+- ~~Parallelize on matching~~
+- [x] Publish the documentation
+- [x] Support UTF-8 basic feature
+- [x] Construct DFA on-the-fly
+- [x] Support CMake building
 
 ## Code Convention
 
