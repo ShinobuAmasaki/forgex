@@ -10,6 +10,7 @@
 
 !> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
+   use :: parameters_m
    implicit none
    private
 
@@ -19,12 +20,6 @@ module forgex_utf8_m
    public :: is_first_byte_of_character
    public :: is_first_byte_of_character_array
    public :: len_trim_utf8, len_utf8
-
-   integer, parameter, public :: UTF8_CODE_MAX = 2**21-1 !
-   integer, parameter, public :: UTF8_CODE_MIN = 32 ! = 0x21: '!'
-   integer, parameter, public :: UTF8_CODE_EMPTY = 0
-
-   integer, parameter, public :: UTF8_CHAR_SIZE = 4
 
 contains
 
