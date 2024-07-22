@@ -15,11 +15,11 @@ module forgex_syntax_tree_m
    implicit none
    private
 
-   public :: tree_t
+   public :: tree_node_t
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
-   type :: tree_t
+   type :: tree_node_t
       integer(int32) :: op
       type(segment_t), allocatable :: c(:)
       integer(int32) :: left, right
@@ -40,17 +40,17 @@ contains
       implicit none
       character(*), intent(in)    :: str
       type(tape_t), intent(inout) :: tape
-      type(tree_t), allocatable, intent(inout) :: tree(:)
+      type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer(int32), intent(inout) :: idx
 
-      allocate(tree(0:TREE_MAX_SIZE))
+      allocate(tree(0:TREE_MAX_SIZE)) ! 0-based 
 
    end subroutine build_syntax_tree
 
    
    pure subroutine deallocate_tree(tree)
       implicit none
-      type(tree_t), allocatable, intent(inout) :: tree
+      type(tree_node_t), allocatable, intent(inout) :: tree
 
       if (allocated(tree)) deallocate(tree)
    end subroutine deallocate_tree
