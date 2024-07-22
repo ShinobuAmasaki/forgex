@@ -95,7 +95,7 @@ contains
    !> and returns the corresponding character as UTF-8 binary string.
    !> 
    !> This function is like an extension of char() for the UTF-8 codeset.
-   function char_utf8 (code) result(str)
+   pure function char_utf8 (code) result(str)
       use, intrinsic :: iso_fortran_env
       implicit none
       integer(int32), intent(in) :: code        ! Input Unicode code point.
@@ -164,7 +164,7 @@ contains
 
    !> This function take one byte, set the first two bits to 10, and
    !> returns one byte of the continuation part. 
-   function set_continuation_byte(byte) result(res)
+   pure function set_continuation_byte(byte) result(res)
       use, intrinsic :: iso_fortran_env, only: int8
       implicit none
       integer(int8), intent(in) :: byte
@@ -180,7 +180,7 @@ contains
    !> its UTF-8 binary string. 
    !>
    !> This function is like an extension of char() for the UTF-8 codeset.
-   function ichar_utf8 (chara) result(res)
+   pure function ichar_utf8 (chara) result(res)
       use, intrinsic :: iso_fortran_env
       implicit none
       character(*), intent(in) :: chara   ! Input one UTF-8 character
@@ -279,7 +279,7 @@ contains
    !>
    !> It takes a UTF-8 string as input and returns the number of characters in the string,
    !> ignoring any tailing whitespace characters.
-   function len_trim_utf8(str) result(count)
+   pure function len_trim_utf8(str) result(count)
       implicit none
       character(*), intent(in) :: str
       integer :: i, inext, count
@@ -301,7 +301,7 @@ contains
    !> This function calculates the length of a UTF-8 string.
    !>
    !> It takes a UTF-8 string as input and returns the number of characters in the string.
-   function len_utf8(str) result(count)
+   pure function len_utf8(str) result(count)
       implicit none
       character(*), intent(in) :: str
       integer :: i, inext, count
@@ -348,7 +348,7 @@ contains
 
    !> This subroutine determines if each character in a given string is the first byte of a UTF-8 multibyte character.
    !> It takes a UTF-8 string and return a logical array indicating for each position if it is the first byte.
-   subroutine is_first_byte_of_character_array (str, array, length)
+   pure subroutine is_first_byte_of_character_array (str, array, length)
       use, intrinsic :: iso_fortran_env, only: int32
       implicit none
       logical, allocatable,  intent(inout) :: array(:)   ! Output logical array indicating first byte status.
@@ -372,7 +372,7 @@ contains
    end subroutine
       
    !> This function counts the occurrence of a spcified character(token) in a given string.
-   function count_token(str, token) result(count)
+   pure function count_token(str, token) result(count)
       implicit none
       character(*), intent(in) :: str     ! Input string to be searched.
       character(1), intent(in) :: token   ! Character to be counted in the input string.
