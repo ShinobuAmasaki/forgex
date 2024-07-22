@@ -79,7 +79,7 @@ contains
    !
    !  This function determines whether the integer `a` falls within the
    !  range defined by the `min` and `max` values of the `segment_t` type.
-   function arg_in_segment(a, seg) result(res)
+   pure function arg_in_segment(a, seg) result(res)
       implicit none
       integer(int32),  intent(in) :: a
       type(segment_t), intent(in) :: seg
@@ -93,7 +93,7 @@ contains
    !  This function determins whether the integer `a` falls within any of the
    !  ranges defined by the `min` and `max` value of the `segment_t` type
    !  in the provided list of segments.
-   function arg_in_segment_list(a, seg_list) result(res)
+   pure function arg_in_segment_list(a, seg_list) result(res)
       implicit none
       integer(int32),  intent(in) :: a
       type(segment_t), intent(in) :: seg_list(:)
@@ -114,7 +114,7 @@ contains
    !
    !  This function determines whether the segment `a` is entirely within the
    !  range specified by the segment `b`.
-   function seg_in_segment(a, b) result(res)
+   pure function seg_in_segment(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -127,7 +127,7 @@ contains
    !
    !  This function determines wheter the segment `a` is equivalent to the
    !  segment `b`, meaning both their `min` and `max` values are identical. 
-   function segment_equivalent(a, b) result(res)
+   pure function segment_equivalent(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -140,7 +140,7 @@ contains
    !
    !  This function determines whether the segment `a` is not equivalent to the
    !  segment `b`, meaning their `min` or `max` values are different.
-   function segment_not_equiv(a, b) result(res)
+   pure function segment_not_equiv(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -198,9 +198,9 @@ contains
    !
    !  This function determines whether the segment is valid by ensuring that
    !  the `min` value is less than or equal to the `max` value.
-   function segment_is_valid(self) result(res)
+   pure function segment_is_valid(self) result(res)
       implicit none
-      class(segment_t) :: self
+      class(segment_t), intent(in) :: self
       logical :: res
 
       res = self%min <= self%max

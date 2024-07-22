@@ -20,7 +20,7 @@ module forgex_sort_m
    
 contains
 
-   subroutine bubble_sort(list)
+   pure subroutine bubble_sort(list)
       !! Implementing insertion sort instead of this algorithm is considered.
       implicit none
       integer(int32), intent(inout) :: list(:)
