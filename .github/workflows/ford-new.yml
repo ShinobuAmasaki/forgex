@@ -2,7 +2,7 @@ name: FORD
 
 on:
   push:
-    branches: [ "docs", "main" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
