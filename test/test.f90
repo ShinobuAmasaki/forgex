@@ -6,17 +6,16 @@ program main
    implicit none
    
    type(tree_node_t), allocatable :: tree(:)
-   integer(int32) :: root_i, next_index
+   integer(int32) :: root_i, top_index
    type(tape_t) :: tape
    character(:), allocatable :: string
    integer :: i
 
-   next_index = 1
    root_i = 1
 
-   string = 'h|f|o'
+   string = 'h?|h+|h*'
 
-   call build_syntax_tree(string, tape, tree, next_index)
+   call build_syntax_tree(string, tape, tree, top_index)
 
 
    print *, '  own index|  operation|     parent|       left|      right|    is registered'
@@ -27,7 +26,7 @@ program main
       end if
    end do
 
-   call print_tree(tree, 5)
+   call print_tree(tree, top_index)
 
    call deallocate_tree(tree)
 
