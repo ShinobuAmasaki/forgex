@@ -327,7 +327,7 @@ contains
          do while (tape%current_token /= tk_union &
                    .and. tape%current_token /= tk_rpar &
                    .and. tape%current_token /= tk_end)
-   
+
             node = make_tree_node(op_concat)
 
             call node%register_node(tree, top)
@@ -338,6 +338,8 @@ contains
 
             call connect_right(tree, node%own_i, node_r%own_i)
             node_l = tree(top)
+
+            call tape%get_token()
          end do
       end if
    end subroutine term
@@ -382,6 +384,11 @@ contains
          call register_and_connector(tree, top, node, node_l, node_r)
 
          call tape%get_token()
+      else if (tape%current_token == tk_lcurlybrace) then
+
+         call range_min_max(tape, tree, top)
+         call tape%get_token()
+
       end if
    end subroutine postfix_op
 
@@ -406,6 +413,136 @@ contains
    end subroutine primary
 
 
+   pure subroutine range_min_max(tape, tree, top)
+      implicit none
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: node, node_l, node_r, node_rr, ptr
+      integer(int32) :: arg(2), ios, min, max, count
+      character(:), allocatable :: buf
+
+      buf = ''
+      arg(:) = 0
+      node = terminal_node
+      max = 0
+      min = 0
+
+      ptr = tree(top)
+
+      call tape%get_token()
+
+      do while (tape%current_token /= tk_rcurlybrace)
+         buf= buf//trim(tape%token_char)
+         call tape%get_token
+
+         if (tape%current_token == tk_end) then
+            error stop "range_min_max: Closing right curlybrace is expected."
+         end if
+      end do
+
+      read(buf, *, iostat=ios) arg(:)
+      buf = adjustl(buf)
+
+      if (arg(1) == 0) then   ! {,max}, {0,max}
+         min = 0
+         max = arg(2)
+      else if (arg(2) == 0) then ! {min,}, {num}
+         if (buf(len_trim(buf):len_trim(buf)) == ',') then
+            min = arg(1)
+            max = 0
+         else
+            min = arg(1)
+            max = arg(1)
+         end if
+
+      else
+         min = arg(1)
+         max = arg(2)
+      end if
+
+      if (max == 0) then
+         if (min == 0) then
+            node = make_tree_node(op_closure)
+            call register_and_connector(tree, top, node, ptr, terminal_node)
+            return
+         end if
+
+         if (min >= 1) then
+            node_l = tree(top)
+            node_rr = make_tree_node(op_empty)
+            call register_and_connector(tree, top, node_rr, node_l, ptr)
+            ! call node_r%register_node(tree, top)
+            ! call connect_left(tree, node_rr%own_i, node_l%own_i)
+            ! call connect_right(tree, node_rr%own_i, TERMINAL_INDEX)
+
+            node_r = make_tree_node(op_union)
+            call register_and_connector(tree, top, node_r, ptr, node_rr)
+            ! call node_r%register_node(tree, top)
+            ! call connect_left(tree, node_r%own_i, ptr%own_i)
+            ! call connect_right(tree, node_r%own_i, node_rr%own_i)
+
+            node = make_tree_node(op_concat)
+            call register_and_connector(tree, top, node, ptr, node_r)
+            ! call node%register_node(tree, top)
+            ! call connect_left(tree, node%own_i, ptr%own_i)
+            ! call connect_right(tree, node%own_i, node_r%own_i)
+
+         end if
+
+         if (min > 1) then
+            count = 1
+            do while (count < min)
+               node_r = tree(top)
+               node = make_tree_node(op_concat)
+               call register_and_connector(tree, top, node, ptr, node_r)
+               count = count + 1
+            end do
+         end if
+
+         return
+
+      else if (max == 1) then
+
+         if (min == 0) then
+            node_r = make_tree_node(op_union)
+            call register_and_connector(tree, top, node_r, ptr, terminal_node)
+            return
+         end if
+
+         if (min>= 1) then
+            call ptr%register_node(tree, top)
+            return
+         end if
+      
+      else
+
+         if (min == 0) then
+            count = 1
+            call ptr%register_node(tree, top)
+            do while (count < max)
+               
+            end do
+
+            return
+         end if
+
+         if (min == 1) then
+         end if
+
+         if (min > 1) then
+         end if
+         
+      end if
+
+
+      
+   end subroutine range_min_max
+
+
+!=====================================================================!
+
    recursive subroutine print_tree(tree, root_i)
       use :: forgex_utf8_m
       implicit none
@@ -413,6 +550,8 @@ contains
       integer(int32) :: root_i
 
       type(tree_node_t) :: p
+
+      if (root_i == INVALID_INDEX) return
 
       p = tree(root_i)
 
