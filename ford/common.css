@@ -77,6 +77,10 @@ ol li {
    font-size: 18px;
    margin: 5px;
 }
+.card {
+   margin-top: 5px;
+   margin-bottom: 5px;
+}
 body {
    font-family: "Helvetica Neue",
      Arial,
@@ -86,7 +90,7 @@ body {
      sans-serif;
 }
 /* 1668px is the width of iPad Pro 10.5" 2nd */
-@media (max-width: 1200px) and (min-width: {
+@media (max-width: 1200px) {
    #text.row {
       justify-content: center;
    }
