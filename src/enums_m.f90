@@ -34,11 +34,12 @@ module forgex_enums_m
    end enum
 
    enum, bind(c)
-      enumerator :: op_char = 0     ! 0
-      enumerator :: op_concat       ! 1
-      enumerator :: op_union        ! 2
-      enumerator :: op_closure      ! 3
-      enumerator :: op_empty        ! 4  for epsilon transition
+      enumerator :: op_not_init = 0 ! 0
+      enumerator :: op_char         ! 1
+      enumerator :: op_concat       ! 2
+      enumerator :: op_union        ! 3
+      enumerator :: op_closure      ! 4
+      enumerator :: op_empty        ! 5  for epsilon transition
    end enum
 
 

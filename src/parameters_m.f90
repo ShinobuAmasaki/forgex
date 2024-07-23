@@ -3,7 +3,8 @@ module forgex_parameters_m
    implicit none
 
    !> The maximum size of nodes for building the syntax tree.
-   integer(int32), parameter :: TREE_MAX_SIZE = 1024
+   integer(int32), parameter :: TREE_NODE_LIMIT = 16
+   ! integer(int32), parameter :: TREE_NODE_LIMIT = 1024
 
    !> Upper limit of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_MAX = 1024
@@ -38,5 +39,9 @@ module forgex_parameters_m
    character(1), parameter, public :: SYMBOL_CRET = '^'  ! caret
    character(1), parameter, public :: SYMBOL_DOT  = '.'  ! dot
    character(1), parameter, public :: SYMBOL_HYPN = '-'  ! hyphen
+
+   integer, parameter, public :: INVALID_DATA      = -1
+   integer, parameter, public :: INVALID_INDEX     = -1
+   integer, parameter, public :: INITIALIZED_INDEX = 0
 
 end module forgex_parameters_m
