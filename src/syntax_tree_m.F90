@@ -328,15 +328,16 @@ contains
                    .and. tape%current_token /= tk_rpar &
                    .and. tape%current_token /= tk_end)
    
-            ! node = make_tree_node(op_concat)
+            node = make_tree_node(op_concat)
 
-            ! call node%register_node(tree, top)
-            ! call connect_left(tree, node%own_i, node_l%own_i)
-            ! call postfix_op(tape, tree, top)
-            ! node_r = tree(top)
-            ! call connect_right(tree, node%own_i, node_r%own_i)
+            call node%register_node(tree, top)
+            call connect_left(tree, node%own_i, node_l%own_i)
+            
+            call postfix_op(tape, tree, top)
+            node_r = tree(top)
 
-            ! node_l = tree(top)
+            call connect_right(tree, node%own_i, node_r%own_i)
+            node_l = tree(top)
          end do
       end if
    end subroutine term
@@ -348,13 +349,39 @@ contains
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32), intent(inout) :: top
 
-      type(tree_node_t) :: node_l
+      type(tree_node_t) :: node, node_l, node_r
 
       
       call primary(tape, tree, top)
+      node_l = tree(top)
 
       if (tape%current_token == tk_star) then
+         node_r = terminal_node
+         node = make_tree_node(op_closure)
+         call register_and_connector(tree, top, node, node_l, node_r)       
+         call tape%get_token()
+
       else if (tape%current_token == tk_plus) then
+         node_r = terminal_node
+         node = make_tree_node(op_closure)
+         call register_and_connector(tree, top, node, node_l, terminal_node)
+
+         node_r = tree(top)
+         node = make_tree_node(op_concat)
+         call register_and_connector(tree, top, node, node_l, node_r)
+
+         call tape%get_token()
+
+      else if (tape%current_token == tk_question) then
+         node_r = terminal_node
+         node = make_tree_node(op_empty)
+         call register_and_connector(tree, top, node, node_l, terminal_node)
+
+         node_r = tree(top)
+         node = make_tree_node(op_union)
+         call register_and_connector(tree, top, node, node_l, node_r)
+
+         call tape%get_token()
       end if
    end subroutine postfix_op
 
