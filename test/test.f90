@@ -14,16 +14,21 @@ program main
    next_index = 1
    root_i = 1
 
-   string = 'h|f'
+   string = 'h|f|o'
 
    call build_syntax_tree(string, tape, tree, next_index)
 
 
    print *, '  own index|  operation|     parent|       left|      right|    is registered'
    do i = 0, TREE_NODE_LIMIT
-      print *, tree(i)%own_i, tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
-        tree(i)%is_registered
+      if (tree(i)%is_registered) then
+         print *, tree(i)%own_i, tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
+            tree(i)%is_registered
+      end if
    end do
 
+   call print_tree(tree, 5)
+
+   call deallocate_tree(tree)
 
 end program main

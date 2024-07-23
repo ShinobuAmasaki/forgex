@@ -9,7 +9,7 @@
 !! This file defines syntactic parsing.
 
 module forgex_syntax_tree_m
-   use, intrinsic :: iso_fortran_env
+   use, intrinsic :: iso_fortran_env, stderr => error_unit
    use, intrinsic :: iso_c_binding
    use :: forgex_parameters_m
    use :: forgex_segment_m
@@ -21,6 +21,8 @@ module forgex_syntax_tree_m
    public :: tape_t
    
    public :: build_syntax_tree
+   public :: deallocate_tree
+   public :: print_tree
 
    interface
       pure subroutine message(i, j) bind(c)
@@ -59,7 +61,7 @@ contains
    !> Copies the input pattern to `tape_t` type and builds a syntax tree.
    !> The result returns a pointer to the root of the tree.
    !> Expected to be used by the forgex module.
-   pure subroutine build_syntax_tree(str, tape, tree, top_idx)
+   subroutine build_syntax_tree(str, tape, tree, top_idx)
       implicit none
       character(*), intent(in)    :: str
       type(tape_t), intent(inout) :: tape
@@ -208,9 +210,6 @@ contains
       integer :: i
       i = top_index + 1
 
-      self%own_i = i 
-      top_index = i
-      
       tree(i)%op = self%op
 
       if (.not. allocated(tree(i)%c)) allocate(tree(i)%c(size(self%c, dim=1)))
@@ -224,6 +223,9 @@ contains
       tree(i)%left_i   = INVALID_INDEX
       tree(i)%is_registered = .true.
 
+      self%own_i = i
+
+      top_index = i
    end subroutine register_node
 
 
@@ -254,23 +256,23 @@ contains
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32), intent(inout) :: top
 
-      type(tree_node_t) :: node_l, node_r
+      type(tree_node_t) :: node, node_l, node_r
    
       call term(tape, tree, top)
       node_l = tree(top)
 
       do while (tape%current_token == tk_union)
          call tape%get_token()
-         
-         call term(tape, tree, top)
 
-         node_l = tree(top)
-         node_r = make_tree_node(op_union)
-         call node_r%register_node(tree, top)
+         call term(tape, tree, top)
          node_r = tree(top)
 
-         call connect_left(tree, top, node_l%own_i)
-         call connect_right(tree, top, node_r%own_i)
+         node = make_tree_node(op_union)
+         call node%register_node(tree, top)
+
+         call connect_left(tree, node%own_i, node_l%own_i)
+         call connect_right(tree, node%own_i, node_r%own_i)
+
          node_l = tree(top)
       end do
    end subroutine regex
@@ -292,6 +294,7 @@ contains
          node = make_tree_node(op_empty)
          call node%register_node(tree, top)
          node = tree(top)
+
          call connect_left(tree, node%own_i, TERMINAL_INDEX)
          call connect_right(tree, node%own_i, TERMINAL_INDEX)
 
@@ -344,12 +347,11 @@ contains
 
       if (tape%current_token == tk_char) then
          seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
-
          node = make_atom(seg)
          call node%register_node(tree, top)
+
          node = tree(top)
-call message(349, top)
-call message(350, node%own_i)
+
          call connect_left(tree, node%own_i, TERMINAL_INDEX)
          call connect_right(tree, node%own_i, TERMINAL_INDEX)
 
@@ -359,10 +361,42 @@ call message(350, node%own_i)
 
 
    recursive subroutine print_tree(tree, root_i)
+      use :: forgex_utf8_m
       implicit none
       type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32) :: root_i
 
+      type(tree_node_t) :: p
+
+      p = tree(root_i)
+
+      select case (p%op)
+      case (op_not_init)
+         return
+      case (op_char)
+         write(*, "(a)", advance='no') '"'//trim(char_utf8(p%c(1)%min))//'"'
+      case (op_concat)
+         write(*, "(a)", advance='no') "(concatenate "
+         call print_tree(tree, p%left_i)
+         write(*, "(a)", advance='no') ' '
+         call print_tree(tree, p%right_i)
+         write(*, "(a)", advance='no') ')'
+      case (op_union)
+         write(*, "(a)", advance='no') "(or "
+         call print_tree(tree, p%left_i)
+         write(*, "(a)", advance='no') ' '
+         call print_tree(tree, p%right_i)
+         write(*, "(a)", advance='no') ')'
+      case (op_closure)
+         write(*, "(a)", advance='no') "(closure "
+         call print_tree(tree, p%left_i)
+         write(*, "(a)", advance='no') ')'
+      case (op_empty)
+         write(*, '(a)', advance='no') "EMPTY"
+      case default
+         write(stderr, *) "This will not hoppen in 'print_tree'"
+         error stop
+      end select
    end subroutine print_tree
 
 end module forgex_syntax_tree_m
