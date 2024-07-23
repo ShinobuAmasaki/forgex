@@ -56,6 +56,13 @@ module forgex_syntax_tree_m
       procedure :: get_token
    end type
 
+   type(tree_node_t), parameter :: terminal_node = &
+      tree_node_t( op=op_not_init,&
+                   left_i=TERMINAL_INDEX, &
+                   right_i=TERMINAL_INDEX, &
+                   parent_i=INVALID_INDEX, &
+                   own_i=TERMINAL_INDEX)
+
 contains
 
    !> Copies the input pattern to `tape_t` type and builds a syntax tree.
@@ -80,6 +87,7 @@ contains
       call tape%get_token()
 
       call regex(tape, tree, top_idx)
+      tree(top_idx)%parent_i = TERMINAL_INDEX
 
    end subroutine build_syntax_tree
 
@@ -211,13 +219,19 @@ contains
       i = top_index + 1
 
       tree(i)%op = self%op
-
-      if (.not. allocated(tree(i)%c)) allocate(tree(i)%c(size(self%c, dim=1)))
+      
       if (.not. allocated(self%c)) then
-         tree(i)%c = SEG_INVALID
+         if (.not. allocated(tree(i)%c)) then
+            allocate(tree(i)%c(1))
+            tree(i)%c = SEG_INVALID
+         end if
       else
-         tree(i)%c = self%c
+         if (.not. allocated(tree(i)%c)) then
+            allocate(tree(i)%c(size(self%c, dim=1)))
+            tree(i)%c = self%c
+         end if
       end if
+
       tree(i)%parent_i = INVALID_INDEX
       tree(i)%right_i  = INVALID_INDEX
       tree(i)%left_i   = INVALID_INDEX
@@ -229,13 +243,29 @@ contains
    end subroutine register_node
 
 
+   pure subroutine register_and_connector(tree, top, node, node_l, node_r)
+      implicit none
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+      type(tree_node_t), intent(inout) :: node
+      type(tree_node_t), intent(in) :: node_l, node_r
+   
+      call node%register_node(tree, top)
+      node = tree(top)
+
+      call connect_left(tree, node%own_i, node_l%own_i)
+      call connect_right(tree, node%own_i, node_r%own_i)
+
+   end subroutine register_and_connector
+
+
    pure subroutine connect_left(tree, parent_i, child_i)
       implicit none
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32), intent(in) :: parent_i, child_i
 
       tree(parent_i)%left_i = child_i
-      if (child_i /= TERMINAL_INDEX) tree(child_i)%parent_i = parent_i
+      if (child_i /= INVALID_INDEX) tree(child_i)%parent_i = parent_i
    end subroutine connect_left
 
 
@@ -245,7 +275,7 @@ contains
       integer(int32), intent(in) :: parent_i, child_i
 
       tree(parent_i)%right_i = child_i
-      if (child_i /= TERMINAL_INDEX) tree(child_i)%parent_i = parent_i
+      if (child_i /= INVALID_INDEX) tree(child_i)%parent_i = parent_i
    end subroutine connect_right
 
 !=====================================================================!
@@ -268,10 +298,7 @@ contains
          node_r = tree(top)
 
          node = make_tree_node(op_union)
-         call node%register_node(tree, top)
-
-         call connect_left(tree, node%own_i, node_l%own_i)
-         call connect_right(tree, node%own_i, node_r%own_i)
+         call register_and_connector(tree, top, node, node_l, node_r)
 
          node_l = tree(top)
       end do
@@ -286,17 +313,12 @@ contains
 
       type(tree_node_t) :: node, node_l, node_r
  
-
       if (tape%current_token == tk_union &
           .or. tape%current_token == tk_rpar &
           .or. tape%current_token == tk_end) then
          
          node = make_tree_node(op_empty)
-         call node%register_node(tree, top)
-         node = tree(top)
-
-         call connect_left(tree, node%own_i, TERMINAL_INDEX)
-         call connect_right(tree, node%own_i, TERMINAL_INDEX)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
 
       else
          call postfix_op(tape, tree, top)
@@ -305,7 +327,9 @@ contains
          do while (tape%current_token /= tk_union &
                    .and. tape%current_token /= tk_rpar &
                    .and. tape%current_token /= tk_end)
+   
             ! node = make_tree_node(op_concat)
+
             ! call node%register_node(tree, top)
             ! call connect_left(tree, node%own_i, node_l%own_i)
             ! call postfix_op(tape, tree, top)
@@ -348,13 +372,8 @@ contains
       if (tape%current_token == tk_char) then
          seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
          node = make_atom(seg)
-         call node%register_node(tree, top)
-
-         node = tree(top)
-
-         call connect_left(tree, node%own_i, TERMINAL_INDEX)
-         call connect_right(tree, node%own_i, TERMINAL_INDEX)
-
+      
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
          call tape%get_token()
       end if
    end subroutine primary
