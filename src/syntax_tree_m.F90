@@ -10,6 +10,7 @@
 
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env
+   use, intrinsic :: iso_c_binding
    use :: forgex_parameters_m
    use :: forgex_segment_m
    use :: forgex_enums_m
@@ -20,6 +21,15 @@ module forgex_syntax_tree_m
    public :: tape_t
    
    public :: build_syntax_tree
+
+   interface
+      pure subroutine message(i, j) bind(c)
+         import c_int
+         implicit none
+         integer(c_int), intent(in), value :: i, j
+      end subroutine message
+   end interface
+
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
@@ -32,9 +42,7 @@ module forgex_syntax_tree_m
       integer(int32) :: own_i         = INVALID_INDEX
       logical        :: is_registered = .false.
    contains
-      procedure :: register_node_root
-      procedure :: register_node_right
-      procedure :: register_node_left
+      procedure :: register_node
    end type
 
    type :: tape_t
@@ -51,24 +59,25 @@ contains
    !> Copies the input pattern to `tape_t` type and builds a syntax tree.
    !> The result returns a pointer to the root of the tree.
    !> Expected to be used by the forgex module.
-   pure subroutine build_syntax_tree(str, tape, tree, tree_idx)
+   pure subroutine build_syntax_tree(str, tape, tree, top_idx)
       implicit none
       character(*), intent(in)    :: str
       type(tape_t), intent(inout) :: tape
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
-      integer(int32), intent(inout) :: tree_idx
+      integer(int32), intent(inout) :: top_idx
       
       integer :: i
 
-      allocate(tree(0:TREE_NODE_LIMIT)) ! 0-based
-      tree(0:TREE_NODE_LIMIT)%own_i = [(i, i = 0, TREE_NODE_LIMIT)]
+      allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT)) ! 0-based
+      tree(TREE_NODE_BASE:TREE_NODE_LIMIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_LIMIT)]
 
       tape%idx = 1
       tape%str = str
+      top_idx = 0
 
       call tape%get_token()
 
-      call regex(tape, tree, tree_idx)
+      call regex(tape, tree, top_idx)
 
    end subroutine build_syntax_tree
 
@@ -167,17 +176,12 @@ contains
 
 !=====================================================================!
 
-   pure function make_tree_node(op, parent, left, right) result(node)
+   pure function make_tree_node(op) result(node)
       implicit none
       integer(int32), intent(in) :: op
-      integer(int32), intent(in) :: parent
-      integer(int32), intent(in) :: left, right
       type(tree_node_t) :: node
 
       node%op = op
-      node%parent_i = parent 
-      node%left_i = left
-      node%right_i = right
 
    end function make_tree_node
 
@@ -192,135 +196,173 @@ contains
       allocate(node%c(1))
       node%c  = segment
    end function make_atom
-      
 
-   pure subroutine register_node_root(self, tree, root_index)
+
+   pure subroutine register_node(self, tree, top_index)
       implicit none
-      class(tree_node_t), intent(in) :: self
-      type(tree_node_t),  intent(inout) :: tree(0:TREE_NODE_LIMIT)
-      integer(int32), intent(in) :: root_index
+      class(tree_node_t), intent(inout) :: self
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top_index
+
 
       integer :: i
-      i = root_index
-      tree(i)%c             = self%c
-      tree(i)%left_i        = self%left_i
-      tree(i)%right_i       = self%right_i
-      tree(i)%parent_i      = self%parent_i
-      tree(i)%is_registered = .true.
-   end subroutine register_node_root
+      i = top_index + 1
 
-
-   pure subroutine register_node_left(self, tree, node, count)
-      implicit none
-      class(tree_node_t), intent(inout) :: self
-      type(tree_node_t),  intent(inout) :: tree(0:TREE_NODE_LIMIT)
-      type(tree_node_t),  intent(in)    :: node
-      integer(int32),     intent(inout) :: count
+      self%own_i = i 
+      top_index = i
       
-      self%op       = node%op
+      tree(i)%op = self%op
 
+      if (.not. allocated(tree(i)%c)) allocate(tree(i)%c(size(self%c, dim=1)))
       if (.not. allocated(self%c)) then
-         allocate(self%c(1))
+         tree(i)%c = SEG_INVALID
+      else
+         tree(i)%c = self%c
       end if
-      if (allocated(node%c)) self%c = node%c
+      tree(i)%parent_i = INVALID_INDEX
+      tree(i)%right_i  = INVALID_INDEX
+      tree(i)%left_i   = INVALID_INDEX
+      tree(i)%is_registered = .true.
 
-      self%left_i = node%left_i
-      self%right_i = node%right_i
-      self%parent_i = node%parent_i
-      self%is_registered = .true.
-
-      if (node%parent_i > 0) then
-         tree(self%parent_i)%left_i = self%own_i
-      end if 
-      count = count + 1
-   end subroutine register_node_left
+   end subroutine register_node
 
 
-   pure subroutine register_node_right(self, tree, node, count)
+   pure subroutine connect_left(tree, parent_i, child_i)
       implicit none
-      class(tree_node_t), intent(inout) :: self
-      type(tree_node_t),  intent(inout) :: tree(0:TREE_NODE_LIMIT)
-      type(tree_node_t),  intent(in)    :: node
-      integer(int32),     intent(inout) :: count
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(in) :: parent_i, child_i
 
-      self%op       = node%op
+      tree(parent_i)%left_i = child_i
+      if (child_i /= TERMINAL_INDEX) tree(child_i)%parent_i = parent_i
+   end subroutine connect_left
 
-      if (.not. allocated(self%c)) then
-         allocate(self%c(1))
-      end if
-      if (allocated(node%c)) self%c = node%c
 
-      self%left_i   = node%left_i
-      self%right_i  = node%right_i
-      self%parent_i = node%parent_i
-      self%is_registered = .true.
+   pure subroutine connect_right(tree, parent_i, child_i)
+      implicit none
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(in) :: parent_i, child_i
 
-      tree(self%parent_i)%right_i = self%own_i
-       
-      count = count + 1
-   end subroutine register_node_right
+      tree(parent_i)%right_i = child_i
+      if (child_i /= TERMINAL_INDEX) tree(child_i)%parent_i = parent_i
+   end subroutine connect_right
 
 !=====================================================================!
 
-   pure subroutine regex(tape, tree, tree_idx)
-      use :: forgex_enums_m
+   pure subroutine regex(tape, tree, top)
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(0:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: tree_idx
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
 
-      type(tree_node_t) :: node, curr, prev 
-
-      integer :: i
-
-      i = tree_idx
-
-      call term(tape, tree, tree_idx)
-      prev = tree(i)
+      type(tree_node_t) :: node_l, node_r
+   
+      call term(tape, tree, top)
+      node_l = tree(top)
 
       do while (tape%current_token == tk_union)
          call tape%get_token()
-         call tree(tree_idx)%register_node_left(tree, prev, tree_idx)
-
-         call term(tape, tree, tree_idx)
-         curr = make_tree_node(op_union, i, INVALID_INDEX, INVALID_INDEX)
-         call tree(i)%register_node_right(tree, curr, tree_idx)
          
-      end do
+         call term(tape, tree, top)
 
+         node_l = tree(top)
+         node_r = make_tree_node(op_union)
+         call node_r%register_node(tree, top)
+         node_r = tree(top)
+
+         call connect_left(tree, top, node_l%own_i)
+         call connect_right(tree, top, node_r%own_i)
+         node_l = tree(top)
+      end do
    end subroutine regex
 
-   pure subroutine term(tape, tree, tree_idx)
-      use :: forgex_enums_m
-      use :: forgex_utf8_m
+
+   pure subroutine term(tape, tree, top)
       implicit none
       type(tape_t), intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(0:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: tree_idx
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
 
-      type(tree_node_t) :: node, curr
-      type(segment_t) :: seg
-      integer :: i
-      
-      i = tree_idx
-
-      curr = tree(i)
+      type(tree_node_t) :: node, node_l, node_r
+ 
 
       if (tape%current_token == tk_union &
           .or. tape%current_token == tk_rpar &
           .or. tape%current_token == tk_end) then
-         node = make_tree_node(op_empty, i, INVALID_INDEX, INVALID_INDEX)
-         call tree(i)%register_node_left(tree, node, tree_idx)
-         call tree(i)%register_node_right(tree, node, tree_idx)
+         
+         node = make_tree_node(op_empty)
+         call node%register_node(tree, top)
+         node = tree(top)
+         call connect_left(tree, node%own_i, TERMINAL_INDEX)
+         call connect_right(tree, node%own_i, TERMINAL_INDEX)
 
-      else if (tape%current_token == tk_char) then
-         seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
-         node = make_atom(seg)
-         call tree(i)%register_node_left(tree, node, tree_idx)
-         call tape%get_token()
+      else
+         call postfix_op(tape, tree, top)
+         node_l = tree(top)
+
+         do while (tape%current_token /= tk_union &
+                   .and. tape%current_token /= tk_rpar &
+                   .and. tape%current_token /= tk_end)
+            ! node = make_tree_node(op_concat)
+            ! call node%register_node(tree, top)
+            ! call connect_left(tree, node%own_i, node_l%own_i)
+            ! call postfix_op(tape, tree, top)
+            ! node_r = tree(top)
+            ! call connect_right(tree, node%own_i, node_r%own_i)
+
+            ! node_l = tree(top)
+         end do
       end if
-
    end subroutine term
 
+
+   pure subroutine postfix_op(tape, tree, top)
+      implicit none
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: node_l
+
+      
+      call primary(tape, tree, top)
+
+      if (tape%current_token == tk_star) then
+      else if (tape%current_token == tk_plus) then
+      end if
+   end subroutine postfix_op
+
+
+   pure subroutine primary(tape, tree, top)
+      use :: forgex_utf8_m
+      implicit none
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: node
+      type(segment_t) :: seg
+
+      if (tape%current_token == tk_char) then
+         seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
+
+         node = make_atom(seg)
+         call node%register_node(tree, top)
+         node = tree(top)
+call message(349, top)
+call message(350, node%own_i)
+         call connect_left(tree, node%own_i, TERMINAL_INDEX)
+         call connect_right(tree, node%own_i, TERMINAL_INDEX)
+
+         call tape%get_token()
+      end if
+   end subroutine primary
+
+
+   recursive subroutine print_tree(tree, root_i)
+      implicit none
+      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32) :: root_i
+
+   end subroutine print_tree
 
 end module forgex_syntax_tree_m
