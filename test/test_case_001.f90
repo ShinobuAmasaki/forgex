@@ -94,7 +94,28 @@ program test_001
    call runner_match('[a]{2, 4}', "aa", .true., res)
    call runner_match('[a]{2, 4}', "a", .false., res)
    call runner_match('[a]{2, 4}', "", .false., res)
+
+   call runner_match('[a]{1,}', "aaaaa", .true., res)
+   call runner_match('[a]{1,}', "aaaa", .true., res)
+   call runner_match('[a]{1,}', "aaa", .true., res)
+   call runner_match('[a]{1,}', "aa", .true., res)
+   call runner_match('[a]{1,}', "a", .true., res)
+   call runner_match('[a]{1,}', "", .false., res)
    
+   call runner_match('[a]{2,}', "aaaaa", .true., res)
+   call runner_match('[a]{2,}', "aaaa", .true., res)
+   call runner_match('[a]{2,}', "aaa", .true., res)
+   call runner_match('[a]{2,}', "aa", .true., res)
+   call runner_match('[a]{2,}', "a", .false., res)
+   call runner_match('[a]{2,}', "", .false., res)
+
+   call runner_match('[a]{4,}', "aaaaa", .true., res)
+   call runner_match('[a]{4,}', "aaaa", .true., res)
+   call runner_match('[a]{4,}', "aaa", .false., res)
+   call runner_match('[a]{4,}', "aa", .false., res)
+   call runner_match('[a]{4,}', "a", .false., res)
+   call runner_match('[a]{4,}', "", .false., res)
+
    call runner_match("a.{1,5}g", "abgdefg", .true., res)
 
    call runner_match('[a]{7,7}', 'aaaaaa', .false., res)

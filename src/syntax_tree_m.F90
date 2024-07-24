@@ -475,17 +475,13 @@ contains
       end if
 
       if (max == 0) then
-      
-         if (min == 0) then
-            tree => make_tree_node(op_closure, ptr, null())
-            return
-         end if 
 
-         if (min >= 1) then
-            tree => make_tree_node(op_union, ptr, make_tree_node(op_empty, tree, null()))
-            tree => make_tree_node(op_concat, ptr, tree)
-         end if
+         tree => make_tree_node(op_closure, ptr, null())
 
+         if (min == 0) return
+
+         if (min >= 1) tree => make_tree_node(op_concat, ptr, tree)
+        
          if (min > 1) then
             count = 1
             do while (count < min)
