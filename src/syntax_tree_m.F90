@@ -22,7 +22,7 @@ module forgex_syntax_tree_m
    
    public :: build_syntax_tree
    public :: deallocate_tree
-   public :: print_tree
+   public :: print_tree_internal
 
    interface
       pure subroutine message(i, j) bind(c)
@@ -30,6 +30,15 @@ module forgex_syntax_tree_m
          implicit none
          integer(c_int), intent(in), value :: i, j
       end subroutine message
+   end interface
+
+   interface
+      pure subroutine message_char(i, str) bind(c)
+         import c_int, c_char
+         implicit none
+         integer(c_int), intent(in), value :: i
+         character(1, kind=c_char), intent(in) :: str(*)
+      end subroutine
    end interface
 
 
@@ -313,6 +322,8 @@ contains
 
       type(tree_node_t) :: node, node_l, node_r
  
+
+
       if (tape%current_token == tk_union &
           .or. tape%current_token == tk_rpar &
           .or. tape%current_token == tk_end) then
@@ -328,18 +339,14 @@ contains
                    .and. tape%current_token /= tk_rpar &
                    .and. tape%current_token /= tk_end)
 
-            node = make_tree_node(op_concat)
-
-            call node%register_node(tree, top)
-            call connect_left(tree, node%own_i, node_l%own_i)
-            
             call postfix_op(tape, tree, top)
             node_r = tree(top)
 
-            call connect_right(tree, node%own_i, node_r%own_i)
-            node_l = tree(top)
+            node = make_tree_node(op_concat)
+            call register_and_connector(tree, top, node, node_l, node_r)
 
-            call tape%get_token()
+            node_l = node
+
          end do
       end if
    end subroutine term
@@ -403,13 +410,38 @@ contains
       type(tree_node_t) :: node
       type(segment_t) :: seg
 
-      if (tape%current_token == tk_char) then
+      select case (tape%current_token)
+      case (tk_char)
          seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
          node = make_atom(seg)
       
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
          call tape%get_token()
-      end if
+
+      case (tk_lpar)
+         call tape%get_token()
+         call regex(tape, tree, top)
+         if (tape%current_token /= tk_rpar) then
+            error stop "L425 primary: Close parenthesis is expected."
+         end if
+         call tape%get_token()
+
+      case (tk_lsbracket)
+         call char_class(tape, tree, top)
+         if (tape%current_token /= tk_rsbracket) then
+            error stop "L432 primary: Close square bracket is expected."
+         end if
+         call tape%get_token()
+      
+      case (tk_dot)
+         node = make_atom(SEG_ANY)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
+         call tape%get_token()
+
+      case default
+         error stop "L442 primary: Pattern includes some syntax error."
+
+      end select
    end subroutine primary
 
 
@@ -597,47 +629,203 @@ contains
    end subroutine range_min_max
 
 
+   pure subroutine char_class(tape, tree, top)
+      use :: forgex_utf8_m
+      use :: forgex_enums_m
+      implicit none
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(segment_t), allocatable :: seglist(:)
+      character(:), allocatable :: buf
+      integer :: siz, ie, i, j, inext, terminal
+      logical :: is_inverted
+      type(tree_node_t) :: node
+
+      call tape%get_token(class_flag=.true.)
+
+      buf = ""
+      do while (tape%current_token /= tk_rsbracket)
+         ie = idxutf8(tape%token_char, 1)
+         buf = buf // tape%token_char(1:ie)
+         call tape%get_token(class_flag=.true.)
+      end do
+
+      is_inverted = .false.
+      if (buf(1:1) == SYMBOL_CRET) then
+         is_inverted = .true.
+         buf = buf(2:len(buf))
+      end if
+
+      siz = len_utf8(buf)
+
+      siz = siz - 2*count_token(buf(2:len_trim(buf)-1), SYMBOL_HYPN)
+
+      if (buf(len_trim(buf):len_trim(buf)) == SYMBOL_HYPN) siz = siz -1
+
+      allocate(seglist(siz))
+
+      terminal = len(buf)
+      i = 1
+      j = 1
+      buf = buf//char(0)
+
+      do while (i <= terminal)
+
+         ie = idxutf8(buf, i)
+         inext = ie + 1
+
+         ! 次の文字がハイフンでないならば
+         if (buf(inext:inext) /= SYMBOL_HYPN) then
+            seglist(j)%min = ichar_utf8(buf(i:ie))
+            seglist(j)%max = ichar_utf8(buf(i:ie))
+            j = j + 1
+         else
+            seglist(j)%min = ichar_utf8(buf(i:ie))
+
+            i = inext + 1
+            ie = idxutf8(buf, i)
+            inext = ie + 1
+
+            seglist(j)%max = ichar_utf8(buf(i:ie))
+            j = j + 1
+         end if
+
+         ! 先頭の記号がハイフンならば
+         if (j == 1 .and. buf(1:1) == SYMBOL_HYPN) then
+            seglist(1)%min = ichar_utf8(SYMBOL_HYPN)
+            seglist(1)%max = ichar_utf8(SYMBOL_HYPN)
+            j = j + 1
+            cycle
+         end if 
+
+         if (i == ie .and. buf(ie:ie) == SYMBOL_HYPN) then
+            seglist(siz)%max = UTF8_CODE_MAX
+            exit
+         end if
+
+         i = inext
+      end do
+
+      if (is_inverted) then
+         call invert_segment_list(seglist)
+      end if
+
+      node = make_tree_node(op_char)
+      if (.not. allocated(node%c)) allocate(node%c(size(seglist, dim=1)))
+      node%c(:) = seglist(:)
+
+      call register_and_connector(tree, top, node, terminal_node, terminal_node)
+
+   end subroutine char_class
+      
+
 !=====================================================================!
 
-   recursive subroutine print_tree(tree, root_i)
+
+   recursive subroutine print_tree_internal(tree, node_i)
+      implicit none
+      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer, intent(in) :: node_i
+
+      select case (tree(node_i)%op)
+      case (op_char)
+         write(stderr, '(a)', advance='no') trim(print_class_simplify(tree, node_i))
+      case (op_concat)
+         write(stderr, '(a)', advance='no') "(concatenate "
+         call print_tree_internal(tree, tree(node_i)%left_i)
+         write(stderr, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i)
+         write(stderr, '(a)', advance='no') ')'
+
+      case (op_union)
+         write(stderr, '(a)', advance='no') "(or "
+         call print_tree_internal(tree, tree(node_i)%left_i)
+         write(stderr, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i)
+         write(stderr, '(a)', advance='no') ')'
+
+      case (op_closure)
+         write(stderr, '(a)', advance='no') "(closure"
+         call print_tree_internal(tree, tree(node_i)%left_i)
+         write(stderr, '(a)', advance='no') ')'
+
+      case (op_empty)
+         write(stderr, '(a)', advance='no') 'EMPTY'
+      
+      case default
+         write(stderr, '(a)') "This will not occur in 'print_tree'."
+         error stop
+      end select
+   end subroutine print_tree_internal 
+
+
+   function print_class_simplify (tree, root_i) result(str)
       use :: forgex_utf8_m
       implicit none
       type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32) :: root_i
+      character(:), allocatable :: str
 
-      type(tree_node_t) :: p
+      integer(int32) :: siz, j
+      character(:),allocatable :: buf 
 
-      if (root_i == INVALID_INDEX) return
+      str = ''
+      siz = size(tree(root_i)%c, dim=1)
 
-      p = tree(root_i)
+      if (siz == 0) return
 
-      select case (p%op)
-      case (op_not_init)
+      if (tree(root_i)%c(1) == SEG_LF) then
+         str = '<LF>'
          return
-      case (op_char)
-         write(*, "(a)", advance='no') '"'//trim(char_utf8(p%c(1)%min))//'"'
-      case (op_concat)
-         write(*, "(a)", advance='no') "(concatenate "
-         call print_tree(tree, p%left_i)
-         write(*, "(a)", advance='no') ' '
-         call print_tree(tree, p%right_i)
-         write(*, "(a)", advance='no') ')'
-      case (op_union)
-         write(*, "(a)", advance='no') "(or "
-         call print_tree(tree, p%left_i)
-         write(*, "(a)", advance='no') ' '
-         call print_tree(tree, p%right_i)
-         write(*, "(a)", advance='no') ')'
-      case (op_closure)
-         write(*, "(a)", advance='no') "(closure "
-         call print_tree(tree, p%left_i)
-         write(*, "(a)", advance='no') ')'
-      case (op_empty)
-         write(*, '(a)', advance='no') "EMPTY"
-      case default
-         write(stderr, *) "This will not hoppen in 'print_tree'"
-         error stop
-      end select
-   end subroutine print_tree
+      
+      else if (tree(root_i)%c(1) == SEG_CR) then
+         str = '<CR>'
+         return
+
+      else if (siz == 1 .and. tree(root_i)%c(1)%min == tree(root_i)%c(1)%max) then
+         str = '"'//char_utf8(tree(root_i)%c(1)%min)//'"'
+         return
+
+      else if (siz == 1 .and. tree(root_i)%c(1) == SEG_ANY) then
+         str = '<ANY>'
+         return
+      end if
+
+      buf = '[ '
+      do j = 1, siz
+
+         if (tree(root_i)%c(j) == SEG_LF) then
+            buf = buf//'<LF>; '
+         
+         else if (tree(root_i)%c(j) == SEG_TAB) then
+            buf = buf//'<TAB>; '
+
+         else if (tree(root_i)%c(j) == SEG_CR) then
+            buf = buf//'<CR>; '
+         
+         else if (tree(root_i)%c(j) == SEG_FF) then
+            buf = buf//'<FF>; '
+
+         else if (tree(root_i)%c(j) == SEG_SPACE) then
+            buf = buf//'<SPACE>; '
+
+         else if (tree(root_i)%c(j) == SEG_ZENKAKU_SPACE) then
+            buf = buf//'<ZENKAKU SPACE>; '
+         
+         else if (tree(root_i)%c(j)%max == UTF8_CODE_MAX) then
+            buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
+         
+         else 
+            buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//char_utf8(tree(root_i)%c(j)%max)//'"; '
+         end if
+      end do
+
+      buf = trim(buf)//']'
+
+      str = trim(buf)
+
+   end function print_class_simplify
 
 end module forgex_syntax_tree_m

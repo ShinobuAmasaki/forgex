@@ -4,10 +4,10 @@ module forgex_segment_m
    implicit none
    private
 
-   public :: segment_t
    public :: operator(==)
    public :: operator(/=)
    public :: operator(.in.)
+   public :: invert_segment_list
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -152,6 +152,67 @@ contains
 
       res = self%min <= self%max
    end function segment_is_valid
+
+
+   !> This subroutine inverts a list of segment ranges representing Unicode characters.
+   !> It compute the complement of the given ranges and modifies the list accordingly.
+   !>
+   !> @note The algorithms implemented in this (especially the loops) are brute force
+   !> and we would like to change them with a more lightweight way of handling inverted classes.
+   pure subroutine invert_segment_list(list)
+      implicit none
+      type(segment_t), intent(inout), allocatable :: list(:)   ! Input list of segments
+
+      logical, allocatable :: unicode(:)     ! Array to mark Unicode code points covered by segments.
+      logical, allocatable :: inverted(:)    ! Array to store inverted coverage of Unicode code points.
+
+      integer :: i, j   ! Loop variables
+      integer :: count  ! Count of new segments
+
+      ! Allocate arrays to mark Unicode code points and their inverted coverage
+      allocate(unicode(UTF8_CODE_MIN:UTF8_CODE_MAX))
+      allocate(inverted((UTF8_CODE_MIN-1):(UTF8_CODE_MAX+1)))
+
+      ! Initialize arrays to `.false.`
+      unicode(:) = .false.
+      inverted(:) = .false.
+
+      ! Mark Unicode code points covered by the segments as `.true.`
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+         do j = 1, size(list, dim=1)
+            unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
+         end do
+      end do 
+
+      ! Compute inverted coverage of Unicode code points.
+      inverted(UTF8_CODE_MIN-1) = .false.
+      inverted(UTF8_CODE_MAX+1) = .false.
+      inverted(UTF8_CODE_MIN:UTF8_CODE_MAX) = .not. unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
+
+      ! Count the number of new segments needed in the inverted list.
+      count = 0
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+         if (.not. inverted(i-1) .and. inverted(i)) count = count + 1
+      end do
+
+      ! Deallocate the original list and allocate a new list with the new number of inverted segments.
+      deallocate(list)
+      allocate(list(count))
+
+      ! Reconstruct the inverted list of segments based on the inverted coverage.
+      count = 1
+      do i = UTF8_CODE_MIN, UTF8_CODE_MAX+1
+         if (.not. inverted(i-1) .and. inverted(i)) then
+            list(count)%min = i
+         end if
+
+         if (inverted(i-1) .and. .not. inverted(i)) then
+            list(count)%max = i-1
+            count = count + 1
+         end if 
+      end do
+
+   end subroutine invert_segment_list
 
 
 #ifdef DEBUG

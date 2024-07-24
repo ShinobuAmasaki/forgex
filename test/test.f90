@@ -13,7 +13,7 @@ program main
 
    root_i = 1
 
-   string = 'h{2,4}'
+   string = 'h[a-zA-Z]bcd'
 
    call build_syntax_tree(string, tape, tree, top_index)
 
@@ -21,12 +21,14 @@ program main
    print *, '  own index|  operation|     parent|       left|      right|    is registered'
    do i = 0, TREE_NODE_LIMIT
       if (tree(i)%is_registered) then
-         print *, tree(i)%own_i, tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
+         write(*, '(5i12, a, 1x, 1l)', advance='no') tree(i)%own_i, &
+            tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
             tree(i)%is_registered
+         if (allocated(tree(i)%c)) print *, tree(i)%c
       end if
    end do
 
-   call print_tree(tree, top_index)
+   call print_tree_internal(tree, top_index)
 
    call deallocate_tree(tree)
 
