@@ -223,6 +223,7 @@ contains
    !  like `<ANY>`, `<LF>`, etc., or generates a character range representation
    !  for segments with defined `min` and `max` values.
    function segment_for_print (seg) result(res)
+      use :: forgex_utf8_m
       implicit none
       class(segment_t), intent(in) :: seg
       character(:), allocatable :: res

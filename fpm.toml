@@ -16,3 +16,6 @@ library = true
 implicit-typing = false
 implicit-external = false
 source-form = "free"
+[preprocess]
+[preprocess.cpp]
+macros = ["DEBUG"]

@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -19,11 +19,12 @@ module forgex_syntax_tree_m
 
    public :: tree_node_t
    public :: tape_t
-   
+
    public :: build_syntax_tree
    public :: deallocate_tree
+#ifdef DEBUG
    public :: print_tree_internal
-
+#endif
    interface
       pure subroutine message(i, j) bind(c)
          import c_int
@@ -83,7 +84,7 @@ contains
       type(tape_t), intent(inout) :: tape
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer(int32), intent(inout) :: top_idx
-      
+
       integer :: i
 
       allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT)) ! 0-based
@@ -100,7 +101,7 @@ contains
 
    end subroutine build_syntax_tree
 
-   
+
    pure subroutine deallocate_tree(tree)
       implicit none
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
@@ -119,7 +120,7 @@ contains
       use :: forgex_utf8_m
       implicit none
       class(tape_t), intent(inout) :: self
-      logical, optional, intent(in) :: class_flag 
+      logical, optional, intent(in) :: class_flag
 
       character(UTF8_CHAR_SIZE) :: c
       integer(int32) :: ib, ie
@@ -131,7 +132,7 @@ contains
       else
 
          ie = idxutf8(self%str, ib)
-         
+
          c = self%str(ib:ie)
 
          if (present(class_flag)) then
@@ -228,7 +229,7 @@ contains
       i = top_index + 1
 
       tree(i)%op = self%op
-      
+
       if (.not. allocated(self%c)) then
          if (.not. allocated(tree(i)%c)) then
             allocate(tree(i)%c(1))
@@ -258,7 +259,7 @@ contains
       integer(int32), intent(inout) :: top
       type(tree_node_t), intent(inout) :: node
       type(tree_node_t), intent(in) :: node_l, node_r
-   
+
       call node%register_node(tree, top)
       node = tree(top)
 
@@ -296,7 +297,7 @@ contains
       integer(int32), intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
-   
+
       call term(tape, tree, top)
       node_l = tree(top)
 
@@ -321,13 +322,12 @@ contains
       integer(int32), intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
- 
 
 
       if (tape%current_token == tk_union &
           .or. tape%current_token == tk_rpar &
           .or. tape%current_token == tk_end) then
-         
+
          node = make_tree_node(op_empty)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
 
@@ -360,14 +360,14 @@ contains
 
       type(tree_node_t) :: node, node_l, node_r
 
-      
+
       call primary(tape, tree, top)
       node_l = tree(top)
 
       if (tape%current_token == tk_star) then
          node_r = terminal_node
          node = make_tree_node(op_closure)
-         call register_and_connector(tree, top, node, node_l, node_r)       
+         call register_and_connector(tree, top, node, node_l, node_r)
          call tape%get_token()
 
       else if (tape%current_token == tk_plus) then
@@ -414,7 +414,7 @@ contains
       case (tk_char)
          seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
          node = make_atom(seg)
-      
+
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
          call tape%get_token()
 
@@ -432,7 +432,7 @@ contains
             error stop "L432 primary: Close square bracket is expected."
          end if
          call tape%get_token()
-      
+
       case (tk_dot)
          node = make_atom(SEG_ANY)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
@@ -495,10 +495,10 @@ contains
       end if
 
       if (max == 0) then
-         
+
          node = make_tree_node(op_closure)
          call register_and_connector(tree, top, node, ptr, terminal_node)
-         
+
          if (min == 0) return
 
          if (min >= 1) then
@@ -532,7 +532,7 @@ contains
             call register_and_connector(tree, top, node, ptr, terminal_node)
             return
          end if
-      
+
       else ! (max > 1)
 
          if (min == 0) then
@@ -557,7 +557,7 @@ contains
             node_l = tree(top)
             node_r = make_tree_node(op_empty)
             call register_and_connector(tree, top, node_r, node, terminal_node)
-            
+
             node = make_tree_node(op_union)
             call register_and_connector(tree, top, node, node_l, node_r)
 
@@ -586,7 +586,7 @@ contains
             node_l = tree(top)
             node_r = make_tree_node(op_empty)
             call register_and_connector(tree, top, node_r, node, terminal_node)
-            
+
             node = make_tree_node(op_union)
             call register_and_connector(tree, top, node, node_l, node_r)
 
@@ -619,7 +619,7 @@ contains
 
                node = make_tree_node(op_concat)
                call register_and_connector(tree, top, node, node_l, ptr)
-               
+
                node_l = tree(top)
                count = count +1
             end do
@@ -719,10 +719,10 @@ contains
       call register_and_connector(tree, top, node, terminal_node, terminal_node)
 
    end subroutine char_class
-      
+
 
 !=====================================================================!
-
+#ifdef DEBUG
 
    recursive subroutine print_tree_internal(tree, node_i)
       implicit none
@@ -753,7 +753,7 @@ contains
 
       case (op_empty)
          write(stderr, '(a)', advance='no') 'EMPTY'
-      
+
       case default
          write(stderr, '(a)') "This will not occur in 'print_tree'."
          error stop
@@ -779,7 +779,7 @@ contains
       if (tree(root_i)%c(1) == SEG_LF) then
          str = '<LF>'
          return
-      
+
       else if (tree(root_i)%c(1) == SEG_CR) then
          str = '<CR>'
          return
@@ -798,13 +798,13 @@ contains
 
          if (tree(root_i)%c(j) == SEG_LF) then
             buf = buf//'<LF>; '
-         
+
          else if (tree(root_i)%c(j) == SEG_TAB) then
             buf = buf//'<TAB>; '
 
          else if (tree(root_i)%c(j) == SEG_CR) then
             buf = buf//'<CR>; '
-         
+
          else if (tree(root_i)%c(j) == SEG_FF) then
             buf = buf//'<FF>; '
 
@@ -813,10 +813,10 @@ contains
 
          else if (tree(root_i)%c(j) == SEG_ZENKAKU_SPACE) then
             buf = buf//'<ZENKAKU SPACE>; '
-         
+
          else if (tree(root_i)%c(j)%max == UTF8_CODE_MAX) then
             buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
-         
+
          else 
             buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//char_utf8(tree(root_i)%c(j)%max)//'"; '
          end if
@@ -827,5 +827,7 @@ contains
       str = trim(buf)
 
    end function print_class_simplify
+
+#endif
 
 end module forgex_syntax_tree_m
