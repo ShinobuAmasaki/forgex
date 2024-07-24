@@ -463,32 +463,16 @@ contains
       end if
 
       if (max == 0) then
-         if (min == 0) then
-            node = make_tree_node(op_closure)
-            call register_and_connector(tree, top, node, ptr, terminal_node)
-            return
-         end if
+         
+         node = make_tree_node(op_closure)
+         call register_and_connector(tree, top, node, ptr, terminal_node)
+         
+         if (min == 0) return
 
          if (min >= 1) then
-            node_l = tree(top)
-            node_rr = make_tree_node(op_empty)
-            call register_and_connector(tree, top, node_rr, node_l, ptr)
-            ! call node_r%register_node(tree, top)
-            ! call connect_left(tree, node_rr%own_i, node_l%own_i)
-            ! call connect_right(tree, node_rr%own_i, TERMINAL_INDEX)
-
-            node_r = make_tree_node(op_union)
-            call register_and_connector(tree, top, node_r, ptr, node_rr)
-            ! call node_r%register_node(tree, top)
-            ! call connect_left(tree, node_r%own_i, ptr%own_i)
-            ! call connect_right(tree, node_r%own_i, node_rr%own_i)
-
+            node_r = tree(top)
             node = make_tree_node(op_concat)
             call register_and_connector(tree, top, node, ptr, node_r)
-            ! call node%register_node(tree, top)
-            ! call connect_left(tree, node%own_i, ptr%own_i)
-            ! call connect_right(tree, node%own_i, node_r%own_i)
-
          end if
 
          if (min > 1) then
@@ -512,32 +496,104 @@ contains
          end if
 
          if (min>= 1) then
-            call ptr%register_node(tree, top)
+            node = ptr
+            call register_and_connector(tree, top, node, ptr, terminal_node)
             return
          end if
       
-      else
+      else ! (max > 1)
 
          if (min == 0) then
             count = 1
-            call ptr%register_node(tree, top)
+            node = ptr
             do while (count < max)
-               
+
+               node_l = node
+               node_rr = make_tree_node(op_empty)
+               call register_and_connector(tree, top, node_rr, node, terminal_node)
+
+               node_r = make_tree_node(op_union)
+               call register_and_connector(tree, top, node_r, node_l, node_rr)
+
+               node = make_tree_node(op_concat)
+               call register_and_connector(tree, top, node, ptr, node_r)
+
+               node = tree(top)
+               count = count + 1
             end do
+
+            node_l = tree(top)
+            node_r = make_tree_node(op_empty)
+            call register_and_connector(tree, top, node_r, node, terminal_node)
+            
+            node = make_tree_node(op_union)
+            call register_and_connector(tree, top, node, node_l, node_r)
 
             return
          end if
 
          if (min == 1) then
+            count = 1
+            node = ptr
+            do while (count < max-1)
+
+               node_l = node
+               node_rr = make_tree_node(op_empty)
+               call register_and_connector(tree, top, node_rr, node, terminal_node)
+
+               node_r = make_tree_node(op_union)
+               call register_and_connector(tree, top, node_r, node_l, node_rr)
+
+               node = make_tree_node(op_concat)
+               call register_and_connector(tree, top, node, ptr, node_r)
+
+               node = tree(top)
+               count = count + 1
+            end do
+
+            node_l = tree(top)
+            node_r = make_tree_node(op_empty)
+            call register_and_connector(tree, top, node_r, node, terminal_node)
+            
+            node = make_tree_node(op_union)
+            call register_and_connector(tree, top, node, node_l, node_r)
+
+            node = make_tree_node(op_concat)
+            call register_and_connector(tree, top, node, ptr, tree(top))
+            return
          end if
 
          if (min > 1) then
+
+            count = min + 1
+            node = ptr
+            do while (count < max+1)
+               node_rr = make_tree_node(op_empty)
+               call register_and_connector(tree, top, node_rr, node, terminal_node)
+
+               node_r = make_tree_node(op_union)
+               call register_and_connector(tree, top, node_r, node, node_rr)
+
+               node = make_tree_node(op_concat)
+               call register_and_connector(tree, top, node, ptr, node_r)
+
+               node = tree(top)
+               count = count +1
+            end do
+
+            count = 1
+            node_l = tree(top)
+            do while (count < min)
+
+               node = make_tree_node(op_concat)
+               call register_and_connector(tree, top, node, node_l, ptr)
+               
+               node_l = tree(top)
+               count = count +1
+            end do
+
          end if
-         
       end if
-
-
-      
    end subroutine range_min_max
 
 

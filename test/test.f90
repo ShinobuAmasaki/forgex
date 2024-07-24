@@ -13,7 +13,7 @@ program main
 
    root_i = 1
 
-   string = 'h{2,}'
+   string = 'h{2,4}'
 
    call build_syntax_tree(string, tape, tree, top_index)
 
