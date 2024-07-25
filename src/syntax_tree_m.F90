@@ -249,7 +249,7 @@ contains
       if (.not. allocated(self%c)) then
          if (.not. allocated(tree(i)%c)) then
             allocate(tree(i)%c(1))
-            tree(i)%c = SEG_INVALID
+            tree(i)%c = SEG_INIT
          end if
       else
          if (.not. allocated(tree(i)%c)) then

@@ -23,7 +23,8 @@ module forgex_segment_m
    end type
 
    ! See ASCII code set
-   type(segment_t), parameter, public :: SEG_INVALID = segment_t(-1, -1)
+   type(segment_t), parameter, public :: SEG_INIT  = segment_t(-2, -2)
+   type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
    type(segment_t), parameter, public :: SEG_TAB   = segment_t(9, 9)     ! Horizontal Tab

@@ -57,6 +57,6 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
 
    !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_LIMIT*2
+   integer(int32), parameter, public :: NFA_TRANSITION_SIZE = 32
 
 end module forgex_parameters_m
