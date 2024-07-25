@@ -8,6 +8,9 @@
 !
 !! This file defines syntactic parsing.
 
+!> The`forgex_syntax_tree_m` module defines parsing and
+!> the `tree_node_t` derived-type for building syntax-tree.
+!> 
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr => error_unit
    use, intrinsic :: iso_c_binding
@@ -22,9 +25,10 @@ module forgex_syntax_tree_m
 
    public :: build_syntax_tree
    public :: deallocate_tree
+
 #ifdef DEBUG
    public :: print_tree_internal
-#endif
+
    interface
       pure subroutine message(i, j) bind(c)
          import c_int
@@ -41,7 +45,7 @@ module forgex_syntax_tree_m
          character(1, kind=c_char), intent(in) :: str(*)
       end subroutine
    end interface
-
+#endif
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
