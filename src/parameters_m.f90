@@ -43,5 +43,14 @@ module forgex_parameters_m
    integer(int32), parameter, public :: INVALID_DATA   = -1
    integer(int32), parameter, public :: INVALID_INDEX  = -1
    integer(int32), parameter, public :: TERMINAL_INDEX = 0
-
+   character(1),   parameter, public :: ESCAPE_T = 't'
+   character(1),   parameter, public :: ESCAPE_N = 'n'
+   character(1),   parameter, public :: ESCAPE_R = 'r'
+   character(1),   parameter, public :: ESCAPE_D = 'd'
+   character(1),   parameter, public :: ESCAPE_W = 'w'
+   character(1),   parameter, public :: ESCAPE_S = 's'
+   character(1),   parameter, public :: ESCAPE_D_CAPITAL = 'D'
+   character(1),   parameter, public :: ESCAPE_W_CAPITAL = 'W'
+   character(1),   parameter, public :: ESCAPE_S_CAPITAL = 'S'
+   
 end module forgex_parameters_m

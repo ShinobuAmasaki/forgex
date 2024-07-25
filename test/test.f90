@@ -13,7 +13,7 @@ program main
 
    root_i = 1
 
-   string = 'h[a-zA-Z]bcd'
+   string = '\S'
 
    call build_syntax_tree(string, tape, tree, top_index)
 
@@ -27,6 +27,7 @@ program main
          if (allocated(tree(i)%c)) print *, tree(i)%c
       end if
    end do
+
 
    call print_tree_internal(tree, top_index)
 

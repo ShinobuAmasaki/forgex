@@ -170,28 +170,28 @@ contains
       integer :: count  ! Count of new segments
 
       ! Allocate arrays to mark Unicode code points and their inverted coverage
-      allocate(unicode(UTF8_CODE_MIN:UTF8_CODE_MAX))
-      allocate(inverted((UTF8_CODE_MIN-1):(UTF8_CODE_MAX+1)))
+      allocate(unicode(UTF8_CODE_EMPTY:UTF8_CODE_MAX))
+      allocate(inverted((UTF8_CODE_EMPTY-1):(UTF8_CODE_MAX+1)))
 
       ! Initialize arrays to `.false.`
       unicode(:) = .false.
       inverted(:) = .false.
 
       ! Mark Unicode code points covered by the segments as `.true.`
-      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+      do i = UTF8_CODE_EMPTY, UTF8_CODE_MAX
          do j = 1, size(list, dim=1)
             unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
          end do
       end do 
 
       ! Compute inverted coverage of Unicode code points.
-      inverted(UTF8_CODE_MIN-1) = .false.
+      inverted(UTF8_CODE_EMPTY-1) = .false.
       inverted(UTF8_CODE_MAX+1) = .false.
-      inverted(UTF8_CODE_MIN:UTF8_CODE_MAX) = .not. unicode(UTF8_CODE_MIN:UTF8_CODE_MAX)
+      inverted(UTF8_CODE_EMPTY:UTF8_CODE_MAX) = .not. unicode(UTF8_CODE_EMPTY:UTF8_CODE_MAX)
 
       ! Count the number of new segments needed in the inverted list.
       count = 0
-      do i = UTF8_CODE_MIN, UTF8_CODE_MAX
+      do i = UTF8_CODE_EMPTY, UTF8_CODE_MAX
          if (.not. inverted(i-1) .and. inverted(i)) count = count + 1
       end do
 
@@ -201,7 +201,7 @@ contains
 
       ! Reconstruct the inverted list of segments based on the inverted coverage.
       count = 1
-      do i = UTF8_CODE_MIN, UTF8_CODE_MAX+1
+      do i = UTF8_CODE_EMPTY, UTF8_CODE_MAX+1
          if (.not. inverted(i-1) .and. inverted(i)) then
             list(count)%min = i
          end if

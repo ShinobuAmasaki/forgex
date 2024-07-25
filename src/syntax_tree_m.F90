@@ -433,6 +433,10 @@ contains
          end if
          call tape%get_token()
 
+      case (tk_backslash)
+         call shorthand(tape, tree, top)
+         call tape%get_token()
+
       case (tk_dot)
          node = make_atom(SEG_ANY)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
@@ -698,7 +702,7 @@ contains
             seglist(1)%max = ichar_utf8(SYMBOL_HYPN)
             j = j + 1
             cycle
-         end if 
+         end if
 
          if (i == ie .and. buf(ie:ie) == SYMBOL_HYPN) then
             seglist(siz)%max = UTF8_CODE_MAX
@@ -720,6 +724,121 @@ contains
 
    end subroutine char_class
 
+   !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
+   pure subroutine make_tree_crlf(tree, top)
+      implicit none
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: cr, lf, node_r, node
+
+      cr = make_atom(SEG_CR)
+      call register_and_connector(tree, top, cr, terminal_node, terminal_node)
+
+      lf = make_atom(SEG_LF)
+      call register_and_connector(tree, top, lf, terminal_node, terminal_node)
+
+      node_r = make_tree_node(op_concat)
+      call register_and_connector(tree, top, node_r, cr, lf)
+      
+      node = make_tree_node(op_union)
+      call register_and_connector(tree, top, node, lf, node_r)
+   
+   end subroutine make_tree_crlf
+
+
+   !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`, 
+   !> `\w`, `\W`, `\s`, `\S`).
+   pure subroutine shorthand(tape, tree, top)
+      use :: forgex_parameters_m
+      use :: forgex_utf8_m
+      implicit none
+      type(tape_t), intent(inout) :: tape
+      type(tree_node_t), intent(inout) ::tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: node
+      type(segment_t), allocatable :: seglist(:)
+      type(segment_t) :: seg
+   
+
+      select case (trim(tape%token_char))
+      case (ESCAPE_T)
+         node = make_atom(SEG_TAB)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
+         return
+      
+      case (ESCAPE_N)
+         call make_tree_crlf(tree, top)
+         return
+      
+      case (ESCAPE_R)
+         node = make_atom(SEG_CR)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
+         return
+         
+      case (ESCAPE_D)
+         node = make_atom(SEG_DIGIT)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
+         return
+
+      case (ESCAPE_D_CAPITAL)
+         allocate(seglist(1))
+         seglist(1) = SEG_DIGIT
+         call invert_segment_list(seglist)
+
+      case (ESCAPE_W)
+         allocate(seglist(4))
+         seglist(1) = SEG_LOWERCASE
+         seglist(2) = SEG_UPPERCASE
+         seglist(3) = SEG_DIGIT
+         seglist(4) = SEG_UNDERSCORE
+      
+      case (ESCAPE_W_CAPITAL)
+         allocate(seglist(4))
+         seglist(1) = SEG_LOWERCASE
+         seglist(2) = SEG_UPPERCASE
+         seglist(3) = SEG_DIGIT
+         seglist(4) = SEG_UNDERSCORE
+         call invert_segment_list(seglist)
+
+      case (ESCAPE_S)
+         allocate(seglist(6))
+         seglist(1) = SEG_SPACE
+         seglist(2) = SEG_TAB
+         seglist(3) = SEG_CR
+         seglist(4) = SEG_LF
+         seglist(5) = SEG_FF
+         seglist(6) = SEG_ZENKAKU_SPACE
+
+      case (ESCAPE_S_CAPITAL)
+         allocate(seglist(6))
+         seglist(1) = SEG_SPACE
+         seglist(2) = SEG_TAB
+         seglist(3) = SEG_CR
+         seglist(4) = SEG_LF
+         seglist(5) = SEG_FF
+         seglist(6) = SEG_ZENKAKU_SPACE
+         call invert_segment_list(seglist)
+
+      case default
+         seg = segment_t(ichar_utf8(tape%token_char), ichar_utf8(tape%token_char))
+         node = make_atom(seg)
+         call register_and_connector(tree, top, node, terminal_node, terminal_node)
+         return
+      end select
+
+      allocate(node%c(size(seglist, dim=1)))
+
+      node%c(:) = seglist(:)
+      node%op = op_char
+
+      call register_and_connector(tree, top, node, terminal_node, terminal_node)
+
+      deallocate(seglist)
+
+   end subroutine shorthand
+      
 
 !=====================================================================!
 #ifdef DEBUG
@@ -758,7 +877,7 @@ contains
          write(stderr, '(a)') "This will not occur in 'print_tree'."
          error stop
       end select
-   end subroutine print_tree_internal 
+   end subroutine print_tree_internal
 
 
    function print_class_simplify (tree, root_i) result(str)
@@ -769,7 +888,7 @@ contains
       character(:), allocatable :: str
 
       integer(int32) :: siz, j
-      character(:),allocatable :: buf 
+      character(:),allocatable :: buf
 
       str = ''
       siz = size(tree(root_i)%c, dim=1)
@@ -817,7 +936,7 @@ contains
          else if (tree(root_i)%c(j)%max == UTF8_CODE_MAX) then
             buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
 
-         else 
+         else
             buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//char_utf8(tree(root_i)%c(j)%max)//'"; '
          end if
       end do
