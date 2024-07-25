@@ -26,6 +26,10 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: deallocate_tree
 
+   !! The regular expression parsing performed by this module is done using recursive descent
+   !! parsing.
+
+
 #ifdef DEBUG
    public :: print_tree_internal
 
@@ -50,6 +54,8 @@ module forgex_syntax_tree_m
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 
    type :: tree_node_t
+      !! This type is used to construct a concrete syntax tree,
+      !! later converted to NFA.
       integer(int32) :: op            = op_not_init
       type(segment_t), allocatable :: c(:)
       integer(int32) :: left_i        = INVALID_INDEX
@@ -62,10 +68,16 @@ module forgex_syntax_tree_m
    end type
 
    type :: tape_t
+      !! This type holds the input pattern string and manages the index
+      !! of the character it is currently focused.
       character(:), allocatable :: str
+         ! Contains the entire input pattern string
       integer(int32) :: current_token
+         ! token enumerator (cf. enums_m.f90)
       character(UTF8_CHAR_SIZE) :: token_char = EMPTY
+         ! initialized as ASCII character number 0
       integer(int32) :: idx = 0
+         ! index of the character that is currently focused 
    contains
       procedure :: get_token
    end type
