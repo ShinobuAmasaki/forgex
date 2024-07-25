@@ -728,8 +728,8 @@ contains
       node%c(:) = seglist(:)
 
       call register_and_connector(tree, top, node, terminal_node, terminal_node)
-
    end subroutine char_class
+
 
    !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
    pure subroutine make_tree_crlf(tree, top)

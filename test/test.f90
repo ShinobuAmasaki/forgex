@@ -1,10 +1,10 @@
-program main 
+program main
    use, intrinsic :: iso_fortran_env
    use :: forgex_parameters_m
    use :: forgex_syntax_tree_m
    use :: forgex_utf8_m
    implicit none
-   
+
    type(tree_node_t), allocatable :: tree(:)
    integer(int32) :: root_i, top_index
    type(tape_t) :: tape

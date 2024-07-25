@@ -7,11 +7,6 @@ module forgex_parameters_m
    integer(int32), parameter :: TREE_NODE_LIMIT = 1024
    integer(int32), parameter :: TREE_NODE_BASE = 0
 
-   !> Upper limit of NFA state instance
-   integer(int32), parameter, public :: NFA_STATE_MAX = 1024
-
-   !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_MAX
 
    !> Upper limit of DFA state instance.
    integer(int32), parameter, public :: DFA_STATE_MAX = 1024
@@ -53,4 +48,15 @@ module forgex_parameters_m
    character(1),   parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1),   parameter, public :: ESCAPE_S_CAPITAL = 'S'
    
+   ! For NFA building
+   integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
+   
+   !> Lower end of NFA state instance
+   integer(int32), parameter, public :: NFA_STATE_BASE = 0
+   !> Upper limit of NFA state instance
+   integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
+
+   !> Upper limit of NFA transition instance
+   integer(int32), parameter, public :: NFA_VECTOR_SIZE = NFA_STATE_LIMIT*2
+
 end module forgex_parameters_m
