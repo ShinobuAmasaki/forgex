@@ -13,7 +13,7 @@ program main
 
    root_i = 1
 
-   string = '\S'
+   string = 'b[^A-Za-z]'
 
    call build_syntax_tree(string, tape, tree, top_index)
 

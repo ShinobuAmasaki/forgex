@@ -426,14 +426,14 @@ contains
          call tape%get_token()
          call regex(tape, tree, top)
          if (tape%current_token /= tk_rpar) then
-            error stop "L425 primary: Close parenthesis is expected."
+            error stop "primary: Close parenthesis is expected."
          end if
          call tape%get_token()
 
       case (tk_lsbracket)
          call char_class(tape, tree, top)
          if (tape%current_token /= tk_rsbracket) then
-            error stop "L432 primary: Close square bracket is expected."
+            error stop "primary: Close square bracket is expected."
          end if
          call tape%get_token()
 
@@ -447,7 +447,7 @@ contains
          call tape%get_token()
 
       case default
-         error stop "L442 primary: Pattern includes some syntax error."
+         error stop "primary: Pattern includes some syntax error."
 
       end select
    end subroutine primary
@@ -637,6 +637,7 @@ contains
    end subroutine range_min_max
 
 
+   !> This procedure handles character classes.
    pure subroutine char_class(tape, tree, top)
       use :: forgex_utf8_m
       use :: forgex_enums_m
@@ -704,11 +705,13 @@ contains
          if (j == 1 .and. buf(1:1) == SYMBOL_HYPN) then
             seglist(1)%min = ichar_utf8(SYMBOL_HYPN)
             seglist(1)%max = ichar_utf8(SYMBOL_HYPN)
+            i = inext
             j = j + 1
             cycle
          end if
 
-         if (i == ie .and. buf(ie:ie) == SYMBOL_HYPN) then
+         ! 最後の記号がハイフンならば
+         if (i >= terminal .and. buf(terminal:terminal) == SYMBOL_HYPN) then
             seglist(siz)%max = UTF8_CODE_MAX
             exit
          end if
