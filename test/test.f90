@@ -10,11 +10,10 @@ program main
    integer(int32) :: root_i, top_index
    type(tape_t) :: tape
    character(:), allocatable :: string
-   integer :: i
 
    type(nfa_state_node_t), allocatable :: nfa(:)
    integer :: nfa_entry, nfa_exit, nfa_top
-
+   integer :: i, j
    root_i = 1
 
    string = 'h[a-z]d'
@@ -39,6 +38,12 @@ program main
    call build_nfa_graph(tree, top_index, nfa, nfa_entry, nfa_exit, nfa_top)
 
    call nfa_print(nfa, nfa_top)
+
+   ! do i = 1, nfa_top
+   !    do j = 1, nfa(i)%forward_top
+   !       call dump_segment_array(nfa(i)%forward(j)%c)
+   !    end do
+   ! end do
 
    call deallocate_tree(tree)
 

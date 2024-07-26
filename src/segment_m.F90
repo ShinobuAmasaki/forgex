@@ -11,10 +11,10 @@ module forgex_segment_m
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
-   !> when building automata where a range characters share the same transition destination. 
+   !> when building automata where a range characters share the same transition destination.
    type, public :: segment_t
-      integer(int32) :: min = UTF8_CODE_EMPTY ! = 0
-      integer(int32) :: max = UTF8_CODE_EMPTY ! = 0`
+      integer(int32) :: min = -2 ! = -2
+      integer(int32) :: max = -2 ! = -2
    contains
 #ifdef DEBUG
       procedure :: print => segment_for_print
@@ -28,7 +28,7 @@ module forgex_segment_m
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
    type(segment_t), parameter, public :: SEG_TAB   = segment_t(9, 9)     ! Horizontal Tab
-   type(segment_t), parameter, public :: SEG_LF    = segment_t(10, 10)   ! Line Feed 
+   type(segment_t), parameter, public :: SEG_LF    = segment_t(10, 10)   ! Line Feed
    type(segment_t), parameter, public :: SEG_FF    = segment_t(12, 12)   ! Form Feed
    type(segment_t), parameter, public :: SEG_CR    = segment_t(13, 13)   ! Carriage Return
    type(segment_t), parameter, public :: SEG_SPACE = segment_t(32, 32)   ! White space
@@ -57,7 +57,7 @@ module forgex_segment_m
       module procedure :: arg_in_segment_list
       module procedure :: seg_in_segment
       !! @note Note that this is unrelated to the `.in.` operator provided by `forgex` module,
-      !! which is intended to be used only by backend modules that implement Forgex (i.e. only 
+      !! which is intended to be used only by backend modules that implement Forgex (i.e. only
       !! if the `use forgex_segment_m` statement is declared in some module).
    end interface
 
@@ -83,7 +83,7 @@ contains
    end function arg_in_segment
 
    !| Check if the ginve integer is within any of specified segments in a list.
-   !  
+   !
    !  This function determins whether the integer `a` falls within any of the
    !  ranges defined by the `min` and `max` value of the `segment_t` type
    !  in the provided list of segments.
@@ -120,7 +120,7 @@ contains
    !| Check if the one segment is exactly equal to another segment.
    !
    !  This function determines wheter the segment `a` is equivalent to the
-   !  segment `b`, meaning both their `min` and `max` values are identical. 
+   !  segment `b`, meaning both their `min` and `max` values are identical.
    pure function segment_equivalent(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
@@ -184,7 +184,7 @@ contains
          do j = 1, size(list, dim=1)
             unicode(i) = unicode(i) .or. (list(j)%min <= i .and. i <= list(j)%max)
          end do
-      end do 
+      end do
 
       ! Compute inverted coverage of Unicode code points.
       inverted(UTF8_CODE_EMPTY-1) = .false.
@@ -211,7 +211,7 @@ contains
          if (inverted(i-1) .and. .not. inverted(i)) then
             list(count)%max = i-1
             count = count + 1
-         end if 
+         end if
       end do
 
    end subroutine invert_segment_list
@@ -219,7 +219,7 @@ contains
 
 #ifdef DEBUG
    !| Converts a segment to a printable string representation.
-   !  
+   !
    !  This function generates a string representation of the segment `seg` for
    !  printing purposes. It converts special segments to predefined strings
    !  like `<ANY>`, `<LF>`, etc., or generates a character range representation
@@ -234,7 +234,7 @@ contains
          res = "<ANY>"
       else if (seg == SEG_LF) then
          res = "<LF>"
-      else if (seg == SEG_CR) then   
+      else if (seg == SEG_CR) then
          res = "<CR>"
       else if (seg == SEG_FF) then
          res = "<FF>"

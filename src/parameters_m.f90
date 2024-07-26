@@ -47,10 +47,10 @@ module forgex_parameters_m
    character(1),   parameter, public :: ESCAPE_D_CAPITAL = 'D'
    character(1),   parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1),   parameter, public :: ESCAPE_S_CAPITAL = 'S'
-   
+
    ! For NFA building
    integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
-   
+
    !> Lower end of NFA state instance
    integer(int32), parameter, public :: NFA_STATE_BASE = 0
    !> Upper limit of NFA state instance
@@ -60,6 +60,6 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_TRANSITION_SIZE = 32
 
    !> Upper limit of segments size of NFA transition instance
-   integer(int32), parameter, public :: NFA_C_SIZE = 32
+   integer(int32), parameter, public :: NFA_C_SIZE = 128
 
 end module forgex_parameters_m

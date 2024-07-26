@@ -25,7 +25,7 @@ module forgex_nfa_m
       type(segment_t), allocatable :: c(:)
       integer(int32)  :: c_top = 1
       integer(int32)  :: dst = NFA_NULL_TRANSITION
-      integer(int32)  :: idx = NFA_NULL_TRANSITION
+      ! integer(int32)  :: idx = NFA_NULL_TRANSITION
       logical         :: is_registered = .false.
    end type
 
@@ -97,6 +97,8 @@ contains
       nfa_exit = nfa_top
 
       call generate_nfa(tree, root_i, nfa, nfa_top, nfa_entry, nfa_exit)
+
+      call disjoin_nfa(nfa, nfa_top)
 
    end subroutine build_nfa_graph
 
@@ -229,116 +231,137 @@ contains
    end subroutine nfa__add_transition
 
 
-   pure subroutine nfa__disjoin(graph)
+   pure subroutine disjoin_nfa(graph, nfa_top)
       use :: forgex_priority_queue_m
       use :: forgex_segment_m
       use :: forgex_segment_disjoin_m
       implicit none
       type(nfa_state_node_t), intent(inout) :: graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
-      type(priority_queue_t) :: queue_f, queue_b
+      integer, intent(in) :: nfa_top
+
+      type(priority_queue_t) :: queue_f
       type(nfa_transition_t) :: ptr
-      type(segment_t), allocatable :: seg_list_f(:), seg_list_b(:)
+      type(segment_t), allocatable :: seg_list(:)
       
-      integer :: i, j, k, num_f, num_b
+      integer :: i, j, k, num_f
 
       ! Enqueue
       ! Traverse through all states and enqueue their segments into a priority queue.
       block
-      do i = NFA_STATE_BASE, NFA_STATE_LIMIT
-         do j = 1, graph(i)%forward_top
-            ptr = graph(i)%forward(j)
-            if (ptr%dst /= NFA_NULL_TRANSITION) then
-               do k = 1, size(graph(i)%forward(j)%c, dim=1)
-                  if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
-                     call queue_f%enqueue(ptr%c(k))
-                  end if
-               end do
-            end if
+         do i = NFA_STATE_BASE, nfa_top ! Do not subtract 1 from nfa_top.
+      
+            do j = 1, graph(i)%forward_top -1
+               
+               ptr = graph(i)%forward(j)
+               if (ptr%dst /= NFA_NULL_TRANSITION) then
+                  do k = 1, graph(i)%forward(j)%c_top -1
+                     if (ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                     ! if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                        call queue_f%enqueue(ptr%c(k))
+                     end if
+                  end do
+               end if
+            end do
          end do
-
-         do j = 1, graph(i)%backward_top
-            ptr = graph(i)%backward(j)
-            if (ptr%dst /= NFA_NULL_TRANSITION) then
-               do k = 1, size(graph(i)%forward(j)%c, dim=1)
-                  if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
-                     call queue_b%enqueue(ptr%c(k))
-                  end if
-               end do
-            end if
-         end do
-      end do
       end block
 
       ! Dequeue
       ! Allocate memory for the segment list and dequeue all segments for the priority queue.
       num_f = queue_f%number
-      num_b = queue_b%number
-      allocate(seg_list_f(num_f))
-      allocate(seg_list_b(num_b))
+      allocate(seg_list(num_f))
       do j = 1, num_f
-         call queue_f%dequeue(seg_list_f(j))
-         call queue_b%dequeue(seg_list_b(j))
+         call queue_f%dequeue(seg_list(j))
       end do
 
-      !-- The seg_list_f/b arrays are now sorted.
+      !-- The seg_list arrays are now sorted.
 
       ! Disjoin the segment lists to ensure no over laps
-      call disjoin(seg_list_f)
-      call disjoin(seg_list_b)
-   
-      ! Traverse through all states and disjoin their segments if necessary.
-      do concurrent (i = NFA_STATE_BASE:NFA_STATE_LIMIT)
-         do j = 1, graph(i)%forward_top
-            do k = 1, size(graph(i)%forward(j)%c, dim=1)
-               if (.not. is_prime_semgment(graph(i)%forward(j)%c(k), seg_list_f)) then
-                  call disjoin_nfa_state(graph(i)%forward(j), seg_list_f)
-               end if
-            end do 
-         end do
+      call disjoin(seg_list)
 
+
+      ! Apply disjoining to all transitions over the NFA graph.
+      do concurrent (i = NFA_STATE_BASE:nfa_top)
+         do concurrent (j = 1:graph(1)%forward_top)
+            call disjoin_nfa_each_transition(graph(i)%forward(j), seg_list)
+         end do
          do j = 1, graph(i)%backward_top
-            do k = 1, size(graph(i)%forward(j)%c, dim=1)
-               if (.not. is_prime_semgment(graph(i)%backward(j)%c(k), seg_list_b)) then
-                  call disjoin_nfa_state(graph(i)%backward(j), seg_list_b)
-               end if
-            end do
+            call disjoin_nfa_each_transition(graph(i)%backward(j), seg_list)
          end do
       end do
 
+      ! deallocate the used priority queue.
       call queue_f%clear()
-      call queue_b%clear()
-
-   end subroutine nfa__disjoin
+   end subroutine disjoin_nfa
 
 
    !> This subroutine updates the NFA state transitions by disjoining the segments.
    !>
    !> It breaks down overlapping segments into non-overlapping segments,
    !>  and creates new transitions accordingly.
-   pure subroutine disjoin_nfa_state(state, seg_list)
+   pure subroutine disjoin_nfa_each_transition(transition, seg_list)
       use :: forgex_segment_disjoin_m
       implicit none
-      type(nfa_transition_t), intent(inout) :: state
-      type(segment_t),        intent(inout)  :: seg_list(:)
+      type(nfa_transition_t), intent(inout) :: transition
+      type(segment_t),        intent(in) :: seg_list(:)
 
-      integer :: j, k, siz
+      type(segment_t), allocatable ::  tmp(:)
+
+      integer :: k, m, n, siz
+
+      if (.not. allocated(transition%c)) return
 
       siz = size(seg_list, dim=1)
+      allocate(tmp(siz))
 
       block
          logical :: flag(siz)
-         do k = 1, size(state%c, dim=1)
-            flag = is_overlap_to_seg_list(state%c(k), seg_list, siz)
+         
+         n = 0 ! to count valid disjoined segments.
+         do k = 1, transition%c_top
 
-            do j = 1, siz
-               if (flag(j)) then
-                  state%c(k) = seg_list(j)
+            flag(:) = is_overlap_to_seg_list(transition%c(k), seg_list, siz)
+
+            do m = 1, siz
+               if (flag(m)) then
+                  n = n + 1
+                  tmp(n) = seg_list(m)
                end if
             end do
+
          end do
       end block
 
-   end subroutine disjoin_nfa_state
+      if (size(transition%c, dim=1) < n) then
+         deallocate(transition%c)
+         allocate(transition%c(n))
+      end if
+
+      ! Deep copy the result into the arguemnt's component
+      do k = 1, n
+         transition%c(k) = tmp(k)
+      end do
+
+      call update_c_top(transition)
+
+      deallocate(tmp)
+   end subroutine disjoin_nfa_each_transition
+
+   
+   !> Update c_top, which has become outdated by disjoin, to new information.
+   pure subroutine update_c_top(transition)
+      implicit none
+      type(nfa_transition_t), intent(inout) :: transition
+
+      integer :: j, k
+      if (.not. allocated(transition%c)) return
+         
+      k = 1
+      do while(transition%c(k) /= SEG_INIT)
+         k = k + 1
+      end do
+      transition%c_top = k
+   
+   end subroutine update_c_top
 
 
    pure subroutine transition_to_seg_list(transition_list, top_idx, segment_list)
@@ -383,7 +406,7 @@ contains
             transition = node%forward(j)
 
             if (transition%dst > NFA_NULL_TRANSITION) then
-               do k = 1, transition%c_top
+               do k = 1, transition%c_top -1
                   buf = transition%c(k)%print()
                   
                   if (transition%c(k) == SEG_EPSILON) buf = '?'
@@ -395,6 +418,17 @@ contains
          write(stderr, *) ''
       end do
    end subroutine nfa_print
+
+   subroutine dump_segment_array (list)
+      implicit none
+      type(segment_t), intent(in) :: list(:)
+
+      integer :: k
+      write(stderr, *) "============================="
+      do k = 1, size(list, dim=1)
+         if (list(k)/= SEG_INIT) write(stderr, *) list(k)
+      end do
+   end subroutine dump_segment_array      
 
 #endif
 
