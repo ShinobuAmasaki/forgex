@@ -25,7 +25,7 @@ module forgex_nfa_m
       type(segment_t), allocatable :: c(:)
       integer(int32)  :: c_top = 1
       integer(int32)  :: dst = NFA_NULL_TRANSITION
-      ! integer(int32)  :: idx = NFA_NULL_TRANSITION
+      ! integer(int32)  :: own_j = NFA_NULL_TRANSITION
       logical         :: is_registered = .false.
    end type
 
@@ -384,7 +384,7 @@ contains
 
 #ifdef DEBUG
 
-   subroutine nfa_print(nfa_graph, nfa_top)
+   subroutine print_nfa(nfa_graph, nfa_top)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
       implicit none
       type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
@@ -417,7 +417,7 @@ contains
 
          write(stderr, *) ''
       end do
-   end subroutine nfa_print
+   end subroutine print_nfa
 
    subroutine dump_segment_array (list)
       implicit none

@@ -26,9 +26,8 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: deallocate_tree
 
-   !! The regular expression parsing performed by this module is done using recursive descent
-   !! parsing.
-
+   !! The regular expression parsing performed by this module 
+   !! is done using recursive descent parsing.
 
 #ifdef DEBUG
    public :: print_tree_internal

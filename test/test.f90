@@ -4,6 +4,7 @@ program main
    use :: forgex_syntax_tree_m
    use :: forgex_utf8_m
    use :: forgex_nfa_m
+   use :: forgex_lazy_dfa_m
    implicit none
 
    type(tree_node_t), allocatable :: tree(:)
@@ -12,7 +13,9 @@ program main
    character(:), allocatable :: string
 
    type(nfa_state_node_t), allocatable :: nfa(:)
+   type(dfa_state_node_t), allocatable :: dfa(:)
    integer :: nfa_entry, nfa_exit, nfa_top
+   integer :: dfa_top
    integer :: i, j
    root_i = 1
 
@@ -37,7 +40,9 @@ program main
 
    call build_nfa_graph(tree, top_index, nfa, nfa_entry, nfa_exit, nfa_top)
 
-   call nfa_print(nfa, nfa_top)
+   call print_nfa(nfa, nfa_top)
+
+   call init_dfa(nfa, nfa_entry, nfa_exit, dfa, dfa_top)
 
    ! do i = 1, nfa_top
    !    do j = 1, nfa(i)%forward_top

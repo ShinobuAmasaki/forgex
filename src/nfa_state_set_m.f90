@@ -1,3 +1,15 @@
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_nfa_m module is a part of Forgex.
+!
+!! This file contains `nfa_state_set_t` class.
+
+!> `forgex_nfa_m` module defines a derived-type which is the set of NFA nodes.
+!> `nfa_state_set_t` represents a set of NFA nodes for the power set construction method.
 module forgex_nfa_state_set_m
    use :: forgex_parameters_m
    implicit none

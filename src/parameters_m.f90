@@ -7,11 +7,6 @@ module forgex_parameters_m
    integer(int32), parameter :: TREE_NODE_LIMIT = 1024
    integer(int32), parameter :: TREE_NODE_BASE = 0
 
-
-   !> Upper limit of DFA state instance.
-   integer(int32), parameter, public :: DFA_STATE_MAX = 1024
-
-
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
    integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x21: '!'
@@ -48,6 +43,7 @@ module forgex_parameters_m
    character(1),   parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1),   parameter, public :: ESCAPE_S_CAPITAL = 'S'
 
+
    ! For NFA building
    integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
 
@@ -57,9 +53,17 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
 
    !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_TRANSITION_SIZE = 32
+   integer(int32), parameter, public :: NFA_TRANSITION_SIZE = 128
 
    !> Upper limit of segments size of NFA transition instance
    integer(int32), parameter, public :: NFA_C_SIZE = 128
+
+
+   !> For DFA building
+   integer(int32), parameter, public :: DFA_NULL_TRANSITION = -1
+   !> For DFA transition
+   integer(int32), parameter, public :: DFA_NOT_INIT = -1
+   !> Upper limit of DFA state instance.
+   integer(int32), parameter, public :: DFA_STATE_MAX = 1024
 
 end module forgex_parameters_m
