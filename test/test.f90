@@ -17,7 +17,7 @@ program main
 
    root_i = 1
 
-   string = 'a*b'
+   string = 'h[a-z]d'
 
    call build_syntax_tree(string, tape, tree, top_index)
 

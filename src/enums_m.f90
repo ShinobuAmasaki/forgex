@@ -6,7 +6,7 @@
 !     A regular expression engine for Fortran.
 !     forgex_enums_m module is a part of Forgex.
 !
-!! This file contains enumerators for syntactic parsing and building a syntax-tree.
+!! This file contains enumeratorsl for syntactic parsing and building a syntax-tree.
 
 !> The `forgex_enums_m` defines enumerators of tokens and operators for syntax-tree building.
 !> @note These enums will be rewritten in Fortran 2023's enumerator in the future. 

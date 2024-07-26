@@ -22,7 +22,8 @@ module forgex_nfa_m
    implicit none
 
    type, public :: nfa_transition_t
-      type(segment_t) :: c = SEG_INIT
+      type(segment_t), allocatable :: c(:)
+      integer(int32)  :: c_top = 1
       integer(int32)  :: dst = NFA_NULL_TRANSITION
       integer(int32)  :: idx = NFA_NULL_TRANSITION
       logical         :: is_registered = .false.
@@ -34,7 +35,7 @@ module forgex_nfa_m
       type(nfa_transition_t), allocatable :: backward(:)
       integer(int32) :: forward_top = 0
       integer(int32) :: backward_top = 0
-      type(segment_t), allocatable :: all_segments(:)
+      ! type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: add_transition => nfa__add_transition
    end type
@@ -110,7 +111,7 @@ contains
       do i = NFA_STATE_BASE, NFA_STATE_LIMIT
          if (allocated(nfa(i)%forward)) deallocate(nfa(i)%forward)
          if (allocated(nfa(i)%backward)) deallocate(nfa(i)%backward)
-         if (allocated(nfa(i)%all_segments)) deallocate(nfa(i)%all_segments)
+         ! if (allocated(nfa(i)%all_segments)) deallocate(nfa(i)%all_segments)
       end do
 
       deallocate(nfa)
@@ -181,7 +182,7 @@ contains
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, node1)
          call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
-      case default
+      case default ! for case (op_not_init)
          ! Handle unexpected cases.
          error stop "This will not heppen in 'generate_nfa'."
       end select
@@ -195,28 +196,167 @@ contains
       integer(int32), intent(in) :: src, dst
       type(segment_t) ,intent(in) :: c
 
-      integer(int32) :: j
+      integer(int32) :: j, k
 
       j = self%forward_top
       if (j >= size(self%forward, dim=1)) then
          ! reallocate
       endif
-      self%forward(j)%c = c
+      if (.not. allocated(self%forward(j)%c))  allocate(self%forward(j)%c(NFA_C_SIZE))
+      k = self%forward(j)%c_top
+
+      self%forward(j)%c(k) = c
       self%forward(j)%dst = dst
       self%forward(j)%is_registered = .true.
+      
       self%forward_top = j + 1
+      self%forward(j)%c_top = k + 1
 
 
       j = nfa_graph(dst)%backward_top
       if (j >= size(nfa_graph(dst)%backward, dim=1)) then
          ! reallocate
       endif
-      nfa_graph(dst)%backward(j)%c = c
+      if (.not. allocated(nfa_graph(dst)%backward(j)%c))  allocate(nfa_graph(dst)%backward(j)%c(NFA_C_SIZE))
+      k = nfa_graph(dst)%backward(j)%c_top
+
+      nfa_graph(dst)%backward(j)%c(k) = c
       nfa_graph(dst)%backward(j)%dst = src
       nfa_graph(dst)%backward(j)%is_registered = .true.
+      
       nfa_graph(dst)%backward_top = j + 1
-   
+      nfa_graph(dst)%backward(j)%c_top = k + 1
    end subroutine nfa__add_transition
+
+
+   pure subroutine nfa__disjoin(graph)
+      use :: forgex_priority_queue_m
+      use :: forgex_segment_m
+      use :: forgex_segment_disjoin_m
+      implicit none
+      type(nfa_state_node_t), intent(inout) :: graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(priority_queue_t) :: queue_f, queue_b
+      type(nfa_transition_t) :: ptr
+      type(segment_t), allocatable :: seg_list_f(:), seg_list_b(:)
+      
+      integer :: i, j, k, num_f, num_b
+
+      ! Enqueue
+      ! Traverse through all states and enqueue their segments into a priority queue.
+      block
+      do i = NFA_STATE_BASE, NFA_STATE_LIMIT
+         do j = 1, graph(i)%forward_top
+            ptr = graph(i)%forward(j)
+            if (ptr%dst /= NFA_NULL_TRANSITION) then
+               do k = 1, size(graph(i)%forward(j)%c, dim=1)
+                  if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                     call queue_f%enqueue(ptr%c(k))
+                  end if
+               end do
+            end if
+         end do
+
+         do j = 1, graph(i)%backward_top
+            ptr = graph(i)%backward(j)
+            if (ptr%dst /= NFA_NULL_TRANSITION) then
+               do k = 1, size(graph(i)%forward(j)%c, dim=1)
+                  if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                     call queue_b%enqueue(ptr%c(k))
+                  end if
+               end do
+            end if
+         end do
+      end do
+      end block
+
+      ! Dequeue
+      ! Allocate memory for the segment list and dequeue all segments for the priority queue.
+      num_f = queue_f%number
+      num_b = queue_b%number
+      allocate(seg_list_f(num_f))
+      allocate(seg_list_b(num_b))
+      do j = 1, num_f
+         call queue_f%dequeue(seg_list_f(j))
+         call queue_b%dequeue(seg_list_b(j))
+      end do
+
+      !-- The seg_list_f/b arrays are now sorted.
+
+      ! Disjoin the segment lists to ensure no over laps
+      call disjoin(seg_list_f)
+      call disjoin(seg_list_b)
+   
+      ! Traverse through all states and disjoin their segments if necessary.
+      do concurrent (i = NFA_STATE_BASE:NFA_STATE_LIMIT)
+         do j = 1, graph(i)%forward_top
+            do k = 1, size(graph(i)%forward(j)%c, dim=1)
+               if (.not. is_prime_semgment(graph(i)%forward(j)%c(k), seg_list_f)) then
+                  call disjoin_nfa_state(graph(i)%forward(j), seg_list_f)
+               end if
+            end do 
+         end do
+
+         do j = 1, graph(i)%backward_top
+            do k = 1, size(graph(i)%forward(j)%c, dim=1)
+               if (.not. is_prime_semgment(graph(i)%backward(j)%c(k), seg_list_b)) then
+                  call disjoin_nfa_state(graph(i)%backward(j), seg_list_b)
+               end if
+            end do
+         end do
+      end do
+
+      call queue_f%clear()
+      call queue_b%clear()
+
+   end subroutine nfa__disjoin
+
+
+   !> This subroutine updates the NFA state transitions by disjoining the segments.
+   !>
+   !> It breaks down overlapping segments into non-overlapping segments,
+   !>  and creates new transitions accordingly.
+   pure subroutine disjoin_nfa_state(state, seg_list)
+      use :: forgex_segment_disjoin_m
+      implicit none
+      type(nfa_transition_t), intent(inout) :: state
+      type(segment_t),        intent(inout)  :: seg_list(:)
+
+      integer :: j, k, siz
+
+      siz = size(seg_list, dim=1)
+
+      block
+         logical :: flag(siz)
+         do k = 1, size(state%c, dim=1)
+            flag = is_overlap_to_seg_list(state%c(k), seg_list, siz)
+
+            do j = 1, siz
+               if (flag(j)) then
+                  state%c(k) = seg_list(j)
+               end if
+            end do
+         end do
+      end block
+
+   end subroutine disjoin_nfa_state
+
+
+   pure subroutine transition_to_seg_list(transition_list, top_idx, segment_list)
+      implicit none
+      type(nfa_transition_t),       intent(in)    :: transition_list(:)
+      integer(int32),               intent(in)    :: top_idx
+      type(segment_t), allocatable, intent(inout) :: segment_list(:)
+
+      integer :: j, k
+
+      allocate(segment_list(top_idx))
+
+      do j = 1, top_idx
+         do k = 1, size(transition_list(j)%c, dim=1)
+            segment_list(j) = transition_list(j)%c(k)
+         end do
+      end do
+   end subroutine transition_to_seg_list
 
 
 #ifdef DEBUG
@@ -230,7 +370,7 @@ contains
       type(nfa_state_node_t) :: node
       type(nfa_transition_t) :: transition
       character(:), allocatable :: buf
-      integer(int32) :: i, j
+      integer(int32) :: i, j, k
 
       write(stderr, *) "--- PRINT NFA ---"
 
@@ -243,10 +383,12 @@ contains
             transition = node%forward(j)
 
             if (transition%dst > NFA_NULL_TRANSITION) then
-               buf = transition%c%print()
-
-               if (transition%c == SEG_EPSILON) buf = '?'
-               write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
+               do k = 1, transition%c_top
+                  buf = transition%c(k)%print()
+                  
+                  if (transition%c(k) == SEG_EPSILON) buf = '?'
+                  write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
+               enddo
             end if
          end do
 
