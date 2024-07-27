@@ -20,12 +20,13 @@ module forgex_nfa_m
    use , intrinsic :: iso_c_binding
 #endif
    implicit none
+   private
 
    type, public :: nfa_transition_t
       type(segment_t), allocatable :: c(:)
       integer(int32)  :: c_top = 1
       integer(int32)  :: dst = NFA_NULL_TRANSITION
-      ! integer(int32)  :: own_j = NFA_NULL_TRANSITION
+      integer(int32)  :: own_j = NFA_NULL_TRANSITION
       logical         :: is_registered = .false.
    end type
 
@@ -62,7 +63,7 @@ module forgex_nfa_m
 
 contains
 
-   pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top)
+   pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
       implicit none
       type(tree_node_t),      intent(in)                 :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32),         intent(in)                 :: root_i
@@ -70,6 +71,7 @@ contains
       integer(int32),         intent(inout)              :: nfa_entry
       integer(int32),         intent(inout)              :: nfa_exit
       integer(int32),         intent(inout)              :: nfa_top
+      type(segment_t),        intent(inout), allocatable :: all_segments(:)
       
 
       integer(int32) :: i, i_begin, i_end ! index for states array
@@ -87,6 +89,11 @@ contains
          allocate(nfa(i)%forward(1:NFA_TRANSITION_SIZE))
          allocate(nfa(i)%backward(1:NFA_TRANSITION_SIZE))
 
+         do j = 1, NFA_TRANSITION_SIZE
+            nfa(i)%forward(j)%own_j = j
+            nfa(i)%backward(j)%own_j = j
+         end do
+
          nfa(i)%forward_top = 1
          nfa(i)%backward_top = 1
       end do
@@ -98,7 +105,7 @@ contains
 
       call generate_nfa(tree, root_i, nfa, nfa_top, nfa_entry, nfa_exit)
 
-      call disjoin_nfa(nfa, nfa_top)
+      call disjoin_nfa(nfa, nfa_top, all_segments)
 
    end subroutine build_nfa_graph
 
@@ -231,17 +238,17 @@ contains
    end subroutine nfa__add_transition
 
 
-   pure subroutine disjoin_nfa(graph, nfa_top)
+   pure subroutine disjoin_nfa(graph, nfa_top, seg_list)
       use :: forgex_priority_queue_m
       use :: forgex_segment_m
       use :: forgex_segment_disjoin_m
       implicit none
       type(nfa_state_node_t), intent(inout) :: graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
       integer, intent(in) :: nfa_top
+      type(segment_t), allocatable, intent(inout) :: seg_list(:)
 
       type(priority_queue_t) :: queue_f
       type(nfa_transition_t) :: ptr
-      type(segment_t), allocatable :: seg_list(:)
       
       integer :: i, j, k, num_f
 

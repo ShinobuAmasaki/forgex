@@ -8,6 +8,8 @@ module forgex_segment_m
    public :: operator(/=)
    public :: operator(.in.)
    public :: invert_segment_list
+   public :: which_segment_symbol_belong
+   public :: symbol_to_segment
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -216,6 +218,60 @@ contains
 
    end subroutine invert_segment_list
 
+
+   !> This function takes an array of segments and a character as arguments,
+   !> and returns the segment as rank=1 array to which symbol belongs
+   !> (included in the segment interval).
+   pure function which_segment_symbol_belong (segments, symbol) result(res)
+      use :: forgex_utf8_m
+      implicit none
+      type(segment_t), intent(in) :: segments(:)
+      character(*),    intent(in) :: symbol
+      type(segment_t)             :: res
+
+      integer         :: i, i_end, j
+      type(segment_t) :: target_for_comparison
+
+      ! Initialize indices.
+      i = 1
+      i_end = idxutf8(symbol, i)
+
+      ! The target to check for inclusion.
+      target_for_comparison = symbol_to_segment(symbol(i:i_end))
+
+      ! Scan the segments array. 
+      do j = 1, size(segments)
+         ! Compare segments and return the later element of the segments, which contains the target segment.
+         if (target_for_comparison .in. segments(j)) then
+            res = segments(j)
+            return
+         end if
+      end do
+
+      ! If not found, returns SEG_EMPTY.
+      res = SEG_EMPTY
+   end function which_segment_symbol_belong
+
+   
+   !> This function convert an input symbol into the segment corresponding it.
+   pure function symbol_to_segment(symbol) result(res)
+      use :: forgex_utf8_m   
+      implicit none
+      character(*), intent(in) :: symbol
+      type(segment_t)          :: res
+
+      integer(int32) :: i, i_end, code
+
+      ! Initialize indices
+      i = 1
+      i_end = idxutf8(symbol, i)
+
+      ! Get the code point of the input character.
+      code = ichar_utf8(symbol(i:i_end))
+
+      ! Create a segment corresponding to the code, and return it.
+      res = segment_t(code, code)
+   end function symbol_to_segment
 
 #ifdef DEBUG
    !| Converts a segment to a printable string representation.

@@ -63,7 +63,14 @@ module forgex_parameters_m
    integer(int32), parameter, public :: DFA_NULL_TRANSITION = -1
    !> For DFA transition
    integer(int32), parameter, public :: DFA_NOT_INIT = -1
+   !> Lower limit of DFA state instanse. 
+   integer(int32), parameter, public :: DFA_STATE_BASE = 0
    !> Upper limit of DFA state instance.
-   integer(int32), parameter, public :: DFA_STATE_MAX = 1024
+   integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
+   !>
+   integer(int32), parameter, public :: DFA_INVALID_INDEX = -1
+   !>
+   integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 128
+   integer(int32), parameter, public :: DFA_C_SIZE = 32
 
 end module forgex_parameters_m

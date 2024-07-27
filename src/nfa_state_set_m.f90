@@ -15,6 +15,10 @@ module forgex_nfa_state_set_m
    implicit none
    private
 
+   public :: add_nfa_state
+   public :: check_nfa_state
+   public :: equivalent_nfa_state_set
+
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
       logical :: vec(NFA_STATE_BASE:NFA_STATE_LIMIT) = .false.
@@ -24,11 +28,11 @@ contains
 
 
    !> This function checks if the arguement 'state' (set of NFA state) includes state 's'.
-   logical function check_nfa_state(state_set, state_index)
+   pure logical function check_nfa_state(state_set, state_index)
       implicit none
       type(nfa_state_set_t), intent(in) :: state_set
 
-      integer(int32) :: state_index
+      integer(int32), intent(in) :: state_index
 
       if (state_index /= 0) then
          check_nfa_state = state_set%vec(state_index)
