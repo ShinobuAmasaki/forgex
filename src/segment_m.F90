@@ -58,6 +58,7 @@ module forgex_segment_m
       module procedure :: arg_in_segment
       module procedure :: arg_in_segment_list
       module procedure :: seg_in_segment
+      module procedure :: seg_in_segment_list
       !! @note Note that this is unrelated to the `.in.` operator provided by `forgex` module,
       !! which is intended to be used only by backend modules that implement Forgex (i.e. only
       !! if the `use forgex_segment_m` statement is declared in some module).
@@ -75,7 +76,7 @@ contains
    !
    !  This function determines whether the integer `a` falls within the
    !  range defined by the `min` and `max` values of the `segment_t` type.
-   pure function arg_in_segment(a, seg) result(res)
+   pure elemental function arg_in_segment(a, seg) result(res)
       implicit none
       integer(int32),  intent(in) :: a
       type(segment_t), intent(in) :: seg
@@ -118,12 +119,25 @@ contains
       res =  b%min <= a%min .and. a%max <= b%max
    end function seg_in_segment
 
+   pure function seg_in_segment_list(seg, list) result(res)
+      implicit none
+      type(segment_t), intent(in) :: seg
+      type(segment_t), intent(in) :: list(:)
+      logical :: res
+      integer :: i
+      res = .false.
+
+      do i = 1, ubound(list, dim=1)
+         res = res .or. seg_in_segment(seg, list(i))
+      end do
+   end function seg_in_segment_list
+
 
    !| Check if the one segment is exactly equal to another segment.
    !
    !  This function determines wheter the segment `a` is equivalent to the
    !  segment `b`, meaning both their `min` and `max` values are identical.
-   pure function segment_equivalent(a, b) result(res)
+   pure elemental function segment_equivalent(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
