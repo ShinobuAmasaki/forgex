@@ -18,6 +18,10 @@ module forgex_nfa_state_set_m
    public :: add_nfa_state
    public :: check_nfa_state
    public :: equivalent_nfa_state_set
+   public :: collect_epsilon_transition
+#ifdef DEBUG
+   public :: print_nfa_state_set
+#endif
 
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
@@ -77,5 +81,61 @@ contains
       ! If all elements match, set the result `res` to `.true.` indicating equivalence. 
       res = .true.
    end function equivalent_nfa_state_set
+
+
+   recursive pure subroutine mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
+      use :: forgex_nfa_m
+      implicit none
+      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_set_t), intent(inout) :: nfa_set
+      integer(int32), intent(in) :: nfa_i, nfa_top
+
+      integer :: dst
+      integer(int32) :: i, j, k
+      call add_nfa_state(nfa_set, nfa_i)
+
+      outer: do i = NFA_STATE_BASE+1, nfa_top
+         if (.not. allocated(nfa_graph(i)%forward)) cycle outer
+         
+         middle: do j = lbound(nfa_graph(i)%forward, dim=1), nfa_graph(i)%forward_top
+            if (.not. allocated(nfa_graph(i)%forward(j)%c)) cycle middle
+            
+            dst = nfa_graph(i)%forward(j)%dst
+            if (dst /= NFA_NULL_TRANSITION) call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
+         end do middle
+      end do outer
+   end subroutine mark_epsilon_transition
+
+
+   pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
+      use :: forgex_nfa_m, only: nfa_state_node_t
+      implicit none
+      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      integer(int32), intent(in) :: nfa_top
+      type(nfa_state_set_t), intent(inout) :: nfa_set
+
+      integer(int32) :: i
+
+      do i = NFA_STATE_BASE+1, nfa_top
+         if (check_nfa_state(nfa_set, i)) then
+            call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, i)
+         end if
+      end do
+   end subroutine collect_epsilon_transition
+
    
+#ifdef DEBUG
+   subroutine print_nfa_state_set(set, top)
+      use, intrinsic :: iso_fortran_env, only:stderr => error_unit
+      implicit none
+      type(nfa_state_set_t), intent(in) :: set
+      integer(int32), intent(in) :: top
+      integer(int32) :: i
+
+      do i = 1, top
+         if (check_nfa_state(set, i)) write(stderr, '(i0, a)', advance='no') i, ' '
+      end do
+   end subroutine print_nfa_state_set
+#endif
+
 end module forgex_nfa_state_set_m
