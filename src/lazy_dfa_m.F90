@@ -22,11 +22,18 @@ module forgex_lazy_dfa_m
    implicit none
    private
 
+   public :: init_lazy_dfa
+   public :: construct_dfa
+   
+   interface construct_dfa
+      module procedure :: node_construct_lazy_dfa
+   end interface construct_dfa
+
    type, public :: dfa_transition_t
       type(segment_t), allocatable :: c(:)
       integer(int32) :: c_top = 1
       integer(int32) :: num_of_c_size = 1
-      integer(int32) :: dst = DFA_NULL_TRANSITION
+      type(nfa_state_set_t) :: dst
       integer(int32) :: own_j = DFA_NOT_INIT
    end type dfa_transition_t
 
@@ -37,6 +44,7 @@ module forgex_lazy_dfa_m
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32)        :: tra_top = 1
    contains
+      procedure :: reachable => compute_reachable_nfa_state_lazy_dfa
    end type dfa_state_node_t
 
 contains
@@ -158,7 +166,7 @@ contains
       i = dfa_top
       dfa_graph(i)%nfa_set = nfa_set
       dfa_graph(i)%accepted = check_nfa_state(nfa_set, nfa_exit)
-      allocate(dfa_graph(i)%transition(DFA_TRANSITION_SIZE))
+      allocate(dfa_graph(i)%transition(DFA_TRANSITION_UNIT))
       dfa_top = i + 1
       
    end subroutine register_lazy_dfa
@@ -184,24 +192,29 @@ contains
    end function is_registered_lazy_dfa
 
 
-   pure function move_lazy_dfa (dfa_graph, dfa_top, curr_i, symbol) result(res)
+   pure subroutine move_lazy_dfa (nfa_graph, nfa_top, dfa_graph, dfa_top, curr_i, symbol, segments, res)
       implicit none
-      type(dfa_state_node_t), intent(in) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      integer(int32),         intent(in) :: nfa_top
+      type(dfa_state_node_t), intent(inout) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
       integer(int32),         intent(in) :: dfa_top
       integer(int32),         intent(in) :: curr_i    ! current index
+      character(*),           intent(in) :: symbol
+      type(segment_t), intent(in) :: segments(:)
+      integer(int32), intent(inout) :: res
 
-      integer(int32) :: res   ! result index
       integer(int32) :: i
 
       res = DFA_INVALID_INDEX
       do i = DFA_STATE_BASE+1, dfa_top
-         res = graph(i)%reachable(curr_i, symbol)
+         call dfa_graph(i)%reachable(nfa_graph, nfa_top, segments, symbol)
          if (res /= DFA_INVALID_INDEX) return      ! if res is reachable, do return.
       end do
-   end function move_lazy_dfa
+   end subroutine move_lazy_dfa
 
 
    pure subroutine compute_reachable_nfa_state_lazy_dfa(dfa_node, nfa_graph, nfa_top, all_segments, symbol) 
+      use :: forgex_segment_m
       implicit none
       class(dfa_state_node_t), intent(inout) :: dfa_node
       type(nfa_state_node_t), intent(in)  :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
@@ -211,58 +224,79 @@ contains
    
       type(nfa_state_node_t) :: nfa_node
       type(segment_t) :: tmp  ! temporary
-      integer(int32) :: i, j, k, m, n
+      integer(int32) :: i, j, k, m, n, c_top
 
+      logical :: reduce
+
+      reduce = .true.
+ 
       ! Scan through all NFA states
       ! If the i-th element of state_set is true, scan the transition list
-      do i = NFA_STATE_BASE+1, nfa_top
+      outer: do i = NFA_STATE_BASE+1, nfa_top
       if (check_nfa_state(dfa_node%nfa_set, i)) then
          
-         ! If the j-th element of transition list is allocated, follow the transitions
+         ! If the j-th element of transition list is allocated, scan the transitions
          if (allocated(nfa_graph(i)%forward)) then
-         do j = 1, nfa_graph(i)%forward_top
+         middle: do j = 1, nfa_graph(i)%forward_top-1
 
             ! If the k-th element of segment list is allocated, scan the 
-            if (allocated(nfa_graph(i)%forward(j)%c)) then           
-            do k = 1, nfa_graph(i)%forward(j)%c_top
-               tmp = nfa_graph(i)%forward(j)%c(k)
-               if (tmp /=SEG_EMPTY .or. tmp /= SEG_EPSILON .or. tmp /= SEG_INIT) then
-               end if
-            end do
+            if (allocated(nfa_graph(i)%forward(j)%c)) then   
+               inner: do k = 1, nfa_graph(i)%forward(j)%c_top -1
+                  tmp = nfa_graph(i)%forward(j)%c(k)
+                  if (tmp /=SEG_EMPTY .or. tmp /= SEG_EPSILON .or. tmp /= SEG_INIT) then
+                     call add_nfa_state(dfa_node%nfa_set, nfa_graph(i)%forward(j)%dst)
+                  end if
+               end do inner 
             end if
 
             !-- 
             if (nfa_graph(i)%forward(j)%dst /= NFA_NULL_TRANSITION) then
-
-               m = dfa_node%tra_top
-               tmp = which_segment_symbol_belong(all_segments, symbol)
-
-               if (.not. allocated(dfa_node%transition)) then
-                  allocate(dfa_node%transition(DFA_TRANSITION_UNIT))
-               end if
                
-               if (.not. allocated(dfa_node%transition(m)%c)) then
-                  allocate(dfa_node%transition(m)%c(DFA_C_SIZE))
+               if (.not. allocated(nfa_graph(i)%forward(j)%c)) cycle middle
+               c_top = nfa_graph(i)%forward(j)%c_top
+
+               do k = 1, c_top
+                  reduce = reduce .and. (nfa_graph(i)%forward(j)%c(k) == SEG_EMPTY)
+               end do
+               
+               if (  &
+                     (any([(symbol_to_segment(symbol), k = 1, c_top)] == nfa_graph(i)%forward(j)%c(1:c_top))) &
+                     .or. reduce ) then
+                  
+                  m = dfa_node%tra_top
+                  tmp = which_segment_symbol_belong(all_segments, symbol)
+
+                  if (.not. allocated(dfa_node%transition)) then
+                     allocate(dfa_node%transition(DFA_TRANSITION_UNIT))
+                  end if
+                  
+                  if (.not. allocated(dfa_node%transition(m)%c)) then
+                     allocate(dfa_node%transition(m)%c(DFA_C_SIZE))
+                  end if
+
+                  n = dfa_node%transition(m)%c_top
+
+                  dfa_node%transition(m)%c(n) = tmp
+                  dfa_node%transition(m)%c_top = n + 1
+
+                  call add_nfa_state(dfa_node%nfa_set, nfa_graph(i)%forward(j)%dst)
                end if
-
-               n = dfa_node%transition(m)%c_top
-
-               dfa_node%transition(m)%c(n) = tmp
-
-               call add_nfa_state(dfa_node%nfa_set, nfa_graph(i)%forward(j)%dst)
-
             end if
 
-         end do
+         end do middle
          end if
-      end if
-      end do 
+      end if 
+      end do outer
    end subroutine compute_reachable_nfa_state_lazy_dfa
    
-   pure subroutine node_construct_lazy_dfa(dfa_graph, dfa_top, curr_i, dest_i, symbol, all_segments)
+
+   pure subroutine node_construct_lazy_dfa(nfa_graph, nfa_top, nfa_exit, dfa_graph, dfa_top, curr_i, dest_i, symbol, all_segments)
       implicit none
+      type(nfa_state_node_t), intent(in)    :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      integer(int32),         intent(in)    :: nfa_top
+      integer(int32),         intent(in)    :: nfa_exit
       type(dfa_state_node_t), intent(inout) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
-      integer(int32),         intent(in)    :: dfa_top
+      integer(int32),         intent(inout) :: dfa_top
       integer(int32),         intent(in)    :: curr_i    ! current index
       integer(int32),         intent(inout) :: dest_i    ! destination index
       character(*),           intent(in)    :: symbol
@@ -270,19 +304,136 @@ contains
 
       integer(int32) :: prev_i ! previous index
       integer(int32) :: i  ! temporary index
+      integer(int32) :: dst ! result
       
       prev_i = curr_i
       
-
-      ! i = dfa_graph(prev_i)%move(symbol)
-
-      if (i /= DFA_INVALID_INDEX) then
-         ! 
+      call move_lazy_dfa(nfa_graph, nfa_top, dfa_graph, dfa_top, curr_i, symbol, all_segments, dst)
+      
+      ! ε遷移を除いた行き先のstate_setを取得する
+      ! Get the state set for the destination excluding epsilon-transition.
+      if (dst /= DFA_INVALID_INDEX) then
+         dfa_graph(dst)%nfa_set = reduce_transitions(dfa_graph(dst), dfa_graph(dst)%tra_top)
       else
          dest_i = DFA_INVALID_INDEX
-      end if    
+         return
+      end if
+      
+      ! ε遷移との和集合を取り、x%toに格納する
+      ! Combine the state set with epsilon-transitions and store in `x%to`.
+      call collect_epsilon_transition(nfa_graph, nfa_top, dfa_graph(dst)%nfa_set)
+
+      if (is_registered_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, dfa_top) == DFA_INVALID_INDEX) then
+
+         call register_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, nfa_exit, dfa_top)
+
+         call add_dfa_transition(dfa_graph, prev_i, dst, [which_segment_symbol_belong(all_segments, symbol)])
+
+      else
+      
+      end if
 
    end subroutine node_construct_lazy_dfa
 
+!=====================================================================!
+!  Helper procedures
+
+
+   pure function reduce_transitions(node, tra_top) result(res)
+      implicit none
+      type(dfa_state_node_t), intent(in) :: node ! dfa_node
+      integer(int32), intent(in) :: tra_top
+      type(nfa_state_set_t) :: res
+
+      integer(int32) :: j, k
+
+      res%vec(:) = .false.
+
+      do j = 1, node%tra_top
+         if (.not. allocated(node%transition(j)%c)) cycle
+
+         do k = 1, node%transition(j)%c_top
+            if (.not. node%transition(j)%c(k) == SEG_EPSILON) then
+               res%vec(:) = res%vec(:) .or. node%transition(j)%dst%vec(:)
+            end if
+         end do
+
+      end do
+   end function reduce_transitions
+
+
+   pure subroutine add_dfa_transition(dfa_graph, src, dst, segments)
+      use :: forgex_segment_m
+      implicit none
+      type(dfa_state_node_t), intent(in) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
+      integer(int32), intent(in) :: src   ! source index
+      integer(int32), intent(in) :: dst   ! destination index
+      type(segment_t), intent(in) :: segments(:)
+      
+      integer(int32) :: j, k, m
+
+      do j = lbound(dfa_graph(src)%transition, dim=1), dfa_graph(src)%tra_top
+         do m = lbound(segments, dim=1), ubound(segments, dim=1)
+            if ( (segments(m) .in. dfa_graph(src)%transition(j)%c)) return
+         end do
+      end do
+
+      
+
+
+
+
+
+      
+   end subroutine add_dfa_transition
+
+!=====================================================================!
+! Procedures for Debugging
+
+#ifdef DEBUG
+
+   subroutine print_lazy_dfa(graph, dfa_top, nfa_top)
+      use, intrinsic :: iso_fortran_env, only:stderr => error_unit
+      implicit none
+      type(dfa_state_node_t), intent(in) :: graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
+      integer(int32), intent(in) :: dfa_top, nfa_top
+      integer(int32) :: i, j, k, tra_top, c_top
+
+      write(stderr,*) "--- PRINT DFA---"
+
+      do i = DFA_STATE_BASE+1, dfa_top
+         if (graph(i)%accepted) then
+            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
+         else
+            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
+         end if
+
+         tra_top = graph(i)%tra_top
+         !p => self%states(i)%transition
+
+         do j = 1, tra_top
+            c_top = graph(i)%transition(j)%c_top
+            do k = 1, c_top
+               write(stderr, '(a, a, i0, 1x)', advance='no') &
+                 graph(i)%transition(j)%c(k)%print(), '=>', graph(i)%transition(j)%dst
+            end do
+         end do
+         write(stderr, *) ""
+      end do 
+
+      do i = DFA_STATE_BASE+1, dfa_top
+         if (graph(i)%accepted) then
+            !self%states(i)%accepted) then
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
+         else
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
+         end if
+
+         call print_nfa_state_set(graph(i)%nfa_set, nfa_top)
+
+         write(stderr,'(a)') ")"
+      end do
+   end subroutine print_lazy_dfa
+#endif
 
 end module forgex_lazy_dfa_m

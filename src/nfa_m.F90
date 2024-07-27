@@ -21,6 +21,11 @@ module forgex_nfa_m
 #endif
    implicit none
    private
+   
+   public :: build_nfa_graph
+#ifdef DEBUG
+   public :: print_nfa
+#endif
 
    type, public :: nfa_transition_t
       type(segment_t), allocatable :: c(:)

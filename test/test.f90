@@ -3,6 +3,7 @@ program main
    use :: forgex_parameters_m
    use :: forgex_syntax_tree_m
    use :: forgex_utf8_m
+   use :: forgex_segment_m
    use :: forgex_nfa_m
    use :: forgex_lazy_dfa_m
    implicit none
@@ -14,6 +15,7 @@ program main
 
    type(nfa_state_node_t), allocatable :: nfa(:)
    type(dfa_state_node_t), allocatable :: dfa(:)
+   type(segment_t), allocatable :: all_segments(:)
    integer :: nfa_entry, nfa_exit, nfa_top
    integer :: dfa_top
    integer :: i, j
@@ -36,19 +38,19 @@ program main
 
 
    call print_tree_internal(tree, top_index)
-   write(stderr, *) ''
 
-   call build_nfa_graph(tree, top_index, nfa, nfa_entry, nfa_exit, nfa_top)
+   call build_nfa_graph(tree, top_index, nfa, nfa_entry, nfa_exit, nfa_top, all_segments )
 
    call print_nfa(nfa, nfa_top)
 
-   call init_dfa(nfa, nfa_entry, nfa_exit, dfa, dfa_top)
+   call init_lazy_dfa(nfa, nfa_entry, nfa_exit, nfa_top, dfa, dfa_top)
 
-   ! do i = 1, nfa_top
-   !    do j = 1, nfa(i)%forward_top
-   !       call dump_segment_array(nfa(i)%forward(j)%c)
-   !    end do
-   ! end do
+   block
+      type(dfa_state_node_t) :: cur, dst
+      cur = dfa(DFA_STATE_BASE+1)
+
+   end block
+
 
    call deallocate_tree(tree)
 
