@@ -30,7 +30,10 @@ module forgex_syntax_tree_m
    !! is done using recursive descent parsing.
 
 #ifdef DEBUG
-   public :: print_tree_internal
+   public :: print_tree
+   interface print_tree
+      module procedure :: print_tree_wrap
+   end interface print_tree
 
    interface
       pure subroutine message(i, j) bind(c)
@@ -860,6 +863,15 @@ contains
 
 !=====================================================================!
 #ifdef DEBUG
+
+   subroutine print_tree_wrap(tree, node_i)
+      implicit none
+      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer, intent(in) :: node_i
+
+      call print_tree_internal(tree, node_i)
+      write(stderr, *) ''
+   end subroutine print_tree_wrap
 
    recursive subroutine print_tree_internal(tree, node_i)
       implicit none

@@ -2,8 +2,7 @@ program main
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_syntax_tree_m
    use :: forgex_parameters_m
-   use :: forgex_nfa_graph_m
-   use :: forgex_nfa_node_m
+   use :: forgex_automaton_m
    use :: forgex_segment_m
    implicit none
    
@@ -15,7 +14,7 @@ program main
    integer(int32) :: i
 
    type(segment_t), allocatable :: all_segments(:)
-   type(nfa_graph_t) :: nfa
+   type(automaton_t) :: automaton
    
    string = 'h[a-z]d'
 
@@ -31,10 +30,10 @@ program main
       end if
    end do
 
-   call print_tree_internal(tree, top_index)
+   call print_tree(tree, top_index)
 
-   call nfa%build(tree, top_index, nfa_entry, nfa_exit, all_segments)
+   call automaton%init(tree, top_index)
+   call automaton%print()
 
-   call nfa%print()
 
 end program main
