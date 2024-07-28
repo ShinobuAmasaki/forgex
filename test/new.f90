@@ -1,30 +1,25 @@
 program main
-   use, intrinsic :: iso_fortran_env
-   use :: forgex_parameters_m
+   use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_syntax_tree_m
-   use :: forgex_utf8_m
+   use :: forgex_parameters_m
+   use :: forgex_nfa_graph_m
+   use :: forgex_nfa_node_m
    use :: forgex_segment_m
-   use :: forgex_nfa_m
-   use :: forgex_lazy_dfa_m
    implicit none
-
+   
    type(tree_node_t), allocatable :: tree(:)
    integer(int32) :: root_i, top_index
    type(tape_t) :: tape
    character(:), allocatable :: string
+   integer :: nfa_entry, nfa_exit
+   integer(int32) :: i
 
-   type(nfa_state_node_t), allocatable :: nfa(:)
-   type(dfa_state_node_t), allocatable :: dfa(:)
    type(segment_t), allocatable :: all_segments(:)
-   integer :: nfa_entry, nfa_exit, nfa_top
-   integer :: dfa_top
-   integer :: i, j
-   root_i = 1
-
+   type(nfa_graph_t) :: nfa
+   
    string = 'h[a-z]d'
 
    call build_syntax_tree(string, tape, tree, top_index)
-
 
    print *, '  own index|  operation|     parent|       left|      right|    is registered'
    do i = 0, TREE_NODE_LIMIT
@@ -36,22 +31,12 @@ program main
       end if
    end do
 
-
    call print_tree_internal(tree, top_index)
 
-   call build_nfa_graph(tree, top_index, nfa, nfa_entry, nfa_exit, nfa_top, all_segments )
+   call nfa%build(tree, top_index, nfa_entry, nfa_exit, all_segments)
 
-   call print_nfa(nfa, nfa_top)
+   call print_nfa(nfa%nfa_nodes, nfa%nfa_top)
 
-   call init_lazy_dfa(nfa, nfa_entry, nfa_exit, nfa_top, dfa, dfa_top)
-
-   block
-      type(dfa_state_node_t) :: cur, dst
-      cur = dfa(DFA_STATE_BASE+1)
-
-   end block
-
-
-   call deallocate_tree(tree)
+   print *, nfa%nfa_top
 
 end program main

@@ -12,7 +12,7 @@
 !> from NFA. The `dfa_t` is defined as a class representing DFA 
 !> which is constructed dynamically with lazy-evaluation.
 !> This module was previously named `dfa_m`.
-module forgex_lazy_dfa_m
+module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m
    use :: forgex_segment_m
@@ -43,4 +43,4 @@ contains
 
 
 
-end module
+end module forgex_lazy_dfa_node_m

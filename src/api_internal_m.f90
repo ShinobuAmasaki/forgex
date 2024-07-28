@@ -1,7 +1,7 @@
 module forgex_api_internal_m
    use :: forgex_parameters_m
-   use :: forgex_nfa_m
-   use :: forgex_lazy_dfa_m
+   use :: forgex_nfa_node_m
+   use :: forgex_lazy_dfa_node_m
    implicit none
    private
 contains

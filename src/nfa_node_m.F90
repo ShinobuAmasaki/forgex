@@ -10,7 +10,7 @@
 
 !> The `forgex_nfa_m` module defines the data structure of NFA.
 !> The `nfa_t` is defined as a class representing NFA.
-module forgex_nfa_m
+module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m
    use :: forgex_segment_m
@@ -23,6 +23,9 @@ module forgex_nfa_m
    
    public :: build_nfa_graph
    public :: disjoin_nfa
+   public :: nfa_deallocate
+   public :: make_nfa_node
+   public :: generate_nfa
 #ifdef DEBUG
    public :: print_nfa
 #endif
@@ -399,52 +402,8 @@ contains
 
 #ifdef DEBUG
 
-   subroutine print_nfa(nfa_graph, nfa_top)
-      use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
-      implicit none
-      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
-      integer(int32), intent(in) :: nfa_top
-      
-      type(nfa_state_node_t) :: node
-      type(nfa_transition_t) :: transition
-      character(:), allocatable :: buf
-      integer(int32) :: i, j, k
-
-      write(stderr, *) "--- PRINT NFA ---"
-
-      do i = 1, nfa_top
-         
-         write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
-         node = nfa_graph(i)
-
-         do j = 1, node%forward_top
-            transition = node%forward(j)
-
-            if (transition%dst > NFA_NULL_TRANSITION) then
-               do k = 1, transition%c_top -1
-                  buf = transition%c(k)%print()
-                  
-                  if (transition%c(k) == SEG_EPSILON) buf = '?'
-                  write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
-               enddo
-            end if
-         end do
-
-         write(stderr, *) ''
-      end do
-   end subroutine print_nfa
-
-   subroutine dump_segment_array (list)
-      implicit none
-      type(segment_t), intent(in) :: list(:)
-
-      integer :: k
-      write(stderr, *) "============================="
-      do k = 1, size(list, dim=1)
-         if (list(k)/= SEG_INIT) write(stderr, *) list(k)
-      end do
-   end subroutine dump_segment_array      
+    
 
 #endif
 
-end module forgex_nfa_m
+end module forgex_nfa_node_m
