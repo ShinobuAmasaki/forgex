@@ -116,4 +116,45 @@ contains
       res = k
    end subroutine automaton__register
 
+
+   pure function automaton__compute_reachable_state(self, curr_i, symbol) result(res)
+      use :: forgex_nfa_node_m
+      implicit none
+      class(automaton_t), intent(in) :: self
+      integer(int32), intent(in) :: curr_i      ! current index of dfa
+      character(*), intent(in) :: symbol
+      type(nfa_state_set_t) :: res
+      
+      type(nfa_state_set_t) :: set
+      type(nfa_state_node_t) :: n_node
+      integer(int32) :: i, j, k
+
+      set = self%dfa%nodes(curr_i)%nfa_set
+
+      outer: do i = self%nfa%nfa_base+1, self%nfa%nfa_top
+      if (check_nfa_state(set, i)) then
+
+         n_node = self%nfa%nodes(i)
+
+         middle: do j = 1, n_node%forward_top  
+            
+            if (.not. allocated(self%nfa%nodes(i)%forward)) cycle outer
+            inner: do k = 1, n_node%forward(j)%c_top
+
+               if (.not. (n_node%forward(j)%c(k) .in. [SEG_INIT, SEG_EMPTY, SEG_EPSILON])) then
+                  call add_nfa_state(res, n_node%forward(j)%dst)
+               end if
+               
+            end do inner
+         end do middle
+      end if
+      end do outer
+
+
+   end function automaton__compute_reachable_state
+
+
+
+   
+
 end module forgex_automaton_m
