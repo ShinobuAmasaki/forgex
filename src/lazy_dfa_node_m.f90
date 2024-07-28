@@ -21,9 +21,7 @@ module forgex_lazy_dfa_node_m
    private   
 
    type, public :: dfa_transition_t
-      type(segment_t) :: c
-      integer(int32) :: c_top = 1
-      integer(int32) :: num_of_c_size = 1
+      type(segment_t) :: c = SEG_INIT
       type(nfa_state_set_t) :: nfa_set
       integer(int32) :: own_j = DFA_NOT_INIT
       integer(int32) :: dst = 0     ! destination index of DFA graph
