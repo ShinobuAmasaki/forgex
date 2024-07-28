@@ -19,6 +19,7 @@ module forgex_nfa_state_set_m
    public :: check_nfa_state
    public :: equivalent_nfa_state_set
    public :: collect_epsilon_transition
+   
 #ifdef DEBUG
    public :: print_nfa_state_set
 #endif
