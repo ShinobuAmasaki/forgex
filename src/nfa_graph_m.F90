@@ -1,3 +1,6 @@
+#ifdef PURE
+#define pure
+#endif
 module forgex_nfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m
@@ -101,11 +104,14 @@ contains
             transition = node%forward(j)
 
             if (transition%dst > NFA_NULL_TRANSITION) then
-               do k = 1, transition%c_top -1
+               do k = 1, transition%c_top
+                  if (transition%c(k) == SEG_INIT) cycle
+
                   buf = transition%c(k)%print()
                   
                   if (transition%c(k) == SEG_EPSILON) buf = '?'
                   write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
+                 
                enddo
             end if
          end do

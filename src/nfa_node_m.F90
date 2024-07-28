@@ -1,3 +1,6 @@
+#ifdef PURE
+#define pure
+#endif
 ! Fortran Regular Expression (Forgex)
 ! 
 ! MIT License
@@ -29,7 +32,7 @@ module forgex_nfa_node_m
 
    type, public :: nfa_transition_t
       type(segment_t), allocatable :: c(:)
-      integer(int32)  :: c_top = 1
+      integer(int32)  :: c_top = 0
       integer(int32)  :: dst = NFA_NULL_TRANSITION
       integer(int32)  :: own_j = NFA_NULL_TRANSITION
       logical         :: is_registered = .false.
@@ -108,6 +111,7 @@ contains
 
       call make_nfa_node(nfa_top)
       nfa_entry = nfa_top
+
       call make_nfa_node(nfa_top)
       nfa_exit = nfa_top
 
@@ -220,6 +224,8 @@ contains
          ! reallocate
       endif
       if (.not. allocated(self%forward(j)%c))  allocate(self%forward(j)%c(NFA_C_SIZE))
+      
+      self%forward(j)%c_top = self%forward(j)%c_top + 1
       k = self%forward(j)%c_top
 
       self%forward(j)%c(k) = c
@@ -227,7 +233,6 @@ contains
       self%forward(j)%is_registered = .true.
       
       self%forward_top = j + 1
-      self%forward(j)%c_top = k + 1
 
 
       j = nfa_graph(dst)%backward_top
@@ -235,6 +240,8 @@ contains
          ! reallocate
       endif
       if (.not. allocated(nfa_graph(dst)%backward(j)%c))  allocate(nfa_graph(dst)%backward(j)%c(NFA_C_SIZE))
+      
+      nfa_graph(dst)%backward(j)%c_top = nfa_graph(dst)%backward(j)%c_top + 1
       k = nfa_graph(dst)%backward(j)%c_top
 
       nfa_graph(dst)%backward(j)%c(k) = c
@@ -242,7 +249,6 @@ contains
       nfa_graph(dst)%backward(j)%is_registered = .true.
       
       nfa_graph(dst)%backward_top = j + 1
-      nfa_graph(dst)%backward(j)%c_top = k + 1
    end subroutine nfa__add_transition
 
 
@@ -269,7 +275,7 @@ contains
                
                ptr = graph(i)%forward(j)
                if (ptr%dst /= NFA_NULL_TRANSITION) then
-                  do k = 1, graph(i)%forward(j)%c_top -1
+                  do k = 1, graph(i)%forward(j)%c_top
                      if (ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
                      ! if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
                         call queue_f%enqueue(ptr%c(k))
@@ -295,8 +301,11 @@ contains
 
 
       ! Apply disjoining to all transitions over the NFA graph.
-      do concurrent (i = NFA_STATE_BASE:nfa_top)
-         do concurrent (j = 1:graph(1)%forward_top)
+
+      ! do concurrent (i = NFA_STATE_BASE:nfa_top)
+      !    do concurrent (j = 1:graph(1)%forward_top)
+      do i = NFA_STATE_BASE, nfa_top
+         do j = 1, graph(1)%forward_top
             call disjoin_nfa_each_transition(graph(i)%forward(j), seg_list)
          end do
          do j = 1, graph(i)%backward_top

@@ -26,7 +26,7 @@ module forgex_nfa_state_set_m
 
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
-      logical :: vec(NFA_STATE_BASE:NFA_STATE_LIMIT) = .false.
+      logical :: vec(NFA_STATE_LIMIT) = .false.
    end type
 
 contains
@@ -72,7 +72,7 @@ contains
       logical        :: res
 
       ! Compare each element of the logical vectors in a and b.
-      do i = NFA_STATE_BASE, NFA_STATE_LIMIT
+      do i = NFA_STATE_BASE+1, NFA_STATE_LIMIT
          if (a%vec(i) .neqv. b%vec(i)) then
             res = .false.
             return

@@ -83,7 +83,7 @@ contains
 
       !! もっと効率のよいループがあるはず
 
-      ! すべてのNFA状態を走査する。
+      ! ! すべてのNFA状態を走査する。
       do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
          ! すべての順方向の遷移をスキャンする
          do j = 1, self%nfa%nodes(i)%forward_top
@@ -92,9 +92,8 @@ contains
             transition = self%nfa%nodes(i)%forward(j)
 
             if (self%nfa%nodes(i)%forward(j)%is_registered) then
-               do k = 1, transition%c_top-1
-                  
-                  ! SEG_EMPTYの場合のみ処理を行う。
+               do k = 1, transition%c_top
+
                   if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
                   ! 
                      if (i == self%nfa_entry) then ! これであっている？
@@ -161,19 +160,21 @@ contains
       integer :: d_tra_top
 
       symbol_belong = SEG_INIT
-
-      state_set = self%dfa%nodes(curr_i)%nfa_set
-
+write(stderr, *) self%dfa%nodes(curr_i)%nfa_set%vec(1:6)
       ! nfa状態をスキャン
       ! Scan through NFA states
       outer: do i = self%nfa%nfa_base+1, self%nfa%nfa_top
 
-         if (check_nfa_state(state_set, i)) then
+         ! 現在の状態集合のi番目が真ならば、i番NFAノードの処理を行う
+         if (check_nfa_state(self%dfa%nodes(curr_i)%nfa_set, i)) then
+
             n_node = self%nfa%nodes(i)
 
             if (.not. allocated(n_node%forward)) cycle outer
 
             middle: do j = 1, n_node%forward_top
+
+               ! temporary variables
                n_tra = n_node%forward(j)
                d_tra_top = self%dfa%nodes(curr_i)%tra_top
 
@@ -181,24 +182,28 @@ contains
                if (.not. allocated(n_tra%c)) cycle middle
 
                do k = 1, n_tra%c_top
-                  if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c .in. n_tra%c) &
+                  if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_EMPTY .and. n_tra%c(k) /= SEG_INIT) then
+
+                     if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c .in. n_tra%c) &
                       .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
-
                         call add_nfa_state(state_set, n_tra%dst)
-                  endif
+write(stderr, *) "A: ", state_set%vec(1:6)  
+                     endif
+                  end if
                end do
-
 
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
 
                   symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
-                  
+write(stderr, *) "B: ", state_set%vec(1:6)           
                   call add_nfa_state(state_set, n_tra%dst)
 
                end if
+
             end do middle       
          end if
       end do outer
+
 
    end function automaton__compute_reachable_state
 
@@ -211,7 +216,7 @@ contains
       integer(int32), intent(inout) :: next
       type(nfa_state_set_t), intent(inout) :: next_set
 
-      next_set =  self%get_reachable(curr, symbol)
+      next_set = self%get_reachable(curr, symbol)
 
    end subroutine automaton__destination
 
@@ -226,21 +231,19 @@ contains
 
       type(dfa_transition_t) :: res
 
-      integer :: i, dst
+      integer :: i, j, dst
 
       type(nfa_state_set_t) :: set
 
 
-      do i = self%dfa%dfa_base+1, self%dfa%dfa_top         
-         call self%destination(curr, symbol, dst, set)
-         if (dst /= DFA_INVALID_INDEX) then
+      call self%destination(curr, symbol, dst, set)
+      if (dst /= DFA_INVALID_INDEX) then
             res%c = symbol_to_segment(symbol)
             res%dst = dst
             res%nfa_set = set
             res%own_j = self%dfa%dfa_top
-            return
-         end if
-      end do
+      end if
+      
    end function automaton__move
 
 
@@ -263,8 +266,7 @@ contains
       ! ε遷移を除いた行き先のstate_setを取得する
       x = self%move(prev_i, symbol)
 
-      ! write(stderr, *) x%nfa_set%vec(1:4)
-      
+write(stderr, *) x%nfa_set%vec(1:6)
 
 
    end subroutine automaton__construct_dfa
