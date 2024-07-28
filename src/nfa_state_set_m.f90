@@ -85,7 +85,7 @@ contains
 
 
    recursive pure subroutine mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
-      use :: forgex_nfa_m
+      use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
       type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
       type(nfa_state_set_t), intent(inout) :: nfa_set
@@ -109,7 +109,7 @@ contains
 
 
    pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
-      use :: forgex_nfa_m, only: nfa_state_node_t
+      use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
       type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
       integer(int32), intent(in) :: nfa_top
