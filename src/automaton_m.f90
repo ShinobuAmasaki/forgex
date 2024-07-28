@@ -32,7 +32,7 @@ module forgex_automaton_m
       procedure :: print           => automaton__print_info
 #endif
    end type automaton_t
-      
+
 contains
 
 
@@ -87,7 +87,7 @@ contains
       do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
          ! すべての順方向の遷移をスキャンする
          do j = 1, self%nfa%nodes(i)%forward_top
-    
+
             ! 一時変数にコピー
             transition = self%nfa%nodes(i)%forward(j)
 
@@ -95,7 +95,7 @@ contains
                do k = 1, transition%c_top
 
                   if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
-                  ! 
+                  !
                      if (i == self%nfa_entry) then ! これであっている？
 
                         call add_nfa_state(closure, transition%dst)
@@ -115,7 +115,7 @@ contains
       class(automaton_t), intent(inout) :: self
       type(nfa_state_set_t), intent(in) :: state_set
       integer(int32), intent(inout) :: res ! resulting the new dfa index
-      
+
       integer(int32) :: i, j, k
 
       ! 登録されている場合
@@ -143,6 +143,7 @@ contains
 
    !! WIP
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(state_set)
+      use :: forgex_segment_m
       use :: forgex_nfa_node_m
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
@@ -160,7 +161,6 @@ contains
       integer :: d_tra_top
 
       symbol_belong = SEG_INIT
-write(stderr, *) self%dfa%nodes(curr_i)%nfa_set%vec(1:6)
       ! nfa状態をスキャン
       ! Scan through NFA states
       outer: do i = self%nfa%nfa_base+1, self%nfa%nfa_top
@@ -184,25 +184,27 @@ write(stderr, *) self%dfa%nodes(curr_i)%nfa_set%vec(1:6)
                do k = 1, n_tra%c_top
                   if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_EMPTY .and. n_tra%c(k) /= SEG_INIT) then
 
-                     if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c .in. n_tra%c) &
+                     if (.not. allocated(self%dfa%nodes(curr_i)%transition(d_tra_top)%c)) cycle
+
+                     if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(k) .in. n_tra%c) &
                       .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
                         call add_nfa_state(state_set, n_tra%dst)
-write(stderr, *) "A: ", state_set%vec(1:6)  
                      endif
+
                   end if
                end do
 
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
 
                   symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
-write(stderr, *) "B: ", state_set%vec(1:6)           
                   call add_nfa_state(state_set, n_tra%dst)
 
                end if
 
-            end do middle       
+            end do middle
          end if
       end do outer
+
 
 
    end function automaton__compute_reachable_state
@@ -226,24 +228,24 @@ write(stderr, *) "B: ", state_set%vec(1:6)
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
-      integer(int32), intent(in) :: curr    ! currnet 
+      integer(int32), intent(in) :: curr    ! currnet
       character(*), intent(in) :: symbol
 
       type(dfa_transition_t) :: res
 
-      integer :: i, j, dst
+      integer :: i, j
 
+      integer(int32) :: dst
       type(nfa_state_set_t) :: set
-
 
       call self%destination(curr, symbol, dst, set)
       if (dst /= DFA_INVALID_INDEX) then
-            res%c = symbol_to_segment(symbol)
+            res%c = [symbol_to_segment(symbol)]
             res%dst = dst
             res%nfa_set = set
             res%own_j = self%dfa%dfa_top
       end if
-      
+
    end function automaton__move
 
 
@@ -254,19 +256,33 @@ write(stderr, *) "B: ", state_set%vec(1:6)
       integer(int32), intent(in) :: curr_i
       integer(int32), intent(inout) :: dst_i
       character(*), intent(in) :: symbol
-      
+
       type(dfa_transition_t) :: x
       type(segment_t), allocatable :: segments(:)
-      integer(int32) :: prev_i
+      integer(int32) :: prev_i, res
 
-      dst_i = DFA_INVALID_INDEX 
+      dst_i = DFA_INVALID_INDEX
       prev_i = curr_i
       segments = self%all_segments
 
       ! ε遷移を除いた行き先のstate_setを取得する
       x = self%move(prev_i, symbol)
 
-write(stderr, *) x%nfa_set%vec(1:6)
+      ! この実装ではリダクションの必要がない
+      if (x%dst == DFA_INVALID_INDEX) return
+
+      call self%nfa%collect_e_t(x%nfa_set)
+
+      dst_i = self%dfa%registered(x%nfa_set)
+
+      if (dst_i == DFA_INVALID_INDEX) then
+         ! まだDFA状態が登録されていない場合
+         call self%register(x%nfa_set, dst_i)
+      end if
+
+      if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
+      ! 遷移を追加する
+      call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, [which_segment_symbol_belong(self%all_segments, symbol)])
 
 
    end subroutine automaton__construct_dfa

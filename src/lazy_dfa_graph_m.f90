@@ -3,16 +3,17 @@ module forgex_lazy_dfa_graph_m
    use :: forgex_parameters_m
    use :: forgex_lazy_dfa_node_m
    implicit none
-   private 
-   
+   private
+
    type, public :: dfa_graph_t
       type(dfa_state_node_t), allocatable :: nodes(:)
       integer(int32) :: dfa_base = DFA_STATE_BASE
-      integer(int32) :: dfa_limit = DFA_STATE_LIMIT 
+      integer(int32) :: dfa_limit = DFA_STATE_LIMIT
       integer(int32) :: dfa_top = DFA_INVALID_INDEX
    contains
       procedure :: preprocess => lazy_dfa__preprocess
       procedure :: registered => lazy_dfa__registered_index
+      procedure :: add_transition => lazy_dfa__add_transition
    end type dfa_graph_t
 
 contains
@@ -20,7 +21,7 @@ contains
    pure subroutine lazy_dfa__preprocess (self)
       implicit none
       class(dfa_graph_t), intent(inout) :: self
-      
+
       integer(int32) :: i, base, limit
 
       ! Initialize DFA
@@ -57,7 +58,33 @@ contains
          end if
       end do
    end function lazy_dfa__registered_index
-      
+
+
+   pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, segments)
+      use :: forgex_segment_m
+      use :: forgex_nfa_state_set_m
+      implicit none
+      class(dfa_graph_t), intent(inout) :: self
+      type(nfa_state_set_t), intent(in) :: state_set
+      integer, intent(in) :: src, dst
+      type(segment_t), intent(in) :: segments(:)
+
+      type(dfa_transition_t) :: tra
+      integer :: j
+
+      tra%c_top = size(segments, dim=1)
+      allocate(tra%c(tra%c_top))
+      tra%c(:) = segments(:)
+      tra%dst = dst
+      tra%nfa_set = state_set
+
+      j = self%nodes(src)%tra_top + 1
+      self%nodes(src)%transition(j) = tra
+      self%nodes(src)%tra_top = j + 1
+
+   end subroutine lazy_dfa__add_transition
+
+
 
 
 
