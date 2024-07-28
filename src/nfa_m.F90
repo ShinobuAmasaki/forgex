@@ -15,7 +15,6 @@ module forgex_nfa_m
    use :: forgex_parameters_m
    use :: forgex_segment_m
    use :: forgex_syntax_tree_m
-   use :: forgex_nfa_state_set_m
 #ifdef DEBUG
    use , intrinsic :: iso_c_binding
 #endif
@@ -23,6 +22,7 @@ module forgex_nfa_m
    private
    
    public :: build_nfa_graph
+   public :: disjoin_nfa
 #ifdef DEBUG
    public :: print_nfa
 #endif
@@ -84,6 +84,9 @@ contains
 
       i_begin = NFA_STATE_BASE
       i_end   = NFA_STATE_LIMIT
+
+      ! initialize
+      nfa_top = 0
 
       allocate(nfa(i_begin:i_end))
 
