@@ -5,18 +5,18 @@ program main
    use :: forgex_automaton_m
    use :: forgex_segment_m
    implicit none
-   
+
    type(tree_node_t), allocatable :: tree(:)
    integer(int32) :: root_i, top_index
    type(tape_t) :: tape
    character(:), allocatable :: string
    integer :: nfa_entry, nfa_exit
-   integer(int32) :: i
+   integer(int32) :: i, dst
 
    type(segment_t), allocatable :: all_segments(:)
    type(automaton_t) :: automaton
-   
-   string = 'h[a-z]d'
+
+   string = '[a-z]*d'
 
    call build_syntax_tree(string, tape, tree, top_index)
 
@@ -33,7 +33,11 @@ program main
    call print_tree(tree, top_index)
 
    call automaton%init(tree, top_index)
-   call automaton%print()
+
+   call automaton%construct(1, dst, 'h')
+   print *, dst
+
+   ! call automaton%print()
 
 
 end program main
