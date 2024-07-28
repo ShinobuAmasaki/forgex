@@ -33,8 +33,9 @@ module forgex_lazy_dfa_m
       type(segment_t), allocatable :: c(:)
       integer(int32) :: c_top = 1
       integer(int32) :: num_of_c_size = 1
-      type(nfa_state_set_t) :: dst
+      type(nfa_state_set_t) :: nfa_set
       integer(int32) :: own_j = DFA_NOT_INIT
+      integer(int32) :: dst = 0     ! destination index of DFA graph
    end type dfa_transition_t
 
    type, public :: dfa_state_node_t
@@ -43,6 +44,7 @@ module forgex_lazy_dfa_m
       logical               :: accepted = .false.
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32)        :: tra_top = 1
+      logical               :: registered = .false.
    contains
       procedure :: reachable => compute_reachable_nfa_state_lazy_dfa
    end type dfa_state_node_t
@@ -167,6 +169,7 @@ contains
       dfa_graph(i)%nfa_set = nfa_set
       dfa_graph(i)%accepted = check_nfa_state(nfa_set, nfa_exit)
       allocate(dfa_graph(i)%transition(DFA_TRANSITION_UNIT))
+      dfa_graph(i)%registered = .true.
       dfa_top = i + 1
       
    end subroutine register_lazy_dfa
@@ -208,8 +211,10 @@ contains
       res = DFA_INVALID_INDEX
       do i = DFA_STATE_BASE+1, dfa_top
          call dfa_graph(i)%reachable(nfa_graph, nfa_top, segments, symbol)
-         if (res /= DFA_INVALID_INDEX) return      ! if res is reachable, do return.
+
+         ! WIP
       end do
+
    end subroutine move_lazy_dfa
 
 
@@ -305,6 +310,9 @@ contains
       integer(int32) :: prev_i ! previous index
       integer(int32) :: i  ! temporary index
       integer(int32) :: dst ! result
+
+      type(dfa_state_node_t) :: new_node
+      integer :: idx
       
       prev_i = curr_i
       
@@ -323,13 +331,21 @@ contains
       ! Combine the state set with epsilon-transitions and store in `x%to`.
       call collect_epsilon_transition(nfa_graph, nfa_top, dfa_graph(dst)%nfa_set)
 
-      if (is_registered_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, dfa_top) == DFA_INVALID_INDEX) then
+      ! DFAが登録されているかどうかで分岐
+      idx = is_registered_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, dfa_top)
+      if (idx == DFA_INVALID_INDEX) then
 
          call register_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, nfa_exit, dfa_top)
 
          call add_dfa_transition(dfa_graph, prev_i, dst, [which_segment_symbol_belong(all_segments, symbol)])
 
       else
+         if (is_registered_lazy_dfa(dfa_graph, dfa_graph(idx)%nfa_set, dfa_top) == DFA_INVALID_INDEX) then
+            dest_i = idx
+         else
+            call register_lazy_dfa(dfa_graph, dfa_graph(dst)%nfa_set, nfa_exit, dfa_top)
+            dest_i = dfa_graph(idx)%own_i
+         end if
       
       end if
 
@@ -354,7 +370,7 @@ contains
 
          do k = 1, node%transition(j)%c_top
             if (.not. node%transition(j)%c(k) == SEG_EPSILON) then
-               res%vec(:) = res%vec(:) .or. node%transition(j)%dst%vec(:)
+               res%vec(:) = res%vec(:) .or. node%transition(j)%nfa_set%vec(:)
             end if
          end do
 
@@ -365,26 +381,26 @@ contains
    pure subroutine add_dfa_transition(dfa_graph, src, dst, segments)
       use :: forgex_segment_m
       implicit none
-      type(dfa_state_node_t), intent(in) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
+      type(dfa_state_node_t), intent(inout) :: dfa_graph(DFA_STATE_BASE:DFA_STATE_LIMIT)
       integer(int32), intent(in) :: src   ! source index
       integer(int32), intent(in) :: dst   ! destination index
       type(segment_t), intent(in) :: segments(:)
       
+      integer :: dst_i
       integer(int32) :: j, k, m
 
       do j = lbound(dfa_graph(src)%transition, dim=1), dfa_graph(src)%tra_top
          do m = lbound(segments, dim=1), ubound(segments, dim=1)
-            if ( (segments(m) .in. dfa_graph(src)%transition(j)%c)) return
+
+            if ( (segments(m) .in. dfa_graph(src)%transition(j)%c)) then
+               dfa_graph(src)%transition(j)%dst = dst
+               return
+            end if
+
          end do
       end do
 
-      
 
-
-
-
-
-      
    end subroutine add_dfa_transition
 
 !=====================================================================!
