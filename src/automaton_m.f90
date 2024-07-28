@@ -1,3 +1,7 @@
+#ifdef PURE
+#define pure
+#endif
+
 module forgex_automaton_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m
@@ -14,24 +18,43 @@ module forgex_automaton_m
       type(nfa_graph_t) :: nfa
       type(dfa_graph_t) :: dfa
       type(nfa_state_set_t) :: entry_set
+      type(segment_t), allocatable :: all_segments(:)
       integer(int32) :: nfa_entry, nfa_exit
       integer(int32) :: initial_index
    contains
-      procedure :: init => automaton__initialize
+      procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
-      procedure :: register => automaton__register
+      procedure :: register        => automaton__register
+      procedure :: construct       => automaton__construct_dfa
+      procedure :: get_reachable   => automaton__compute_reachable_state
+#ifdef DEBUG
+      procedure :: print           => automaton__print_info
+#endif
    end type automaton_t
       
 contains
 
 
-   pure subroutine automaton__initialize(self)
+   pure subroutine automaton__initialize(self, tree, tree_top)
+      use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
       class(automaton_t), intent(inout) :: self
+      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(in) :: tree_top
 
       type(nfa_state_set_t) :: nfa_entry_set, initial_closure
       integer(int32) :: new_index
 
+      !-- NFA building
+      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
+
+#ifdef pure
+#ifdef DEBUG
+      call self%nfa%print()
+#endif
+#endif
+
+      !-- DFA initialize
       call self%dfa%preprocess()
 
       call add_nfa_state(self%entry_set, self%nfa_exit)
@@ -117,13 +140,15 @@ contains
    end subroutine automaton__register
 
 
+   !! WIP
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(res)
       use :: forgex_nfa_node_m
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
       integer(int32), intent(in) :: curr_i      ! current index of dfa
       character(*), intent(in) :: symbol
-      type(nfa_state_set_t) :: res
+      type(dfa_transition_t), allocatable:: res(:)
       
       type(nfa_state_set_t) :: set
       type(nfa_state_node_t) :: n_node
@@ -142,7 +167,7 @@ contains
             inner: do k = 1, n_node%forward(j)%c_top
 
                if (.not. (n_node%forward(j)%c(k) .in. [SEG_INIT, SEG_EMPTY, SEG_EPSILON])) then
-                  call add_nfa_state(res, n_node%forward(j)%dst)
+                  call add_nfa_state(set, n_node%forward(j)%dst)
                end if
                
             end do inner
@@ -150,11 +175,65 @@ contains
       end if
       end do outer
 
-
    end function automaton__compute_reachable_state
 
 
+   pure subroutine automaton__move(self, curr, symbol, res)
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
+      implicit none
+      class(automaton_t), intent(in) :: self
+      integer(int32), intent(in) :: curr
+      character(*), intent(in) :: symbol
 
-   
+      type(dfa_transition_t), allocatable, intent(inout) :: res(:)
+      
+      integer :: i
+
+      do i = DFA_INITIAL_INDEX, self%dfa%dfa_top
+         res = self%get_reachable(curr, symbol)
+         if (allocated(res)) return
+      end do
+      
+
+   end subroutine automaton__move
+
+
+   pure subroutine automaton__construct_dfa (self, curr_i, dst_i, symbol)
+      implicit none
+      class(automaton_t), intent(inout) :: self
+      integer(int32), intent(in) :: curr_i
+      integer(int32), intent(inout) :: dst_i
+      character(*), intent(in) :: symbol
+      
+      type(segment_t), allocatable :: segments(:)
+      integer(int32) :: prev_i
+
+      prev_i = curr_i
+      segments(:) = self%all_segments(:)
+
+      ! ε遷移を除いた行き先のstate_setを取得する
+      
+
+
+
+   end subroutine automaton__construct_dfa
+
+#ifdef DEBUG
+
+   subroutine automaton__print_info(self)
+      use :: iso_fortran_env, only: stderr => error_unit
+      implicit none
+      class(automaton_t), intent(in) :: self
+
+      write(stderr, *) "--- AUTOMATON INFO ---"
+      write(stderr, *) "entry_set: ", self%entry_set%vec(1:self%nfa%nfa_top)
+      write(stderr, *) "allocated(all_segments):", allocated(self%all_segments)
+      write(stderr, *) "nfa_entry:     ", self%nfa_entry
+      write(stderr, *) "nfa_exit:      ", self%nfa_exit
+      write(stderr, *) "initial_index: ", self%initial_index
+
+   end subroutine automaton__print_info
+
+#endif
 
 end module forgex_automaton_m
