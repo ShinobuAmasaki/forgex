@@ -69,6 +69,7 @@ module forgex_parameters_m
    integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
    !>
    integer(int32), parameter, public :: DFA_INVALID_INDEX = -1
+   integer(int32), parameter, public :: DFA_INITIAL_INDEX = 1
    !>
    integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 128
    integer(int32), parameter, public :: DFA_C_SIZE = 32
