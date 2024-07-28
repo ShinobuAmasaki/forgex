@@ -21,7 +21,7 @@ module forgex_lazy_dfa_node_m
    private   
 
    type, public :: dfa_transition_t
-      type(segment_t), allocatable :: c(:)
+      type(segment_t) :: c
       integer(int32) :: c_top = 1
       integer(int32) :: num_of_c_size = 1
       type(nfa_state_set_t) :: nfa_set
