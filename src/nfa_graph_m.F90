@@ -81,6 +81,7 @@ contains
 
    subroutine nfa_graph__print(self)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
+      use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(in) :: self
       
@@ -111,10 +112,12 @@ contains
 
          write(stderr, *) ''
       end do
-   end subroutine print_nfa
+   end subroutine nfa_graph__print
 
 
    subroutine dump_segment_array (list)
+      use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
+      use :: forgex_segment_m
       implicit none
       type(segment_t), intent(in) :: list(:)
 

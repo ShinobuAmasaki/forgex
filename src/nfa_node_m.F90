@@ -26,9 +26,6 @@ module forgex_nfa_node_m
    public :: nfa_deallocate
    public :: make_nfa_node
    public :: generate_nfa
-#ifdef DEBUG
-   public :: print_nfa
-#endif
 
    type, public :: nfa_transition_t
       type(segment_t), allocatable :: c(:)
@@ -399,11 +396,5 @@ contains
       end do
    end subroutine transition_to_seg_list
 
-
-#ifdef DEBUG
-
-    
-
-#endif
 
 end module forgex_nfa_node_m

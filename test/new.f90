@@ -35,8 +35,6 @@ program main
 
    call nfa%build(tree, top_index, nfa_entry, nfa_exit, all_segments)
 
-   call print_nfa(nfa%nfa_nodes, nfa%nfa_top)
-
-   print *, nfa%nfa_top
+   call nfa%print()
 
 end program main
