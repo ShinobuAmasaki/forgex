@@ -92,7 +92,7 @@ contains
 
       write(stderr, *) "--- PRINT NFA ---"
 
-      do i = self%nfa_base, self%nfa_top
+      do i = self%nfa_base+1, self%nfa_top
          
          write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
