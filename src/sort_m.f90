@@ -41,4 +41,24 @@ contains
 
    end subroutine bubble_sort
 
+
+   pure subroutine insertion_sort(list)
+      implicit none
+      integer, intent(inout) :: list(:)
+
+      integer :: i, j, key
+
+      do i = 2, size(list, dim=1)
+         key = list(i)
+         j = i - 1
+
+         do while(j > 0 .and. list(j) > key)
+            list(j+1) = list(j)
+            j = j - 1
+            if (j == 0) exit
+         end do
+         list(j + 1) = key
+      end do
+   end subroutine insertion_sort
+
 end module forgex_sort_m
