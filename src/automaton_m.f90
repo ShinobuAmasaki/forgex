@@ -166,7 +166,7 @@ contains
       character(*), intent(in) :: symbol
 
       type(nfa_state_set_t)  :: state_set, current_set
-      type(nfa_state_node_t) :: ptr_nlist
+      type(nfa_state_node_t) :: n_node
       type(dfa_transition_t) :: a, b
       type(segment_t)        :: symbol_belong
       type(dfa_transition_t) :: transitions(DFA_TRANSITION_UNIT)
@@ -183,21 +183,21 @@ contains
       outer: do i = 1, num_nfa_states
          if (check_nfa_state(current_set, i)) then
             
-            ptr_nlist = self%nfa%nodes(i)
+            n_node = self%nfa%nodes(i)
 
             j = 1
             jj = 1
-            middle: do while (ptr_nlist%forward(j)%own_j <= ptr_nlist%forward_top .and. jj <= DFA_TRANSITION_UNIT)
+            middle: do while (n_node%forward(j)%own_j <= n_node%forward_top .and. jj <= DFA_TRANSITION_UNIT)
 
-               do k = 1, ptr_nlist%forward(j)%c_top
-                  if (ptr_nlist%forward(j)%c(k) .in. [SEG_EMPTY, SEG_EPSILON, SEG_INIT]) then
+               do k = 1, n_node%forward(j)%c_top
+                  if (n_node%forward(j)%c(k) .in. [SEG_EMPTY, SEG_EPSILON, SEG_INIT]) then
 
                      a = transitions(jj)
                      inner: do while (a%own_j /= DFA_NOT_INIT)
 
-                        if ((a%c .in. ptr_nlist%forward(j)%c) .and. ptr_nlist%forward(j)%dst/= NFA_NULL_TRANSITION) then
+                        if ((a%c .in. n_node%forward(j)%c) .and. n_node%forward(j)%dst/= NFA_NULL_TRANSITION) then
 
-                           call add_nfa_state(transitions(jj)%nfa_set, ptr_nlist%forward(j)%dst)
+                           call add_nfa_state(transitions(jj)%nfa_set, n_node%forward(j)%dst)
                            j = j + 1
                            cycle middle
 
@@ -208,16 +208,16 @@ contains
                   end if
                end do
 
-               if (ptr_nlist%forward(j)%dst /= NFA_NULL_TRANSITION) then
+               if (n_node%forward(j)%dst /= NFA_NULL_TRANSITION) then
 
-                  do k = 1, ptr_nlist%forward(j)%c_top
-                     if ( (symbol_to_segment(symbol) .in. ptr_nlist%forward(j)%c) &
-                          .or. (ptr_nlist%forward(j)%c(k) == SEG_EPSILON)) then
+                  do k = 1, n_node%forward(j)%c_top
+                     if ( (symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
+                          .or. (n_node%forward(j)%c(k) == SEG_EPSILON)) then
 
                         symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
 
                         transitions(jj)%c = symbol_belong
-                        call add_nfa_state(transitions(jj)%nfa_set, ptr_nlist%forward(j)%dst)
+                        call add_nfa_state(transitions(jj)%nfa_set, n_node%forward(j)%dst)
 
                         jj = jj + 1
                      end if
@@ -233,10 +233,6 @@ contains
       do j = 1, DFA_TRANSITION_UNIT
          state_set%vec = transitions(j)%nfa_set%vec .or. state_set%vec
       end do
-
-#ifdef PURE
-! write(stderr, *) "M:    ", m
-#endif
 
    end function automaton__compute_reachable_state
 
@@ -262,7 +258,6 @@ contains
       end do 
 
    end subroutine automaton__destination
-
 
 
    pure function automaton__move(self, curr, symbol) result(res)
@@ -312,17 +307,11 @@ contains
       x = self%move(prev_i, symbol)
 
       ! この実装ではリストのリダクションを計算する必要がない
+
       if (x%dst == DFA_INVALID_INDEX) return
 
-#ifdef PURE
-write(stderr, *)"L318: ", x%nfa_set%vec(1:6)
-#endif
       call self%nfa%collect_epsilon_transition(x%nfa_set)
 
-#ifdef PURE
-write(stderr, *)"L323: ", x%nfa_set%vec(1:6)
-write(stderr, *)"============================"
-#endif
       dst_i = self%dfa%registered(x%nfa_set)
 
       if (dst_i == DFA_INVALID_INDEX) then
@@ -336,6 +325,7 @@ write(stderr, *)"============================"
 
 
    end subroutine automaton__construct_dfa
+
 
 #ifdef DEBUG
 

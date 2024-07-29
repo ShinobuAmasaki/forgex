@@ -82,6 +82,7 @@ contains
       
    end subroutine nfa_graph__disjoin
 
+
    pure recursive subroutine nfa_graph__mark_epsilon_transition(self, state_set, idx)
       use :: forgex_segment_m
       use :: forgex_nfa_state_set_m
@@ -115,25 +116,12 @@ contains
       class(nfa_graph_t), intent(in) :: self
       type(nfa_state_set_t), intent(inout) :: state_set
 
-      type(nfa_transition_t) :: tra
-
-      integer :: i, j, k
+      integer :: i
 
       do i = NFA_STATE_BASE+1, self%nfa_top
          if (check_nfa_state(state_set, i)) then
 
             call self%mark_epsilon_transition(state_set, i)
-
-            ! if (.not. allocated(self%nodes(i)%forward)) cycle
-
-            ! do j = 1, self%nodes(i)%forward_top
-            !    tra = self%nodes(i)%forward(j)
-            !    do k = 1, tra%c_top
-            !       if (tra%c(k) == SEG_EPSILON .and. .not. check_nfa_state(state_set, tra%dst)) then
-            !          if (tra%dst /= NFA_NULL_TRANSITION) call add_nfa_state(state_set, i)
-            !       end if
-            !    end do
-            ! end do
 
          end if
       end do

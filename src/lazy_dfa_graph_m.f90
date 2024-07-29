@@ -76,31 +76,9 @@ contains
       integer :: j
 
       tra%c = seg
-      
       tra%dst = dst
       tra%nfa_set = state_set
 
-
-      ! j = self%nodes(src)%tra_top + 1
-      ! self%nodes(src)%transition(j) = tra
-      ! self%nodes(src)%tra_top = j + 1
-
-
-      ! if (self%nodes(src)%get_tra_top() == DFA_NOT_INIT_TRAENSITION_TOP) then
-      !    call self%nodes(src)%init_transition()
-      ! end if
-
-      ! call self%nodes(src)%increment_tra_top() ! tra_top becomes 1 or more
-      ! j = self%nodes(src)%get_tra_top()
-      ! tra%own_j = j
-
-      ! ! self%nodes(src)%transition(j) = tra
-      ! call copy_dfa_transition(tra, self%nodes(src)%transition(j))
-
-      ! self%nodes(src)%transition(j)%own_j = j
-
-
-      j = self%nodes(src)%get_tra_top() + 1
       call self%nodes(src)%add_transition(tra)
 
    end subroutine lazy_dfa__add_transition
