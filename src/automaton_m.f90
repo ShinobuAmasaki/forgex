@@ -172,7 +172,7 @@ contains
       type(segment_t) :: symbol_belong
       integer(int32) :: i, j, k, m
 
-      integer :: d_tra_top
+      integer :: d_tra_top, d_c_top
 
       symbol_belong = SEG_INIT
       ! nfa状態をスキャン
@@ -181,7 +181,6 @@ contains
 
          ! 現在の状態集合のi番目が真ならば、i番NFAノードの処理を行う
          if (check_nfa_state(self%dfa%nodes(curr_i)%nfa_set, i)) then
-
 
             n_node = self%nfa%nodes(i)
 
@@ -200,14 +199,20 @@ contains
                inner: do k = 1, n_tra%c_top
                   if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_INIT) then
 
-                     if (.not. allocated(self%dfa%nodes(curr_i)%transition(d_tra_top)%c)) cycle
+                     if (.not. self%dfa%nodes(curr_i)%initialized) cycle middle
 
-                     core: do m = 1, self%dfa%nodes(curr_i)%transition(d_tra_top)%c_top
-                        if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(m) .in. n_tra%c) &
+                     d_c_top = self%dfa%nodes(curr_i)%transition(d_tra_top)%c_top
+write(stderr, *) d_tra_top, d_c_top
+                     core: do m = 1, d_c_top
+
+                        if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(m) == n_tra%c(k)) &
                         .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
                            call add_nfa_state(state_set, n_tra%dst)
                         endif
+
+write(stderr, *) "A   : ", state_set%vec(1:6)   
                      end do core
+    
 
                   end if
                end do inner
@@ -216,11 +221,13 @@ contains
 
                   ! symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
                   call add_nfa_state(state_set, n_tra%dst)
+write(stderr, *) "B   : ", state_set%vec(1:6)   
                end if
 
             end do middle
          end if
       end do outer
+write(stderr, *) "RES : ", state_set%vec(1:6)
 
 
 
@@ -235,7 +242,17 @@ contains
       integer(int32), intent(inout) :: next
       type(nfa_state_set_t), intent(inout) :: next_set
 
+      integer :: i
+
       next_set = self%get_reachable(curr, symbol)
+
+      next = INVALID_INDEX
+      do i = 1, self%dfa%dfa_top
+         if (equivalent_nfa_state_set(next_set, self%dfa%nodes(i)%nfa_set)) then
+            next = i
+            return
+         end if
+      end do 
 
    end subroutine automaton__destination
 
@@ -245,20 +262,20 @@ contains
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
-      integer(int32), intent(in) :: curr    ! currnet
+      integer(int32), intent(in) :: curr    ! current
       character(*), intent(in) :: symbol
 
       type(dfa_transition_t) :: res
 
       integer :: i, j
 
-      integer(int32) :: dst
+      integer(int32) :: next
       type(nfa_state_set_t) :: set
 
-      call self%destination(curr, symbol, dst, set)
-      if (dst /= DFA_INVALID_INDEX) then
+      call self%destination(curr, symbol, next, set)
+      if (next /= DFA_INVALID_INDEX) then
             res%c = [symbol_to_segment(symbol)]
-            res%dst = dst
+            res%dst = next
             res%nfa_set = set
             res%own_j = self%dfa%dfa_top
       end if
@@ -290,6 +307,7 @@ contains
 
       call self%nfa%collect_e_t(x%nfa_set)
 
+
       dst_i = self%dfa%registered(x%nfa_set)
 
       if (dst_i == DFA_INVALID_INDEX) then
@@ -298,7 +316,6 @@ contains
       end if
 
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
-      
       ! 遷移を追加する
       call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, [which_segment_symbol_belong(self%all_segments, symbol)])
 
