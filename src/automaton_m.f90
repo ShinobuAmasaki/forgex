@@ -97,7 +97,7 @@ contains
                do k = 1, transition%c_top
 
                   if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
-                  !
+
                      if (i == self%nfa_entry) then ! これであっている？
 
                         call add_nfa_state(closure, transition%dst)
@@ -148,7 +148,8 @@ contains
       self%dfa%nodes(i)%accepted = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
       call self%dfa%nodes(i)%init_transition()
-      call self%dfa%nodes(i)%increment_tra_top()
+      call self%dfa%nodes(i)%increment_tra_top() ! Somehow this is necessary!
+
       res = i
 
    end subroutine automaton__register_state
@@ -169,7 +170,7 @@ contains
       type(nfa_state_node_t) :: n_node
       type(nfa_transition_t) :: n_tra
       type(segment_t) :: symbol_belong
-      integer(int32) :: i, j, k
+      integer(int32) :: i, j, k, m
 
       integer :: d_tra_top
 
@@ -181,6 +182,7 @@ contains
          ! 現在の状態集合のi番目が真ならば、i番NFAノードの処理を行う
          if (check_nfa_state(self%dfa%nodes(curr_i)%nfa_set, i)) then
 
+
             n_node = self%nfa%nodes(i)
 
             if (.not. allocated(n_node%forward)) cycle outer
@@ -189,29 +191,31 @@ contains
 
                ! temporary variables
                n_tra = n_node%forward(j)
-               d_tra_top = self%dfa%nodes(curr_i)%tra_top
+               d_tra_top = self%dfa%nodes(curr_i)%get_tra_top()
 
+               if (d_tra_top <= DFA_INIT_TRANSITION_TOP) cycle middle
 
                if (.not. allocated(n_tra%c)) cycle middle
 
-               do k = 1, n_tra%c_top
-                  if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_EMPTY .and. n_tra%c(k) /= SEG_INIT) then
+               inner: do k = 1, n_tra%c_top
+                  if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_INIT) then
 
                      if (.not. allocated(self%dfa%nodes(curr_i)%transition(d_tra_top)%c)) cycle
 
-                     if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(k) .in. n_tra%c) &
-                      .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
-                        call add_nfa_state(state_set, n_tra%dst)
-                     endif
+                     core: do m = 1, self%dfa%nodes(curr_i)%transition(d_tra_top)%c_top
+                        if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(m) .in. n_tra%c) &
+                        .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
+                           call add_nfa_state(state_set, n_tra%dst)
+                        endif
+                     end do core
 
                   end if
-               end do
+               end do inner
 
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
 
-                  symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
+                  ! symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
                   call add_nfa_state(state_set, n_tra%dst)
-
                end if
 
             end do middle
@@ -294,6 +298,7 @@ contains
       end if
 
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
+      
       ! 遷移を追加する
       call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, [which_segment_symbol_belong(self%all_segments, symbol)])
 
@@ -335,7 +340,7 @@ contains
             write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
 
-         do j = 1, self%dfa%nodes(i)%tra_top
+         do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
             do k = 1, p%c_top
                write(stderr, '(a, a, i0, 1x)', advance='no') p%c(k)%print(), '=>', p%dst
