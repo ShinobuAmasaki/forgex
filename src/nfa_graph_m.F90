@@ -18,7 +18,8 @@ module forgex_nfa_graph_m
       procedure :: free  => nfa_graph__deallocate
       procedure :: make_node => nfa_graph__make_nfa_node
       procedure :: generate => nfa_graph__generate
-      procedure :: collect_e_t => nfa_graph__collect_epsilon_transition
+      procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
+      procedure :: mark_epsilon_transition => nfa_graph__mark_epsilon_transition
 #ifdef DEBUG
       procedure :: print => nfa_graph__print
 #endif
@@ -81,6 +82,31 @@ contains
       
    end subroutine nfa_graph__disjoin
 
+   pure recursive subroutine nfa_graph__mark_epsilon_transition(self, state_set, idx)
+      use :: forgex_segment_m
+      use :: forgex_nfa_state_set_m
+      implicit none
+      class(nfa_graph_t),intent(in) :: self
+      type(nfa_state_set_t), intent(inout) :: state_set
+      integer, intent(in) :: idx
+
+      type(nfa_transition_t) :: p
+      integer :: j, k
+      call add_nfa_state(state_set, idx)
+
+      j = 1
+      do while(j <= self%nodes(idx)%forward_top)
+         p = self%nodes(idx)%forward(j)
+      
+         do k = 1, p%c_top
+            if ((p%c(k) ==SEG_EPSILON) .and. .not. check_nfa_state(state_set, p%dst)) then
+               if (p%dst /= NFA_NULL_TRANSITION) call self%mark_epsilon_transition(state_set, p%dst)
+            end if
+         end do
+         j = j + 1   
+      end do
+
+   end subroutine nfa_graph__mark_epsilon_transition
 
    pure subroutine nfa_graph__collect_epsilon_transition(self, state_set)
       use :: forgex_segment_m
@@ -95,15 +121,20 @@ contains
 
       do i = NFA_STATE_BASE+1, self%nfa_top
          if (check_nfa_state(state_set, i)) then
-            if (.not. allocated(self%nodes(i)%forward)) cycle
-            do j = 1, self%nodes(i)%forward_top
-               tra = self%nodes(i)%forward(j)
-               do k = 1, tra%c_top
-                  if (tra%c(k) == SEG_EPSILON .and. .not. check_nfa_state(state_set, tra%dst)) then
-                     if (tra%dst /= NFA_NULL_TRANSITION) call add_nfa_state(state_set, i)
-                  end if
-               end do
-            end do
+
+            call self%mark_epsilon_transition(state_set, i)
+
+            ! if (.not. allocated(self%nodes(i)%forward)) cycle
+
+            ! do j = 1, self%nodes(i)%forward_top
+            !    tra = self%nodes(i)%forward(j)
+            !    do k = 1, tra%c_top
+            !       if (tra%c(k) == SEG_EPSILON .and. .not. check_nfa_state(state_set, tra%dst)) then
+            !          if (tra%dst /= NFA_NULL_TRANSITION) call add_nfa_state(state_set, i)
+            !       end if
+            !    end do
+            ! end do
+
          end if
       end do
 

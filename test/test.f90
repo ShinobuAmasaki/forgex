@@ -12,6 +12,4 @@ program main
    print *, pattern .match. "hzd"
 
 
- 
-
 end program main

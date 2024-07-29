@@ -102,16 +102,4 @@ contains
       dst%own_j = src%own_j
    end subroutine copy_dfa_transition
 
-#ifdef DEBUG
-   subroutine dump_dfa_node(self)
-      use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
-      implicit none
-      class(dfa_state_node_t), intent(in) :: self
-
-      write(stderr, '(a, i0, a)') "--- DFA NODE ", self%own_i, " ---"
-
-   end subroutine dump_dfa_node
-
-#endif
-
 end module forgex_lazy_dfa_node_m

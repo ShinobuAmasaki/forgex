@@ -315,11 +315,14 @@ contains
       if (x%dst == DFA_INVALID_INDEX) return
 
 #ifdef PURE
-write(stderr, *)"L297: ", x%nfa_set%vec(1:6)
+write(stderr, *)"L318: ", x%nfa_set%vec(1:6)
+#endif
+      call self%nfa%collect_epsilon_transition(x%nfa_set)
+
+#ifdef PURE
+write(stderr, *)"L323: ", x%nfa_set%vec(1:6)
 write(stderr, *)"============================"
 #endif
-      call self%nfa%collect_e_t(x%nfa_set)
-
       dst_i = self%dfa%registered(x%nfa_set)
 
       if (dst_i == DFA_INVALID_INDEX) then
@@ -361,7 +364,7 @@ write(stderr, *)"============================"
 
       write(stderr,*) "--- PRINT DFA---"
 
-      do i = 1, self%dfa%dfa_top
+      do i = 1, self%dfa%dfa_top -1
 
          if (self%dfa%nodes(i)%accepted) then
             write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
@@ -369,7 +372,7 @@ write(stderr, *)"============================"
             write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
 
-         do j = 1, self%dfa%nodes(i)%get_tra_top()
+         do j = 2, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
             write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
 
@@ -377,7 +380,7 @@ write(stderr, *)"============================"
          write(stderr, *) ""
       end do 
 
-      do i = 1, self%dfa%dfa_top
+      do i = 1, self%dfa%dfa_top - 1
          if (self%dfa%nodes(i)%accepted) then
             write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
          else
