@@ -19,7 +19,7 @@ module forgex_automaton_m
       type(nfa_state_set_t) :: entry_set
       type(segment_t), allocatable :: all_segments(:)
       integer(int32) :: nfa_entry, nfa_exit
-      integer(int32) :: initial_index
+      integer(int32) :: initial_index = DFA_NOT_INIT
    contains
       procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
@@ -30,6 +30,7 @@ module forgex_automaton_m
       procedure :: destination     => automaton__destination
 #ifdef DEBUG
       procedure :: print           => automaton__print_info
+      procedure :: print_dfa       => automaton__print_dfa
 #endif
    end type automaton_t
 
@@ -65,6 +66,7 @@ contains
       call self%register(initial_closure, new_index)
 
       self%initial_index = new_index
+
    end subroutine automaton__initialize
 
 
@@ -302,6 +304,47 @@ contains
       write(stderr, *) "initial_index: ", self%initial_index
 
    end subroutine automaton__print_info
+
+   subroutine automaton__print_dfa(self)
+      use, intrinsic :: iso_fortran_env, only: stderr => error_unit
+      use :: forgex_nfa_state_set_m
+      use :: forgex_lazy_dfa_node_m
+      implicit none
+      class(automaton_t), intent(in) :: self
+      type(dfa_transition_t) :: p
+      integer(int32) :: i, j, k
+
+      write(stderr,*) "--- PRINT DFA---"
+
+      do i = 1, self%dfa%dfa_top
+
+         if (self%dfa%nodes(i)%accepted) then
+            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
+         else
+            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
+         end if
+
+         do j = 1, self%dfa%nodes(i)%tra_top
+            p = self%dfa%nodes(i)%transition(j)
+            do k = 1, p%c_top
+               write(stderr, '(a, a, i0, 1x)', advance='no') p%c(k)%print(), '=>', p%dst
+            end do
+         end do
+         write(stderr, *) ""
+      end do 
+
+      do i = 1, self%dfa%dfa_top
+         if (self%dfa%nodes(i)%accepted) then
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
+         else
+            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
+         end if
+
+         call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top)
+
+         write(stderr,'(a)') ")"
+      end do
+   end subroutine automaton__print_dfa
 
 #endif
 

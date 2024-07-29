@@ -1,3 +1,6 @@
+#ifdef PURE
+#define pure
+#endif
 module forgex_lazy_dfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m
@@ -83,9 +86,6 @@ contains
       self%nodes(src)%tra_top = j + 1
 
    end subroutine lazy_dfa__add_transition
-
-
-
 
 
 end module forgex_lazy_dfa_graph_m

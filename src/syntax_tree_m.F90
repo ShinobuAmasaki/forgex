@@ -1,3 +1,6 @@
+#ifdef PURE
+#define pure
+#endif
 ! Fortran Regular Expression (Forgex)
 !
 ! MIT License
@@ -96,7 +99,7 @@ contains
    !> Copies the input pattern to `tape_t` type and builds a syntax tree.
    !> The result returns a pointer to the root of the tree.
    !> Expected to be used by the forgex module.
-   subroutine build_syntax_tree(str, tape, tree, top_idx)
+   pure subroutine build_syntax_tree(str, tape, tree, top_idx)
       implicit none
       character(*), intent(in)    :: str
       type(tape_t), intent(inout) :: tape
