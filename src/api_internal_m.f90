@@ -11,7 +11,8 @@ module forgex_api_internal_m
    public :: do_matching_exactly
 contains
 
-   pure subroutine do_matching_exactly(automaton, string, res)
+   subroutine do_matching_exactly(automaton, string, res)
+   ! pure subroutine do_matching_exactly(automaton, string, res)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*), intent(in) :: string
