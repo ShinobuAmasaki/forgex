@@ -131,15 +131,26 @@ contains
          error stop "Number of DFA states too large."
       end if
 
-      k = self%dfa%dfa_top
-      self%dfa%dfa_top = k + 1
+      ! k = self%dfa%dfa_top
+      ! self%dfa%dfa_top = k + 1
 
-      self%dfa%nodes(k)%nfa_set = state_set
-      self%dfa%nodes(k)%accepted = check_nfa_state(state_set, self%nfa_exit)
-      self%dfa%nodes(k)%registered = .true.
-      allocate(self%dfa%nodes(k)%transition(DFA_TRANSITION_UNIT*1))
-      self%dfa%nodes(k)%tra_top = 1
-      res = k
+      ! self%dfa%nodes(k)%nfa_set = state_set
+      ! self%dfa%nodes(k)%accepted = check_nfa_state(state_set, self%nfa_exit)
+      ! self%dfa%nodes(k)%registered = .true.
+      ! allocate(self%dfa%nodes(k)%transition(DFA_TRANSITION_UNIT*1))
+      ! self%dfa%nodes(k)%tra_top = 1
+      ! res = k
+
+      i = self%dfa%dfa_top
+      self%dfa%dfa_top = i + 1
+
+      self%dfa%nodes(i)%nfa_set = state_set
+      self%dfa%nodes(i)%accepted = check_nfa_state(state_set, self%nfa_exit)
+      self%dfa%nodes(i)%registered = .true.
+      call self%dfa%nodes(i)%init_transition()
+      call self%dfa%nodes(i)%increment_tra_top()
+      res = i
+
    end subroutine automaton__register_state
 
 
