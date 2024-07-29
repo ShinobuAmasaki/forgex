@@ -43,6 +43,7 @@ module forgex_lazy_dfa_node_m
       procedure :: get_tra_top => dfa_state_node__get_transition_top
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
       procedure :: init_transition => dfa_state_node__initialize_transition
+      procedure :: add_transition => dfa_state_node__add_transition
    end type dfa_state_node_t
 
 contains
@@ -75,6 +76,22 @@ contains
    end subroutine dfa_state_node__initialize_transition
 
 
+   pure subroutine dfa_state_node__add_transition (self, tra)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+      type(dfa_transition_t), intent(in) :: tra
+
+      integer :: j
+
+      j = self%get_tra_top() + 1
+
+      self%transition(j) = tra
+
+      call self%increment_tra_top()
+
+   end subroutine dfa_state_node__add_transition
+
+
    pure subroutine copy_dfa_transition(src, dst)
       implicit none
       type(dfa_transition_t), intent(in) :: src
@@ -87,5 +104,16 @@ contains
       dst%own_j = src%own_j
    end subroutine copy_dfa_transition
 
+#ifdef DEBUG
+   subroutine dump_dfa_node(self)
+      use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
+      implicit none
+      class(dfa_state_node_t), intent(in) :: self
+
+      write(stderr, '(a, i0, a)') "--- DFA NODE ", self%own_i, " ---"
+
+   end subroutine dump_dfa_node
+
+#endif
 
 end module forgex_lazy_dfa_node_m
