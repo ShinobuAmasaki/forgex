@@ -85,7 +85,11 @@ contains
       ! self%nodes(src)%transition(j) = tra
       ! self%nodes(src)%tra_top = j + 1
 
-      call self%nodes(src)%increment_tra_top()
+      if (self%nodes(src)%get_tra_top() == DFA_NOT_INIT_TRAENSITION_TOP) then
+         call self%nodes(src)%init_transition()
+      end if
+
+      call self%nodes(src)%increment_tra_top() ! tra_top becomes 1
       j = self%nodes(src)%get_tra_top()
       tra%own_j = j
 

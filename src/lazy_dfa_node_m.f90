@@ -34,7 +34,7 @@ module forgex_lazy_dfa_node_m
       type(nfa_state_set_t) :: nfa_set
       logical               :: accepted = .false.
       type(dfa_transition_t), allocatable :: transition(:)
-      integer(int32)        :: tra_top = 0
+      integer(int32),private :: tra_top = DFA_NOT_INIT_TRAENSITION_TOP
       logical               :: registered = .false.
    contains
       procedure :: get_tra_top => dfa_state_node__get_transition_top

@@ -73,6 +73,7 @@ module forgex_parameters_m
    !>
    integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 128
    integer(int32), parameter, public :: DFA_C_SIZE = 32
+   integer(int32), parameter, public :: DFA_NOT_INIT_TRAENSITION_TOP = -999
    integer(int32), parameter, public :: DFA_INIT_TRANSITION_TOP = 0
 
 end module forgex_parameters_m
