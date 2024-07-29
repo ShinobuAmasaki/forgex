@@ -40,6 +40,44 @@ module forgex_lazy_dfa_node_m
 
 contains
 
+   pure function dfa_state_node__get_transition_top (self) result(res)
+      implicit none
+      class(dfa_state_node_t), intent(in) :: self
+      integer :: res
+
+      res = self%tra_top
+   end function dfa_state_node__get_transition_top
+      
+
+   pure subroutine dfa_state_node__increment_transition_top (self)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+
+
+      self%tra_top = self%tra_top + 1
+   end subroutine dfa_state_node__increment_transition_top
+
+   
+   pure subroutine dfa_state_node__initialize_transition (self)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+      
+      allocate(self%transition(DFA_TRANSITION_UNIT))
+      self%tra_top = DFA_INIT_TRANSITION_TOP
+   end subroutine dfa_state_node__initialize_transition
+
+
+   pure subroutine copy_dfa_transition(src, dst)
+      implicit none
+      type(dfa_transition_t), intent(in) :: src
+      type(dfa_transition_t), intent(inout) :: dst
+
+      dst%c = src%c
+      dst%c_top = src%c_top
+      dst%dst = src%dst
+      dst%nfa_set = src%nfa_set
+      dst%own_j = src%own_j
+   end subroutine copy_dfa_transition
 
 
 end module forgex_lazy_dfa_node_m
