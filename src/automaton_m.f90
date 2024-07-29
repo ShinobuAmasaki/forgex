@@ -165,71 +165,78 @@ contains
       integer(int32), intent(in) :: curr_i      ! current index of dfa
       character(*), intent(in) :: symbol
 
+      type(nfa_state_set_t)  :: state_set, current_set
+      type(nfa_state_node_t) :: ptr_nlist
+      type(dfa_transition_t) :: a, b
+      type(segment_t)        :: symbol_belong
+      type(dfa_transition_t) :: transitions(DFA_TRANSITION_UNIT)
+      integer(int32) :: i, j, k, jj
 
-      type(nfa_state_set_t) :: state_set
-      type(nfa_state_node_t) :: n_node
-      type(nfa_transition_t) :: n_tra
-      type(segment_t) :: symbol_belong
-      integer(int32) :: i, j, k, m
-
-      integer :: d_tra_top, d_c_top
+      integer :: num_nfa_states
+      integer :: num_transitions 
 
       symbol_belong = SEG_INIT
-      ! nfa状態をスキャン
-      ! Scan through NFA states
-      outer: do i = self%nfa%nfa_base+1, self%nfa%nfa_top
+      num_nfa_states = self%nfa%nfa_top
 
-         ! 現在の状態集合のi番目が真ならば、i番NFAノードの処理を行う
-         if (check_nfa_state(self%dfa%nodes(curr_i)%nfa_set, i)) then
+      current_set = self%dfa%nodes(curr_i)%nfa_set
 
-            n_node = self%nfa%nodes(i)
+      outer: do i = 1, num_nfa_states
+         if (check_nfa_state(current_set, i)) then
+            
+            ptr_nlist = self%nfa%nodes(i)
 
-            if (.not. allocated(n_node%forward)) cycle outer
+            j = 1
+            jj = 1
+            middle: do while (ptr_nlist%forward(j)%own_j <= ptr_nlist%forward_top .and. jj <= DFA_TRANSITION_UNIT)
 
-            middle: do j = 1, n_node%forward_top
+               do k = 1, ptr_nlist%forward(j)%c_top
+                  if (ptr_nlist%forward(j)%c(k) .in. [SEG_EMPTY, SEG_EPSILON, SEG_INIT]) then
 
-               ! temporary variables
-               n_tra = n_node%forward(j)
-               d_tra_top = self%dfa%nodes(curr_i)%get_tra_top()
+                     a = transitions(jj)
+                     inner: do while (a%own_j /= DFA_NOT_INIT)
 
-               if (d_tra_top <= DFA_INIT_TRANSITION_TOP) cycle middle
+                        if ((a%c .in. ptr_nlist%forward(j)%c) .and. ptr_nlist%forward(j)%dst/= NFA_NULL_TRANSITION) then
 
-               if (.not. allocated(n_tra%c)) cycle middle
+                           call add_nfa_state(transitions(jj)%nfa_set, ptr_nlist%forward(j)%dst)
+                           j = j + 1
+                           cycle middle
 
-               inner: do k = 1, n_tra%c_top
-                  if (n_tra%c(k) /= SEG_EPSILON .and. n_tra%c(k) /= SEG_INIT) then
-
-                     if (.not. self%dfa%nodes(curr_i)%initialized) cycle middle
-
-                     d_c_top = self%dfa%nodes(curr_i)%transition(d_tra_top)%c_top
-write(stderr, *) d_tra_top, d_c_top
-                     core: do m = 1, d_c_top
-
-                        if ((self%dfa%nodes(curr_i)%transition(d_tra_top)%c(m) == n_tra%c(k)) &
-                        .and. self%dfa%nodes(curr_i)%transition(d_tra_top)%dst /= DFA_NULL_TRANSITION) then
-                           call add_nfa_state(state_set, n_tra%dst)
-                        endif
-
-write(stderr, *) "A   : ", state_set%vec(1:6)   
-                     end do core
-    
+                        end if
+                        jj = jj + 1
+                     end do inner
 
                   end if
-               end do inner
+               end do
 
-               if (n_tra%dst /= NFA_NULL_TRANSITION) then
+               if (ptr_nlist%forward(j)%dst /= NFA_NULL_TRANSITION) then
 
-                  ! symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
-                  call add_nfa_state(state_set, n_tra%dst)
-write(stderr, *) "B   : ", state_set%vec(1:6)   
+                  do k = 1, ptr_nlist%forward(j)%c_top
+                     if ( (symbol_to_segment(symbol) .in. ptr_nlist%forward(j)%c) &
+                          .or. (ptr_nlist%forward(j)%c(k) == SEG_EPSILON)) then
+
+                        symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
+
+                        transitions(jj)%c = symbol_belong
+                        call add_nfa_state(transitions(jj)%nfa_set, ptr_nlist%forward(j)%dst)
+
+                        jj = jj + 1
+                     end if
+                  end do
                end if
+               j = j + 1
 
             end do middle
+
          end if
-      end do outer
-write(stderr, *) "RES : ", state_set%vec(1:6)
+      end do outer 
 
+      do j = 1, DFA_TRANSITION_UNIT
+         state_set%vec = transitions(j)%nfa_set%vec .or. state_set%vec
+      end do
 
+#ifdef PURE
+! write(stderr, *) "M:    ", m
+#endif
 
    end function automaton__compute_reachable_state
 
@@ -273,8 +280,10 @@ write(stderr, *) "RES : ", state_set%vec(1:6)
       type(nfa_state_set_t) :: set
 
       call self%destination(curr, symbol, next, set)
+
       if (next /= DFA_INVALID_INDEX) then
-            res%c = [symbol_to_segment(symbol)]
+            res%c = symbol_to_segment(symbol)
+
             res%dst = next
             res%nfa_set = set
             res%own_j = self%dfa%dfa_top
@@ -302,11 +311,14 @@ write(stderr, *) "RES : ", state_set%vec(1:6)
       ! ε遷移を除いた行き先のstate_setを取得する
       x = self%move(prev_i, symbol)
 
-      ! この実装ではリダクションの必要がない
+      ! この実装ではリストのリダクションを計算する必要がない
       if (x%dst == DFA_INVALID_INDEX) return
 
+#ifdef PURE
+write(stderr, *)"L297: ", x%nfa_set%vec(1:6)
+write(stderr, *)"============================"
+#endif
       call self%nfa%collect_e_t(x%nfa_set)
-
 
       dst_i = self%dfa%registered(x%nfa_set)
 
@@ -317,7 +329,7 @@ write(stderr, *) "RES : ", state_set%vec(1:6)
 
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
       ! 遷移を追加する
-      call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, [which_segment_symbol_belong(self%all_segments, symbol)])
+      call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
 
 
    end subroutine automaton__construct_dfa
@@ -359,9 +371,8 @@ write(stderr, *) "RES : ", state_set%vec(1:6)
 
          do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
-            do k = 1, p%c_top
-               write(stderr, '(a, a, i0, 1x)', advance='no') p%c(k)%print(), '=>', p%dst
-            end do
+            write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
+
          end do
          write(stderr, *) ""
       end do 
