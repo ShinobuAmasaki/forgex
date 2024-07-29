@@ -36,6 +36,10 @@ module forgex_lazy_dfa_node_m
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32)        :: tra_top = 0
       logical               :: registered = .false.
+   contains
+      procedure :: get_tra_top => dfa_state_node__get_transition_top
+      procedure :: increment_tra_top => dfa_state_node__increment_transition_top
+      procedure :: init_transition => dfa_state_node__initialize_transition
    end type dfa_state_node_t
 
 contains
