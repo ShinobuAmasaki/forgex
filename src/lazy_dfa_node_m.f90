@@ -18,7 +18,9 @@ module forgex_lazy_dfa_node_m
    use :: forgex_segment_m
    use :: forgex_nfa_state_set_m
    implicit none
-   private   
+   private
+
+   public :: copy_dfa_transition
 
    type, public :: dfa_transition_t
       type(segment_t), allocatable :: c(:)
@@ -36,6 +38,7 @@ module forgex_lazy_dfa_node_m
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32),private :: tra_top = DFA_NOT_INIT_TRAENSITION_TOP
       logical               :: registered = .false.
+      logical               :: initialized = .false.
    contains
       procedure :: get_tra_top => dfa_state_node__get_transition_top
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
@@ -68,6 +71,7 @@ contains
       
       allocate(self%transition(DFA_TRANSITION_UNIT))
       self%tra_top = DFA_INIT_TRANSITION_TOP
+      self%initialized = .true.
    end subroutine dfa_state_node__initialize_transition
 
 
