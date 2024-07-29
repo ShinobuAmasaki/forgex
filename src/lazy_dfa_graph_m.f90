@@ -81,9 +81,15 @@ contains
       tra%dst = dst
       tra%nfa_set = state_set
 
-      j = self%nodes(src)%tra_top + 1
+      ! j = self%nodes(src)%tra_top + 1
+      ! self%nodes(src)%transition(j) = tra
+      ! self%nodes(src)%tra_top = j + 1
+
+      call self%nodes(src)%increment_tra_top()
+      j = self%nodes(src)%get_tra_top()
+      tra%own_j = j
+
       self%nodes(src)%transition(j) = tra
-      self%nodes(src)%tra_top = j + 1
 
    end subroutine lazy_dfa__add_transition
 
