@@ -1,4 +1,4 @@
-#ifdef PURE
+#ifdef IMPURE
 #define pure
 #endif
 module forgex_automaton_m

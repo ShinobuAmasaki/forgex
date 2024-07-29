@@ -1,4 +1,4 @@
-#ifdef PURE
+#ifdef IMPURE
 #define pure
 #endif
 module forgex
@@ -36,7 +36,7 @@ contains
 
       call build_syntax_tree(buff, tape, tree, root)
 
-#ifdef PURE 
+#ifdef IMPURE 
       call print_tree(tree, root)
 #endif
 
@@ -44,7 +44,7 @@ contains
 
       call do_matching_exactly(automaton, str, res)
 
-#ifdef PURE
+#ifdef IMPURE
       call automaton%print_dfa()
 #endif
 

@@ -1,4 +1,4 @@
-#ifdef PURE
+#ifdef IMPURE
 #define pure
 #endif
 module forgex_lazy_dfa_graph_m

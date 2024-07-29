@@ -1,4 +1,4 @@
-#ifdef PURE
+#ifdef IMPURE
 #define pure
 #endif
 module forgex_nfa_graph_m
@@ -24,6 +24,7 @@ module forgex_nfa_graph_m
       procedure :: print => nfa_graph__print
 #endif
    end type
+
 contains
 
 !== Currently, the nfa_graph_m procedures are just a wrapper around nfa_node_m.
@@ -108,6 +109,7 @@ contains
       end do
 
    end subroutine nfa_graph__mark_epsilon_transition
+
 
    pure subroutine nfa_graph__collect_epsilon_transition(self, state_set)
       use :: forgex_segment_m
