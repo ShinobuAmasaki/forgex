@@ -63,21 +63,19 @@ contains
    end function lazy_dfa__registered_index
 
 
-   pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, segments)
+   pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, seg)
       use :: forgex_segment_m
       use :: forgex_nfa_state_set_m
       implicit none
       class(dfa_graph_t), intent(inout) :: self
       type(nfa_state_set_t), intent(in) :: state_set
       integer, intent(in) :: src, dst
-      type(segment_t), intent(in) :: segments(:)
+      type(segment_t), intent(in) :: seg
 
       type(dfa_transition_t) :: tra
       integer :: j
 
-      tra%c_top = size(segments, dim=1)
-      allocate(tra%c(tra%c_top))
-      tra%c(:) = segments(:)
+      tra%c = seg
       
       tra%dst = dst
       tra%nfa_set = state_set

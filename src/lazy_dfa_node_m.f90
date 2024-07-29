@@ -23,8 +23,7 @@ module forgex_lazy_dfa_node_m
    public :: copy_dfa_transition
 
    type, public :: dfa_transition_t
-      type(segment_t), allocatable :: c(:)
-      integer(int32) :: c_top = ZERO_C_TOP
+      type(segment_t) :: c
       type(nfa_state_set_t) :: nfa_set
       integer(int32) :: own_j = DFA_NOT_INIT
       integer(int32) :: dst = 0     ! destination index of DFA graph
@@ -98,7 +97,6 @@ contains
       type(dfa_transition_t), intent(inout) :: dst
 
       dst%c = src%c
-      dst%c_top = src%c_top
       dst%dst = src%dst
       dst%nfa_set = src%nfa_set
       dst%own_j = src%own_j
