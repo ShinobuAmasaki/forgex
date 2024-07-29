@@ -23,7 +23,7 @@ module forgex_automaton_m
    contains
       procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
-      procedure :: register        => automaton__register
+      procedure :: register_state  => automaton__register_state
       procedure :: construct       => automaton__construct_dfa
       procedure :: get_reachable   => automaton__compute_reachable_state
       procedure :: move            => automaton__move
@@ -63,7 +63,7 @@ contains
 
       call self%epsilon_closure(self%entry_set, initial_closure)
 
-      call self%register(initial_closure, new_index)
+      call self%register_state(initial_closure, new_index)
 
       self%initial_index = new_index
 
@@ -112,7 +112,7 @@ contains
    end subroutine automaton__epsilon_closure
 
 
-   pure subroutine automaton__register(self, state_set, res)
+   pure subroutine automaton__register_state(self, state_set, res)
       implicit none
       class(automaton_t), intent(inout) :: self
       type(nfa_state_set_t), intent(in) :: state_set
@@ -140,7 +140,7 @@ contains
       allocate(self%dfa%nodes(k)%transition(DFA_TRANSITION_UNIT*1))
       self%dfa%nodes(k)%tra_top = 1
       res = k
-   end subroutine automaton__register
+   end subroutine automaton__register_state
 
 
    !! WIP
@@ -279,7 +279,7 @@ contains
 
       if (dst_i == DFA_INVALID_INDEX) then
          ! まだDFA状態が登録されていない場合
-         call self%register(x%nfa_set, dst_i)
+         call self%register_state(x%nfa_set, dst_i)
       end if
 
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
