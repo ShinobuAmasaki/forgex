@@ -22,7 +22,7 @@ module forgex_lazy_dfa_node_m
 
    type, public :: dfa_transition_t
       type(segment_t), allocatable :: c(:)
-      integer(int32) :: c_top = 0
+      integer(int32) :: c_top = ZERO_C_TOP
       type(nfa_state_set_t) :: nfa_set
       integer(int32) :: own_j = DFA_NOT_INIT
       integer(int32) :: dst = 0     ! destination index of DFA graph
