@@ -90,10 +90,13 @@ contains
       end if
 
       call self%nodes(src)%increment_tra_top() ! tra_top becomes 1
+
       j = self%nodes(src)%get_tra_top()
       tra%own_j = j
 
+
       self%nodes(src)%transition(j) = tra
+      self%nodes(src)%transition(j)%own_j = j
 
    end subroutine lazy_dfa__add_transition
 
