@@ -7,6 +7,9 @@
 !     forgex_segment_disjoin_m module is a part of Forgex.
 !
 !! This file contains
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_segment_disjoin_m
    use :: forgex_segment_m, only: segment_t, SEG_UPPER, SEG_EMPTY, operator(.in.), operator(/=)
    use :: forgex_priority_queue_m, only: priority_queue_t
