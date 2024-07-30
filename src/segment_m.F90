@@ -1,6 +1,17 @@
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_segment_m module is a part of Forgex.
+!
+!! This file defines `segment_t` representing subset of UTF-8 character codeset
+!! and contains procedures for that.
+
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
+   use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY
    implicit none
    private
 

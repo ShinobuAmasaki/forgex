@@ -3,8 +3,11 @@
 #endif
 module forgex_nfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
-   use :: forgex_nfa_node_m
+   use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
+         NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
+   use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t, &
+         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa, disjoin_nfa
+
    implicit none
    private
 

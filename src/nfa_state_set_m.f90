@@ -11,7 +11,8 @@
 !> `forgex_nfa_m` module defines a derived-type which is the set of NFA nodes.
 !> `nfa_state_set_t` represents a set of NFA nodes for the power set construction method.
 module forgex_nfa_state_set_m
-   use :: forgex_parameters_m
+   use :: iso_fortran_env, only: int32
+   use :: forgex_parameters_m, only: NFA_STATE_LIMIT, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
    implicit none
    private
 
@@ -36,8 +37,7 @@ contains
    pure logical function check_nfa_state(state_set, state_index)
       implicit none
       type(nfa_state_set_t), intent(in) :: state_set
-
-      integer(int32), intent(in) :: state_index
+      integer(int32),        intent(in) :: state_index
 
       if (state_index /= 0) then
          check_nfa_state = state_set%vec(state_index)
@@ -87,9 +87,9 @@ contains
    recursive pure subroutine mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
-      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
-      type(nfa_state_set_t), intent(inout) :: nfa_set
-      integer(int32), intent(in) :: nfa_i, nfa_top
+      type(nfa_state_node_t), intent(in)    :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_set_t),  intent(inout) :: nfa_set
+      integer(int32),         intent(in)    :: nfa_i, nfa_top
 
       integer :: dst
       integer(int32) :: i, j, k
@@ -111,9 +111,9 @@ contains
    pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
-      type(nfa_state_node_t), intent(in) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
-      integer(int32), intent(in) :: nfa_top
-      type(nfa_state_set_t), intent(inout) :: nfa_set
+      type(nfa_state_node_t), intent(in)    :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      integer(int32),         intent(in)    :: nfa_top
+      type(nfa_state_set_t),  intent(inout) :: nfa_set
 
       integer(int32) :: i
 
@@ -130,7 +130,8 @@ contains
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
       implicit none
       type(nfa_state_set_t), intent(in) :: set
-      integer(int32), intent(in) :: top
+      integer(int32),        intent(in) :: top
+
       integer(int32) :: i
 
       do i = 1, top

@@ -3,9 +3,9 @@
 #endif
 module forgex_api_internal_m
    use, intrinsic :: iso_fortran_env, only: stderr => error_unit
-   use :: forgex_parameters_m
-   use :: forgex_automaton_m
-   use :: forgex_utf8_m
+   use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_INVALID_INDEX
+   use :: forgex_automaton_m, only: automaton_t
+   use :: forgex_utf8_m, only: idxutf8
    implicit none
    private
 

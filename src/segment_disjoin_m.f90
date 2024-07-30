@@ -4,15 +4,12 @@
 !
 ! (C) Amasaki Shinobu, 2023-2024
 !     A regular expression engine for Fortran.
-!     forgex_nfa_m module is a part of Forgex.
+!     forgex_segment_disjoin_m module is a part of Forgex.
 !
-!! This file contains `nfa_t` class and its type-bound procedures.
-
-!> The `forgex_nfa_m` module defines the data structure of NFA.
-!> The `nfa_t` is defined as a class representing NFA.
+!! This file contains
 module forgex_segment_disjoin_m
-   use :: forgex_segment_m
-   use :: forgex_priority_queue_m
+   use :: forgex_segment_m, only: segment_t, SEG_UPPER, SEG_EMPTY, operator(.in.), operator(/=)
+   use :: forgex_priority_queue_m, only: priority_queue_t
    implicit none
    private
 
