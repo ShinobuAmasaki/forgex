@@ -121,9 +121,9 @@ contains
    !> The result is returned as a pointer to the DFA state.
    pure subroutine automaton__register_state(self, state_set, res)
       implicit none
-      class(automaton_t), intent(inout) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
-      integer(int32), intent(inout) :: res ! resulting the new dfa index
+      class(automaton_t),    intent(inout) :: self
+      type(nfa_state_set_t), intent(in)    :: state_set
+      integer(int32),        intent(inout) :: res       ! resulting the new dfa index
 
       integer(int32) :: i, j, k
 
@@ -167,27 +167,28 @@ contains
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
-      integer(int32), intent(in) :: curr_i      ! current index of dfa
-      character(*), intent(in) :: symbol
+      integer(int32),     intent(in) :: curr_i      ! current index of dfa
+      character(*),       intent(in) :: symbol
 
-      type(nfa_state_set_t)  :: state_set, current_set
-      type(nfa_state_node_t) :: n_node
-      type(dfa_transition_t) :: a, b
-      type(segment_t)        :: symbol_belong
+      type(nfa_state_set_t)  :: state_set
+      type(nfa_state_set_t)  :: current_set
+      type(nfa_state_node_t) :: n_node       ! This variable simulates a pointer.
+      type(dfa_transition_t) :: a, b         ! Same as above.
       type(dfa_transition_t) :: transitions(DFA_TRANSITION_UNIT)
-      integer(int32) :: i, j, k, jj
+      integer(int32)         :: i, j, k, jj
 
       integer :: num_nfa_states
-      integer :: num_transitions 
 
-      symbol_belong = SEG_INIT
       num_nfa_states = self%nfa%nfa_top
 
       current_set = self%dfa%nodes(curr_i)%nfa_set
 
+      ! Scan the entire NFA states.
       outer: do i = 1, num_nfa_states
+         ! If the i-th element of current state set is true, process the i-th NFA node.
          if (check_nfa_state(current_set, i)) then
             
+            ! 
             n_node = self%nfa%nodes(i)
 
             j = 1  ! loop varialbe for NFA nodes
@@ -219,9 +220,7 @@ contains
                      if ( (symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
                           .or. (n_node%forward(j)%c(k) == SEG_EPSILON)) then
 
-                        symbol_belong = which_segment_symbol_belong(self%all_segments, symbol)
-
-                        transitions(jj)%c = symbol_belong
+                        transitions(jj)%c = which_segment_symbol_belong(self%all_segments, symbol)
                         call add_nfa_state(transitions(jj)%nfa_set, n_node%forward(j)%dst)
 
                         jj = jj + 1
@@ -235,6 +234,7 @@ contains
          end if
       end do outer 
 
+      ! Aggregate all transitions and assign them to `state_set`.
       do j = 1, DFA_TRANSITION_UNIT
          state_set%vec = transitions(j)%nfa_set%vec .or. state_set%vec
       end do
@@ -244,7 +244,6 @@ contains
 
    !> This subroutine gets the next DFA nodes index from current index and symbol,
    !> and stores the result in `next` and `next_set`.
-   !>
    pure subroutine automaton__destination(self, curr, symbol, next, next_set)
       implicit none
       class(automaton_t),    intent(in) :: self
@@ -255,43 +254,47 @@ contains
 
       integer :: i
 
+      ! Get a set of NFAs for which current state can transition, excluding epsilon-transitions.
       next_set = self%get_reachable(curr, symbol)
 
+      ! Initialize the next value
       next = DFA_INVALID_INDEX
       
-      ! Scan the entire dfa nodes.
+      ! Scan the entire DFA nodes.
       do i = 1, self%dfa%dfa_top
+
+         ! If there is an existing node corresponding to the NFA state set,
+         ! return the index of that node.
          if (equivalent_nfa_state_set(next_set, self%dfa%nodes(i)%nfa_set)) then
             next = i
             return
          end if
-      end do 
 
+      end do 
    end subroutine automaton__destination
 
    
-   ! This function returns the dfa transition object, that contains the 
+   !> This function returns the dfa transition object, that contains the destination index
+   !> and the corresponding set of transitionable NFA state.  
    pure function automaton__move(self, curr, symbol) result(res)
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
-      integer(int32), intent(in) :: curr    ! current
-      character(*), intent(in) :: symbol
+      integer(int32),     intent(in) :: curr    ! current index
+      character(*),       intent(in) :: symbol  ! input symbol
+      type(dfa_transition_t)         :: res
 
-      type(dfa_transition_t) :: res
-
-      integer :: i, j
-
-      integer(int32) :: next
       type(nfa_state_set_t) :: set
+      integer(int32)        :: next
 
       call self%destination(curr, symbol, next, set)
 
-      res%c = symbol_to_segment(symbol)
-      res%dst = next               ! valid index of DFA node or DFA_INVALID_INDEX
+      ! Set the value of each component of the returned object.
+      res%dst = next                      ! valid index of DFA node or DFA_INVALID_INDEX
       res%nfa_set = set
-      res%own_j = self%dfa%dfa_top ! The rhs of this assignment is incorrent.
-
+      
+      ! res%c = symbol_to_segment(symbol) ! this component would not be used.
+      ! res%own_j = DFA_INITIAL_INDEX     ! this component would not be used.
    end function automaton__move
 
 
@@ -309,7 +312,7 @@ contains
       integer(int32),     intent(inout) :: dst_i
       character(*),       intent(in)    :: symbol
 
-      type(dfa_transition_t) :: x
+      type(dfa_transition_t) :: d_tra
       type(segment_t), allocatable :: segments(:)
       integer(int32) :: prev_i, res
 
@@ -317,26 +320,32 @@ contains
       prev_i = curr_i
       segments = self%all_segments
 
-      ! ε遷移を除いた行き先のstate_setを取得する
-      x = self%move(prev_i, symbol)
+      ! ε遷移を除いた行き先のstate_setを取得する。
+      ! Get the state set for the destination excluding epsilon-transition.
+      d_tra = self%move(prev_i, symbol)
 
-      ! この実装ではリストのリダクションを計算する必要がない
-      !! In this array implementation, array reduction is done in the reachable procedure. 
+      ! この実装ではリストのリダクションを計算する必要がない。
+      !! In this implementation with array approach, array reduction is done in the reachable procedure. 
 
-      call self%nfa%collect_epsilon_transition(x%nfa_set)
+      ! ε遷移との和集合を取り、d_tra%nfa_setに格納する。
+      ! Combine the state set with epsilon-transitions and store in `d_tra%nfa_set`.
+      call self%nfa%collect_epsilon_transition(d_tra%nfa_set)
 
-      dst_i = self%dfa%registered(x%nfa_set)
+      dst_i = self%dfa%registered(d_tra%nfa_set)
 
+
+      ! まだDFA状態が登録されていない場合は、新しく登録する。
+      ! If the destination index is DFA_INVALID_INDEX, register a new DFA node.
       if (dst_i == DFA_INVALID_INDEX) then
-         ! まだDFA状態が登録されていない場合
-         call self%register_state(x%nfa_set, dst_i)
+         call self%register_state(d_tra%nfa_set, dst_i)
       end if
 
+      ! If the destination index is DFA_INVALID_INDEX, the registration is failed.
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
+
       ! 遷移を追加する
-      call self%dfa%add_transition(x%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
-
-
+      ! Add a DFA transition from `prev` to `next` for the given `symbol`.
+      call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
 
