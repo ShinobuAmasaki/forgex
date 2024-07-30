@@ -20,7 +20,9 @@ module forgex_syntax_tree_m
          INVALID_INDEX, TERMINAL_INDEX, TREE_NODE_BASE, TREE_NODE_LIMIT, &
          SYMBOL_RSBK, SYMBOL_HYPN, SYMBOL_VBAR, SYMBOL_LPAR, SYMBOL_RPAR, SYMBOL_STAR, &
          SYMBOL_PLUS, SYMBOL_QUES, SYMBOL_BSLH, SYMBOL_LSBK, SYMBOL_RSBK, SYMBOL_LCRB, &
-         SYMBOL_RCRB, SYMBOL_DOT,  SYMBOL_CRET, SYMBOL_DOLL
+         SYMBOL_RCRB, SYMBOL_DOT,  SYMBOL_CRET, SYMBOL_DOLL, &
+         ESCAPE_T, ESCAPE_N, ESCAPE_R, ESCAPE_D, ESCAPE_D_CAPITAL, ESCAPE_W, ESCAPE_W_CAPITAL, &
+         ESCAPE_S, ESCAPE_S_CAPITAL
    use :: forgex_segment_m, only: segment_t, invert_segment_list, &
          SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
          SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE 
@@ -119,7 +121,7 @@ contains
 
    pure subroutine get_token(self, class_flag)
       use :: forgex_enums_m
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only: idxutf8
       implicit none
       class(tape_t), intent(inout) :: self
       logical, optional, intent(in) :: class_flag
@@ -403,7 +405,7 @@ contains
 
 
    pure subroutine primary(tape, tree, top)
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       type(tape_t), intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
@@ -637,7 +639,7 @@ contains
 
    !> This procedure handles character classes.
    pure subroutine char_class(tape, tree, top)
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only:idxutf8, len_utf8, count_token, ichar_utf8
       use :: forgex_enums_m
       implicit none
       type(tape_t), intent(inout) :: tape
@@ -755,8 +757,7 @@ contains
    !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`, 
    !> `\w`, `\W`, `\s`, `\S`).
    pure subroutine shorthand(tape, tree, top)
-      use :: forgex_parameters_m
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       type(tape_t), intent(inout) :: tape
       type(tree_node_t), intent(inout) ::tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
