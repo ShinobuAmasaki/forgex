@@ -16,7 +16,7 @@
 module forgex_automaton_m
    use, intrinsic :: iso_fortran_env, only: int32, stderr=>error_unit
    use :: forgex_parameters_m, only: DFA_NOT_INIT, TREE_NODE_BASE, TREE_NODE_LIMIT, &
-         NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_TRANSITION_UNIT
+         NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_TRANSITION_UNIT, DFA_INITIAL_INDEX
    use :: forgex_segment_m
    use :: forgex_nfa_state_set_m
    use :: forgex_nfa_graph_m
@@ -77,6 +77,11 @@ contains
       ! Invokes DFA preprocessing.
       call self%dfa%preprocess()
 
+      ! Check if it has been initialized.
+      if (self%dfa%dfa_top /= DFA_INITIAL_INDEX) then
+         error stop "DFA graph initialization is failed."
+      end if
+
       ! Constructing a DFA initial state from the NFA initial state.
       call add_nfa_state(self%entry_set, self%nfa_entry)
 
@@ -114,7 +119,7 @@ contains
 
       !! This loops are inefficient because it contains many unnecessary processes.
 
-      ! ! すべてのNFA状態を走査する。
+       ! すべてのNFA状態を走査する。
       do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
          ! すべての順方向の遷移をスキャンする
          do j = 1, self%nfa%nodes(i)%forward_top
@@ -137,6 +142,25 @@ contains
             end if
          end do
       end do
+
+      ! 以下はましな実装、テストの実装後に変更する予定。
+      ! i = self%nfa_entry
+      ! ! すべての順方向の遷移をスキャンする
+      ! do j = 1, self%nfa%nodes(i)%forward_top
+
+      !    ! 一時変数にコピー
+      !    transition = self%nfa%nodes(i)%forward(j)
+
+      !    if (self%nfa%nodes(i)%forward(j)%is_registered) then
+      !       do k = 1, transition%c_top
+
+      !          if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
+
+      !             call add_nfa_state(closure, transition%dst)
+      !          end if
+      !       end do
+      !    end if
+      ! end do
 
    end subroutine automaton__epsilon_closure
 
