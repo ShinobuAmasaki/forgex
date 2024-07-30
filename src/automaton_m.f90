@@ -256,7 +256,7 @@ contains
 
       next_set = self%get_reachable(curr, symbol)
 
-      next = INVALID_INDEX
+      next = DFA_INVALID_INDEX
       
       ! Scan the entire dfa nodes.
       do i = 1, self%dfa%dfa_top
@@ -286,13 +286,10 @@ contains
 
       call self%destination(curr, symbol, next, set)
 
-      if (next /= DFA_INVALID_INDEX) then
-            res%c = symbol_to_segment(symbol)
-
-            res%dst = next
-            res%nfa_set = set
-            res%own_j = self%dfa%dfa_top ! The rhs of this assignment is incorrent.
-      end if
+      res%c = symbol_to_segment(symbol)
+      res%dst = next               ! valid index of DFA node or DFA_INVALID_INDEX
+      res%nfa_set = set
+      res%own_j = self%dfa%dfa_top ! The rhs of this assignment is incorrent.
 
    end function automaton__move
 
@@ -324,8 +321,6 @@ contains
 
       ! この実装ではリストのリダクションを計算する必要がない
       !! In this array implementation, array reduction is done in the reachable procedure. 
-
-      if (x%dst == DFA_INVALID_INDEX) return
 
       call self%nfa%collect_epsilon_transition(x%nfa_set)
 
