@@ -16,28 +16,23 @@ program main
    type(segment_t), allocatable :: all_segments(:)
    type(automaton_t) :: automaton
 
-   string = '[a-z]*d'
+   string = '([a-z]*)d'
 
    call build_syntax_tree(string, tape, tree, top_index)
 
-   print *, '  own index|  operation|     parent|       left|      right|    is registered'
-   do i = 0, TREE_NODE_LIMIT
-      if (tree(i)%is_registered) then
-         write(*, '(5i12, a, 1x, 1l)', advance='no') tree(i)%own_i, &
-            tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
-            tree(i)%is_registered
-         if (allocated(tree(i)%c)) print *, tree(i)%c
-      end if
-   end do
+#ifdef IMPURE
+#ifdef DEBUG
+   call dump_tree_table(tree)
 
    call print_tree(tree, top_index)
-
+#endif
+#endif
    call automaton%init(tree, top_index)
 
-   call automaton%construct(1, dst, 'h')
-   print *, dst
-
-   ! call automaton%print()
-
+#ifdef IMPURE
+#ifdef DEBUG
+   call automaton%print()
+#endif
+#endif
 
 end program main

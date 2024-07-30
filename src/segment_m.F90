@@ -1,6 +1,19 @@
+! Fortran Regular Expression (Forgex)
+! 
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_segment_m module is a part of Forgex.
+!
+!! This file defines `segment_t` representing subset of UTF-8 character codeset
+!! and contains procedures for that.
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
+   use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY
    implicit none
    private
 
@@ -18,7 +31,7 @@ module forgex_segment_m
       integer(int32) :: min = -2 ! = -2
       integer(int32) :: max = -2 ! = -2
    contains
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => segment_for_print
 #endif
       procedure :: validate => segment_is_valid
@@ -246,6 +259,12 @@ contains
       integer         :: i, i_end, j
       type(segment_t) :: target_for_comparison
 
+      ! If `symbol` is a empty character, return SEG_EMPTY
+      if (symbol == '') then
+         res = SEG_EMPTY
+         return
+      end if
+
       ! Initialize indices.
       i = 1
       i_end = idxutf8(symbol, i)
@@ -276,6 +295,12 @@ contains
 
       integer(int32) :: i, i_end, code
 
+      ! If `symbol` is a empty character, return SEG_EMPTY
+      if (symbol == '') then
+         res = SEG_EMPTY
+         return
+      end if
+
       ! Initialize indices
       i = 1
       i_end = idxutf8(symbol, i)
@@ -287,7 +312,7 @@ contains
       res = segment_t(code, code)
    end function symbol_to_segment
 
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
    !| Converts a segment to a printable string representation.
    !
    !  This function generates a string representation of the segment `seg` for
@@ -314,9 +339,13 @@ contains
          res = "<SPACE>"
       else if (seg == SEG_ZENKAKU_SPACE) then
          res = "<ZENKAKU SPACE>"
-      else if (seg == SEG_EMPTY) then
+      else if (seg == SEG_EPSILON) then
          res = "?"
-
+      else if (seg == SEG_INIT) then
+         res = "<INIT>"
+      else if (seg == SEG_EMPTY) then
+         res = "<EMPTY>"
+         
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then
@@ -331,5 +360,4 @@ contains
 
    end function segment_for_print
 #endif
-
 end module forgex_segment_m

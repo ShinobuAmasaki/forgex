@@ -1,5 +1,5 @@
 name = "forgex"
-version = "2.0.0"
+version = "3.0.0"
 license = "MIT"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
@@ -18,4 +18,5 @@ implicit-external = false
 source-form = "free"
 [preprocess]
 [preprocess.cpp]
-macros = ["DEBUG"]
+macros = ["RELEASE"]
+# macros = ["DEBUG", "IMPURE"]

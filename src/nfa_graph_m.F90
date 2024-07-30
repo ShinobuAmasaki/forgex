@@ -3,8 +3,11 @@
 #endif
 module forgex_nfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
-   use :: forgex_nfa_node_m
+   use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
+         NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
+   use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t, &
+         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa, disjoin_nfa
+
    implicit none
    private
 
@@ -20,7 +23,7 @@ module forgex_nfa_graph_m
       procedure :: generate => nfa_graph__generate
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
       procedure :: mark_epsilon_transition => nfa_graph__mark_epsilon_transition
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => nfa_graph__print
 #endif
    end type
@@ -130,7 +133,7 @@ contains
 
    end subroutine nfa_graph__collect_epsilon_transition
 
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
 
    subroutine nfa_graph__print(self)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
@@ -185,6 +188,4 @@ contains
    end subroutine dump_segment_array     
 
 #endif
-
-
 end module forgex_nfa_graph_m

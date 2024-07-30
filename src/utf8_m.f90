@@ -10,7 +10,6 @@
 
 !> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
-   use :: forgex_parameters_m
    implicit none
    private
 
