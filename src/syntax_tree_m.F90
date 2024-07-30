@@ -460,6 +460,13 @@ contains
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
          call tape%get_token()
 
+      case (tk_caret)
+         call make_tree_crlf(tree, top)
+         call tape%get_token()
+      case (tk_dollar)
+         call make_tree_crlf(tree, top)
+         call tape%get_token()
+
       case default
          error stop "primary: Pattern includes some syntax error."
 
