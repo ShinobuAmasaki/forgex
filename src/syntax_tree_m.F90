@@ -23,7 +23,7 @@ module forgex_syntax_tree_m
          SYMBOL_RCRB, SYMBOL_DOT,  SYMBOL_CRET, SYMBOL_DOLL, &
          ESCAPE_T, ESCAPE_N, ESCAPE_R, ESCAPE_D, ESCAPE_D_CAPITAL, ESCAPE_W, ESCAPE_W_CAPITAL, &
          ESCAPE_S, ESCAPE_S_CAPITAL
-   use :: forgex_segment_m, only: segment_t, invert_segment_list, &
+   use :: forgex_segment_m, only: segment_t, invert_segment_list, operator(==), &
          SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
          SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE 
    use :: forgex_enums_m
@@ -35,6 +35,13 @@ module forgex_syntax_tree_m
 
    public :: build_syntax_tree
    public :: deallocate_tree
+
+#ifdef DEBUG
+   public :: print_tree
+   interface print_tree
+      module procedure :: print_tree_wrap
+   end interface print_tree
+#endif
 
    !! The regular expression parsing performed by this module 
    !! is done using recursive descent parsing.
@@ -84,10 +91,10 @@ contains
    !> Expected to be used by the forgex module.
    pure subroutine build_syntax_tree(str, tape, tree, top_idx)
       implicit none
-      character(*), intent(in)    :: str
-      type(tape_t), intent(inout) :: tape
+      character(*),                   intent(in)    :: str
+      type(tape_t),                   intent(inout) :: tape
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
-      integer(int32), intent(inout) :: top_idx
+      integer(int32),                 intent(inout) :: top_idx
 
       integer :: i
 
@@ -102,13 +109,13 @@ contains
 
       call regex(tape, tree, top_idx)
       tree(top_idx)%parent_i = TERMINAL_INDEX
-
    end subroutine build_syntax_tree
 
-
+   !> This subroutine deallocate the syntax tree.
    pure subroutine deallocate_tree(tree)
       implicit none
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
+
       integer :: i
 
       do i = lbound(tree, dim=1), ubound(tree, dim=1)
@@ -118,16 +125,19 @@ contains
       if (allocated(tree)) deallocate(tree)
    end subroutine deallocate_tree
 
-
+   !| Get the currently focused character (1 to 4 bytes) from the entire string inside
+   !  the `type_t` derived-type, and store the enumerator's numeric value in the 
+   !  `current_token` component. 
+   !  This is a type-bound procedure of `tape_t`.
    pure subroutine get_token(self, class_flag)
       use :: forgex_enums_m
       use :: forgex_utf8_m, only: idxutf8
       implicit none
-      class(tape_t), intent(inout) :: self
-      logical, optional, intent(in) :: class_flag
+      class(tape_t),     intent(inout) :: self
+      logical, optional, intent(in)    :: class_flag
 
       character(UTF8_CHAR_SIZE) :: c
-      integer(int32) :: ib, ie
+      integer(int32)            :: ib, ie
 
       ib = self%idx
       if (ib > len(self%str)) then
@@ -200,21 +210,23 @@ contains
 
 !=====================================================================!
 
+   !> This function creates a new tree node with the specified operation and child node.
    pure function make_tree_node(op) result(node)
       implicit none
       integer(int32), intent(in) :: op
-      type(tree_node_t) :: node
+
+      type(tree_node_t)          :: node
 
       node%op = op
-
    end function make_tree_node
 
-
+   !> This function creates an atom node in a tree structure using a segment.
    pure function make_atom(segment) result(node)
       use :: forgex_enums_m
       implicit none
       type(segment_t), intent(in) :: segment
-      type(tree_node_t) :: node
+
+      type(tree_node_t)           :: node
 
       node%op = op_char
       allocate(node%c(1))
@@ -222,11 +234,12 @@ contains
    end function make_atom
 
 
+
    pure subroutine register_node(self, tree, top_index)
       implicit none
       class(tree_node_t), intent(inout) :: self
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top_index
+      type(tree_node_t),  intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32),     intent(inout) :: top_index
 
 
       integer :: i
@@ -260,23 +273,22 @@ contains
    pure subroutine register_and_connector(tree, top, node, node_l, node_r)
       implicit none
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
       type(tree_node_t), intent(inout) :: node
-      type(tree_node_t), intent(in) :: node_l, node_r
+      type(tree_node_t), intent(in)    :: node_l, node_r
 
       call node%register_node(tree, top)
       node = tree(top)
 
       call connect_left(tree, node%own_i, node_l%own_i)
       call connect_right(tree, node%own_i, node_r%own_i)
-
    end subroutine register_and_connector
 
 
    pure subroutine connect_left(tree, parent_i, child_i)
       implicit none
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(in) :: parent_i, child_i
+      integer(int32),    intent(in)    :: parent_i, child_i
 
       tree(parent_i)%left_i = child_i
       if (child_i /= INVALID_INDEX) tree(child_i)%parent_i = parent_i
@@ -286,7 +298,7 @@ contains
    pure subroutine connect_right(tree, parent_i, child_i)
       implicit none
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(in) :: parent_i, child_i
+      integer(int32),    intent(in)    :: parent_i, child_i
 
       tree(parent_i)%right_i = child_i
       if (child_i /= INVALID_INDEX) tree(child_i)%parent_i = parent_i
@@ -296,9 +308,9 @@ contains
 
    pure subroutine regex(tape, tree, top)
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -321,9 +333,9 @@ contains
 
    pure subroutine term(tape, tree, top)
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -358,9 +370,9 @@ contains
 
    pure subroutine postfix_op(tape, tree, top)
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -407,9 +419,9 @@ contains
    pure subroutine primary(tape, tree, top)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
       type(tree_node_t) :: node
       type(segment_t) :: seg
@@ -455,12 +467,12 @@ contains
 
    pure subroutine range_min_max(tape, tree, top)
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
-      type(tree_node_t) :: node, node_l, node_r, node_rr, ptr
-      integer(int32) :: arg(2), ios, min, max, count
+      type(tree_node_t)         :: node, node_l, node_r, node_rr, ptr
+      integer(int32)            :: arg(2), ios, min, max, count
       character(:), allocatable :: buf
 
       buf = ''
@@ -642,15 +654,16 @@ contains
       use :: forgex_utf8_m, only:idxutf8, len_utf8, count_token, ichar_utf8
       use :: forgex_enums_m
       implicit none
-      type(tape_t), intent(inout) :: tape
+      type(tape_t),      intent(inout) :: tape
       type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      integer(int32),    intent(inout) :: top
 
       type(segment_t), allocatable :: seglist(:)
-      character(:), allocatable :: buf
+      character(:), allocatable    :: buf
+      type(tree_node_t)            :: node
+
       integer :: siz, ie, i, j, inext, terminal
       logical :: is_inverted
-      type(tree_node_t) :: node
 
       call tape%get_token(class_flag=.true.)
 

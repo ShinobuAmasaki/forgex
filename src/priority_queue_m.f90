@@ -42,10 +42,11 @@ contains
    pure subroutine enqueue(pq, seg)
       implicit none
       class(priority_queue_t), intent(inout) :: pq
-      type(segment_t), intent(in) :: seg
-      type(segment_t) :: t
+      type(segment_t),         intent(in) :: seg
+
+      type(segment_t)              :: t
       type(segment_t), allocatable :: tmp(:)
-      integer(int32) :: n, i
+      integer(int32)               :: n, i
 
       if (.not.allocated(pq%heap)) allocate(pq%heap(1))
 
@@ -82,9 +83,9 @@ contains
    pure subroutine dequeue(pq, res)
       implicit none
       class(priority_queue_t), intent(inout) :: pq
-      type(segment_t), intent(inout) :: res
+      type(segment_t),         intent(inout) :: res
+   
       type(segment_t) :: tmp 
-
       integer :: n, i, j
       
       ! Hold the number of data in a temporary variable.
@@ -120,7 +121,7 @@ contains
       
       if (allocated(pq%heap)) deallocate(pq%heap)
       pq%number = 0
-   end subroutine
+   end subroutine clear
 
 
 end module forgex_priority_queue_m
