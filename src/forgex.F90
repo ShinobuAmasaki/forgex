@@ -12,11 +12,11 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
-#ifdef IMPURE
-#ifdef DEBUG
+
+#if defined(IMPURE) && defined(DEBUG)
    use :: forgex_syntax_tree_m, only: print_tree
 #endif
-#endif
+
 
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
@@ -62,11 +62,20 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
+#if defined(IMPURE) && defined(DEBUG)
+      call print_tree(tree, root)
+#endif
+
       ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
       ! Call the internal procedure to match string, and store the result in logical `res`. 
       call do_matching_including(automaton, str, from, to)
+
+#if defined(IMPURE) && defined(DEBUG)
+      call automaton%print_dfa()
+#endif
+
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
@@ -106,10 +115,8 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       call print_tree(tree, root)
-#endif
 #endif
 
       ! Initialize automaton with tree and root.
@@ -118,11 +125,10 @@ contains
       ! Call the internal procedure to match string, and store the result in logical `res`. 
       call do_matching_exactly(automaton, str, res)
 
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       call automaton%print_dfa()
 #endif
-#endif
+
 
    end function operator__match
 
