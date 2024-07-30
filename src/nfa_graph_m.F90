@@ -23,12 +23,11 @@ module forgex_nfa_graph_m
       procedure :: generate => nfa_graph__generate
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
       procedure :: mark_epsilon_transition => nfa_graph__mark_epsilon_transition
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => nfa_graph__print
 #endif
-#endif
    end type
+
 contains
 
 !== Currently, the nfa_graph_m procedures are just a wrapper around nfa_node_m.
@@ -133,8 +132,7 @@ contains
 
    end subroutine nfa_graph__collect_epsilon_transition
 
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
 
    subroutine nfa_graph__print(self)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
@@ -189,6 +187,4 @@ contains
    end subroutine dump_segment_array     
 
 #endif
-#endif
-
 end module forgex_nfa_graph_m

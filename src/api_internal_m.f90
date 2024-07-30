@@ -154,7 +154,6 @@ contains
       else
          res = .false.
       end if
-
    end subroutine do_matching_exactly
 
 

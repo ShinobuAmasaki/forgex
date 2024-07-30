@@ -31,10 +31,8 @@ module forgex_segment_m
       integer(int32) :: min = -2 ! = -2
       integer(int32) :: max = -2 ! = -2
    contains
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => segment_for_print
-#endif
 #endif
       procedure :: validate => segment_is_valid
    end type
@@ -314,8 +312,7 @@ contains
       res = segment_t(code, code)
    end function symbol_to_segment
 
-#ifdef IMPURE
-#ifdef DEBUG
+#if defined(IMPURE) && defined(DEBUG)
    !| Converts a segment to a printable string representation.
    !
    !  This function generates a string representation of the segment `seg` for
@@ -363,6 +360,4 @@ contains
 
    end function segment_for_print
 #endif
-#endif
-
 end module forgex_segment_m

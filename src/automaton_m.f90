@@ -42,11 +42,9 @@ module forgex_automaton_m
       procedure :: get_reachable   => automaton__compute_reachable_state
       procedure :: move            => automaton__move
       procedure :: destination     => automaton__destination
-#ifdef IMPURE
-#ifdef DEBUG
+#if  defined(IMPURE) && defined(DEBUG)
       procedure :: print           => automaton__print_info
       procedure :: print_dfa       => automaton__print_dfa
-#endif
 #endif
    end type automaton_t
 
@@ -67,11 +65,11 @@ contains
       !-- NFA building
       call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
 
-#ifdef IMPURE
-#ifdef DEBUG
+
+#if  defined(IMPURE) && defined(DEBUG)
       call self%nfa%print()
 #endif
-#endif
+
 
       !-- DFA initialize
       ! Invokes DFA preprocessing.
@@ -404,8 +402,8 @@ contains
 
 !=====================================================================!
 
-#ifdef IMPURE
-#ifdef DEBUG
+
+#if defined(IMPURE) && defined(DEBUG)
 
    subroutine automaton__print_info(self)
       use :: iso_fortran_env, only: stderr => error_unit
@@ -461,7 +459,6 @@ contains
       end do
    end subroutine automaton__print_dfa
 
-#endif
 #endif
 
 end module forgex_automaton_m

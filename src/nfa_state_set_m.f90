@@ -20,11 +20,9 @@ module forgex_nfa_state_set_m
    public :: check_nfa_state
    public :: equivalent_nfa_state_set
    public :: collect_epsilon_transition
-   
-#ifdef IMPURE
-#ifdef DEBUG
+
+#if defined(IMPURE) && defined(DEBUG)
    public :: print_nfa_state_set
-#endif
 #endif
 
    !> The `nfa_state_set_t` type represents set of NFA states.
@@ -70,12 +68,12 @@ contains
       implicit none
       type(nfa_state_set_t), intent(in) :: a, b
 
-      integer(int32) :: i
+      integer(int32) :: ii
       logical        :: res
 
       ! Compare each element of the logical vectors in a and b.
-      do i = NFA_STATE_BASE+1, NFA_STATE_LIMIT
-         if (a%vec(i) .neqv. b%vec(i)) then
+      do ii = NFA_STATE_BASE+1, NFA_STATE_LIMIT
+         if (a%vec(ii) .neqv. b%vec(ii)) then
             res = .false.
             return
          end if
@@ -95,23 +93,23 @@ contains
       integer(int32),         intent(in)    :: nfa_i, nfa_top
 
       integer :: dst
-      integer :: i, j, k
+      integer :: iii, j, k
 
       ! Add the current state to the state set.
       call add_nfa_state(nfa_set, nfa_i)
 
       ! Scan the entire NFA state nodes.
-      outer: do i = NFA_STATE_BASE+1, nfa_top
-         if (.not. allocated(nfa_graph(i)%forward)) cycle outer
+      outer: do iii = NFA_STATE_BASE+1, nfa_top
+         if (.not. allocated(nfa_graph(iii)%forward)) cycle outer
          
          ! Scan the all forward transitions. 
-         middle: do j = lbound(nfa_graph(i)%forward, dim=1), nfa_graph(i)%forward_top
+         middle: do j = lbound(nfa_graph(iii)%forward, dim=1), nfa_graph(iii)%forward_top
 
             ! If the forward segment list is not allocated, move to the next loop.
-            if (.not. allocated(nfa_graph(i)%forward(j)%c)) cycle middle
+            if (.not. allocated(nfa_graph(iii)%forward(j)%c)) cycle middle
             
             ! Get the destination index and if it is not NULL, call this function recursively.
-            dst = nfa_graph(i)%forward(j)%dst
+            dst = nfa_graph(iii)%forward(j)%dst
             if (dst /= NFA_NULL_TRANSITION) call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
   
          end do middle
@@ -128,19 +126,17 @@ contains
       integer(int32),         intent(in)    :: nfa_top
       type(nfa_state_set_t),  intent(inout) :: nfa_set
 
-      integer(int32) :: i
+      integer(int32) :: ii
 
-      do i = NFA_STATE_BASE+1, nfa_top
-         if (check_nfa_state(nfa_set, i)) then
-            call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, i)
+      do ii = NFA_STATE_BASE+1, nfa_top
+         if (check_nfa_state(nfa_set, ii)) then
+            call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, ii)
          end if
       end do
    end subroutine collect_epsilon_transition
 
 
-#ifdef IMPURE
-#ifdef DEBUG
-
+#if defined(IMPURE) && defined(DEBUG)
    ! This subroutine is for debugging, print_lazy_dfa and automaton__print_dfa use this procedure.
    subroutine print_nfa_state_set(set, top)
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
@@ -155,6 +151,4 @@ contains
       end do
    end subroutine print_nfa_state_set
 #endif
-#endif
-
 end module forgex_nfa_state_set_m
