@@ -35,9 +35,8 @@ contains
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
-      integer :: max_match 
-      integer :: start        ! 
-      integer :: ib           ! string index of beginning
+      integer :: max_match    ! maximum value of match attempts
+      integer :: start        ! starting character index
       character(:), allocatable :: str
 
       str = string
@@ -61,20 +60,19 @@ contains
       start = 1
       do while (start < len(str))
          max_match = 0
-         ib = start
-         ci = ib
+         ci = start 
          cur_i = automaton%initial_index
 
          ! Traverse the DFA with the input string from the current starting position of ``cur_i`.
          do while (cur_i /= DFA_INVALID_INDEX)
 
-            if (automaton%dfa%nodes(cur_i)%accepted .and. ib /= start) then
-               max_match = ib
+            if (automaton%dfa%nodes(cur_i)%accepted .and. ci /= start) then
+               max_match = ci
             end if
 
-            if (ib > len(str)) exit
+            if (ci > len(str)) exit
 
-            next_ci = idxutf8(str, ib) + 1
+            next_ci = idxutf8(str, ci) + 1
 
             call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
 
