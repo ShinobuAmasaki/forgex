@@ -2,12 +2,18 @@ set(SHARED_LIB forgex)
 
 add_library(${SHARED_LIB}
    SHARED
+   api_internal_m.f90
    automaton_m.f90
    enums_m.f90
+   lazy_dfa_graph_m.f90
+   lazy_dfa_node_m.f90
+   nfa_graph_m.f90
+   nfa_node_m.f90
+   parameters_m.f90
    priority_queue_m.f90
+   segment_disjoin_m.f90
    segment_m.f90
    sort_m.f90
-   segment_disjoin_m.f90
    syntax_tree_m.f90
    utf8_m.f90
    forgex.f90
