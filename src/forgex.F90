@@ -71,7 +71,8 @@ contains
       call automaton%init(tree, root)
 
       ! Call the internal procedure to match string, and store the result in logical `res`. 
-      call do_matching_including(automaton, str, from, to)
+      call do_matching_including(automaton, char(0)//str//char(0), from, to)
+         ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
 
 #if defined(IMPURE) && defined(DEBUG)
       call automaton%print_dfa()

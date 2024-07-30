@@ -24,7 +24,7 @@ module forgex_syntax_tree_m
          ESCAPE_T, ESCAPE_N, ESCAPE_R, ESCAPE_D, ESCAPE_D_CAPITAL, ESCAPE_W, ESCAPE_W_CAPITAL, &
          ESCAPE_S, ESCAPE_S_CAPITAL
    use :: forgex_segment_m, only: segment_t, invert_segment_list, operator(==), &
-         SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
+         SEG_EMPTY, SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
          SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE 
    use :: forgex_enums_m
    implicit none
@@ -461,10 +461,10 @@ contains
          call tape%get_token()
 
       case (tk_caret)
-         call make_tree_crlf(tree, top)
+         call make_tree_caret_dollar(tree, top)
          call tape%get_token()
       case (tk_dollar)
-         call make_tree_crlf(tree, top)
+         call make_tree_caret_dollar(tree, top)
          call tape%get_token()
 
       case default
@@ -776,6 +776,36 @@ contains
    end subroutine make_tree_crlf
 
 
+   !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
+   pure subroutine make_tree_caret_dollar(tree, top)
+      implicit none
+      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      integer(int32), intent(inout) :: top
+
+      type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty
+
+
+      cr = make_atom(SEG_CR)
+      call register_and_connector(tree, top, cr, terminal_node, terminal_node)
+
+      lf = make_atom(SEG_LF)
+      call register_and_connector(tree, top, lf, terminal_node, terminal_node)
+
+      node_r_r = make_tree_node(op_concat)
+      call register_and_connector(tree, top, node_r_r, cr, lf)
+      
+      node_r = make_tree_node(op_union)
+      call register_and_connector(tree, top, node_r, lf, node_r_r)
+
+      empty = make_atom(SEG_EMPTY)
+      call register_and_connector(tree, top, empty, terminal_node, terminal_node)
+
+      node = make_tree_node(op_union)
+      call register_and_connector(tree, top, node, node_r, empty)
+
+   end subroutine make_tree_caret_dollar
+
+
    !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`, 
    !> `\w`, `\W`, `\s`, `\S`).
    pure subroutine shorthand(tape, tree, top)
@@ -943,6 +973,7 @@ contains
 
 
    function print_class_simplify (tree, root_i) result(str)
+      use :: forgex_segment_m, only: SEG_EMPTY
       use :: forgex_utf8_m
       implicit none
       type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
@@ -963,6 +994,10 @@ contains
 
       else if (tree(root_i)%c(1) == SEG_CR) then
          str = '<CR>'
+         return
+      
+      else if (tree(root_i)%c(1) == SEG_EMPTY) then
+         str ="<EMPTY>"
          return
 
       else if (siz == 1 .and. tree(root_i)%c(1)%min == tree(root_i)%c(1)%max) then
