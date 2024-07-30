@@ -1,3 +1,15 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_automaton_m module is a part of Forgex.
+!
+!! This file contains the definition of `automaton_t` class and its type-bound procedures.
+!
+!> The `forgex_automaton_m` module contains `automaton_t` definition and its type-bound procedures.
+!> 
 #ifdef IMPURE
 #define pure
 #endif
@@ -15,12 +27,13 @@ module forgex_automaton_m
    public :: automaton_t
 
    type, public :: automaton_t
-      type(nfa_graph_t) :: nfa
-      type(dfa_graph_t) :: dfa
-      type(nfa_state_set_t) :: entry_set
+      !! This type contains an NFA graph, and the DFA graph that are derived from it.
+      type(nfa_graph_t)            :: nfa
+      type(dfa_graph_t)            :: dfa
+      type(nfa_state_set_t)        :: entry_set
       type(segment_t), allocatable :: all_segments(:)
-      integer(int32) :: nfa_entry, nfa_exit
-      integer(int32) :: initial_index = DFA_NOT_INIT
+      integer(int32)               :: nfa_entry, nfa_exit
+      integer(int32)               :: initial_index = DFA_NOT_INIT
    contains
       procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
@@ -39,7 +52,8 @@ module forgex_automaton_m
 
 contains
 
-
+   !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
+   !> and then initializes the DFA graph. 
    pure subroutine automaton__initialize(self, tree, tree_top)
       use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
@@ -60,14 +74,22 @@ contains
 #endif
 
       !-- DFA initialize
+      ! Invokes DFA preprocessing.
       call self%dfa%preprocess()
 
+      ! Constructing a DFA initial state from the NFA initial state.
       call add_nfa_state(self%entry_set, self%nfa_entry)
 
+      ! Add an NFA node reachable by epsilon transitions to the entrance state set within DFA.
       call self%epsilon_closure(self%entry_set, initial_closure)
 
-      call self%register_state(initial_closure, new_index)
+      ! Assign the computed initial closure into self%entry_set
+      self%entry_set = initial_closure
+      
+      ! Register `entry_set` as a new DFA state in the graph.
+      call self%register_state(self%entry_set, new_index)
 
+      ! Assign the returned index to the `initial_index` of the graph.
       self%initial_index = new_index
 
    end subroutine automaton__initialize
