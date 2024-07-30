@@ -8,7 +8,9 @@
 !
 !! This file contains definitions of `dfa_transition_t` type and `dfa_state_node_t` class,
 !! and its type-bound procedures.
-
+#ifdef IMPURE
+#define pure
+#endif
 !> The `forgex_lazy_dfa_node_m` module defines the state nodes and transitions of DFA. 
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
@@ -85,8 +87,17 @@ contains
 
       integer :: j
 
+      if (.not. self%initialized) then
+         call self%init_transition()
+      end if
+
       call self%increment_tra_top()
       j = self%get_tra_top()
+   
+      if (j < 0) then
+         error stop "ERROR: Invalid counting transitions"
+      end if
+
       self%transition(j) = tra
    end subroutine dfa_state_node__add_transition
 
