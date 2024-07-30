@@ -21,8 +21,10 @@ module forgex_nfa_state_set_m
    public :: equivalent_nfa_state_set
    public :: collect_epsilon_transition
    
+#ifdef IMPURE
 #ifdef DEBUG
    public :: print_nfa_state_set
+#endif
 #endif
 
    !> The `nfa_state_set_t` type represents set of NFA states.
@@ -124,7 +126,8 @@ contains
       end do
    end subroutine collect_epsilon_transition
 
-   
+
+#ifdef IMPURE
 #ifdef DEBUG
    subroutine print_nfa_state_set(set, top)
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
@@ -138,6 +141,7 @@ contains
          if (check_nfa_state(set, i)) write(stderr, '(i0, a)', advance='no') i, ' '
       end do
    end subroutine print_nfa_state_set
+#endif
 #endif
 
 end module forgex_nfa_state_set_m

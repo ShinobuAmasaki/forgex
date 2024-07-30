@@ -11,11 +11,13 @@
 #define pure
 #endif
 module forgex
-#ifdef IMPURE
-   use :: forgex_syntax_tree_m, only:tree_node_t, tape_t, build_syntax_tree, print_tree
-#else
    use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
+#ifdef IMPURE
+#ifdef DEBUG
+   use :: forgex_syntax_tree_m, only: print_tree
 #endif
+#endif
+
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly
    implicit none
@@ -62,7 +64,9 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #ifdef IMPURE
+#ifdef DEBUG
       call print_tree(tree, root)
+#endif
 #endif
 
       ! Initialize automaton with tree and root.
@@ -72,7 +76,9 @@ contains
       call do_matching_exactly(automaton, str, res)
 
 #ifdef IMPURE
+#ifdef DEBUG
       call automaton%print_dfa()
+#endif
 #endif
 
    end function operator__match
