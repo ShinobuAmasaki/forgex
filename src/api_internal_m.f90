@@ -21,13 +21,81 @@ module forgex_api_internal_m
    implicit none
    private
 
-   ! public :: do_matching_including
+   public :: do_matching_including
    public :: do_matching_exactly
 
 contains
 
+   pure subroutine do_matching_including (automaton, string, from, to)
+      implicit none
+      type(automaton_t), intent(inout) :: automaton
+      character(*),      intent(in)    :: string
+      integer,           intent(inout) :: from, to
+
+      integer :: cur_i, dst_i ! current and destination index of DFA nodes
+      integer :: ci           ! character index
+      integer :: next_ci      ! next character index
+      integer :: max_match 
+      integer :: start        ! 
+      integer :: ib           ! string index of beginning
+      character(:), allocatable :: str
+
+      str = string
+      from = 0
+      to = 0
+
+      cur_i = automaton%initial_index
+
+      if (cur_i == DFA_NOT_INIT) then
+         error stop "DFA have not been initialized."
+      end if
+
+      if (string == char(10)//char(10)) then
+         if (automaton%dfa%nodes(cur_i)%accepted) then
+            from = 1
+            to = 1
+         end if
+         return
+      end if
+
+      start = 1
+      do while (start < len(str))
+         max_match = 0
+         ib = start
+         ci = ib
+         cur_i = automaton%initial_index
+
+         ! Traverse the DFA with the input string from the current starting position of ``cur_i`.
+         do while (cur_i /= DFA_INVALID_INDEX)
+
+            if (automaton%dfa%nodes(cur_i)%accepted .and. ib /= start) then
+               max_match = ib
+            end if
+
+            if (ib > len(str)) exit
+
+            next_ci = idxutf8(str, ib) + 1
+
+            call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
+
+            cur_i = dst_i
+            ci = next_ci
+         end do
+
+         ! Update match position if a match is found.
+         if (max_match > 1) then
+            from = start
+            to = max_match - 1
+            return
+         end if
+
+         start = idxutf8(str, start) + 1
+      end do
+   end subroutine do_matching_including
+
+
    !> This subroutine is intended to be called from the `forgex` API module.
-   subroutine do_matching_exactly(automaton, string, res)
+   pure subroutine do_matching_exactly(automaton, string, res)
    ! pure subroutine do_matching_exactly(automaton, string, res)
       implicit none
       type(automaton_t), intent(inout) :: automaton

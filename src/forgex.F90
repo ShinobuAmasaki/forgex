@@ -19,18 +19,18 @@ module forgex
 #endif
 
    use :: forgex_automaton_m, only: automaton_t
-   use :: forgex_api_internal_m, only: do_matching_exactly
+   use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    implicit none
    private
 
-   ! public :: operator(.in.)
+   public :: operator(.in.)
    public :: operator(.match.)
    ! public :: regex
 
-   ! interface operator(.in.)
-   !    !! Interface for user-defined operator of `.in.`
-   !    module procedure :: in__matching
-   ! end interface 
+   interface operator(.in.)
+      !! Interface for user-defined operator of `.in.`
+      module procedure :: operator__in
+   end interface 
 
    interface operator(.match.)
    !! Interface for user-defined operator of `.match.`
@@ -45,7 +45,50 @@ module forgex
 
 contains
 
-   function operator__match(pattern, str) result(res)
+   pure function operator__in(pattern, str) result(res)
+      implicit none
+      character(*), intent(in)       :: pattern, str
+      logical                        :: res
+
+      character(:),      allocatable :: buff
+      type(tree_node_t), allocatable :: tree(:)
+      type(tape_t)                   :: tape
+      type(automaton_t)              :: automaton
+      integer                        :: root
+      integer                        :: from, to
+
+      buff = trim(pattern)
+
+      ! Build a syntax tree from buff, and store the result in tree and root.
+      call build_syntax_tree(buff, tape, tree, root)
+
+      ! Initialize automaton with tree and root.
+      call automaton%init(tree, root)
+
+      ! Call the internal procedure to match string, and store the result in logical `res`. 
+      call do_matching_including(automaton, str, from, to)
+
+      if (is_there_caret_at_the_top(pattern)) then
+         from = from
+      else
+         from = from -1
+      end if
+
+      if (is_there_dollar_at_the_end(pattern)) then
+         to = to - 2
+      else
+         to = to - 1
+      end if
+
+      if (from > 0 .and. to > 0) then
+         res = .true.
+      else
+         res = .false.
+      end if
+   end function operator__in
+
+
+   pure function operator__match(pattern, str) result(res)
       !! The function implemented for the `.match.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
@@ -90,7 +133,7 @@ contains
 
    !> This function returns .true. if the pattern contains the caret character
    !> at the top that matches the beginning of a line.
-   function is_there_caret_at_the_top(pattern) result(res)
+   pure function is_there_caret_at_the_top(pattern) result(res)
       implicit none
       character(*), intent(in) :: pattern
       character(:), allocatable :: buff
@@ -105,7 +148,7 @@ contains
 
    !> This funciton returns .true. if the pattern contains the doller character
    !> at the end that matches the ending of a line.
-   function is_there_dollar_at_the_end(pattern) result(res)
+   pure function is_there_dollar_at_the_end(pattern) result(res)
       implicit none
       character(*), intent(in) :: pattern
       character(:), allocatable :: buff
