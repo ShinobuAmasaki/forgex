@@ -59,6 +59,7 @@ contains
 
       buff = trim(pattern)
 
+      
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
@@ -110,7 +111,17 @@ contains
       integer                        :: root 
 
 
-      buff = trim(pattern)
+      ! If the pattern begins with a caret character and ends with
+      ! a doller character, they are removed and assigned to the string buffer.
+      if (is_there_caret_at_the_top(pattern)) then
+         buff = pattern(2:len(pattern))
+      else
+         buff = pattern(1:len(pattern))
+      end if
+
+      if (is_there_dollar_at_the_end(pattern)) then
+         buff = buff(1:len_trim(pattern)-1)
+      end if
 
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
