@@ -36,13 +36,16 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: deallocate_tree
 
+#ifdef IMPURE
 #ifdef DEBUG
+   public :: dump_tree_table
+
    public :: print_tree
    interface print_tree
       module procedure :: print_tree_wrap
    end interface print_tree
 #endif
-
+#endif
    !! The regular expression parsing performed by this module 
    !! is done using recursive descent parsing.
 
@@ -860,7 +863,30 @@ contains
       
 
 !=====================================================================!
+#ifdef IMPURE
 #ifdef DEBUG
+
+   subroutine dump_tree_table(tree)
+      implicit none
+      class(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+   
+      integer :: i, k
+
+      write(stderr, '(1x, a)') '  own index|  operation|     parent|       left|      right|   registered|  segments'
+      do i = 0, TREE_NODE_LIMIT
+         if (tree(i)%is_registered) then
+            write(*, '(5i12, a, 10x, 1l, 10x)', advance='no') tree(i)%own_i, &
+               tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
+               tree(i)%is_registered
+            if (allocated(tree(i)%c)) then
+               do k = 1, ubound(tree(i)%c, dim=1)
+                   write(stderr, '(a)', advance='no') tree(i)%c(k)%print()
+               end do
+               write(stderr, *) ""
+            end if
+         end if
+      end do
+   end subroutine dump_tree_table
 
    subroutine print_tree_wrap(tree, node_i)
       implicit none
@@ -975,6 +1001,7 @@ contains
 
    end function print_class_simplify
 
+#endif
 #endif
 
 end module forgex_syntax_tree_m
