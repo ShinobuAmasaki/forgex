@@ -16,9 +16,14 @@
 !> 
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr => error_unit
-   use, intrinsic :: iso_c_binding
-   use :: forgex_parameters_m
-   use :: forgex_segment_m
+   use :: forgex_parameters_m, only: UTF8_CHAR_SIZE, UTF8_CODE_MAX, &
+         INVALID_INDEX, TERMINAL_INDEX, TREE_NODE_BASE, TREE_NODE_LIMIT, &
+         SYMBOL_RSBK, SYMBOL_HYPN, SYMBOL_VBAR, SYMBOL_LPAR, SYMBOL_RPAR, SYMBOL_STAR, &
+         SYMBOL_PLUS, SYMBOL_QUES, SYMBOL_BSLH, SYMBOL_LSBK, SYMBOL_RSBK, SYMBOL_LCRB, &
+         SYMBOL_RCRB, SYMBOL_DOT,  SYMBOL_CRET, SYMBOL_DOLL
+   use :: forgex_segment_m, only: segment_t, invert_segment_list, &
+         SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
+         SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE 
    use :: forgex_enums_m
    implicit none
    private
@@ -31,30 +36,6 @@ module forgex_syntax_tree_m
 
    !! The regular expression parsing performed by this module 
    !! is done using recursive descent parsing.
-
-#ifdef DEBUG
-   public :: print_tree
-   interface print_tree
-      module procedure :: print_tree_wrap
-   end interface print_tree
-
-   interface
-      pure subroutine message(i, j) bind(c)
-         import c_int
-         implicit none
-         integer(c_int), intent(in), value :: i, j
-      end subroutine message
-   end interface
-
-   interface
-      pure subroutine message_char(i, str) bind(c)
-         import c_int, c_char
-         implicit none
-         integer(c_int), intent(in), value :: i
-         character(1, kind=c_char), intent(in) :: str(*)
-      end subroutine
-   end interface
-#endif
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
 

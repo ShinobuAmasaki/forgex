@@ -12,7 +12,7 @@
 #endif
 module forgex
 #ifdef IMPURE
-   use :: forgex_syntax_tree_m
+   use :: forgex_syntax_tree_m, only:tree_node_t, tape_t, build_syntax_tree, print_tree
 #else
    use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
 #endif

@@ -11,7 +11,8 @@
 !> `forgex_nfa_m` module defines a derived-type which is the set of NFA nodes.
 !> `nfa_state_set_t` represents a set of NFA nodes for the power set construction method.
 module forgex_nfa_state_set_m
-   use :: forgex_parameters_m
+   use :: iso_fortran_env, only: int32
+   use :: forgex_parameters_m, only: NFA_STATE_LIMIT, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
    implicit none
    private
 

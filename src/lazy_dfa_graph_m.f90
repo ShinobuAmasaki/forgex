@@ -3,8 +3,8 @@
 #endif
 module forgex_lazy_dfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
-   use :: forgex_lazy_dfa_node_m
+   use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_LIMIT, DFA_INITIAL_INDEX, DFA_INVALID_INDEX
+   use :: forgex_lazy_dfa_node_m, only: dfa_state_node_t, dfa_transition_t
    implicit none
    private
 

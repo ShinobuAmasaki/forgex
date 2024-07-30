@@ -15,7 +15,8 @@
 !> The `nfa_t` is defined as a class representing NFA.
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
-   use :: forgex_parameters_m
+   use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
+       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_TRANSITION_SIZE, NFA_C_SIZE
    use :: forgex_segment_m
    use :: forgex_syntax_tree_m
 

@@ -16,8 +16,8 @@
 !> The `forgex_priority_queue_m` module defines `priority_queue_t`.
 !> This implementation was originally provided by ue1221.
 module forgex_priority_queue_m
-   use, intrinsic :: iso_fortran_env
-   use :: forgex_segment_m
+   use, intrinsic :: iso_fortran_env, only: int32
+   use :: forgex_segment_m, only: segment_t
    implicit none
    private
 

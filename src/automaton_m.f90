@@ -3,7 +3,8 @@
 #endif
 module forgex_automaton_m
    use, intrinsic :: iso_fortran_env, only: int32, stderr=>error_unit
-   use :: forgex_parameters_m
+   use :: forgex_parameters_m, only: DFA_NOT_INIT, TREE_NODE_BASE, TREE_NODE_LIMIT, &
+         NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_TRANSITION_UNIT
    use :: forgex_segment_m
    use :: forgex_nfa_state_set_m
    use :: forgex_nfa_graph_m
@@ -256,7 +257,7 @@ contains
 
       next_set = self%get_reachable(curr, symbol)
 
-      next = INVALID_INDEX
+      next = DFA_INVALID_INDEX
       
       ! Scan the entire dfa nodes.
       do i = 1, self%dfa%dfa_top

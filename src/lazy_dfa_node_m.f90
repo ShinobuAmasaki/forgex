@@ -14,9 +14,10 @@
 !> This module was previously named `dfa_m`.
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
-   use :: forgex_segment_m
-   use :: forgex_nfa_state_set_m
+   use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_NOT_INIT_TRAENSITION_TOP, &
+         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP
+   use :: forgex_segment_m, only: segment_t
+   use :: forgex_nfa_state_set_m, only: nfa_state_set_t
    implicit none
    private
 
