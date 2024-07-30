@@ -8,7 +8,9 @@
 !
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
-
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY
@@ -259,6 +261,12 @@ contains
       integer         :: i, i_end, j
       type(segment_t) :: target_for_comparison
 
+      ! If `symbol` is a empty character, return SEG_EMPTY
+      if (symbol == '') then
+         res = SEG_EMPTY
+         return
+      end if
+
       ! Initialize indices.
       i = 1
       i_end = idxutf8(symbol, i)
@@ -288,6 +296,12 @@ contains
       type(segment_t)          :: res
 
       integer(int32) :: i, i_end, code
+
+      ! If `symbol` is a empty character, return SEG_EMPTY
+      if (symbol == '') then
+         res = SEG_EMPTY
+         return
+      end if
 
       ! Initialize indices
       i = 1
