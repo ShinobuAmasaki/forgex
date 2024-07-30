@@ -910,7 +910,7 @@ contains
       write(stderr, '(1x, a)') '  own index|  operation|     parent|       left|      right|   registered|  segments'
       do i = 0, TREE_NODE_LIMIT
          if (tree(i)%is_registered) then
-            write(*, '(5i12, a, 10x, 1l, 3x)', advance='no') tree(i)%own_i, &
+            write(stderr, '(5i12, a, 10x, 1l, 3x)', advance='no') tree(i)%own_i, &
                tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
                tree(i)%is_registered
             if (allocated(tree(i)%c)) then

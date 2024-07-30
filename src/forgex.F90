@@ -14,7 +14,7 @@ module forgex
    use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
 
 #if defined(IMPURE) && defined(DEBUG)
-   use :: forgex_syntax_tree_m, only: print_tree
+   use :: forgex_syntax_tree_m, only: print_tree, dump_tree_table
 #endif
 
 
@@ -64,6 +64,7 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #if defined(IMPURE) && defined(DEBUG)
+      call dump_tree_table(tree)
       call print_tree(tree, root)
 #endif
 
@@ -128,6 +129,7 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #if defined(IMPURE) && defined(DEBUG)
+      call dump_tree_table(tree)
       call print_tree(tree, root)
 #endif
 
