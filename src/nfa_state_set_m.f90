@@ -86,6 +86,7 @@ contains
    end function equivalent_nfa_state_set
 
 
+   !> This subroutine recursively marks empty transitions from a given NFA state index.
    recursive pure subroutine mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
@@ -94,22 +95,32 @@ contains
       integer(int32),         intent(in)    :: nfa_i, nfa_top
 
       integer :: dst
-      integer(int32) :: i, j, k
+      integer :: i, j, k
+
+      ! Add the current state to the state set.
       call add_nfa_state(nfa_set, nfa_i)
 
+      ! Scan the entire NFA state nodes.
       outer: do i = NFA_STATE_BASE+1, nfa_top
          if (.not. allocated(nfa_graph(i)%forward)) cycle outer
          
+         ! Scan the all forward transitions. 
          middle: do j = lbound(nfa_graph(i)%forward, dim=1), nfa_graph(i)%forward_top
+
+            ! If the forward segment list is not allocated, move to the next loop.
             if (.not. allocated(nfa_graph(i)%forward(j)%c)) cycle middle
             
+            ! Get the destination index and if it is not NULL, call this function recursively.
             dst = nfa_graph(i)%forward(j)%dst
             if (dst /= NFA_NULL_TRANSITION) call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
+  
          end do middle
       end do outer
    end subroutine mark_epsilon_transition
 
 
+   !> This subroutine collects all states reachable by empty transition starting from a given
+   !> state set in an NFA.
    pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
@@ -129,6 +140,8 @@ contains
 
 #ifdef IMPURE
 #ifdef DEBUG
+
+   ! This subroutine is for debugging, print_lazy_dfa and automaton__print_dfa use this procedure.
    subroutine print_nfa_state_set(set, top)
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
       implicit none

@@ -1,3 +1,15 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_api_internal_m module is a part of Forgex.
+!
+!! This file defines the back-end processing of the APIs.
+
+!> The `forgex_api_internal_m` defines the procedures that the API call directly.
+!> Currently, it contains two procedures: `do_matching_including` and `do_matching_exactly`.
 #ifdef IMPURE
 #define pure
 #endif
@@ -9,7 +21,7 @@ module forgex_api_internal_m
    implicit none
    private
 
-   ! public :: do_matching
+   ! public :: do_matching_including
    public :: do_matching_exactly
 
 contains
