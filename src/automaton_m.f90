@@ -1,4 +1,4 @@
-#ifdef PURE
+#ifdef IMPURE
 #define pure
 #endif
 module forgex_automaton_m
@@ -70,6 +70,10 @@ contains
    end subroutine automaton__initialize
 
 
+   !> Compute the ε-closure for a set of NFA states.
+   !>
+   !> The ε-closure is the set of NFA states reachable from a given set of NFA states via ε-transition.
+   !> This subroutine calculates the ε-closure and stores it in the `closure` parameter.
    pure subroutine automaton__epsilon_closure(self, state_set, closure)
       use :: forgex_nfa_node_m
       implicit none
@@ -83,7 +87,7 @@ contains
       closure = state_set
 
 
-      !! もっと効率のよいループがあるはず
+      !! This loops are inefficient because it contains many unnecessary processes.
 
       ! ! すべてのNFA状態を走査する。
       do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
@@ -112,6 +116,8 @@ contains
    end subroutine automaton__epsilon_closure
 
 
+   !> This subroutine takes `nfa_state_set_t` as input and register the set as the DFA state in the DFA.  
+   !> The result is returned as a pointer to the DFA state.
    pure subroutine automaton__register_state(self, state_set, res)
       implicit none
       class(automaton_t), intent(inout) :: self
@@ -120,33 +126,26 @@ contains
 
       integer(int32) :: i, j, k
 
-      ! 登録されている場合
+      ! If the set is already registered, returns the index of the corresponding DFA state. 
       i = self%dfa%registered(state_set)
       if ( i /= DFA_INVALID_INDEX) then
          res = i
          return
       end if
 
+      ! Execute an error stop statement if the counter exceeds a limit. 
       if (self%dfa%dfa_top >= self%dfa%dfa_limit) then
          error stop "Number of DFA states too large."
       end if
 
-      ! k = self%dfa%dfa_top
-      ! self%dfa%dfa_top = k + 1
-
-      ! self%dfa%nodes(k)%nfa_set = state_set
-      ! self%dfa%nodes(k)%accepted = check_nfa_state(state_set, self%nfa_exit)
-      ! self%dfa%nodes(k)%registered = .true.
-      ! allocate(self%dfa%nodes(k)%transition(DFA_TRANSITION_UNIT*1))
-      ! self%dfa%nodes(k)%tra_top = 1
-      ! res = k
-
+      !> @note The processing here should reflect the semantic change of `dfa_top`.
       i = self%dfa%dfa_top
-      self%dfa%dfa_top = i + 1
+      self%dfa%dfa_top = i + 1 ! increment dfa_top
 
-      self%dfa%nodes(i)%nfa_set = state_set
-      self%dfa%nodes(i)%accepted = check_nfa_state(state_set, self%nfa_exit)
+      self%dfa%nodes(i)%nfa_set    = state_set
+      self%dfa%nodes(i)%accepted   = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
+
       call self%dfa%nodes(i)%init_transition()
       call self%dfa%nodes(i)%increment_tra_top() ! Somehow this is necessary!
 
@@ -155,7 +154,12 @@ contains
    end subroutine automaton__register_state
 
 
-   !! WIP
+
+   !> This function calculates a set of possible NFA states from the current DFA state by the input
+   !> character `symbol`. 
+   !>
+   !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`,
+   !> excluding ε-transitions.
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(state_set)
       use :: forgex_segment_m
       use :: forgex_nfa_node_m
@@ -185,8 +189,8 @@ contains
             
             n_node = self%nfa%nodes(i)
 
-            j = 1
-            jj = 1
+            j = 1  ! loop varialbe for NFA nodes
+            jj = 1 ! loop variable for DFA nodes
             middle: do while (n_node%forward(j)%own_j <= n_node%forward_top .and. jj <= DFA_TRANSITION_UNIT)
 
                do k = 1, n_node%forward(j)%c_top
@@ -237,12 +241,15 @@ contains
    end function automaton__compute_reachable_state
 
 
+   !> This subroutine gets the next DFA nodes index from current index and symbol,
+   !> and stores the result in `next` and `next_set`.
+   !>
    pure subroutine automaton__destination(self, curr, symbol, next, next_set)
       implicit none
-      class(automaton_t), intent(in) :: self
-      integer(int32), intent(in) :: curr
-      character(*), intent(in) :: symbol
-      integer(int32), intent(inout) :: next
+      class(automaton_t),    intent(in) :: self
+      integer(int32),        intent(in) :: curr
+      character(*),          intent(in) :: symbol
+      integer(int32),        intent(inout) :: next
       type(nfa_state_set_t), intent(inout) :: next_set
 
       integer :: i
@@ -250,6 +257,8 @@ contains
       next_set = self%get_reachable(curr, symbol)
 
       next = INVALID_INDEX
+      
+      ! Scan the entire dfa nodes.
       do i = 1, self%dfa%dfa_top
          if (equivalent_nfa_state_set(next_set, self%dfa%nodes(i)%nfa_set)) then
             next = i
@@ -259,7 +268,8 @@ contains
 
    end subroutine automaton__destination
 
-
+   
+   ! This function returns the dfa transition object, that contains the 
    pure function automaton__move(self, curr, symbol) result(res)
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
@@ -281,19 +291,25 @@ contains
 
             res%dst = next
             res%nfa_set = set
-            res%own_j = self%dfa%dfa_top
+            res%own_j = self%dfa%dfa_top ! The rhs of this assignment is incorrent.
       end if
 
    end function automaton__move
 
 
+   !> This subroutine gets the destination index of DFA nodes from the current index with given symbol,
+   !> adding a DFA node if necessary.
+   !>
+   !> It calculates the set of NFA states that can be reached from the `current` node for the given `symbol`, 
+   !> excluding epsilon transitions, and then registers the new DFA state node if it has not already been registered.
+   !> Finally, it adds the transition from the `current` node to the `destination` node in the DFA graph.
    pure subroutine automaton__construct_dfa (self, curr_i, dst_i, symbol)
       use :: forgex_lazy_dfa_node_m
       implicit none
       class(automaton_t), intent(inout) :: self
-      integer(int32), intent(in) :: curr_i
-      integer(int32), intent(inout) :: dst_i
-      character(*), intent(in) :: symbol
+      integer(int32),     intent(in)    :: curr_i
+      integer(int32),     intent(inout) :: dst_i
+      character(*),       intent(in)    :: symbol
 
       type(dfa_transition_t) :: x
       type(segment_t), allocatable :: segments(:)
@@ -307,6 +323,7 @@ contains
       x = self%move(prev_i, symbol)
 
       ! この実装ではリストのリダクションを計算する必要がない
+      !! In this array implementation, array reduction is done in the reachable procedure. 
 
       if (x%dst == DFA_INVALID_INDEX) return
 

@@ -1,10 +1,23 @@
-#ifdef PURE
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex module is a part of Forgex.
+!
+!! This file includes the API module of Forgex.
+#ifdef IMPURE
 #define pure
 #endif
 module forgex
+#ifdef IMPURE
    use :: forgex_syntax_tree_m
-   use :: forgex_automaton_m
-   use :: forgex_api_internal_m
+#else
+   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
+#endif
+   use :: forgex_automaton_m, only: automaton_t
+   use :: forgex_api_internal_m, only: do_matching_exactly
    implicit none
    private
 
@@ -12,39 +25,53 @@ module forgex
    public :: operator(.match.)
    ! public :: regex
 
+   ! interface operator(.in.)
+   !    !! Interface for user-defined operator of `.in.`
+   !    module procedure :: in__matching
+   ! end interface 
+
    interface operator(.match.)
+   !! Interface for user-defined operator of `.match.`
       module procedure :: operator__match
-   end interface
+   end interface 
+
+   ! interface regex
+   !    !! The generic name for the `regex` function implemented as `regex__matching`.
+   !    module procedure :: subroutine__regex
+   ! end interface
+
 
 contains
 
-    function operator__match(pattern, str) result(res)
-      use, intrinsic :: iso_fortran_env
+   function operator__match(pattern, str) result(res)
+      !! The function implemented for the `.match.` operator.
       implicit none
-      character(*), intent(in) :: pattern, str
-      logical :: res
+      character(*), intent(in)       :: pattern, str
+      logical                        :: res
 
-      character(:), allocatable :: buff
-      
+      character(:),      allocatable :: buff
       type(tree_node_t), allocatable :: tree(:)
-      integer :: root 
-      type(tape_t) :: tape
+      type(tape_t)                   :: tape
+      type(automaton_t)              :: automaton
+      integer                        :: root 
 
-      type(automaton_t) :: automaton
 
-      buff = pattern
+      buff = trim(pattern)
 
+      ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#ifdef PURE 
+#ifdef IMPURE
       call print_tree(tree, root)
 #endif
 
+      ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
+      ! Call the internal procedure to match string, and store the result in logical `res`. 
       call do_matching_exactly(automaton, str, res)
 
-#ifdef PURE
+#ifdef IMPURE
       call automaton%print_dfa()
 #endif
 
