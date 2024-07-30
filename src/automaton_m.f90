@@ -379,8 +379,13 @@ contains
       ! Combine the state set with epsilon-transitions and store in `d_tra%nfa_set`.
       call self%nfa%collect_epsilon_transition(d_tra%nfa_set)
 
-      dst_i = self%dfa%registered(d_tra%nfa_set)
+      ! 空のNFA状態集合の登録を禁止する
+      if (.not. any(d_tra%nfa_set%vec)) then
+         dst_i = DFA_INVALID_INDEX
+         return
+      end if
 
+      dst_i = self%dfa%registered(d_tra%nfa_set)
 
       ! まだDFA状態が登録されていない場合は、新しく登録する。
       ! If the destination index is DFA_INVALID_INDEX, register a new DFA node.
@@ -396,9 +401,11 @@ contains
       call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
+
+!=====================================================================!
+
 #ifdef IMPURE
 #ifdef DEBUG
-
 
    subroutine automaton__print_info(self)
       use :: iso_fortran_env, only: stderr => error_unit
