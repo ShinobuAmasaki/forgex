@@ -119,7 +119,7 @@ contains
          ! 一時変数にコピー
          transition = self%nfa%nodes(i)%forward(j)
 
-         if (self%nfa%nodes(i)%forward(j)%is_registered) then
+         if (transition%is_registered) then
             do k = 1, transition%c_top
 
                if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
@@ -193,6 +193,10 @@ contains
       type(dfa_transition_t), allocatable :: transitions(:)
       integer(int32)         :: i, j, k, jj
 
+      ! temporary variables ... to increase the cache hit rate
+      type(segment_t), allocatable :: segs(:)
+      type(nfa_transition_t) :: n_tra
+      
       integer :: num_nfa_states
 
       allocate(transitions(TMP_NODE_SIZE))
@@ -219,11 +223,15 @@ contains
                   ! reallocation
                end if
 
-               if (n_node%forward(j)%dst /= NFA_NULL_TRANSITION) then
+               n_tra = n_node%forward(j)
 
-                  inner: do k = 1, n_node%forward(j)%c_top
-                     if ( (symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
-                          .or. (n_node%forward(j)%c(k) == SEG_EPSILON)) then
+               if (n_tra%dst /= NFA_NULL_TRANSITION) then
+
+                  inner: do k = 1, n_tra%c_top
+
+                     segs = n_tra%c
+
+                     if ( (symbol_to_segment(symbol) .in. segs) .or. (segs(k) == SEG_EPSILON)) then
 
                         transitions(jj)%c = which_segment_symbol_belong(self%all_segments, symbol)
                         call add_nfa_state(state_set, n_node%forward(j)%dst)
