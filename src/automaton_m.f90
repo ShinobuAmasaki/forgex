@@ -190,10 +190,12 @@ contains
       type(nfa_state_set_t)  :: current_set
       type(nfa_state_node_t) :: n_node       ! This variable simulates a pointer.
       integer, parameter :: TMP_NODE_SIZE = DFA_TRANSITION_UNIT * 10
-      type(dfa_transition_t) :: transitions(TMP_NODE_SIZE)
+      type(dfa_transition_t), allocatable :: transitions(:)
       integer(int32)         :: i, j, k, jj
 
       integer :: num_nfa_states
+
+      allocate(transitions(TMP_NODE_SIZE))
 
       num_nfa_states = self%nfa%nfa_top
 
