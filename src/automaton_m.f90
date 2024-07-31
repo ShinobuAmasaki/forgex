@@ -107,9 +107,10 @@ contains
       type(nfa_state_set_t), intent(in) :: state_set
       type(nfa_state_set_t), intent(inout) :: closure
 
-      type(nfa_transition_t) :: transition
+      type(nfa_transition_t) :: transition   ! a temporary variable
       integer(int32) :: i, j, k
 
+      ! Initialize with the input argument.
       closure = state_set
 
       i = self%nfa_entry
@@ -178,66 +179,61 @@ contains
    !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`,
    !> excluding ε-transitions.
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(state_set)
-      use :: forgex_segment_m
-      use :: forgex_nfa_node_m
+      use :: forgex_segment_m, only: operator(.in.)
+      use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
       integer(int32),     intent(in) :: curr_i      ! current index of dfa
       character(*),       intent(in) :: symbol
 
-      type(nfa_state_set_t)  :: state_set
+      type(nfa_state_set_t)  :: state_set    ! RESULT variable
       type(nfa_state_set_t)  :: current_set
-      type(nfa_state_node_t) :: n_node       ! This variable simulates a pointer.
-      integer, parameter :: TMP_NODE_SIZE = DFA_TRANSITION_UNIT * 10
-      type(dfa_transition_t), allocatable :: transitions(:)
-      integer(int32)         :: i, j, k, jj
+      integer                :: i, j, k
 
       ! temporary variables ... to increase the cache hit rate
+      type(nfa_state_node_t)       :: n_node       ! This variable simulates a pointer.
       type(segment_t), allocatable :: segs(:)
-      type(nfa_transition_t) :: n_tra
-      
-      integer :: num_nfa_states
+      type(nfa_transition_t)       :: n_tra
 
-      allocate(transitions(TMP_NODE_SIZE))
-
-      num_nfa_states = self%nfa%nfa_top
 
       current_set = self%dfa%nodes(curr_i)%nfa_set
 
       ! Scan the entire NFA states.
-      outer: do i = 1, num_nfa_states
+      outer: do i = 1, self%nfa%nfa_top
+
          ! If the i-th element of current state set is true, process the i-th NFA node.
          if (check_nfa_state(current_set, i)) then
             
-            ! 
+            ! Copy to a temporary variable.
             n_node = self%nfa%nodes(i)
 
-            if (.not. allocated(self%nfa%nodes(i)%forward)) cycle
+            if (.not. allocated(n_node%forward)) cycle
             
-            jj = 1 ! loop variable for temporary DFA nodes
-
+            ! Scan the all transitions belong to the NFA state node.
             middle: do j = 1, n_node%forward_top
 
-               if (jj > TMP_NODE_SIZE) then
-                  ! reallocation
-               end if
-
+               ! Copy to a temporary variable of type(nfa_transition_t)
                n_tra = n_node%forward(j)
 
+               ! If it has a destination,
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
 
+                  ! Investigate the all of segments which transition has.
                   inner: do k = 1, n_tra%c_top
 
+                     ! Copy to a temporary variable fo type(segment_t).
+                     ! Note the implicit reallocation.
                      segs = n_tra%c
 
+                     ! If the symbol is in the segment list `segs` or if the segment is epsilon,
                      if ( (symbol_to_segment(symbol) .in. segs) .or. (segs(k) == SEG_EPSILON)) then
 
-                        transitions(jj)%c = which_segment_symbol_belong(self%all_segments, symbol)
+                        ! Add the index of the NFA state node to `state_set` of type(nfa_state_set_t).
                         call add_nfa_state(state_set, n_node%forward(j)%dst)
 
-                        jj = jj + 1
                      end if
+
                   end do inner
 
                end if
