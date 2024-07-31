@@ -10,6 +10,9 @@
 
 !> `forgex_nfa_m` module defines a derived-type which is the set of NFA nodes.
 !> `nfa_state_set_t` represents a set of NFA nodes for the power set construction method.
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_nfa_state_set_m
    use :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: NFA_STATE_LIMIT, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
@@ -64,23 +67,16 @@ contains
    !>
    !> It takes a pointer to NFA state set and NFA state set, and returns logical result
    !> indicating equivalent (`.true.` if equivalent, `.false.` otherwise).
-   pure function equivalent_nfa_state_set(a, b) result(res)
+   pure elemental function equivalent_nfa_state_set(a, b) result(res)
       implicit none
       type(nfa_state_set_t), intent(in) :: a, b
 
       integer(int32) :: ii
       logical        :: res
 
-      ! Compare each element of the logical vectors in a and b.
-      do ii = NFA_STATE_BASE+1, NFA_STATE_LIMIT
-         if (a%vec(ii) .neqv. b%vec(ii)) then
-            res = .false.
-            return
-         end if
-      end do
-      
       ! If all elements match, set the result `res` to `.true.` indicating equivalence. 
-      res = .true.
+      res = all(a%vec .eqv. b%vec)
+
    end function equivalent_nfa_state_set
 
 
