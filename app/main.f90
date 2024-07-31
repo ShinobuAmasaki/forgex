@@ -10,7 +10,7 @@ program main
    call time_begin()
    
    do i = 1, 1000
-      res = '\d{3}-\d{3}-\d{3}-\d{3}-\d{3}-\d{3}' .in. '123-456-789-123-456-789'
+      res = 'a[^x]{20}b' .in. 'aaakkkkkkkkkkkkkkkkkkkb'
       entire = entire .and. res
       if (mod(i, 100) == 0) print *, "i = ", i, res
    end do
