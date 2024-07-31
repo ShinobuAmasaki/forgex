@@ -95,7 +95,7 @@ contains
       type(segment_t), intent(in) :: seg
 
       type(dfa_transition_t) :: tra
-      integer :: j
+
 
       tra%c = seg
       tra%dst = dst
