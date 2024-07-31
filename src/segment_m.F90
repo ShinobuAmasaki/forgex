@@ -124,7 +124,7 @@ contains
    !
    !  This function determines whether the segment `a` is entirely within the
    !  range specified by the segment `b`.
-   pure function seg_in_segment(a, b) result(res)
+   pure elemental function seg_in_segment(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -138,11 +138,11 @@ contains
       type(segment_t), intent(in) :: list(:)
       logical :: res
       integer :: i
-      res = .false.
 
-      do i = 1, ubound(list, dim=1)
-         res = res .or. seg_in_segment(seg, list(i))
-      end do
+      res = .false.
+     
+      res = res .or. any(seg_in_segment(seg, list(:)))
+
    end function seg_in_segment_list
 
 
