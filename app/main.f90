@@ -1,9 +1,10 @@
 program main
    use :: forgex
-   use :: forgex_time_measurement_m
+   use :: forgex_time_measurement_cpu_m
    implicit none
    
    logical :: res, entire
+   integer :: i
 
    entire = .true.
    call time_begin()
