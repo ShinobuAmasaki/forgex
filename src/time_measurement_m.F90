@@ -13,16 +13,14 @@ module forgex_time_measurement_m
 contains
 
    pure subroutine time_begin()
-#if defined(IMPURE) && defined(BENCH)
       implicit none
-
+#if defined(IMPURE) && defined(BENCH)
       begin_s = 0d0
       last_s = 0d0
       end_s = 0d0
 
       begin_s = omp_get_wtime()
       last_s = begin_s
-
 #endif
    end subroutine time_begin
 
@@ -30,11 +28,12 @@ contains
    pure subroutine time_lap(description)
       implicit none
       character(*), intent(in) :: description
+
 #if defined(IMPURE) && defined(BENCH)
 
       end_s = omp_get_wtime()
 
-      write(stderr, *) end_s - last_s, "sec. :", trim(description)
+      write(stderr, *) end_s - last_s, "sec. : ", trim(description)
       last_s = end_s
 #endif
    end subroutine time_lap
@@ -42,11 +41,11 @@ contains
    pure subroutine time_end(description)
       implicit none
       character(*), intent(in) :: description
+
 #if defined(IMPURE) && defined(BENCH)
-
       end_s = omp_get_wtime()
-
-      write(stderr,*) end_s - begin_s, "sec. :", trim(description), ": TOTAL"
+      write(stderr,*) "-------------------------------"
+      write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
 #endif
    end subroutine time_end
 
