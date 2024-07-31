@@ -114,53 +114,23 @@ contains
 
       closure = state_set
 
-
-      !! This loops are inefficient because it contains many unnecessary processes.
-
-       ! すべてのNFA状態を走査する。
-      do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
-
-         if (.not. allocated(self%nfa%nodes(i)%forward)) cycle
-         ! すべての順方向の遷移をスキャンする
-         do j = 1, self%nfa%nodes(i)%forward_top
-
-            ! 一時変数にコピー
-            transition = self%nfa%nodes(i)%forward(j)
-
-            if (self%nfa%nodes(i)%forward(j)%is_registered) then
-               do k = 1, transition%c_top
-
-                  if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
-
-                     if (i == self%nfa_entry) then ! これであっている？
-
-                        call add_nfa_state(closure, transition%dst)
-
-                     end if
-                  end if
-               end do
-            end if
-         end do
-      end do
-
-      ! 以下はましな実装、テストの実装後に変更する予定。
-      ! i = self%nfa_entry
+      i = self%nfa_entry
       ! ! すべての順方向の遷移をスキャンする
-      ! do j = 1, self%nfa%nodes(i)%forward_top
+      do j = 1, self%nfa%nodes(i)%forward_top
 
-      !    ! 一時変数にコピー
-      !    transition = self%nfa%nodes(i)%forward(j)
+         ! 一時変数にコピー
+         transition = self%nfa%nodes(i)%forward(j)
 
-      !    if (self%nfa%nodes(i)%forward(j)%is_registered) then
-      !       do k = 1, transition%c_top
+         if (self%nfa%nodes(i)%forward(j)%is_registered) then
+            do k = 1, transition%c_top
 
-      !          if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
+               if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
 
-      !             call add_nfa_state(closure, transition%dst)
-      !          end if
-      !       end do
-      !    end if
-      ! end do
+                  call add_nfa_state(closure, transition%dst)
+               end if
+            end do
+         end if
+      end do
 
    end subroutine automaton__epsilon_closure
 
