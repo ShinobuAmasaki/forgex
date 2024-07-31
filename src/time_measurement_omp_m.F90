@@ -1,4 +1,5 @@
-module forgex_time_measurement_m
+module forgex_time_measurement_omp_m
+#ifdef OMP
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    use :: omp_lib
    implicit none
@@ -61,5 +62,5 @@ contains
       write(stderr,*) "-------------------------------"
       write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
    end subroutine time_end
-   
-end module forgex_time_measurement_m
+#endif
+end module forgex_time_measurement_omp_m
