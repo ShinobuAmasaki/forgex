@@ -119,6 +119,8 @@ contains
 
        ! すべてのNFA状態を走査する。
       do i = self%nfa%nfa_base + 1, self%nfa%nfa_top
+
+         if (.not. allocated(self%nfa%nodes(i)%forward)) cycle
          ! すべての順方向の遷移をスキャンする
          do j = 1, self%nfa%nodes(i)%forward_top
 
@@ -239,6 +241,9 @@ contains
 
             j = 1  ! loop varialbe for NFA nodes
             jj = 1 ! loop variable for DFA nodes
+
+            if (.not. allocated(self%nfa%nodes(i)%forward)) cycle
+
             middle: do while (n_node%forward(j)%own_j <= n_node%forward_top .and. jj <= DFA_TRANSITION_UNIT)
 
                do k = 1, n_node%forward(j)%c_top
