@@ -75,10 +75,12 @@ contains
       ! Initialize
       nfa(i_begin:i_end)%own_i = [(i, i =i_begin, i_end)]
 
+      !=== This loop is the rate-limiting step ==!
       do i = i_begin, i_end
          allocate(nfa(i)%forward(1:NFA_TRANSITION_SIZE))
          allocate(nfa(i)%backward(1:NFA_TRANSITION_SIZE))
       end do
+      !==========================================!
 
       do i = i_begin, i_end
          do j = 1, NFA_TRANSITION_SIZE
