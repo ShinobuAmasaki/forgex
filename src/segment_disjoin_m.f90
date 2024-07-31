@@ -252,7 +252,7 @@ contains
    !> values just before and after the `min` and `max`.
    pure subroutine index_list_from_segment_list(index_list, seg_list)
       use, intrinsic :: iso_fortran_env, only: int32
-      use :: forgex_sort_m, only: bubble_sort
+      use :: forgex_sort_m, only: insertion_sort
       implicit none
       type(segment_t), intent(in) :: seg_list(:)
       integer(int32), intent(out), allocatable :: index_list(:)
@@ -276,7 +276,7 @@ contains
          index_list(6*i)   = seg_list(i)%max + 1
       end do
 
-      call bubble_sort(index_list)  ! Sort the `index_list` in ascending order. 
+      call insertion_sort(index_list)  ! Sort the `index_list` in ascending order. 
       
       ! Initialize
       cache(1) = index_list(1)
