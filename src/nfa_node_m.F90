@@ -16,7 +16,7 @@
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
-       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_TRANSITION_SIZE, NFA_C_SIZE
+       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_C_SIZE
    use :: forgex_segment_m
    use :: forgex_syntax_tree_m
 
@@ -43,6 +43,8 @@ module forgex_nfa_node_m
       type(nfa_transition_t), allocatable :: backward(:)
       integer(int32) :: forward_top = 0
       integer(int32) :: backward_top = 0
+      integer(int32) :: alloc_count_f = 0
+      integer(int32) :: alloc_count_b = 0
       ! type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: add_transition => nfa__add_transition
@@ -51,6 +53,7 @@ module forgex_nfa_node_m
 contains
 
    pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
+      use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
       type(tree_node_t),      intent(in)                 :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer(int32),         intent(in)                 :: root_i
@@ -77,13 +80,18 @@ contains
 
       !=== This loop is the rate-limiting step ==!
       do i = i_begin, i_end
-         allocate(nfa(i)%forward(1:NFA_TRANSITION_SIZE))
-         allocate(nfa(i)%backward(1:NFA_TRANSITION_SIZE))
+         allocate(nfa(i)%forward(1:NFA_TRANSITION_UNIT))
+         allocate(nfa(i)%backward(1:NFA_TRANSITION_UNIT))
       end do
       !==========================================!
 
       do i = i_begin, i_end
-         do j = 1, NFA_TRANSITION_SIZE
+         nfa(i)%alloc_count_f = 1
+         nfa(i)%alloc_count_b = 1
+      end do
+
+      do i = i_begin, i_end
+         do j = 1, NFA_TRANSITION_UNIT
             nfa(i)%forward(j)%own_j = j
             nfa(i)%backward(j)%own_j = j
          end do
@@ -195,6 +203,7 @@ contains
 
 
    pure subroutine nfa__add_transition(self,nfa_graph, src, dst, c)
+      use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
       class(nfa_state_node_t), intent(inout) :: self
       type(nfa_state_node_t), intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
@@ -203,9 +212,35 @@ contains
 
       integer(int32) :: j, k
 
+      ! Forward transition process
       j = self%forward_top
       if (j >= size(self%forward, dim=1)) then
          ! reallocate
+         block
+            type(nfa_transition_t), allocatable :: tmp(:)
+            integer :: siz
+            integer :: prev_count, new_part_begin, new_part_end
+
+            if (allocated(self%forward)) then
+               siz = size(self%forward, dim=1)
+               allocate(tmp(siz))
+               call move_alloc(self%forward, tmp)
+            else
+               siz = 0
+            end  if
+            prev_count = self%alloc_count_f
+            self%alloc_count_f = prev_count + 1
+
+            new_part_begin = (siz) + 1
+            new_part_end = self%alloc_count_f * NFA_TRANSITION_UNIT
+
+            allocate(self%forward(NFA_TRANSITION_UNIT*self%alloc_count_f))
+            self%forward(1:siz) = tmp(1:siz)
+
+            self%forward(new_part_begin:new_part_end)%own_j = &
+               [(j, j= new_part_begin, new_part_end)]
+
+         end block
       endif
       if (.not. allocated(self%forward(j)%c))  allocate(self%forward(j)%c(NFA_C_SIZE))
       
@@ -218,10 +253,36 @@ contains
       
       self%forward_top = j + 1
 
-
+      ! Backward transition process
       j = nfa_graph(dst)%backward_top
       if (j >= size(nfa_graph(dst)%backward, dim=1)) then
          ! reallocate
+         block
+            type(nfa_transition_t), allocatable :: tmp(:)
+            integer :: siz
+            integer :: prev_count, new_part_begin, new_part_end
+
+            if (allocated(nfa_graph(dst)%backward)) then
+               siz = size(nfa_graph(dst)%backward, dim=1)
+               allocate(tmp(siz))
+               call move_alloc(nfa_graph(dst)%backward, tmp)
+            else
+               siz = 0
+            end  if
+
+            prev_count = nfa_graph(dst)%alloc_count_b
+            nfa_graph(dst)%alloc_count_b = prev_count + 1
+
+            new_part_begin = (siz) + 1
+            new_part_end = nfa_graph(dst)%alloc_count_b * NFA_TRANSITION_UNIT
+
+            allocate(nfa_graph(dst)%backward(new_part_end))
+            nfa_graph(dst)%backward(1:siz) = tmp(1:siz)
+
+            nfa_graph(dst)%backward(new_part_begin:new_part_end)%own_j = &
+               [(j, j= new_part_begin, new_part_end)]
+
+         end block
       endif
       if (.not. allocated(nfa_graph(dst)%backward(j)%c))  allocate(nfa_graph(dst)%backward(j)%c(NFA_C_SIZE))
       
@@ -289,7 +350,7 @@ contains
       ! do concurrent (i = NFA_STATE_BASE:nfa_top)
       !    do concurrent (j = 1:graph(1)%forward_top)
       do i = NFA_STATE_BASE, nfa_top
-         do j = 1, graph(1)%forward_top
+         do j = 1, graph(i)%forward_top
             call disjoin_nfa_each_transition(graph(i)%forward(j), seg_list)
          end do
          do j = 1, graph(i)%backward_top

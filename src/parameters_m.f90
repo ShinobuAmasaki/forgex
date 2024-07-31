@@ -53,7 +53,7 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
 
    !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_TRANSITION_SIZE = 128
+   integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 32
 
    !> Upper limit of segments size of NFA transition instance
    integer(int32), parameter, public :: NFA_C_SIZE = 128
