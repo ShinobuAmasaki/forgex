@@ -75,18 +75,23 @@ contains
       ! Initialize
       nfa(i_begin:i_end)%own_i = [(i, i =i_begin, i_end)]
 
+      !=== This loop is the rate-limiting step ==!
       do i = i_begin, i_end
          allocate(nfa(i)%forward(1:NFA_TRANSITION_SIZE))
          allocate(nfa(i)%backward(1:NFA_TRANSITION_SIZE))
+      end do
+      !==========================================!
 
+      do i = i_begin, i_end
          do j = 1, NFA_TRANSITION_SIZE
             nfa(i)%forward(j)%own_j = j
             nfa(i)%backward(j)%own_j = j
          end do
-
-         nfa(i)%forward_top = 1
-         nfa(i)%backward_top = 1
       end do
+
+      nfa(:)%forward_top = 1
+      nfa(:)%backward_top = 1
+
 
       call make_nfa_node(nfa_top)
       nfa_entry = nfa_top
