@@ -132,16 +132,15 @@ contains
       res =  b%min <= a%min .and. a%max <= b%max
    end function seg_in_segment
 
+
    pure function seg_in_segment_list(seg, list) result(res)
       implicit none
       type(segment_t), intent(in) :: seg
       type(segment_t), intent(in) :: list(:)
       logical :: res
       integer :: i
-
-      res = .false.
      
-      res = res .or. any(seg_in_segment(seg, list(:)))
+      res = any(seg_in_segment(seg, list(:)))
 
    end function seg_in_segment_list
 
