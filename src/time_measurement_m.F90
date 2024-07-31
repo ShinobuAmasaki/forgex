@@ -34,9 +34,20 @@ contains
 
       end_s = omp_get_wtime()
 
-      write(stderr, *) end_s - last_s, " sec. :", trim(description)
+      write(stderr, *) end_s - last_s, "sec. :", trim(description)
       last_s = end_s
 #endif
    end subroutine time_lap
+
+   pure subroutine time_end(description)
+      implicit none
+      character(*), intent(in) :: description
+#if defined(IMPURE) && defined(BENCH)
+
+      end_s = omp_get_wtime()
+
+      write(stderr,*) end_s - begin_s, "sec. :", trim(description), ": TOTAL"
+#endif
+   end subroutine time_end
 
 end module forgex_time_measurement_m
