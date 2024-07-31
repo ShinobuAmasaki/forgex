@@ -24,8 +24,6 @@ module forgex_automaton_m
    implicit none
    private
 
-   public :: automaton_t
-
    type, public :: automaton_t
       !! This type contains an NFA graph, and the DFA graph that are derived from it.
       type(nfa_graph_t)            :: nfa
