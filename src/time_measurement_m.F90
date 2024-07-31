@@ -8,7 +8,8 @@ module forgex_time_measurement_m
    implicit none
 
    real(real64) :: begin_s, last_s, end_s
-   integer :: i = 1, ii
+   integer :: i_cpu = 1
+   integer :: i, ii
    type record
       real(real64) :: lap_time
       character(:), allocatable :: description
@@ -83,9 +84,11 @@ contains
 
       call cpu_time(end_s)
 
-      records(i)%lap_time = end_s - last_s
-      records(i)%description = trim(description)
-      i = i + 1
+      records(i_cpu)%lap_time = end_s - last_s
+      records(i_cpu)%description = trim(description)
+      i_cpu = i_cpu + 1
+
+      if (i_cpu > size(records, dim=1)) error stop
       last_s = end_s
    end subroutine time_lap_cpu
 
@@ -94,10 +97,10 @@ contains
       character(*), intent(in) :: description
       call cpu_time(end_s)
 
-      records(i)%lap_time = end_s - begin_s
-      records(i)%description = "sec. : TOTAL: "//trim(description)
+      records(i_cpu)%lap_time = end_s - begin_s
+      records(i_cpu)%description = "sec. : TOTAL: "//trim(description)
 
-      do ii = 1, i-1
+      do ii = 1, i_cpu-1
          write(stderr, *) records(ii)%lap_time, "sec. : "//records(ii)%description
       end do
 
