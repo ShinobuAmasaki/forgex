@@ -16,7 +16,7 @@
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
-       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_C_SIZE
+       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
    use :: forgex_segment_m
    use :: forgex_syntax_tree_m
 
@@ -48,6 +48,8 @@ module forgex_nfa_node_m
       ! type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: add_transition => nfa__add_transition
+      procedure :: realloc_f => nfa__reallocate_transition_forward
+      procedure :: realloc_b => nfa__reallocate_transition_backward
    end type
 
 contains
@@ -77,25 +79,9 @@ contains
 
       ! Initialize
       nfa(i_begin:i_end)%own_i = [(i, i =i_begin, i_end)]
-
-      !=== This loop is the rate-limiting step ==!
-      do i = i_begin, i_end
-         allocate(nfa(i)%forward(1:NFA_TRANSITION_UNIT))
-         allocate(nfa(i)%backward(1:NFA_TRANSITION_UNIT))
-      end do
-      !==========================================!
-
-      do i = i_begin, i_end
-         nfa(i)%alloc_count_f = 1
-         nfa(i)%alloc_count_b = 1
-      end do
-
-      do i = i_begin, i_end
-         do j = 1, NFA_TRANSITION_UNIT
-            nfa(i)%forward(j)%own_j = j
-            nfa(i)%backward(j)%own_j = j
-         end do
-      end do
+ 
+      nfa(:)%alloc_count_f = 0
+      nfa(:)%alloc_count_b = 0
 
       nfa(:)%forward_top = 1
       nfa(:)%backward_top = 1
@@ -212,37 +198,18 @@ contains
 
       integer(int32) :: j, k
 
-      ! Forward transition process
+      !== Forward transition process
       j = self%forward_top
-      if (j >= size(self%forward, dim=1)) then
-         ! reallocate
-         block
-            type(nfa_transition_t), allocatable :: tmp(:)
-            integer :: siz
-            integer :: prev_count, new_part_begin, new_part_end
 
-            if (allocated(self%forward)) then
-               siz = size(self%forward, dim=1)
-               allocate(tmp(siz))
-               call move_alloc(self%forward, tmp)
-            else
-               siz = 0
-            end  if
-            prev_count = self%alloc_count_f
-            self%alloc_count_f = prev_count + 1
-
-            new_part_begin = (siz) + 1
-            new_part_end = self%alloc_count_f * NFA_TRANSITION_UNIT
-
-            allocate(self%forward(NFA_TRANSITION_UNIT*self%alloc_count_f))
-            self%forward(1:siz) = tmp(1:siz)
-
-            self%forward(new_part_begin:new_part_end)%own_j = &
-               [(j, j= new_part_begin, new_part_end)]
-
-         end block
+      !> @note Note that the return value of the size function on an unallocated array is undefined.
+      if (j >= size(self%forward, dim=1) .or. .not. allocated(self%forward)) then
+         ! Reallocate the forward array component.
+         call self%realloc_f()
       endif
-      if (.not. allocated(self%forward(j)%c))  allocate(self%forward(j)%c(NFA_C_SIZE))
+
+      if (.not. allocated(self%forward(j)%c))  then
+         allocate(self%forward(j)%c(1:NFA_C_SIZE))
+      end if
       
       self%forward(j)%c_top = self%forward(j)%c_top + 1
       k = self%forward(j)%c_top
@@ -253,37 +220,14 @@ contains
       
       self%forward_top = j + 1
 
-      ! Backward transition process
+      !== Backward transition process
       j = nfa_graph(dst)%backward_top
-      if (j >= size(nfa_graph(dst)%backward, dim=1)) then
-         ! reallocate
-         block
-            type(nfa_transition_t), allocatable :: tmp(:)
-            integer :: siz
-            integer :: prev_count, new_part_begin, new_part_end
 
-            if (allocated(nfa_graph(dst)%backward)) then
-               siz = size(nfa_graph(dst)%backward, dim=1)
-               allocate(tmp(siz))
-               call move_alloc(nfa_graph(dst)%backward, tmp)
-            else
-               siz = 0
-            end  if
-
-            prev_count = nfa_graph(dst)%alloc_count_b
-            nfa_graph(dst)%alloc_count_b = prev_count + 1
-
-            new_part_begin = (siz) + 1
-            new_part_end = nfa_graph(dst)%alloc_count_b * NFA_TRANSITION_UNIT
-
-            allocate(nfa_graph(dst)%backward(new_part_end))
-            nfa_graph(dst)%backward(1:siz) = tmp(1:siz)
-
-            nfa_graph(dst)%backward(new_part_begin:new_part_end)%own_j = &
-               [(j, j= new_part_begin, new_part_end)]
-
-         end block
+      if (j >= size(nfa_graph(dst)%backward, dim=1) .or. .not. allocated(nfa_graph(dst)%backward)) then
+         ! Reallocate backward array component.
+         call nfa_graph(dst)%realloc_b
       endif
+
       if (.not. allocated(nfa_graph(dst)%backward(j)%c))  allocate(nfa_graph(dst)%backward(j)%c(NFA_C_SIZE))
       
       nfa_graph(dst)%backward(j)%c_top = nfa_graph(dst)%backward(j)%c_top + 1
@@ -350,12 +294,19 @@ contains
       ! do concurrent (i = NFA_STATE_BASE:nfa_top)
       !    do concurrent (j = 1:graph(1)%forward_top)
       do i = NFA_STATE_BASE, nfa_top
-         do j = 1, graph(i)%forward_top
-            call disjoin_nfa_each_transition(graph(i)%forward(j), seg_list)
-         end do
-         do j = 1, graph(i)%backward_top
-            call disjoin_nfa_each_transition(graph(i)%backward(j), seg_list)
-         end do
+
+         if (allocated(graph(i)%forward)) then
+            do j = 1, graph(i)%forward_top
+               call disjoin_nfa_each_transition(graph(i)%forward(j), seg_list)
+            end do
+         end if
+
+         if (allocated(graph(i)%backward)) then
+            do j = 1, graph(i)%backward_top
+               call disjoin_nfa_each_transition(graph(i)%backward(j), seg_list)
+            end do
+         end if
+
       end do
 
       ! deallocate the used priority queue.
@@ -376,7 +327,6 @@ contains
       type(segment_t), allocatable ::  tmp(:)
 
       integer :: k, m, n, siz
-
       if (.not. allocated(transition%c)) return
 
       siz = size(seg_list, dim=1)
@@ -450,5 +400,78 @@ contains
       end do
    end subroutine transition_to_seg_list
 
+
+   pure subroutine nfa__reallocate_transition_forward (self)
+      implicit none
+      class(nfa_state_node_t), intent(inout) :: self
+      type(nfa_transition_t), allocatable :: tmp(:)
+      integer :: siz, j
+      integer :: prev_count, new_part_begin, new_part_end
+
+      siz = 0
+      prev_count = 0
+      new_part_begin = 0
+      new_part_end = 0
+
+      if (allocated(self%forward)) then
+         siz = size(self%forward, dim=1)
+         allocate(tmp(siz))
+         call move_alloc(self%forward, tmp)
+      else
+         siz = 0
+      end  if
+
+      prev_count = self%alloc_count_f
+      self%alloc_count_f = prev_count + 1
+
+      new_part_begin = (siz) + 1
+      new_part_end = self%alloc_count_f * NFA_TRANSITION_UNIT
+
+      allocate(self%forward(1:new_part_end))
+
+      do j = 1, siz
+         self%forward(j) = tmp(j)
+      end do
+
+      self%forward(1:new_part_end)%own_j = &
+         [(j, j= 1, new_part_end)]
+
+   end subroutine nfa__reallocate_transition_forward
+
+   
+   pure subroutine nfa__reallocate_transition_backward (self)
+      implicit none
+      class(nfa_state_node_t), intent(inout) :: self
+      type(nfa_transition_t), allocatable :: tmp(:)
+      integer :: siz, jj
+      integer :: prev_count, new_part_begin, new_part_end
+
+      siz = 0
+      prev_count = 0
+      new_part_begin = 0
+      new_part_end = 0
+
+      if (allocated(self%backward)) then
+         siz = size(self%backward, dim=1)
+         allocate(tmp(siz))
+         call move_alloc(self%backward, tmp)
+      else
+         siz = 0
+      end  if
+
+      prev_count = self%alloc_count_b
+      self%alloc_count_b = prev_count + 1
+
+      new_part_begin = (siz) + 1
+      new_part_end = self%alloc_count_b * NFA_TRANSITION_UNIT
+
+      allocate(self%backward(1:new_part_end))
+
+      self%backward(1:siz) = tmp(1:siz)
+
+      self%backward(new_part_begin:new_part_end)%own_j = &
+         [(jj, jj= new_part_begin, new_part_end)]
+
+   end subroutine nfa__reallocate_transition_backward
 
 end module forgex_nfa_node_m

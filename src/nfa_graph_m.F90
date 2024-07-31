@@ -101,6 +101,9 @@ contains
 
       j = 1
       do while(j <= self%nodes(idx)%forward_top)
+
+         if (.not. allocated(self%nodes(idx)%forward)) exit
+
          p = self%nodes(idx)%forward(j)
       
          do k = 1, p%c_top
@@ -154,6 +157,8 @@ contains
          node = self%nodes(i)
 
          do j = 1, node%forward_top
+            if (.not. allocated(node%forward)) cycle
+
             transition = node%forward(j)
 
             if (transition%dst > NFA_NULL_TRANSITION) then
