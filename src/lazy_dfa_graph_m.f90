@@ -49,9 +49,8 @@ contains
 
       allocate(self%nodes(base:limit))
 
-      do i = base, limit
-         self%nodes(i)%own_i = i
-      end do
+      self%nodes(:)%own_i = [(i, i=base, limit)]
+      
       self%dfa_top = DFA_INITIAL_INDEX    ! Acts as an initialized flag
 
    end subroutine lazy_dfa__preprocess
