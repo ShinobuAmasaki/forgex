@@ -189,7 +189,6 @@ contains
       type(nfa_state_set_t)  :: state_set
       type(nfa_state_set_t)  :: current_set
       type(nfa_state_node_t) :: n_node       ! This variable simulates a pointer.
-      type(dfa_transition_t) :: a, b         ! Same as above.
       type(dfa_transition_t) :: transitions(DFA_TRANSITION_UNIT)
       integer(int32)         :: i, j, k, jj
 
@@ -207,46 +206,44 @@ contains
             ! 
             n_node = self%nfa%nodes(i)
 
-            j = 1  ! loop varialbe for NFA nodes
-            jj = 1 ! loop variable for DFA nodes
-
             if (.not. allocated(self%nfa%nodes(i)%forward)) cycle
+            
+            jj = 1 ! loop variable for DFA nodes
+            ! middle: do while (n_node%forward(j)%own_j <= n_node%forward_top .and. jj <= DFA_TRANSITION_UNIT)
+            middle: do j = 1, n_node%forward_top
 
-            middle: do while (n_node%forward(j)%own_j <= n_node%forward_top .and. jj <= DFA_TRANSITION_UNIT)
+               if (jj > DFA_TRANSITION_UNIT) exit middle
 
-               do k = 1, n_node%forward(j)%c_top
+               inner_a: do k = 1, n_node%forward(j)%c_top
                   if (n_node%forward(j)%c(k) .in. [SEG_EMPTY, SEG_EPSILON, SEG_INIT]) then
 
-                     a = transitions(jj)
-                     inner: do while (a%own_j /= DFA_NOT_INIT)
+                     if (transitions(jj)%own_j /= DFA_NOT_INIT) then
 
-                        if ((a%c .in. n_node%forward(j)%c) .and. n_node%forward(j)%dst/= NFA_NULL_TRANSITION) then
+                        if ((transitions(jj)%c .in. n_node%forward(j)%c) .and. n_node%forward(j)%dst/= NFA_NULL_TRANSITION) then
 
-                           call add_nfa_state(transitions(jj)%nfa_set, n_node%forward(j)%dst)
-                           j = j + 1
+                           call add_nfa_state(state_set, n_node%forward(j)%dst)
                            cycle middle
 
                         end if
                         jj = jj + 1
-                     end do inner
+                     end if
 
                   end if
-               end do
+               end do inner_a
 
                if (n_node%forward(j)%dst /= NFA_NULL_TRANSITION) then
 
-                  do k = 1, n_node%forward(j)%c_top
+                  inner_b: do k = 1, n_node%forward(j)%c_top
                      if ( (symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
                           .or. (n_node%forward(j)%c(k) == SEG_EPSILON)) then
 
                         transitions(jj)%c = which_segment_symbol_belong(self%all_segments, symbol)
-                        call add_nfa_state(transitions(jj)%nfa_set, n_node%forward(j)%dst)
+                        call add_nfa_state(state_set, n_node%forward(j)%dst)
 
                         jj = jj + 1
                      end if
-                  end do
+                  end do inner_b
                end if
-               j = j + 1
 
             end do middle
 
@@ -254,9 +251,9 @@ contains
       end do outer 
 
       ! Aggregate all transitions and assign them to `state_set`.
-      do j = 1, DFA_TRANSITION_UNIT
-         state_set%vec = transitions(j)%nfa_set%vec .or. state_set%vec
-      end do
+      ! do j = 1, DFA_TRANSITION_UNIT
+      !    state_set%vec = transitions(j)%nfa_set%vec .or. state_set%vec
+      ! end do
 
    end function automaton__compute_reachable_state
 
