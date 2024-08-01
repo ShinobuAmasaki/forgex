@@ -14,7 +14,8 @@ program test_005
 
    call runner_in("a(a|aa)*b", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&
    &aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", .true., res)
-
+  
+   call runner_match("((a|b|c|d|e|f|g|h|i|j){1,5}){,3}", "abcdefghij", .true., res)
 
    call runner_match("aa*b", "cb", .false., res)
    call runner_match("a(a|aa)*b", "acb", .false., res)
