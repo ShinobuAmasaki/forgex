@@ -67,8 +67,15 @@ module forgex_parameters_m
    !> Lower limit of DFA state instanse. 
    integer(int32), parameter, public :: DFA_STATE_BASE = 0
    !> Upper limit of DFA state instance.
+
+   integer(int32), parameter, public :: DFA_STATE_UNIT = 128
    integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
-   !>
+
+   !> If this limit is exceeded, program will do ERROR STOP. 
+   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT*16 + 1
+   !! This hard limit is approximately on the order of gigabytes.
+
+
    integer(int32), parameter, public :: DFA_INVALID_INDEX = 0
    integer(int32), parameter, public :: DFA_INITIAL_INDEX = 1
    !>
