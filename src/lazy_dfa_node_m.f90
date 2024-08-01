@@ -37,7 +37,7 @@ module forgex_lazy_dfa_node_m
       logical                             :: accepted = .false.
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32), private             :: tra_top = DFA_NOT_INIT_TRAENSITION_TOP
-      integer(int32)                      :: allco_count_f
+      integer(int32)                      :: alloc_count_f
       logical                             :: registered = .false.
       logical                             :: initialized = .false.
    contains
@@ -47,6 +47,7 @@ module forgex_lazy_dfa_node_m
       procedure :: add_transition    => dfa_state_node__add_transition
       procedure :: realloc_f         => dfa_state_node__reallocate_transition_forward
       procedure :: is_registered_tra => dfa_state_node__is_registered_transition
+      procedure :: free              => dfa_state_node__deallocate
    end type dfa_state_node_t
 
 contains
@@ -69,6 +70,15 @@ contains
 
    end subroutine dfa_state_node__initialize_transition_top
       
+
+   pure subroutine dfa_state_node__deallocate(self)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+      integer :: j, k
+
+      if (allocated(self%transition)) deallocate(self%transition)
+
+   end subroutine dfa_state_node__deallocate
       
       
 
@@ -148,11 +158,11 @@ contains
          call self%init_tra_top(DFA_INIT_TRANSITION_TOP)
       end if
 
-      prev_count = self%allco_count_f
-      self%allco_count_f = prev_count + 1
+      prev_count = self%alloc_count_f
+      self%alloc_count_f = prev_count + 1
 
       new_part_begin = siz + 1
-      new_part_end = self%allco_count_f * DFA_TRANSITION_UNIT
+      new_part_end = self%alloc_count_f * DFA_TRANSITION_UNIT
 
       allocate(self%transition(1:new_part_end))
 

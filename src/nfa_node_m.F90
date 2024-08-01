@@ -110,7 +110,6 @@ contains
       do i = NFA_STATE_BASE, NFA_STATE_LIMIT
          if (allocated(nfa(i)%forward)) deallocate(nfa(i)%forward)
          if (allocated(nfa(i)%backward)) deallocate(nfa(i)%backward)
-         ! if (allocated(nfa(i)%all_segments)) deallocate(nfa(i)%all_segments)
       end do
 
       deallocate(nfa)

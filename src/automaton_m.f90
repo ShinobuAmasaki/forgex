@@ -40,6 +40,7 @@ module forgex_automaton_m
       procedure :: get_reachable   => automaton__compute_reachable_state
       procedure :: move            => automaton__move
       procedure :: destination     => automaton__destination
+      procedure :: free            => automaton__deallocate
 #if  defined(IMPURE) && defined(DEBUG)
       procedure :: print           => automaton__print_info
       procedure :: print_dfa       => automaton__print_dfa
@@ -94,6 +95,20 @@ contains
       self%initial_index = new_index
 
    end subroutine automaton__initialize
+
+
+   pure subroutine automaton__deallocate(self)
+      implicit none
+      class(automaton_t), intent(inout) :: self
+
+      call self%dfa%free()
+      call self%nfa%free()
+
+      if (allocated(self%dfa%nodes)) deallocate(self%dfa%nodes)
+      if (allocated(self%nfa%nodes)) deallocate(self%nfa%nodes)
+      if (allocated(self%all_segments)) deallocate(self%all_segments)
+
+   end subroutine automaton__deallocate
 
 
    !> Compute the ε-closure for a set of NFA states.

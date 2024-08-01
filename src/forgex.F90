@@ -103,6 +103,8 @@ contains
       else
          res = .false.
       end if
+
+      call automaton%free()
    end function operator__in
 
 
@@ -149,6 +151,7 @@ contains
       call automaton%print_dfa()
 #endif
 
+      call automaton%free()
 
    end function operator__match
 
@@ -207,6 +210,9 @@ contains
          if (present(from)) from = 0
          if (present(to)) to = 0
       end if
+
+      call automaton%free()
+
    end subroutine procedure__regex
 
       
@@ -258,6 +264,9 @@ contains
       else
          res = ''
       end if
+
+      call automaton%free()
+
    end function function__regex
 
 

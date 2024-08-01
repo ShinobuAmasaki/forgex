@@ -29,6 +29,7 @@ module forgex_lazy_dfa_graph_m
       procedure :: preprocess => lazy_dfa__preprocess
       procedure :: registered => lazy_dfa__registered_index
       procedure :: add_transition => lazy_dfa__add_transition
+      procedure :: free => lazy_dfa__deallocate
    end type dfa_graph_t
 
 contains
@@ -54,6 +55,18 @@ contains
       self%dfa_top = DFA_INITIAL_INDEX    ! Acts as an initialized flag
 
    end subroutine lazy_dfa__preprocess
+
+
+   pure subroutine lazy_dfa__deallocate(self)
+      implicit none
+      class(dfa_graph_t), intent(inout) :: self
+
+      integer :: i
+      do i = 1, self%dfa_limit
+         call self%nodes(i)%free()
+      end do
+
+   end subroutine lazy_dfa__deallocate
 
 
    ! DFA状態がすでに登録されているかを、添字で返す。登録されていなければDFA_INVALID_INDEXを返す。
