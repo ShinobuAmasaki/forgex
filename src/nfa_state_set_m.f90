@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -46,8 +46,8 @@ contains
          check_nfa_state = state_set%vec(state_index)
 
       else
-         check_nfa_state = .false. 
-      end if    
+         check_nfa_state = .false.
+      end if
    end function check_nfa_state
 
 
@@ -74,7 +74,7 @@ contains
       integer(int32) :: ii
       logical        :: res
 
-      ! If all elements match, set the result `res` to `.true.` indicating equivalence. 
+      ! If all elements match, set the result `res` to `.true.` indicating equivalence.
       res = all(a%vec .eqv. b%vec)
 
    end function equivalent_nfa_state_set
@@ -97,17 +97,17 @@ contains
       ! Scan the entire NFA state nodes.
       outer: do iii = NFA_STATE_BASE+1, nfa_top
          if (.not. allocated(nfa_graph(iii)%forward)) cycle outer
-         
-         ! Scan the all forward transitions. 
+
+         ! Scan the all forward transitions.
          middle: do j = lbound(nfa_graph(iii)%forward, dim=1), nfa_graph(iii)%forward_top
 
             ! If the forward segment list is not allocated, move to the next loop.
             if (.not. allocated(nfa_graph(iii)%forward(j)%c)) cycle middle
-            
+
             ! Get the destination index and if it is not NULL, call this function recursively.
             dst = nfa_graph(iii)%forward(j)%dst
             if (dst /= NFA_NULL_TRANSITION) call mark_epsilon_transition(nfa_graph, nfa_top, nfa_set, nfa_i)
-  
+
          end do middle
       end do outer
    end subroutine mark_epsilon_transition

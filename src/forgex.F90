@@ -31,12 +31,12 @@ module forgex
    interface operator(.in.)
       !! Interface for user-defined operator of `.in.`
       module procedure :: operator__in
-   end interface 
+   end interface
 
    interface operator(.match.)
    !! Interface for user-defined operator of `.match.`
       module procedure :: operator__match
-   end interface 
+   end interface
 
    interface regex
       !! The generic name for the `regex` function implemented as `procedure__regex`.
@@ -65,7 +65,7 @@ contains
 
       buff = trim(pattern)
 
-      
+
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
@@ -77,7 +77,7 @@ contains
       ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
-      ! Call the internal procedure to match string, and store the result in logical `res`. 
+      ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, char(0)//str//char(0), from, to)
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
 
@@ -118,7 +118,7 @@ contains
       type(tree_node_t), allocatable :: tree(:)
       type(tape_t)                   :: tape
       type(automaton_t)              :: automaton
-      integer                        :: root 
+      integer                        :: root
 
 
       ! If the pattern begins with a caret character and ends with
@@ -144,7 +144,7 @@ contains
       ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
-      ! Call the internal procedure to match string, and store the result in logical `res`. 
+      ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_exactly(automaton, str, res)
 
 #if defined(IMPURE) && defined(DEBUG)
@@ -215,7 +215,7 @@ contains
 
    end subroutine procedure__regex
 
-      
+
    !> The function implemented for the `regex` subroutine.
    pure function function__regex(pattern, text) result(res)
       implicit none
