@@ -24,6 +24,16 @@ module forgex_segment_m
    public :: which_segment_symbol_belong
    public :: symbol_to_segment
 
+   public :: sort_segment_by_min
+   public :: merge_segments
+   public :: invert_segment_list_new
+
+
+   interface invert_segment_list
+      ! module procedure :: invert_segment_list_brute_force
+      module procedure :: invert_segment_list_new
+   end interface invert_segment_list
+
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
    !> when building automata where a range characters share the same transition destination.
@@ -189,7 +199,7 @@ contains
    !>
    !> @note The algorithms implemented in this (especially the loops) are brute force
    !> and we would like to change them with a more lightweight way of handling inverted classes.
-   pure subroutine invert_segment_list(list)
+   pure subroutine invert_segment_list_brute_force(list)
       implicit none
       type(segment_t), intent(inout), allocatable :: list(:)   ! Input list of segments
 
@@ -242,8 +252,62 @@ contains
          end if
       end do
 
-   end subroutine invert_segment_list
+   end subroutine invert_segment_list_brute_force
 
+
+   pure subroutine invert_segment_list_new(list)
+      implicit none
+      type(segment_t), intent(inout), allocatable :: list(:)
+      type(segment_t), allocatable :: new_list(:)
+
+      integer :: i, n, count
+      integer :: current_min, current_max
+
+      ! sort and merge segments
+      call sort_segment_by_min(list)
+      call merge_segments(list)
+
+      ! Count the number of new segments
+      count = 0
+      current_min = UTF8_CODE_EMPTY+1
+      n = size(list, dim=1)
+
+      do i = 1, n
+         if (current_min < list(i)%min) then
+            count = count + 1
+         end if
+         current_min = list(i)%max + 1
+      end do
+
+      if (current_min <= UTF8_CODE_MAX) then
+         count = count + 1
+      end if
+
+      ! Allocate new list
+      allocate(new_list(count))
+
+      ! Fill the new list with the component segments
+      count = 1
+      current_min = UTF8_CODE_EMPTY + 1
+
+      do i = 1, n
+         if (current_min < list(i)%min) then
+            new_list(count)%min = current_min
+            new_list(count)%max = list(i)%min - 1
+            count = count + 1
+         end if
+         current_min = list(i)%max + 1
+      end do
+
+      if (current_min <= UTF8_CODE_MAX) then
+         new_list(count)%min = current_min
+         new_list(count)%max = UTF8_CODE_MAX
+      end if
+
+      ! Deallocate old list and reassign new list
+      deallocate(list)
+      list = new_list
+   end subroutine invert_segment_list_new
 
    !> This function takes an array of segments and a character as arguments,
    !> and returns the segment as rank=1 array to which symbol belongs
@@ -310,6 +374,52 @@ contains
       ! Create a segment corresponding to the code, and return it.
       res = segment_t(code, code)
    end function symbol_to_segment
+
+!====================================================================-!
+!  Helper procedures
+   pure subroutine sort_segment_by_min(segments)
+      implicit none
+      type(segment_t), allocatable, intent(inout) :: segments(:)
+      
+      integer :: i, j, n
+      type(segment_t) :: temp ! temporary variable
+
+      n = size(segments)
+      do i = 1, n-1
+         do j = i+1, n
+            if (segments(i)%min > segments(j)%min) then
+               temp = segments(i)
+               segments(i) = segments(j)
+               segments(j) = temp
+            end if
+         end do
+      end do
+   end subroutine sort_segment_by_min
+
+
+   pure subroutine merge_segments(segments)
+      implicit none
+      type(segment_t), allocatable, intent(inout) :: segments(:)
+      integer :: i, j, n
+
+      n = size(segments)
+      if (n <= 1) return
+
+      j = 1
+      do i = 2, n
+         if (segments(j)%max >= segments(i)%min-1) then
+            segments(j)%max = max(segments(j)%max, segments(i)%max)
+         else
+            j = j + 1
+            segments(j) = segments(i)
+         endif
+      end do
+
+      if (j < n) then
+         segments = segments(1:j)    ! reallocation implicitly. 
+      end if
+   end subroutine merge_segments
+
 
 #if defined(IMPURE) && defined(DEBUG)
    !| Converts a segment to a printable string representation.
