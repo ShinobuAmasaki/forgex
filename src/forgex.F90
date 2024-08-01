@@ -46,6 +46,7 @@ module forgex
 contains
 
    pure function operator__in(pattern, str) result(res)
+      !! The function implemented for the `.in.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
       logical                        :: res

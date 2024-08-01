@@ -21,7 +21,7 @@ program test_005
 
 
    if (res) then
-      print *, "=== TEST CASE 5 END"
+      print *, "=== TEST CASE 5 END ==="
       stop
    else
       error stop

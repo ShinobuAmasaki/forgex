@@ -1,4 +1,4 @@
-# Forgex—Fortran Regular Expression
+# Fortran Regular Expression
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 

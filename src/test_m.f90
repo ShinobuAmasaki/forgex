@@ -101,7 +101,11 @@ contains
 
       ! write(error_unit, '(a)', advance='no') '                                          '//char(13)
       if (res) then
-         write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
+         if (answer) then
+            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
+         else
+            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern)
+         end if
       else
          write(error_unit, '(a, a, a)') 'result(match): FAILED ' , ' '//trim(pattern),' "'//trim(str)//'"'
       end if
@@ -128,7 +132,11 @@ contains
       res = is_valid__regex(pattern, str, answer, substr)
 
       if (res) then
-         write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
+         if (answer == substr) then
+            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
+         else
+            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
+         end if
       else
          write(error_unit, '(a, a, a)') 'result(regex): FAILED ', ' '//trim(pattern), ' "'//trim(substr)//'"'
       end if
