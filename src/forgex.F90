@@ -150,9 +150,9 @@ contains
    !> The function implemented for the `regex` subroutine.
    pure subroutine procedure__regex(pattern, text, res, length, from, to)
       implicit none
-      character(*), intent(in) :: pattern, text
+      character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
-      integer, optional, intent(inout) :: length, from, to
+      integer, optional,         intent(inout) :: length, from, to
 
       character(:),      allocatable :: buff
       type(tree_node_t), allocatable :: tree(:)

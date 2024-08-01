@@ -65,7 +65,7 @@ contains
       call regex(pattern, str, local, length)
       substr = local
 
-      res = trim(local) == trim(answer)
+      res = local == answer
 
    end function is_valid__regex
 
