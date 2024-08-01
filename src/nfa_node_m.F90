@@ -2,7 +2,7 @@
 #define pure
 #endif
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -15,14 +15,14 @@
 !> The `nfa_t` is defined as a class representing NFA.
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
-   use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
+   use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
        NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
    use :: forgex_segment_m
    use :: forgex_syntax_tree_m
 
    implicit none
    private
-   
+
    public :: build_nfa_graph
    public :: disjoin_nfa
    public :: nfa_deallocate
@@ -43,8 +43,8 @@ module forgex_nfa_node_m
       type(nfa_transition_t), allocatable :: backward(:)
       integer(int32) :: forward_top = 0
       integer(int32) :: backward_top = 0
-      integer(int32) :: alloc_count_f = 0
-      integer(int32) :: alloc_count_b = 0
+      integer(int32) :: alloc_count_f = ALLOC_COUNT_INITTIAL
+      integer(int32) :: alloc_count_b = ALLOC_COUNT_INITTIAL
       ! type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: add_transition => nfa__add_transition
@@ -64,7 +64,7 @@ contains
       integer(int32),         intent(inout)              :: nfa_exit
       integer(int32),         intent(inout)              :: nfa_top
       type(segment_t),        intent(inout), allocatable :: all_segments(:)
-      
+
 
       integer(int32) :: i, i_begin, i_end ! index for states array
       integer(int32) :: j                 ! index for transitions array
@@ -79,7 +79,7 @@ contains
 
       ! Initialize
       nfa(i_begin:i_end)%own_i = [(i, i =i_begin, i_end)]
- 
+
       nfa(:)%alloc_count_f = 0
       nfa(:)%alloc_count_b = 0
 
@@ -148,16 +148,16 @@ contains
          do k = 1, size(tree(i)%c, dim=1)
             call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, tree(i)%c(k))
          end do
-      
+
       case (op_empty)
          ! Handle empty opration by adding an epsilon transition
          call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, SEG_EPSILON)
-      
+
       case (op_union)
          ! Handle union operation by recursively generating NFA for left and right subtrees.
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, exit)
          call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, entry, exit)
-      
+
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
          call make_nfa_node(nfa_top)
@@ -168,7 +168,7 @@ contains
          call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
 
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, node1, node2)
-         
+
          call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
          call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
 
@@ -208,14 +208,14 @@ contains
       if (.not. allocated(self%forward(j)%c))  then
          allocate(self%forward(j)%c(1:NFA_C_SIZE))
       end if
-      
+
       self%forward(j)%c_top = self%forward(j)%c_top + 1
       k = self%forward(j)%c_top
 
       self%forward(j)%c(k) = c
       self%forward(j)%dst = dst
       self%forward(j)%is_registered = .true.
-      
+
       self%forward_top = j + 1
 
       !== Backward transition process
@@ -227,14 +227,14 @@ contains
       endif
 
       if (.not. allocated(nfa_graph(dst)%backward(j)%c))  allocate(nfa_graph(dst)%backward(j)%c(NFA_C_SIZE))
-      
+
       nfa_graph(dst)%backward(j)%c_top = nfa_graph(dst)%backward(j)%c_top + 1
       k = nfa_graph(dst)%backward(j)%c_top
 
       nfa_graph(dst)%backward(j)%c(k) = c
       nfa_graph(dst)%backward(j)%dst = src
       nfa_graph(dst)%backward(j)%is_registered = .true.
-      
+
       nfa_graph(dst)%backward_top = j + 1
    end subroutine nfa__add_transition
 
@@ -250,16 +250,16 @@ contains
 
       type(priority_queue_t) :: queue_f
       type(nfa_transition_t) :: ptr
-      
+
       integer :: i, j, k, num_f
 
       ! Enqueue
       ! Traverse through all states and enqueue their segments into a priority queue.
       block
          do i = NFA_STATE_BASE, nfa_top ! Do not subtract 1 from nfa_top.
-      
+
             do j = 1, graph(i)%forward_top -1
-               
+
                ptr = graph(i)%forward(j)
                if (ptr%dst /= NFA_NULL_TRANSITION) then
                   do k = 1, graph(i)%forward(j)%c_top
@@ -332,7 +332,7 @@ contains
 
       block
          logical :: flag(siz)
-         
+
          n = 0 ! to count valid disjoined segments.
          do k = 1, transition%c_top
 
@@ -363,7 +363,7 @@ contains
       deallocate(tmp)
    end subroutine disjoin_nfa_each_transition
 
-   
+
    !> Update c_top, which has become outdated by disjoin, to new information.
    pure subroutine update_c_top(transition)
       implicit none
@@ -371,13 +371,13 @@ contains
 
       integer :: j, k
       if (.not. allocated(transition%c)) return
-         
+
       k = 1
       do while(transition%c(k) /= SEG_INIT)
          k = k + 1
       end do
       transition%c_top = k
-   
+
    end subroutine update_c_top
 
 
@@ -436,7 +436,7 @@ contains
 
    end subroutine nfa__reallocate_transition_forward
 
-   
+
    pure subroutine nfa__reallocate_transition_backward (self)
       implicit none
       class(nfa_state_node_t), intent(inout) :: self

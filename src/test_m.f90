@@ -32,7 +32,7 @@ contains
       logical,      intent(in) :: correct_answer
 
       logical :: res
-      
+
       res = (pattern .in. str) .eqv. correct_answer
    end function is_valid__in
 
@@ -50,7 +50,7 @@ contains
    end function is_valid__match
 
 
-   !> This function checks if a pattern matches a string using the `regex` 
+   !> This function checks if a pattern matches a string using the `regex`
    !> function and compares the result to the expected answer.
    function is_valid__regex(pattern, str, answer, substr) result(res)
       implicit none
@@ -60,7 +60,7 @@ contains
 
       character(:), allocatable :: local
       integer(int32)            :: length
-      logical                   :: res 
+      logical                   :: res
 
       call regex(pattern, str, local, length)
       substr = local

@@ -45,7 +45,7 @@ contains
 
    end subroutine nfa_graph__build
 
-   
+
    !> This subroutine invokes procedure for deallocation.
    pure subroutine nfa_graph__deallocate(self)
       implicit none
@@ -75,7 +75,7 @@ contains
       type(segment_t), allocatable, intent(inout) :: all_segments(:)
 
       call disjoin_nfa(self%nodes, self%nfa_top, all_segments)
-      
+
    end subroutine nfa_graph__disjoin
 
 
@@ -97,13 +97,13 @@ contains
          if (.not. allocated(self%nodes(idx)%forward)) exit
 
          p = self%nodes(idx)%forward(j)
-      
+
          do k = 1, p%c_top
             if ((p%c(k) ==SEG_EPSILON) .and. .not. check_nfa_state(state_set, p%dst)) then
                if (p%dst /= NFA_NULL_TRANSITION) call self%mark_epsilon_transition(state_set, p%dst)
             end if
          end do
-         j = j + 1   
+         j = j + 1
       end do
 
    end subroutine nfa_graph__mark_epsilon_transition
@@ -135,7 +135,7 @@ contains
       use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(in) :: self
-      
+
       type(nfa_state_node_t) :: node
       type(nfa_transition_t) :: transition
       character(:), allocatable :: buf
@@ -144,7 +144,7 @@ contains
       write(stderr, *) "--- PRINT NFA ---"
 
       do i = self%nfa_base+1, self%nfa_top
-         
+
          write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
 
@@ -158,10 +158,10 @@ contains
                   if (transition%c(k) == SEG_INIT) cycle
 
                   buf = transition%c(k)%print()
-                  
+
                   if (transition%c(k) == SEG_EPSILON) buf = '?'
                   write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
-                 
+
                enddo
             end if
          end do
@@ -182,7 +182,7 @@ contains
       do k = 1, size(list, dim=1)
          if (list(k)/= SEG_INIT) write(stderr, *) list(k)
       end do
-   end subroutine dump_segment_array     
+   end subroutine dump_segment_array
 
 #endif
 end module forgex_nfa_graph_m

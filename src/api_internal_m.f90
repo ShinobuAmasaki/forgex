@@ -60,7 +60,7 @@ contains
       start = 1
       do while (start < len(str))
          max_match = 0
-         ci = start 
+         ci = start
          cur_i = automaton%initial_index
 
          ! Traverse the DFA with the input string from the current starting position of ``cur_i`.
@@ -103,9 +103,9 @@ contains
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
-      integer :: max_match    ! 
+      integer :: max_match    !
 
-      ! Initialize `cur_i` with automaton's initial index. 
+      ! Initialize `cur_i` with automaton's initial index.
       cur_i = automaton%initial_index
 
       ! If the DFA have not been initialized, abort the program.
@@ -123,7 +123,7 @@ contains
       ! Initialize counter variables.
       max_match = 0
       ci = 1
-      
+
       ! Loop and proceed with matching unless the current index is DFA_INVALID_INDEX.
       do while (cur_i /= DFA_INVALID_INDEX)
 
@@ -138,7 +138,7 @@ contains
          next_ci = idxutf8(string, ci) + 1
 
          ! Lazy evaluation is performed by calling this procedure here.
-         ! The index of destination DFA node is stored in the `dst_i` variable.  
+         ! The index of destination DFA node is stored in the `dst_i` variable.
          call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
 
          ! update counters

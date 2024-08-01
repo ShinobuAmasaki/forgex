@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -149,7 +149,7 @@ contains
       type(segment_t), intent(in) :: list(:)
       logical :: res
       integer :: i
-     
+
       res = any(seg_in_segment(seg, list(:)))
 
    end function seg_in_segment_list
@@ -335,7 +335,7 @@ contains
       ! The target to check for inclusion.
       target_for_comparison = symbol_to_segment(symbol(i:i_end))
 
-      ! Scan the segments array. 
+      ! Scan the segments array.
       do j = 1, size(segments)
          ! Compare segments and return the later element of the segments, which contains the target segment.
          if (target_for_comparison .in. segments(j)) then
@@ -348,10 +348,10 @@ contains
       res = SEG_EMPTY
    end function which_segment_symbol_belong
 
-   
+
    !> This function convert an input symbol into the segment corresponding it.
    pure function symbol_to_segment(symbol) result(res)
-      use :: forgex_utf8_m   
+      use :: forgex_utf8_m
       implicit none
       character(*), intent(in) :: symbol
       type(segment_t)          :: res
@@ -380,7 +380,7 @@ contains
    pure subroutine sort_segment_by_min(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)
-      
+
       integer :: i, j, n
       type(segment_t) :: temp ! temporary variable
 
@@ -416,7 +416,7 @@ contains
       end do
 
       if (j < n) then
-         segments = segments(1:j)    ! reallocation implicitly. 
+         segments = segments(1:j)    ! reallocation implicitly.
       end if
    end subroutine merge_segments
 
@@ -454,7 +454,7 @@ contains
          res = "<INIT>"
       else if (seg == SEG_EMPTY) then
          res = "<EMPTY>"
-         
+
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then

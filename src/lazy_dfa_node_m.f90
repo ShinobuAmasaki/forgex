@@ -148,6 +148,8 @@ contains
 
       siz = 0
 
+      !! @note Note that the return value of the `size` intrinsic function for an unallocated array is undefined.
+
       if (self%initialized) then
          ! If already initialized, copy the transitions to a temporary array `tmp`.
          siz = size(self%transition, dim=1)

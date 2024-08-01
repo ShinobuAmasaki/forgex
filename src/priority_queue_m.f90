@@ -1,13 +1,13 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
 !     A regular expression engine for Fortran.
 !     forgex_priority_queue_m module is a part of Forgex.
-! 
+!
 ! (C) ue1221, 2021
-! 
+!
 ! The original Fortran implementation of priority queue is by ue1221.
 ! cf. https://github.com/ue1221/fortran-utilities
 
@@ -36,7 +36,7 @@ module forgex_priority_queue_m
    end type
 
 contains
-   
+
    !> The `enqueue` subroutine is responsible for allocating heap structure and
    !> holding the disjoined segment data with ascending priority order.
    pure subroutine enqueue(pq, seg)
@@ -74,29 +74,29 @@ contains
             t = pq%heap(n)
             pq%heap(n) = pq%heap(i)
             pq%heap(i) = t
-         end if 
+         end if
          n = i
       end do
    end subroutine enqueue
 
-   !> The `dequeue` function takes out and returns the prior segment from the queue. 
+   !> The `dequeue` function takes out and returns the prior segment from the queue.
    pure subroutine dequeue(pq, res)
       implicit none
       class(priority_queue_t), intent(inout) :: pq
       type(segment_t),         intent(inout) :: res
-   
-      type(segment_t) :: tmp 
+
+      type(segment_t) :: tmp
       integer :: n, i, j
-      
+
       ! Hold the number of data in a temporary variable.
       n = pq%number
-      
+
       ! The prior element of the array is returned.
       res = pq%heap(1)
 
-      ! The tailing data is moved to the beginning. 
+      ! The tailing data is moved to the beginning.
       pq%heap(1) = pq%heap(n)
-      
+
       ! Reduce the number of data by one.
       pq%number = pq%number - 1
 
@@ -118,7 +118,7 @@ contains
    pure subroutine clear(pq)
       implicit none
       class(priority_queue_t), intent(inout) :: pq
-      
+
       if (allocated(pq%heap)) deallocate(pq%heap)
       pq%number = 0
    end subroutine clear

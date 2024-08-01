@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -21,9 +21,9 @@ module forgex_segment_disjoin_m
    public :: is_overlap_to_seg_list
 
    interface disjoin
-      !! Interface for the procedure `disjoin_kernel`. 
+      !! Interface for the procedure `disjoin_kernel`.
       module procedure :: disjoin_kernel
-   end interface 
+   end interface
 
 contains
 
@@ -36,14 +36,14 @@ contains
       use, intrinsic :: iso_fortran_env, only: int32
       implicit none
       type(segment_t), intent(inout), allocatable :: list(:)
-      
+
       type(segment_t), allocatable :: old_list(:)
       type(priority_queue_t)       :: pqueue
       type(segment_t), allocatable :: buff(:)
       type(segment_t), allocatable :: cache(:)
       type(segment_t)              :: new, tmp
       integer(int32), allocatable  :: index_list(:)
-      
+
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
       logical        :: flag
 
@@ -62,7 +62,7 @@ contains
          do j = 1, siz
             call pqueue%enqueue(old_list(j))
          end do
-      
+
          do j = 1, siz
             call pqueue%dequeue(buff(j))  ! The `buff` is sorted array.
          end do
@@ -79,10 +79,10 @@ contains
 
       allocate(list(siz*2))
 
-      ! Generate a list of unique indices from the `old_list`. 
+      ! Generate a list of unique indices from the `old_list`.
       call index_list_from_segment_list(index_list, old_list)
 
-      ! Initialize 
+      ! Initialize
       new = SEG_UPPER   ! segment_t(2**21, 2**21)
       k = 1
       m = 1
@@ -91,7 +91,7 @@ contains
       !
       do while(m <= size(index_list))
          i = index_list(m)    ! Get the current value of `index_list`.
-         
+
          ! NOTE: the `index_list` is in ASCENDING order.
 
          ! Check if `i` is within any of the segments.
@@ -137,7 +137,7 @@ contains
          if (count > 1) then
             new%max = i
             call register_seg_list(new, list, k)
-         end if 
+         end if
 
          ! Check for any segments ending at `i`.
          !
@@ -151,7 +151,7 @@ contains
          if (count >0) then
             new%max = i
             call register_seg_list(new, list, k)
-         end if 
+         end if
 
          m = m + 1
       end do
@@ -187,33 +187,33 @@ contains
       integer(int32),  intent(inout) :: k
 
       ! If the `new` segment is valid, add it to the list and incremetn the count.
-      !! @note This implementation is badly behaved and should be fixed as soon as possible. 
+      !! @note This implementation is badly behaved and should be fixed as soon as possible.
       if (new%validate()) then
          list(k) = new
          k = k + 1
       end if
       new = SEG_UPPER
    end subroutine register_seg_list
-         
+
 
    !> Checks if a segment is a prime segment within a disjoined list.
    !>
    !> This function determines whether the given segment `seg` is a prime
    !> segment, meaning it does not overlap with any segment in the `disjoined_list`.
-   ! 
+   !
    !  この関数は、指定されたセグメント`seg`が、`disjoined_list`内の任意のセグメントと交差せずに
    !  独立しているかどうかを判定する。`disjoined_list`内のいずれかのセグメントについて、`seg`がその範囲内に
    !  完全に収まっているかどうかをチェックし、その結果を論理値`res`に格納して返す。
    pure function is_prime_semgment(seg, disjoined_list) result(res)
-      implicit none 
+      implicit none
       type(segment_t), intent(in) :: seg, disjoined_list(:)
 
       logical :: res
       integer :: j
 
-      ! Initialize the result. 
-      res = .false. 
-      
+      ! Initialize the result.
+      res = .false.
+
       ! リストのうちのいずれかと一致すれば、交差していない。
       ! Check if any segment in `disjoined_list` contains `seg`.
       do j = 1, size(disjoined_list)
@@ -222,7 +222,7 @@ contains
    end function is_prime_semgment
 
 
-   !> Checks if a segment overlaps with any segments in a list. 
+   !> Checks if a segment overlaps with any segments in a list.
    !>
    !> This function determines whether the given segment `seg` overlaps with
    !> any of the segments in the provided `list`. It returns a logical array
@@ -235,7 +235,7 @@ contains
       logical :: res(len)
 
       integer :: i
-      
+
       ! Initialize the result array.
       res(:) = .false.
 
@@ -244,7 +244,7 @@ contains
       end do
    end function is_overlap_to_seg_list
 
-   
+
    !> Extracts a sorted list of unique indices from a list of segments.
    !>
    !> This subroutine takes a list of segments and generates a sorted list of
@@ -276,8 +276,8 @@ contains
          index_list(6*i)   = seg_list(i)%max + 1
       end do
 
-      call insertion_sort(index_list)  ! Sort the `index_list` in ascending order. 
-      
+      call insertion_sort(index_list)  ! Sort the `index_list` in ascending order.
+
       ! Initialize
       cache(1) = index_list(1)
       k = 1
@@ -285,14 +285,14 @@ contains
       do i = 2, siz*6
          if (index_list(i-1) /= index_list(i)) then
             ! Add only unique values to the `cache`.
-            ! At the same time, count unique values. 
+            ! At the same time, count unique values.
             k = k + 1
             cache(k) = index_list(i)
          end if
-      end do 
+      end do
 
 
-      deallocate(index_list)     ! Deallocate the old `index_list`. 
+      deallocate(index_list)     ! Deallocate the old `index_list`.
       allocate(index_list(k))    ! Allocate a new `index_list` based on the number of unique indices.
       index_list(:) = cache(1:k) ! Copy the data of `cahce(1:k)` into the `index_list(:)`.
    end subroutine index_list_from_segment_list

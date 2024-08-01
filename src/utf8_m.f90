@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -25,20 +25,20 @@ contains
    ! INDEX OF UTF8
    !> This function returns the index of the end of the (multibyte) character,
    !> given the string str and the current index curr.
-   pure function idxutf8 (str, curr) result(tail) 
+   pure function idxutf8 (str, curr) result(tail)
       use, intrinsic :: iso_fortran_env
       implicit none
       character(*),   intent(in) :: str      ! Input string, a multibyte character is expected.
       integer(int32), intent(in) :: curr     ! Current index.
-      integer(int32)             :: tail     ! Resulting index of the end of the character. 
+      integer(int32)             :: tail     ! Resulting index of the end of the character.
       integer(int32)             :: i        ! Loop variable.
       integer(int8)              :: byte     ! Variable to hold the byte value of the 1-byte part of the character
-      integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7  
+      integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7
          ! Shifted byte values.
 
       tail = curr    ! Initialize tail to the current index.
 
-      do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character. 
+      do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character.
 
          byte = int(ichar(str(curr+i:curr+i)), kind(byte))
             ! Get the byte value of the character at position `curr+1`.
@@ -60,7 +60,7 @@ contains
 
             if (shift_4 == 14) then ! If the byte start witth 1110_2 (3-byte character).
                tail = curr + 3 - 1
-               return 
+               return
             end if
 
             if (shift_5 == 6) then  ! If the byte starts with 110_2 (2-byte character).
@@ -71,14 +71,14 @@ contains
             if (shift_7 == 0) then ! If then byte starts with 0_2 (1-byte character).
                tail = curr + 1 - 1
                return
-            end if 
+            end if
 
          else     ! Check continuation byptes
-            
+
             if (shift_3 == 30 .or. shift_4 == 14 .or. shift_5 == 6 .or. shift_7 == 0) then
                tail = curr + i - 1
-               return 
-            end if 
+               return
+            end if
 
          end if
 
@@ -87,7 +87,7 @@ contains
 
    !> The `char_utf8` function takes a code point as integer in Unicode character set,
    !> and returns the corresponding character as UTF-8 binary string.
-   !> 
+   !>
    !> This function is like an extension of char() for the UTF-8 codeset.
    pure function char_utf8 (code) result(str)
       use, intrinsic :: iso_fortran_env
@@ -98,7 +98,7 @@ contains
       character(32), allocatable :: bin         ! A 32-digit number expressed in character format for masking.
       integer(int32)             :: buf, mask   ! Buffer and mask for bit operations.
       integer(int8)              :: byte(4)     ! Array to hold up 4 bytes of the UTF-8 character.
-      
+
       str = ''    ! Initialize result string.
       buf = code  ! Initialize buffer with input `code` point.
 
@@ -106,18 +106,18 @@ contains
       read(bin, '(b32.32)') mask              ! Read the `mask` from the `bin` character string.
 
       byte(1) = int(iand(ishft(buf, -18), mask),kind(byte))    ! First byte
-      
+
       buf = code
       byte(2) = int(iand(ishft(buf, -12), mask), kind(byte))   ! Second byte
 
       buf = code
       byte(3) = int(iand(ishft(buf, -6), mask), kind(byte))    ! Third byte
-      
+
       buf = code
       byte(4) = int(iand(buf, mask), kind(byte))               ! Fourth byte
 
       if (code > 2**7-1) then    ! Check if the `code` point is greater than 127 (non-ASCII character).
-        
+
          if (2**16 -1 < code) then     ! 4-byte character
             byte(1) = ibset(byte(1),7)
             byte(1) = ibset(byte(1),6)
@@ -127,9 +127,9 @@ contains
             byte(2) = set_continuation_byte(byte(2))  ! Set continuation bytes.
             byte(3) = set_continuation_byte(byte(3))
             byte(4) = set_continuation_byte(byte(4))
-            
+
          else if (2**11 - 1 < code) then  ! 3-byte character
-            byte(1) = 0 
+            byte(1) = 0
             byte(2) = ibset(byte(2), 7)
             byte(2) = ibset(byte(2), 6)
             byte(2) = ibset(byte(2), 5)
@@ -148,7 +148,7 @@ contains
 
          str = char(byte(1)) //char(byte(2)) //char(byte(3)) //char(byte(4))  ! Concatenate bytes into a string.
          str = trim(adjustl(str))   ! Trim leading and tailing space.
-      
+
       else
          str = char(code)  ! For ASCII characters.
       end if
@@ -157,7 +157,7 @@ contains
 
 
    !> This function take one byte, set the first two bits to 10, and
-   !> returns one byte of the continuation part. 
+   !> returns one byte of the continuation part.
    pure function set_continuation_byte(byte) result(res)
       use, intrinsic :: iso_fortran_env, only: int8
       implicit none
@@ -170,8 +170,8 @@ contains
 
 
    !> Take a UTF-8 character as an argument and
-   !> return the integer (also known as "code point" in Unicode) representing 
-   !> its UTF-8 binary string. 
+   !> return the integer (also known as "code point" in Unicode) representing
+   !> its UTF-8 binary string.
    !>
    !> This function is like an extension of char() for the UTF-8 codeset.
    pure function ichar_utf8 (chara) result(res)
@@ -180,19 +180,19 @@ contains
       character(*), intent(in) :: chara   ! Input one UTF-8 character
 
       integer(int32) :: res         ! Resulting integer representing an UTF-8 binary string.
-      integer(int8)  :: byte(4)     ! Byte array (32bit) 
+      integer(int8)  :: byte(4)     ! Byte array (32bit)
       integer(int8)  :: shift_3, shift_4, shift_5, shift_7              ! Shift values
       integer(int8)  :: mask_2_bit, mask_3_bit, mask_4_bit, mask_5_bit  ! Masks for bit operations
       integer(int32) :: buf         ! Buffer for bit operations
 
       character(8) :: binary        ! 8-byte character string representing binary.
- 
+
       binary = '00111111'           ! 6-bit mask for continuation bytes.
       read(binary, '(b8.8)') mask_2_bit
 
       binary = '00011111'           ! 5-bit mask for 2-byte characters.
       read(binary, '(b8.8)') mask_3_bit
-      
+
       binary = '00001111'           ! 4-bit mask for 3-byte characters.
       read(binary, '(b8.8)') mask_4_bit
 
@@ -218,7 +218,7 @@ contains
       shift_5 = ishft(byte(1), -5)
       shift_7 = ishft(byte(1), -7)
 
-      ! 1-byte character 
+      ! 1-byte character
       if (shift_7 == 0) then
 
          res = byte(1)
@@ -226,7 +226,7 @@ contains
 
       ! 4-byte character
       else if (shift_3 == 30) then
-         
+
          ! First 1 byte
          res =  iand(byte(1), mask_5_bit)
 
@@ -278,7 +278,7 @@ contains
       character(*), intent(in) :: str
       integer :: i, inext, count
 
-      ! Initialize 
+      ! Initialize
       i = 1
       count = 0
 
@@ -288,7 +288,7 @@ contains
          count = count + 1             ! Increment the character count.
          i = inext                     ! Move to the next character.
       end do
-      
+
    end function len_trim_utf8
 
 
@@ -313,7 +313,7 @@ contains
    end function len_utf8
 
 
-   !> This function determines if a given character is the first byte of 
+   !> This function determines if a given character is the first byte of
    !> a UTF-8 multibyte character. It takes a 1-byte character as input
    !> and returns a logical value indicating if it is the first byte of
    !> an UTF-8 binary string.
@@ -321,7 +321,7 @@ contains
       use, intrinsic :: iso_fortran_env
       implicit none
       character(1), intent(in) :: chara   ! Input single byte character
-      
+
       logical       :: res             ! Result indicating if it is the first byte of a multibyte character.
       integer(int8) :: byte, shift_6   ! Integer representation of the character and shifted value.
 
@@ -329,7 +329,7 @@ contains
       byte = int(ichar(chara), kind(byte))
 
       ! Initialize the result to `.true.` (assume it is the first byte).
-      res = .true. 
+      res = .true.
 
       ! Shift the byte 6 bits to the right.
       shift_6 = ishft(byte, -6)
@@ -359,18 +359,18 @@ contains
 
       ! Loop through each character in the string concurrently.
       do concurrent (i = 1:length)
-         ! Call the `is_first_byte_of_character` function for each character and store the result in the `array`. 
+         ! Call the `is_first_byte_of_character` function for each character and store the result in the `array`.
          array(i) = is_first_byte_of_character(str(i:i))
       end do
 
    end subroutine
-      
+
    !> This function counts the occurrence of a spcified character(token) in a given string.
    pure function count_token(str, token) result(count)
       implicit none
       character(*), intent(in) :: str     ! Input string to be searched.
       character(1), intent(in) :: token   ! Character to be counted in the input string.
-      
+
       integer :: count     ! Result: number of occurrences of the `token`.
       integer :: i         ! Loop index variable.
       integer :: siz       ! Length of the input string.
@@ -385,7 +385,7 @@ contains
       do i = 1, siz
          ! If the current character matches the `token`, increment the `count`.
          if (str(i:i) == token) count = count + 1
-      end do 
+      end do
    end function count_token
 
 

@@ -9,7 +9,7 @@
 !! This file contains enumeratorsl for syntactic parsing and building a syntax-tree.
 
 !> The `forgex_enums_m` defines enumerators of tokens and operators for syntax-tree building.
-!> @note These enums will be rewritten in Fortran 2023's enumerator in the future. 
+!> @note These enums will be rewritten in Fortran 2023's enumerator in the future.
 module forgex_enums_m
    implicit none
 
@@ -23,7 +23,7 @@ module forgex_enums_m
       enumerator :: tk_star         ! 6
       enumerator :: tk_plus         ! 7
       enumerator :: tk_lsbracket    ! 8  left square bracket
-      enumerator :: tk_rsbracket    ! 9  right square bracket 
+      enumerator :: tk_rsbracket    ! 9  right square bracket
       enumerator :: tk_lcurlybrace  ! 10 left curly brace
       enumerator :: tk_rcurlybrace  ! 11 right curly brace
       enumerator :: tk_dot          ! 12

@@ -2,13 +2,13 @@ program test_003
    use :: forgex_test_m
    implicit none
 
-   ! Test case #3. 
+   ! Test case #3.
    ! Tests for digit Character set.
 
    logical :: res = .true.
-   
+
    print *, "=== TEST CASE 3 BEGIN ==="
-   
+
    call runner_match('\d{3}-\d{2}-\d{4}', "123-45-6789", .true.,res)
    call runner_match('\d{3}-\d{2}-\d{4}', "123456789", .false., res)
    call runner_match('[0-9]{10}', '0987654321', .true., res)
@@ -32,6 +32,6 @@ program test_003
       stop
    else
       error stop
-   end if 
+   end if
 
 end program test_003
