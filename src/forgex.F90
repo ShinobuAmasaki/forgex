@@ -50,7 +50,7 @@ module forgex
 
 contains
 
-   pure function operator__in(pattern, str) result(res)
+   pure elemental function operator__in(pattern, str) result(res)
       !! The function implemented for the `.in.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
@@ -108,7 +108,7 @@ contains
    end function operator__in
 
 
-   pure function operator__match(pattern, str) result(res)
+   pure elemental function operator__match(pattern, str) result(res)
       !! The function implemented for the `.match.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
