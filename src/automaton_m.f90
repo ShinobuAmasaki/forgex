@@ -351,6 +351,8 @@ contains
       ! If the destination index is DFA_INVALID_INDEX, the registration is failed.
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
 
+      if (self%dfa%nodes(prev_i)%is_registered_tra(dst_i, symbol)) return
+
       ! 遷移を追加する
       ! Add a DFA transition from `prev` to `next` for the given `symbol`.
       call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
@@ -395,7 +397,7 @@ contains
             write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
 
-         do j = 2, self%dfa%nodes(i)%get_tra_top()
+         do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
             write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
 

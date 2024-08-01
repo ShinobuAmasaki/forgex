@@ -46,6 +46,7 @@ module forgex_lazy_dfa_node_m
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
       procedure :: add_transition    => dfa_state_node__add_transition
       procedure :: realloc_f         => dfa_state_node__reallocate_transition_forward
+      procedure :: is_registered_tra => dfa_state_node__is_registered_transition
    end type dfa_state_node_t
 
 contains
@@ -163,5 +164,26 @@ contains
 
    end subroutine dfa_state_node__reallocate_transition_forward
 
+
+   pure function dfa_state_node__is_registered_transition(self, dst, symbol) result(res)
+      use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
+      implicit none
+      class(dfa_state_node_t), intent(in) :: self
+      integer, intent(in) :: dst
+      character(*), intent(in) :: symbol
+
+      logical :: res
+
+      integer :: j
+
+      res = .false.
+      do j = 1, self%get_tra_top()
+         if (self%transition(j)%dst == dst) then
+            if (symbol_to_segment(symbol) .in. self%transition(j)%c) then
+               res = .true.
+            end if
+         end if
+      end do
+   end function dfa_state_node__is_registered_transition
 
 end module forgex_lazy_dfa_node_m
