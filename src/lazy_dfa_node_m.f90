@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -11,11 +11,12 @@
 #ifdef IMPURE
 #define pure
 #endif
-!> The `forgex_lazy_dfa_node_m` module defines the state nodes and transitions of DFA. 
+!> The `forgex_lazy_dfa_node_m` module defines the state nodes and transitions of DFA.
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_NOT_INIT_TRAENSITION_TOP, &
-         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_NOT_INIT_TRAENSITION_TOP
+         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_NOT_INIT_TRAENSITION_TOP, &
+         ALLOC_COUNT_INITTIAL
    use :: forgex_segment_m, only: segment_t
    use :: forgex_nfa_state_set_m, only: nfa_state_set_t
    implicit none
@@ -37,7 +38,7 @@ module forgex_lazy_dfa_node_m
       logical                             :: accepted = .false.
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32), private             :: tra_top = DFA_NOT_INIT_TRAENSITION_TOP
-      integer(int32)                      :: alloc_count_f
+      integer(int32)                      :: alloc_count_f = ALLOC_COUNT_INITTIAL
       logical                             :: registered = .false.
       logical                             :: initialized = .false.
    contains
@@ -69,7 +70,7 @@ contains
       self%tra_top = top
 
    end subroutine dfa_state_node__initialize_transition_top
-      
+
 
    pure subroutine dfa_state_node__deallocate(self)
       implicit none
@@ -79,8 +80,8 @@ contains
       if (allocated(self%transition)) deallocate(self%transition)
 
    end subroutine dfa_state_node__deallocate
-      
-      
+
+
 
    !> This subroutine increments the value of top transition index.
    pure subroutine dfa_state_node__increment_transition_top (self)
@@ -115,11 +116,11 @@ contains
       if (j >= size(self%transition, dim=1)) then
          call self%realloc_f()
       end if
-   
+
 
       self%transition(j) = tra
    end subroutine dfa_state_node__add_transition
- 
+
 
    !> This subroutine copies the data of a specified transition into the
    !> variables of another dfa_transition_t.
@@ -134,7 +135,7 @@ contains
       dst%own_j = src%own_j
    end subroutine copy_dfa_transition
 
-   
+
    !> This subroutine performs allocating initial or additional transition arrays.
    !>
    pure subroutine dfa_state_node__reallocate_transition_forward(self)
@@ -167,11 +168,10 @@ contains
       allocate(self%transition(1:new_part_end))
 
       ! If siz equals to zero, this loop will be ignored.
-      do j = 1, siz
-         self%transition(j) = tmp(j)
-      end do
 
-      self%transition(1:new_part_end)%own_j = [(j, j=1, new_part_end)]
+      self%transition(1:siz) = tmp(1:siz)
+
+      self%transition(new_part_begin:new_part_end)%own_j = [(j, j=new_part_begin, new_part_end)]
       self%initialized = .true.
 
 
@@ -179,7 +179,7 @@ contains
 
 
    ! This function scans all transition of the node and returns true if a
-   ! transition containing the given symbol is already registered. 
+   ! transition containing the given symbol is already registered.
    pure function dfa_state_node__is_registered_transition(self, dst, symbol) result(res)
       use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
       implicit none

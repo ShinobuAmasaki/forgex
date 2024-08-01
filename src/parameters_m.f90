@@ -43,6 +43,7 @@ module forgex_parameters_m
    character(1),   parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1),   parameter, public :: ESCAPE_S_CAPITAL = 'S'
 
+   integer(int32), parameter, public :: ALLOC_COUNT_INITTIAL = 0
 
    ! For NFA building
    integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
