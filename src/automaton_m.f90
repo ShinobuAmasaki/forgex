@@ -164,7 +164,6 @@ contains
       self%dfa%nodes(i)%accepted   = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
 
-      call self%dfa%nodes(i)%init_transition()
       call self%dfa%nodes(i)%increment_tra_top() ! Somehow this is necessary!
 
       res = i

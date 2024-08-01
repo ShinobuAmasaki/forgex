@@ -15,7 +15,7 @@
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_NOT_INIT_TRAENSITION_TOP, &
-         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP
+         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_NOT_INIT_TRAENSITION_TOP
    use :: forgex_segment_m, only: segment_t
    use :: forgex_nfa_state_set_m, only: nfa_state_set_t
    implicit none
@@ -37,13 +37,15 @@ module forgex_lazy_dfa_node_m
       logical                             :: accepted = .false.
       type(dfa_transition_t), allocatable :: transition(:)
       integer(int32), private             :: tra_top = DFA_NOT_INIT_TRAENSITION_TOP
+      integer(int32)                      :: allco_count_f
       logical                             :: registered = .false.
       logical                             :: initialized = .false.
    contains
       procedure :: get_tra_top       => dfa_state_node__get_transition_top
+      procedure :: init_tra_top      => dfa_state_node__initialize_transition_top
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
-      procedure :: init_transition   => dfa_state_node__initialize_transition
       procedure :: add_transition    => dfa_state_node__add_transition
+      procedure :: realloc_f         => dfa_state_node__reallocate_transition_forward
    end type dfa_state_node_t
 
 contains
@@ -56,6 +58,17 @@ contains
 
       res = self%tra_top
    end function dfa_state_node__get_transition_top
+
+   pure subroutine dfa_state_node__initialize_transition_top(self, top)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+      integer, intent(in) :: top
+
+      self%tra_top = top
+
+   end subroutine dfa_state_node__initialize_transition_top
+      
+      
       
 
    !> This subroutine increments the value of top transition index.
@@ -63,20 +76,8 @@ contains
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
 
-
       self%tra_top = self%tra_top + 1
    end subroutine dfa_state_node__increment_transition_top
-
-   
-   !> This subroutine initializes the transition list which belongs a dfa_state_node_t.
-   pure subroutine dfa_state_node__initialize_transition (self)
-      implicit none
-      class(dfa_state_node_t), intent(inout) :: self
-      
-      allocate(self%transition(DFA_TRANSITION_UNIT))
-      self%tra_top = DFA_INIT_TRANSITION_TOP
-      self%initialized = .true.
-   end subroutine dfa_state_node__initialize_transition
 
 
    !> This subroutine processes to add the given transition to the list which dfa_state_node_t has.
@@ -87,20 +88,27 @@ contains
 
       integer :: j
 
+
       if (.not. self%initialized) then
-         call self%init_transition()
+         call self%realloc_f()
+      end if
+
+      if (self%get_tra_top() == DFA_NOT_INIT_TRAENSITION_TOP) then
+         error stop "ERROR: Invalid counting transitions"
       end if
 
       call self%increment_tra_top()
       j = self%get_tra_top()
-   
-      if (j < 0) then
-         error stop "ERROR: Invalid counting transitions"
+
+
+      if (j >= size(self%transition, dim=1)) then
+         call self%realloc_f()
       end if
+   
 
       self%transition(j) = tra
    end subroutine dfa_state_node__add_transition
-
+ 
 
    !> This subroutine copies the data of a specified transition into the
    !> variables of another dfa_transition_t.
@@ -114,5 +122,46 @@ contains
       dst%nfa_set = src%nfa_set
       dst%own_j = src%own_j
    end subroutine copy_dfa_transition
+
+   
+   !> This subroutine performs allocating initial or additional transition arrays.
+   !>
+   pure subroutine dfa_state_node__reallocate_transition_forward(self)
+      implicit none
+      class(dfa_state_node_t), intent(inout) :: self
+
+      type(dfa_transition_t), allocatable :: tmp(:)
+      integer :: siz, j
+      integer :: prev_count, new_part_begin, new_part_end
+
+      siz = 0
+
+      if (self%initialized) then
+         siz = size(self%transition, dim=1)
+         allocate(tmp(siz))
+         call move_alloc(self%transition, tmp)
+      else
+         siz = 0
+         call self%init_tra_top(DFA_INIT_TRANSITION_TOP)
+      end if
+
+      prev_count = self%allco_count_f
+      self%allco_count_f = prev_count + 1
+
+      new_part_begin = siz + 1
+      new_part_end = self%allco_count_f * DFA_TRANSITION_UNIT
+
+      allocate(self%transition(1:new_part_end))
+
+      do j = 1, siz
+         self%transition(j) = tmp(j)
+      end do
+
+      self%transition(1:new_part_end)%own_j = [(j, j=1, new_part_end)]
+      self%initialized = .true.
+
+
+   end subroutine dfa_state_node__reallocate_transition_forward
+
 
 end module forgex_lazy_dfa_node_m
