@@ -107,15 +107,17 @@ end block
 `regex`関数は、入力文字列の中でパターンに一致した部分文字列を返します。
 ```
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: length 
 
    pattern = 'foo(bar|baz)'
    str = 'foobarbaz'
 
-   print *, regex(pattern, str)              ! foobar
-   print *, regex(pattern, str, length)      ! foobar
-      ! the value 6 stored in optional `length` variable.
+   call regex(pattern, str, res)              
+   print *, res										! foobar
+   
+   ! call regex(pattern, str, res, length) 
+        ! the value 6 stored in optional `length` variable.
 
 end block
 ```
@@ -123,22 +125,22 @@ end block
 オプショナル引数の`from`/`to`を使用すると、与えた文字列から添字を指定して部分文字列を切り出すことができます。
 ```fortran
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: from, to 
 
    pattern = '[d-f]{3}'
    str = 'abcdefghi'
 
-   print *, regex(pattern, str, from=from, to=to)  ! def
+   call regex(pattern, str, res, from=from, to=to)
+   print *, res 						! def
    
-   ! The `from` and `to` variables store the indices of the start and
-   ! end points of the matched part of the string `str`, respectively.
+   ! The `from` and `to` variables store the indices of the start and end points
+   ! of the matched part of the string `str`, respectively.
 
    ! Cut out before the matched part.
    print *, str(1:from-1)        ! abc
 
-   ! Cut out the matched part that equivalent to the result of the
-   ! `regex` function. 
+   ! Cut out the matched part that equivalent to the result of the `regex` function. 
    print *, str(from:to)         ! def 
 
    ! Cut out after the matched part. 
@@ -149,11 +151,11 @@ end block
 
 `regex`関数の宣言部（インタフェース）は次の通りです。
 ```fortran
-function regex (pattern, str, length, from, to) result(res)
+pure subroutine procedure__regex(pattern, text, res, length, from, to)
    implicit none
-   character(*), intent(in) :: pattern, str
-   integer, intent(inout), optional :: length, from, to
-   character(:), allocatable :: res
+   character(*),              intent(in)    :: pattern, text
+   character(:), allocatable, intent(inout) :: res
+   integer,      optional,    intent(inout) :: length, from, to
 ```
 
 ### UTF-8文字列のマッチング
@@ -170,7 +172,8 @@ block
    str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
    
    print *, pattern .in. str            ! T
-   print *, regex(pattern, str, length) ! 夢爲胡蝶　栩栩然胡蝶
+   call regex(pattern, str, res, length)
+   print *, res								 ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
    
 end block
@@ -180,9 +183,9 @@ end block
 
 ## To Do
 - UTF-8において無効なバイトストリームへの対処
-- 時間計測ツールの実装
 - リテラル検索によるマッチングの最適化
-- マッチングの並列化
+- ✅️ すべてのAPI手続きに`pure`属性を追加
+- ~~マッチングの並列化~~
 - ✅️ ドキュメントの公開
 - ✅️ UTF-8文字の基本的なサポート
 - ✅️ On-the-FlyのDFA構築

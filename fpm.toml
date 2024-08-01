@@ -19,4 +19,3 @@ source-form = "free"
 [preprocess]
 [preprocess.cpp]
 macros = ["RELEASE"]
-# macros = ["DEBUG", "IMPURE"]
