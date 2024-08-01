@@ -17,14 +17,14 @@ module forgex_nfa_graph_m
       integer(int32) :: nfa_limit = NFA_STATE_LIMIT
       integer(int32) :: nfa_top = 0
    contains
-      procedure :: build => nfa_graph__build
-      procedure :: free  => nfa_graph__deallocate
-      procedure :: make_node => nfa_graph__make_nfa_node
-      procedure :: generate => nfa_graph__generate
+      procedure :: build                      => nfa_graph__build
+      procedure :: free                       => nfa_graph__deallocate
+      procedure :: make_node                  => nfa_graph__make_nfa_node
+      procedure :: generate                   => nfa_graph__generate
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
-      procedure :: mark_epsilon_transition => nfa_graph__mark_epsilon_transition
+      procedure :: mark_epsilon_transition    => nfa_graph__mark_epsilon_transition
 #if defined(IMPURE) && defined(DEBUG)
-      procedure :: print => nfa_graph__print
+      procedure :: print                      => nfa_graph__print
 #endif
    end type
 
@@ -47,6 +47,7 @@ contains
    end subroutine nfa_graph__build
 
    
+   !> This subroutine invokes procedure for deallocation.
    pure subroutine nfa_graph__deallocate(self)
       implicit none
       class(nfa_graph_t), intent(inout) :: self
