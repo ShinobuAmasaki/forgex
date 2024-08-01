@@ -166,9 +166,11 @@ contains
          return
       end if
 
+
       ! Execute an error stop statement if the counter exceeds a limit. 
       if (self%dfa%dfa_top >= self%dfa%dfa_limit) then
-         error stop "Number of DFA states too large."
+         ! Reallocate
+         call self%dfa%reallocate()
       end if
 
       !> @note The processing here should reflect the semantic change of `dfa_top`.
@@ -407,9 +409,9 @@ contains
       do i = 1, self%dfa%dfa_top -1
 
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(i2,a, a)', advance='no') i, 'A', ": "
+            write(stderr, '(i4,a, a)', advance='no') i, 'A', ": "
          else
-            write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
+            write(stderr, '(i4,a, a)', advance='no') i, ' ', ": "
          end if
 
          do j = 1, self%dfa%nodes(i)%get_tra_top()
@@ -422,9 +424,9 @@ contains
 
       do i = 1, self%dfa%dfa_top - 1
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(a, i2, a)', advance='no') "state ", i, 'A = ( '
+            write(stderr, '(a, i4, a)', advance='no') "state ", i, 'A = ( '
          else
-            write(stderr, '(a, i2, a)', advance='no') "state ", i, '  = ( '
+            write(stderr, '(a, i4, a)', advance='no') "state ", i, '  = ( '
          end if
 
          call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top)

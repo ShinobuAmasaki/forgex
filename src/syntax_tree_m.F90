@@ -934,8 +934,17 @@ contains
       type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
       integer, intent(in) :: node_i
 
+      integer :: i
+
       call print_tree_internal(tree, node_i)
       write(stderr, *) ''
+
+      i = 0
+      do while (tree(i+1)%is_registered)
+         i = i + 1
+      enddo
+   
+      write(stderr, *) "Tree node counts: ", i 
    end subroutine print_tree_wrap
 
    recursive subroutine print_tree_internal(tree, node_i)

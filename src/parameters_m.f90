@@ -3,8 +3,8 @@ module forgex_parameters_m
    implicit none
 
    !> The maximum size of nodes for building the syntax tree.
-   ! integer(int32), parameter :: TREE_NODE_LIMIT = 16
-   integer(int32), parameter :: TREE_NODE_LIMIT = 1024
+   integer(int32), parameter :: TREE_NODE_LIMIT = 256  
+      ! If it's too large it will cause a stack overflow.
    integer(int32), parameter :: TREE_NODE_BASE = 0
 
    ! For handling UTF-8
@@ -67,8 +67,15 @@ module forgex_parameters_m
    !> Lower limit of DFA state instanse. 
    integer(int32), parameter, public :: DFA_STATE_BASE = 0
    !> Upper limit of DFA state instance.
+
+   integer(int32), parameter, public :: DFA_STATE_UNIT = 128
    integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
-   !>
+
+   !> If this limit is exceeded, program will do ERROR STOP. 
+   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT*16 + 1
+   !! This hard limit is approximately on the order of gigabytes.
+
+
    integer(int32), parameter, public :: DFA_INVALID_INDEX = 0
    integer(int32), parameter, public :: DFA_INITIAL_INDEX = 1
    !>

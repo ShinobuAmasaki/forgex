@@ -14,8 +14,12 @@
 #endif
 module forgex_lazy_dfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_LIMIT, DFA_INITIAL_INDEX, DFA_INVALID_INDEX
+   use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_UNIT, DFA_STATE_HARD_LIMIT, &
+                                     DFA_INITIAL_INDEX, DFA_INVALID_INDEX
    use :: forgex_lazy_dfa_node_m, only: dfa_state_node_t, dfa_transition_t
+#if defined(IMPURE) && defined(DEBUG)
+   use :: iso_fortran_env, only: stderr => error_unit
+#endif
    implicit none
    private
 
@@ -23,13 +27,15 @@ module forgex_lazy_dfa_graph_m
       !! This type has the entire graph of DFA states.
       type(dfa_state_node_t), allocatable :: nodes(:)
       integer(int32) :: dfa_base  = DFA_STATE_BASE
-      integer(int32) :: dfa_limit = DFA_STATE_LIMIT
+      integer(int32) :: dfa_limit = DFA_STATE_UNIT
       integer(int32) :: dfa_top   = DFA_INVALID_INDEX
+      integer(int32) :: alloc_count_node = 0
    contains
-      procedure :: preprocess => lazy_dfa__preprocess
-      procedure :: registered => lazy_dfa__registered_index
+      procedure :: preprocess     => lazy_dfa__preprocess
+      procedure :: registered     => lazy_dfa__registered_index
       procedure :: add_transition => lazy_dfa__add_transition
-      procedure :: free => lazy_dfa__deallocate
+      procedure :: free           => lazy_dfa__deallocate
+      procedure :: reallocate     => lazy_dfa__reallocate
    end type dfa_graph_t
 
 contains
@@ -50,11 +56,53 @@ contains
 
       allocate(self%nodes(base:limit))
 
+      self%alloc_count_node = 1
+
       self%nodes(:)%own_i = [(i, i=base, limit)]
       
       self%dfa_top = DFA_INITIAL_INDEX    ! Acts as an initialized flag
 
    end subroutine lazy_dfa__preprocess
+
+
+   pure subroutine lazy_dfa__reallocate(self)
+      implicit none
+      class(dfa_graph_t), intent(inout) :: self
+      type(dfa_state_node_t), allocatable :: tmp(:)
+
+      integer :: siz, prev_count, i
+      integer :: new_part_begin, new_part_end
+
+      if (allocated(self%nodes)) then
+         siz = size(self%nodes, dim=1) -1
+         allocate(tmp(siz))
+         call move_alloc(self%nodes, tmp)
+      else
+         siz = 0
+      endif
+
+      prev_count = self%alloc_count_node
+      self%alloc_count_node = prev_count + 1
+
+      new_part_begin = siz + 1
+      new_part_end = self%alloc_count_node * DFA_STATE_UNIT
+      
+      if (new_part_end > DFA_STATE_HARD_LIMIT) then
+         error stop "Abort: too many DFA state nodes requested."
+      end if
+
+      allocate(self%nodes(0:new_part_end))
+
+#if defined(IMPURE) && defined(DEBUG)
+write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
+#endif
+
+      self%nodes(1:siz) = tmp(1:siz)
+
+      self%nodes(new_part_begin:new_part_end)%own_i = [(i, i=new_part_begin, new_part_end)]
+
+      self%dfa_limit = new_part_end
+   end subroutine lazy_dfa__reallocate
 
 
    pure subroutine lazy_dfa__deallocate(self)

@@ -19,7 +19,6 @@ module forgex_nfa_graph_m
    contains
       procedure :: build                      => nfa_graph__build
       procedure :: free                       => nfa_graph__deallocate
-      procedure :: make_node                  => nfa_graph__make_nfa_node
       procedure :: generate                   => nfa_graph__generate
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
       procedure :: mark_epsilon_transition    => nfa_graph__mark_epsilon_transition
@@ -54,14 +53,6 @@ contains
 
       call nfa_deallocate(self%nodes)
    end subroutine
-
-
-   pure subroutine nfa_graph__make_nfa_node(self)
-      implicit none
-      class(nfa_graph_t), intent(inout) :: self
-
-      call make_nfa_node(self%nfa_top)
-   end subroutine nfa_graph__make_nfa_node
 
 
    pure subroutine nfa_graph__generate(self, tree, tree_root, entry, exit)
@@ -154,7 +145,7 @@ contains
 
       do i = self%nfa_base+1, self%nfa_top
          
-         write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
+         write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
 
          do j = 1, node%forward_top
