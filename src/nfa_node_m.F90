@@ -155,7 +155,6 @@ contains
       
       case (op_union)
          ! Handle union operation by recursively generating NFA for left and right subtrees.
-         call make_nfa_node(nfa_top)
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, exit)
          call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, entry, exit)
       
