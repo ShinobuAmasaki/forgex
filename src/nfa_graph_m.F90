@@ -145,7 +145,7 @@ contains
 
       do i = self%nfa_base+1, self%nfa_top
          
-         write(stderr, '(a, i3, a)', advance='no') "state ", i, ": "
+         write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
 
          do j = 1, node%forward_top

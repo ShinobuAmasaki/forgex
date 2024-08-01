@@ -74,7 +74,7 @@ contains
       integer :: new_part_begin, new_part_end
 
       if (allocated(self%nodes)) then
-         siz = size(self%nodes, dim=1)
+         siz = size(self%nodes, dim=1) -1
          allocate(tmp(siz))
          call move_alloc(self%nodes, tmp)
       else
@@ -91,7 +91,7 @@ contains
          error stop "Abort: too many DFA state nodes requested."
       end if
 
-      allocate(self%nodes(1:new_part_end))
+      allocate(self%nodes(0:new_part_end))
 
 #if defined(IMPURE) && defined(DEBUG)
 write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
