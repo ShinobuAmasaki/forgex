@@ -8,6 +8,7 @@
 !
 !! This file includes the API module of Forgex.
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex

@@ -8,9 +8,6 @@
 !
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
-#ifdef IMPURE
-#define pure
-#endif
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY

@@ -11,6 +11,7 @@
 !> The `forgex_automaton_m` module contains `automaton_t` definition and its type-bound procedures.
 !>
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_automaton_m
