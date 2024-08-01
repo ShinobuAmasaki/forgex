@@ -158,6 +158,19 @@ pure subroutine procedure__regex(pattern, text, res, length, from, to)
    integer,      optional,    intent(inout) :: length, from, to
 ```
 
+マッチした文字列を関数の戻り値として得たい場合には、`regex_f`関数を使用してください。
+
+```fortran
+interface regex_f
+   module procedure :: function__regex
+end interface regex_f
+
+pure function function__regex(pattern, text) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern, text
+   character(:), allocatable :: res
+```
+
 ### UTF-8文字列のマッチング
 
 UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。

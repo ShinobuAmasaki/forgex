@@ -26,6 +26,7 @@ module forgex
    public :: operator(.in.)
    public :: operator(.match.)
    public :: regex
+   public :: regex_f
 
    interface operator(.in.)
       !! Interface for user-defined operator of `.in.`
@@ -38,10 +39,14 @@ module forgex
    end interface 
 
    interface regex
-      !! The generic name for the `regex` function implemented as `regex__matching`.
+      !! The generic name for the `regex` function implemented as `procedure__regex`.
       module procedure :: procedure__regex
    end interface
 
+   interface regex_f
+      !! The generic name for the `regex_f` function implemented as `function__regex`.
+      module procedure :: function__regex
+   end interface regex_f
 
 contains
 
@@ -205,6 +210,55 @@ contains
    end subroutine procedure__regex
 
       
+   !> The function implemented for the `regex` subroutine.
+   pure function function__regex(pattern, text) result(res)
+      implicit none
+      character(*), intent(in)  :: pattern, text
+      character(:), allocatable :: res
+
+      character(:),      allocatable :: buff
+      type(tree_node_t), allocatable :: tree(:)
+      type(tape_t)                   :: tape
+      type(automaton_t)              :: automaton
+      integer                        :: root
+      integer                        :: from_l, to_l
+
+      buff = trim(pattern)
+
+      call build_syntax_tree(buff, tape, tree, root)
+
+#if defined(IMPURE) && defined(DEBUG)
+      call dump_tree_table(tree)
+      call print_tree(tree, root)
+#endif
+
+      call automaton%init(tree, root)
+
+      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
+
+#if defined(IMPURE) && defined(DEBUG)
+      call automaton%print_dfa()
+#endif
+
+      if (is_there_caret_at_the_top(pattern)) then
+         from_l = from_l
+      else
+         from_l = from_l - 1
+      end if
+
+      if (is_there_dollar_at_the_end(pattern)) then
+         to_l = to_l - 2
+      else
+         to_l = to_l - 1
+      end if
+
+
+      if (from_l > 0 .and. to_l > 0) then
+         res = text(from_l:to_l)
+      else
+         res = ''
+      end if
+   end function function__regex
 
 
 !---------------------------------------------------------------------!
