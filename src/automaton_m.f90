@@ -226,7 +226,7 @@ contains
                      segs = n_tra%c
 
                      ! If the symbol is in the segment list `segs` or if the segment is epsilon,
-                     if ( (symbol_to_segment(symbol) .in. segs) .or. (segs(k) == SEG_EPSILON)) then
+                     if ( symbol_to_segment(symbol) .in. segs) then
 
                         ! Add the index of the NFA state node to `state_set` of type(nfa_state_set_t).
                         call add_nfa_state(state_set, n_node%forward(j)%dst)
