@@ -551,9 +551,12 @@ contains
       else if (max == 1) then
 
          if (min == 0) then
-            node_r = make_tree_node(op_union)
+            node_r = make_tree_node(op_empty)
             call register_and_connector(tree, top, node_r, ptr, terminal_node)
+            node = make_tree_node(op_union)
+            call register_and_connector(tree, top, node, ptr, node_r)
             return
+
          end if
 
          if (min>= 1) then

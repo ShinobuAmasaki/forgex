@@ -164,7 +164,6 @@ contains
       self%dfa%nodes(i)%accepted   = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
 
-      call self%dfa%nodes(i)%init_transition()
       call self%dfa%nodes(i)%increment_tra_top() ! Somehow this is necessary!
 
       res = i
@@ -227,7 +226,7 @@ contains
                      segs = n_tra%c
 
                      ! If the symbol is in the segment list `segs` or if the segment is epsilon,
-                     if ( (symbol_to_segment(symbol) .in. segs) .or. (segs(k) == SEG_EPSILON)) then
+                     if ( symbol_to_segment(symbol) .in. segs) then
 
                         ! Add the index of the NFA state node to `state_set` of type(nfa_state_set_t).
                         call add_nfa_state(state_set, n_node%forward(j)%dst)
@@ -352,6 +351,8 @@ contains
       ! If the destination index is DFA_INVALID_INDEX, the registration is failed.
       if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
 
+      if (self%dfa%nodes(prev_i)%is_registered_tra(dst_i, symbol)) return
+
       ! 遷移を追加する
       ! Add a DFA transition from `prev` to `next` for the given `symbol`.
       call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
@@ -396,7 +397,7 @@ contains
             write(stderr, '(i2,a, a)', advance='no') i, ' ', ": "
          end if
 
-         do j = 2, self%dfa%nodes(i)%get_tra_top()
+         do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
             write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
 

@@ -1,4 +1,4 @@
-# Forgex—Fortran Regular Expression
+# Fortran Regular Expression
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
@@ -17,7 +17,7 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 - Character class
    - character class `[a-z]`
    - inverted character class `[^a-z]`
-   - character class on UTF-8 codeset `[α-ωぁ-ん]`
+   - character class on UTF-8 code set `[α-ωぁ-ん]`
 - Range of repetition
    - `{num}`,
    - `{,max}`,
@@ -106,14 +106,16 @@ The `regex` is a function that returns the substring of a string that matches pa
 
 ```fortran
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: length 
 
    pattern = 'foo(bar|baz)'
    str = 'foobarbaz'
 
-   print *, regex(pattern, str)              ! foobar
-   ! print *, regex(pattern, str, length)    ! the value 6 stored in optional `length` variable.
+   call regex(pattern, str, res)              
+   print *, res										! foobar
+   
+   ! call regex(pattern, str, res, length)    ! the value 6 stored in optional `length` variable.
 
 end block
 ```
@@ -122,13 +124,14 @@ By using the `from`/`to` arugments, you can extract substrings from the given st
 
 ```fortran
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: from, to 
 
    pattern = '[d-f]{3}'
    str = 'abcdefghi'
 
-   print *, regex(pattern, str, from=from, to=to)  ! def
+   call regex(pattern, str, res, from=from, to=to)
+   print *, res 						! def
    
    ! The `from` and `to` variables store the indices of the start and end points
    ! of the matched part of the string `str`, respectively.
@@ -145,13 +148,31 @@ block
 end block
 ```
 
-The interface of `regex` function is following:
+The interface of `regex` subroutine is following:
 
 ```fortran
-function regex (pattern, str, length, from, to) result(res)
+interface regex
+   module procedure :: procedure__regex
+end interface
+
+pure subroutine procedure__regex(pattern, text, res, length, from, to)
    implicit none
-   character(*), intent(in) :: pattern, str
-   integer, intent(inout), optional :: length, from, to
+   character(*),              intent(in)    :: pattern, text
+   character(:), allocatable, intent(inout) :: res
+   integer,      optional,    intent(inout) :: length, from, to
+```
+
+If you want to the matched character string as the return value of the function,
+consider using `regex_f` defined in the `forgex` module. 
+
+```fortran
+interface regex_f
+   module procedure :: function__regex
+end interface regex_f
+
+pure function function__regex(pattern, text) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
 ```
 
@@ -171,7 +192,8 @@ block
    str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
    
    print *, pattern .in. str            ! T
-   print *, regex(pattern, str, length) ! 夢爲胡蝶　栩栩然胡蝶
+   call regex(pattern, str, res, length)
+   print *, res								 ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
    
 end block
@@ -182,9 +204,8 @@ end block
 The following features are planned to be implemented in the future: 
 
 - [ ] Deal with invalid byte strings in UTF-8
-- [ ] Implement time measurement tools
 - [ ] Optimize by literal searching method
-- [ ] Make the all API procedures `pure`
+- [x] All API procedures with `pure` attribute
 - ~~Parallelize on matching~~
 - [x] Publish the documentation
 - [x] Support UTF-8 basic feature
