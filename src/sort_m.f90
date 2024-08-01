@@ -14,10 +14,10 @@
 module forgex_sort_m
    use, intrinsic :: iso_fortran_env
    implicit none
-   
+
    !| Currently, complex sorting algorithms are not required, only simple algorithms
    !  are used, but this does not constrain future implementations.
-   
+
 contains
 
    pure subroutine bubble_sort(list)

@@ -1,5 +1,5 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
@@ -7,7 +7,7 @@
 !     forgex_lazy_dfa_graph_m module is a part of Forgex.
 !
 !! This file contains `dfa_graph_t` class definition and its type-bound procedures.
- 
+
 !> This module defines a derived-type `dfa_graph_t` that contains all the states of the DFA.
 #ifdef IMPURE
 #define pure
@@ -42,7 +42,7 @@ contains
 
    !> This subroutine determines the number of DFA nodes the graph has
    !> and allocate the array.
-   !> 
+   !>
    !> @note Currently, only the ability to reference constants defined in `paramter_m` is provided.
    pure subroutine lazy_dfa__preprocess (self)
       implicit none
@@ -59,7 +59,7 @@ contains
       self%alloc_count_node = 1
 
       self%nodes(:)%own_i = [(i, i=base, limit)]
-      
+
       self%dfa_top = DFA_INITIAL_INDEX    ! Acts as an initialized flag
 
    end subroutine lazy_dfa__preprocess
@@ -86,7 +86,7 @@ contains
 
       new_part_begin = siz + 1
       new_part_end = self%alloc_count_node * DFA_STATE_UNIT
-      
+
       if (new_part_end > DFA_STATE_HARD_LIMIT) then
          error stop "Abort: too many DFA state nodes requested."
       end if

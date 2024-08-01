@@ -9,7 +9,7 @@
 !! This file contains the definition of `automaton_t` class and its type-bound procedures.
 !
 !> The `forgex_automaton_m` module contains `automaton_t` definition and its type-bound procedures.
-!> 
+!>
 #ifdef IMPURE
 #define pure
 #endif
@@ -50,7 +50,7 @@ module forgex_automaton_m
 contains
 
    !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
-   !> and then initializes the DFA graph. 
+   !> and then initializes the DFA graph.
    pure subroutine automaton__initialize(self, tree, tree_top)
       use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
@@ -87,7 +87,7 @@ contains
 
       ! Assign the computed initial closure into self%entry_set
       self%entry_set = initial_closure
-      
+
       ! Register `entry_set` as a new DFA state in the graph.
       call self%register_state(self%entry_set, new_index)
 
@@ -149,7 +149,7 @@ contains
    end subroutine automaton__epsilon_closure
 
 
-   !> This subroutine takes `nfa_state_set_t` as input and register the set as the DFA state in the DFA.  
+   !> This subroutine takes `nfa_state_set_t` as input and register the set as the DFA state in the DFA.
    !> The result is returned as a pointer to the DFA state.
    pure subroutine automaton__register_state(self, state_set, res)
       implicit none
@@ -159,7 +159,7 @@ contains
 
       integer(int32) :: i, j, k
 
-      ! If the set is already registered, returns the index of the corresponding DFA state. 
+      ! If the set is already registered, returns the index of the corresponding DFA state.
       i = self%dfa%registered(state_set)
       if ( i /= DFA_INVALID_INDEX) then
          res = i
@@ -167,7 +167,7 @@ contains
       end if
 
 
-      ! Execute an error stop statement if the counter exceeds a limit. 
+      ! Execute an error stop statement if the counter exceeds a limit.
       if (self%dfa%dfa_top >= self%dfa%dfa_limit) then
          ! Reallocate
          call self%dfa%reallocate()
@@ -190,7 +190,7 @@ contains
 
 
    !> This function calculates a set of possible NFA states from the current DFA state by the input
-   !> character `symbol`. 
+   !> character `symbol`.
    !>
    !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`,
    !> excluding ε-transitions.
@@ -220,12 +220,12 @@ contains
 
          ! If the i-th element of current state set is true, process the i-th NFA node.
          if (check_nfa_state(current_set, i)) then
-            
+
             ! Copy to a temporary variable.
             n_node = self%nfa%nodes(i)
 
             if (.not. allocated(n_node%forward)) cycle
-            
+
             ! Scan the all transitions belong to the NFA state node.
             middle: do j = 1, n_node%forward_top
 
@@ -279,7 +279,7 @@ contains
 
       ! Initialize the next value
       next = DFA_INVALID_INDEX
-      
+
       ! Scan the entire DFA nodes.
       do i = 1, self%dfa%dfa_top
 
@@ -290,12 +290,12 @@ contains
             return
          end if
 
-      end do 
+      end do
    end subroutine automaton__destination
 
-   
+
    !> This function returns the dfa transition object, that contains the destination index
-   !> and the corresponding set of transitionable NFA state.  
+   !> and the corresponding set of transitionable NFA state.
    pure function automaton__move(self, curr, symbol) result(res)
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
@@ -312,7 +312,7 @@ contains
       ! Set the value of each component of the returned object.
       res%dst = next                      ! valid index of DFA node or DFA_INVALID_INDEX
       res%nfa_set = set
-      
+
       ! res%c = symbol_to_segment(symbol) ! this component would not be used.
       ! res%own_j = DFA_INITIAL_INDEX     ! this component would not be used.
    end function automaton__move
@@ -321,7 +321,7 @@ contains
    !> This subroutine gets the destination index of DFA nodes from the current index with given symbol,
    !> adding a DFA node if necessary.
    !>
-   !> It calculates the set of NFA states that can be reached from the `current` node for the given `symbol`, 
+   !> It calculates the set of NFA states that can be reached from the `current` node for the given `symbol`,
    !> excluding epsilon transitions, and then registers the new DFA state node if it has not already been registered.
    !> Finally, it adds the transition from the `current` node to the `destination` node in the DFA graph.
    pure subroutine automaton__construct_dfa (self, curr_i, dst_i, symbol)
@@ -345,7 +345,7 @@ contains
       d_tra = self%move(prev_i, symbol)
 
       ! この実装ではリストのリダクションを計算する必要がない。
-      !! In this implementation with array approach, array reduction is done in the reachable procedure. 
+      !! In this implementation with array approach, array reduction is done in the reachable procedure.
 
       ! ε遷移との和集合を取り、d_tra%nfa_setに格納する。
       ! Combine the state set with epsilon-transitions and store in `d_tra%nfa_set`.
@@ -420,7 +420,7 @@ contains
 
          end do
          write(stderr, *) ""
-      end do 
+      end do
 
       do i = 1, self%dfa%dfa_top - 1
          if (self%dfa%nodes(i)%accepted) then

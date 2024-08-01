@@ -13,7 +13,7 @@
 
 !> The`forgex_syntax_tree_m` module defines parsing and
 !> the `tree_node_t` derived-type for building syntax-tree.
-!> 
+!>
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr => error_unit
    use :: forgex_parameters_m, only: UTF8_CHAR_SIZE, UTF8_CODE_MAX, &
@@ -25,7 +25,7 @@ module forgex_syntax_tree_m
          ESCAPE_S, ESCAPE_S_CAPITAL
    use :: forgex_segment_m, only: segment_t, invert_segment_list, operator(==), &
          SEG_EMPTY, SEG_ANY, SEG_INIT, SEG_CR, SEG_LF, SEG_TAB, SEG_DIGIT, SEG_UPPERCASE, SEG_LOWERCASE, &
-         SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE 
+         SEG_UNDERSCORE, SEG_SPACE, SEG_FF, SEG_ZENKAKU_SPACE
    use :: forgex_enums_m
    implicit none
    private
@@ -45,7 +45,7 @@ module forgex_syntax_tree_m
    end interface print_tree
 #endif
 
-   !! The regular expression parsing performed by this module 
+   !! The regular expression parsing performed by this module
    !! is done using recursive descent parsing.
 
    character(UTF8_CHAR_SIZE), parameter, public :: EMPTY = char(0)
@@ -74,7 +74,7 @@ module forgex_syntax_tree_m
       character(UTF8_CHAR_SIZE) :: token_char = EMPTY
          ! initialized as ASCII character number 0
       integer(int32) :: idx = 0
-         ! index of the character that is currently focused 
+         ! index of the character that is currently focused
    contains
       procedure :: get_token
    end type
@@ -128,8 +128,8 @@ contains
    end subroutine deallocate_tree
 
    !| Get the currently focused character (1 to 4 bytes) from the entire string inside
-   !  the `type_t` derived-type, and store the enumerator's numeric value in the 
-   !  `current_token` component. 
+   !  the `type_t` derived-type, and store the enumerator's numeric value in the
+   !  `current_token` component.
    !  This is a type-bound procedure of `tape_t`.
    pure subroutine get_token(self, class_flag)
       use :: forgex_enums_m
@@ -772,10 +772,10 @@ contains
 
       node_r = make_tree_node(op_concat)
       call register_and_connector(tree, top, node_r, cr, lf)
-      
+
       node = make_tree_node(op_union)
       call register_and_connector(tree, top, node, lf, node_r)
-   
+
    end subroutine make_tree_crlf
 
 
@@ -796,7 +796,7 @@ contains
 
       node_r_r = make_tree_node(op_concat)
       call register_and_connector(tree, top, node_r_r, cr, lf)
-      
+
       node_r = make_tree_node(op_union)
       call register_and_connector(tree, top, node_r, lf, node_r_r)
 
@@ -809,7 +809,7 @@ contains
    end subroutine make_tree_caret_dollar
 
 
-   !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`, 
+   !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`,
    !> `\w`, `\W`, `\s`, `\S`).
    pure subroutine shorthand(tape, tree, top)
       use :: forgex_utf8_m, only: ichar_utf8
@@ -821,23 +821,23 @@ contains
       type(tree_node_t) :: node
       type(segment_t), allocatable :: seglist(:)
       type(segment_t) :: seg
-   
+
 
       select case (trim(tape%token_char))
       case (ESCAPE_T)
          node = make_atom(SEG_TAB)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
          return
-      
+
       case (ESCAPE_N)
          call make_tree_crlf(tree, top)
          return
-      
+
       case (ESCAPE_R)
          node = make_atom(SEG_CR)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
          return
-         
+
       case (ESCAPE_D)
          node = make_atom(SEG_DIGIT)
          call register_and_connector(tree, top, node, terminal_node, terminal_node)
@@ -854,7 +854,7 @@ contains
          seglist(2) = SEG_UPPERCASE
          seglist(3) = SEG_DIGIT
          seglist(4) = SEG_UNDERSCORE
-      
+
       case (ESCAPE_W_CAPITAL)
          allocate(seglist(4))
          seglist(1) = SEG_LOWERCASE
@@ -899,7 +899,7 @@ contains
       deallocate(seglist)
 
    end subroutine shorthand
-      
+
 
 !=====================================================================!
 #if defined(IMPURE) && defined(DEBUG)
@@ -907,7 +907,7 @@ contains
    subroutine dump_tree_table(tree)
       implicit none
       class(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-   
+
       integer :: i, k
 
       write(stderr, '(1x, a)') '  own index|  operation|     parent|       left|      right|   registered|  segments'
@@ -921,7 +921,7 @@ contains
 
                   if (k /= 1) write(stderr, '(a)', advance='no') ', '
                    write(stderr, '(a)', advance='no') tree(i)%c(k)%print()
-               
+
                end do
                write(stderr, *) ""
             end if
@@ -943,8 +943,8 @@ contains
       do while (tree(i+1)%is_registered)
          i = i + 1
       enddo
-   
-      write(stderr, *) "Tree node counts: ", i 
+
+      write(stderr, *) "Tree node counts: ", i
    end subroutine print_tree_wrap
 
    recursive subroutine print_tree_internal(tree, node_i)
@@ -1007,7 +1007,7 @@ contains
       else if (tree(root_i)%c(1) == SEG_CR) then
          str = '<CR>'
          return
-      
+
       else if (tree(root_i)%c(1) == SEG_EMPTY) then
          str ="<EMPTY>"
          return
