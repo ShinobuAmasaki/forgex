@@ -162,6 +162,20 @@ pure subroutine procedure__regex(pattern, text, res, length, from, to)
    integer,      optional,    intent(inout) :: length, from, to
 ```
 
+If you want to the matched character string as the return value of the function,
+consider using `regex_f` defined in the `forgex` module. 
+
+```fortran
+interface regex_f
+   module procedure :: function__regex
+end interface regex_f
+
+pure function function__regex(pattern, text) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern, text
+   character(:), allocatable :: res
+```
+
 ### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
