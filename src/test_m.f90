@@ -62,10 +62,11 @@ contains
       integer(int32)            :: length
       logical                   :: res 
 
-      ! local = regex(pattern, str, length)
+      call regex(pattern, str, local, length)
       substr = local
 
       res = trim(local) == trim(answer)
+
    end function is_valid__regex
 
 
@@ -99,7 +100,7 @@ contains
 
       res = is_valid__match(pattern, str, answer)
 
-      ! write(error_unit, '(a)', advance='no') '                                          '//char(13)
+
       if (res) then
          if (answer) then
             write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
@@ -124,10 +125,6 @@ contains
 
       character(:), allocatable :: substr
       logical                   :: res
-
-      ! Stab
-      res = .true.
-      return
 
       res = is_valid__regex(pattern, str, answer, substr)
 
