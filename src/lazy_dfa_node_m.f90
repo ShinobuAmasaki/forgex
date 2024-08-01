@@ -138,10 +138,12 @@ contains
       siz = 0
 
       if (self%initialized) then
+         ! If already initialized, copy the transitions to a temporary array `tmp`.
          siz = size(self%transition, dim=1)
          allocate(tmp(siz))
          call move_alloc(self%transition, tmp)
       else
+         ! If not yet initialized, call init_tra_top procedure.
          siz = 0
          call self%init_tra_top(DFA_INIT_TRANSITION_TOP)
       end if
@@ -154,6 +156,7 @@ contains
 
       allocate(self%transition(1:new_part_end))
 
+      ! If siz equals to zero, this loop will be ignored.
       do j = 1, siz
          self%transition(j) = tmp(j)
       end do
@@ -165,6 +168,8 @@ contains
    end subroutine dfa_state_node__reallocate_transition_forward
 
 
+   ! This function scans all transition of the node and returns true if a
+   ! transition containing the given symbol is already registered. 
    pure function dfa_state_node__is_registered_transition(self, dst, symbol) result(res)
       use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
       implicit none
@@ -181,6 +186,7 @@ contains
          if (self%transition(j)%dst == dst) then
             if (symbol_to_segment(symbol) .in. self%transition(j)%c) then
                res = .true.
+               return
             end if
          end if
       end do
