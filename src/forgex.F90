@@ -25,7 +25,7 @@ module forgex
 
    public :: operator(.in.)
    public :: operator(.match.)
-   ! public :: regex
+   public :: regex
 
    interface operator(.in.)
       !! Interface for user-defined operator of `.in.`
@@ -37,10 +37,10 @@ module forgex
       module procedure :: operator__match
    end interface 
 
-   ! interface regex
-   !    !! The generic name for the `regex` function implemented as `regex__matching`.
-   !    module procedure :: subroutine__regex
-   ! end interface
+   interface regex
+      !! The generic name for the `regex` function implemented as `regex__matching`.
+      module procedure :: procedure__regex
+   end interface
 
 
 contains
@@ -146,6 +146,65 @@ contains
 
 
    end function operator__match
+
+   !> The function implemented for the `regex` subroutine.
+   pure subroutine procedure__regex(pattern, text, res, length, from, to)
+      implicit none
+      character(*), intent(in) :: pattern, text
+      character(:), allocatable, intent(inout) :: res
+      integer, optional, intent(inout) :: length, from, to
+
+      character(:),      allocatable :: buff
+      type(tree_node_t), allocatable :: tree(:)
+      type(tape_t)                   :: tape
+      type(automaton_t)              :: automaton
+      integer                        :: root
+      integer                        :: from_l, to_l
+
+      buff = trim(pattern)
+
+      call build_syntax_tree(buff, tape, tree, root)
+
+#if defined(IMPURE) && defined(DEBUG)
+      call dump_tree_table(tree)
+      call print_tree(tree, root)
+#endif
+
+      call automaton%init(tree, root)
+
+      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
+
+#if defined(IMPURE) && defined(DEBUG)
+      call automaton%print_dfa()
+#endif
+
+      if (is_there_caret_at_the_top(pattern)) then
+         from_l = from_l
+      else
+         from_l = from_l - 1
+      end if
+
+      if (is_there_dollar_at_the_end(pattern)) then
+         to_l = to_l - 2
+      else
+         to_l = to_l - 1
+      end if
+
+
+      if (from_l > 0 .and. to_l > 0) then
+         res = text(from_l:to_l)
+         if (present(length)) length = to_l - from_l + 1
+         if (present(from)) from = from_l
+         if (present(to)) to = to_l
+      else
+         res = ''
+         if (present(length)) length = 0
+         if (present(from)) from = 0
+         if (present(to)) to = 0
+      end if
+   end subroutine procedure__regex
+
+      
 
 
 !---------------------------------------------------------------------!
