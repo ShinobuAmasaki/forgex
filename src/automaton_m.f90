@@ -149,8 +149,8 @@ contains
    end subroutine automaton__epsilon_closure
 
 
-   !> This subroutine takes `nfa_state_set_t` as input and register the set as the DFA state in the DFA.
-   !> The result is returned as a pointer to the DFA state.
+   !> This subroutine takes a `nfa_state_set_t` type argument as input and register
+   !> the set as a DFA state node in the DFA graph.
    pure subroutine automaton__register_state(self, state_set, res)
       implicit none
       class(automaton_t),    intent(inout) :: self
@@ -165,7 +165,6 @@ contains
          res = i
          return
       end if
-
 
       ! Execute an error stop statement if the counter exceeds a limit.
       if (self%dfa%dfa_top >= self%dfa%dfa_limit) then
@@ -381,13 +380,14 @@ contains
 
 #if defined(IMPURE) && defined(DEBUG)
 
+   !> This subroutine provides the automata' summarized information.
    subroutine automaton__print_info(self)
       use :: iso_fortran_env, only: stderr => error_unit
       implicit none
       class(automaton_t), intent(in) :: self
 
       write(stderr, *) "--- AUTOMATON INFO ---"
-      write(stderr, *) "entry_set: ", self%entry_set%vec(1:self%nfa%nfa_top)
+      write(stderr, *) "entry_set: ", self%entry_set%vec(NFA_STATE_BASE+1:self%nfa%nfa_top)
       write(stderr, *) "allocated(all_segments):", allocated(self%all_segments)
       write(stderr, *) "nfa_entry:     ", self%nfa_entry
       write(stderr, *) "nfa_exit:      ", self%nfa_exit
@@ -395,6 +395,8 @@ contains
 
    end subroutine automaton__print_info
 
+
+   !> This subroutine prints DFA states and transitions to standard error. 
    subroutine automaton__print_dfa(self)
       use, intrinsic :: iso_fortran_env, only: stderr => error_unit
       use :: forgex_nfa_state_set_m
@@ -434,7 +436,6 @@ contains
          write(stderr,'(a)') ")"
       end do
    end subroutine automaton__print_dfa
-
 #endif
 
 end module forgex_automaton_m
