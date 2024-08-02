@@ -17,7 +17,7 @@
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr => error_unit
    use :: forgex_parameters_m, only: UTF8_CHAR_SIZE, UTF8_CODE_MAX, &
-         INVALID_INDEX, TERMINAL_INDEX, TREE_NODE_BASE, TREE_NODE_LIMIT, &
+         INVALID_INDEX, TERMINAL_INDEX, TREE_NODE_BASE, TREE_NODE_LIMIT, TREE_NODE_UNIT, &
          SYMBOL_RSBK, SYMBOL_HYPN, SYMBOL_VBAR, SYMBOL_LPAR, SYMBOL_RPAR, SYMBOL_STAR, &
          SYMBOL_PLUS, SYMBOL_QUES, SYMBOL_BSLH, SYMBOL_LSBK, SYMBOL_RSBK, SYMBOL_LCRB, &
          SYMBOL_RCRB, SYMBOL_DOT,  SYMBOL_CRET, SYMBOL_DOLL, &
@@ -93,13 +93,14 @@ contains
    !> Expected to be used by the forgex module.
    pure subroutine build_syntax_tree(str, tape, tree, top_idx)
       implicit none
-      character(*),                   intent(in)    :: str
-      type(tape_t),                   intent(inout) :: tape
-      type(tree_node_t), allocatable, intent(inout) :: tree(:)
-      integer(int32),                 intent(inout) :: top_idx
+      character(*),               intent(in)    :: str
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top_idx
 
       integer :: i
 
+      ! Initial allocation of the tree pointer
       allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT)) ! 0-based
       tree(TREE_NODE_BASE:TREE_NODE_LIMIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_LIMIT)]
 
@@ -116,7 +117,7 @@ contains
    !> This subroutine deallocate the syntax tree.
    pure subroutine deallocate_tree(tree)
       implicit none
-      type(tree_node_t), allocatable, intent(inout) :: tree(:)
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
 
       integer :: i
 
@@ -124,7 +125,7 @@ contains
          if (allocated(tree(i)%c)) deallocate(tree(i)%c)
       end do
 
-      if (allocated(tree)) deallocate(tree)
+      if (associated(tree)) deallocate(tree)
    end subroutine deallocate_tree
 
    !| Get the currently focused character (1 to 4 bytes) from the entire string inside
@@ -239,9 +240,9 @@ contains
 
    pure subroutine register_node(self, tree, top_index)
       implicit none
-      class(tree_node_t), intent(inout) :: self
-      type(tree_node_t),  intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),     intent(inout) :: top_index
+      class(tree_node_t),         intent(inout) :: self
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top_index
 
 
       integer :: i
@@ -274,10 +275,10 @@ contains
 
    pure subroutine register_and_connector(tree, top, node, node_l, node_r)
       implicit none
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
-      type(tree_node_t), intent(inout) :: node
-      type(tree_node_t), intent(in)    :: node_l, node_r
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
+      type(tree_node_t),          intent(inout) :: node
+      type(tree_node_t),          intent(in)    :: node_l, node_r
 
       call node%register_node(tree, top)
       node = tree(top)
@@ -289,7 +290,7 @@ contains
 
    pure subroutine connect_left(tree, parent_i, child_i)
       implicit none
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), intent(inout), pointer :: tree(:)
       integer(int32),    intent(in)    :: parent_i, child_i
 
       tree(parent_i)%left_i = child_i
@@ -299,7 +300,7 @@ contains
 
    pure subroutine connect_right(tree, parent_i, child_i)
       implicit none
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), intent(inout), pointer :: tree(:)
       integer(int32),    intent(in)    :: parent_i, child_i
 
       tree(parent_i)%right_i = child_i
@@ -310,9 +311,9 @@ contains
 
    pure subroutine regex(tape, tree, top)
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -335,9 +336,9 @@ contains
 
    pure subroutine term(tape, tree, top)
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -372,9 +373,9 @@ contains
 
    pure subroutine postfix_op(tape, tree, top)
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: node, node_l, node_r
 
@@ -421,9 +422,9 @@ contains
    pure subroutine primary(tape, tree, top)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: node
       type(segment_t) :: seg
@@ -476,9 +477,9 @@ contains
 
    pure subroutine range_min_max(tape, tree, top)
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t)         :: node, node_l, node_r, node_rr, ptr
       integer(int32)            :: arg(2), ios, min, max, count
@@ -666,9 +667,9 @@ contains
       use :: forgex_utf8_m, only:idxutf8, len_utf8, count_token, ichar_utf8
       use :: forgex_enums_m
       implicit none
-      type(tape_t),      intent(inout) :: tape
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32),    intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(segment_t), allocatable :: seglist(:)
       character(:), allocatable    :: buf
@@ -759,8 +760,8 @@ contains
    !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
    pure subroutine make_tree_crlf(tree, top)
       implicit none
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: cr, lf, node_r, node
 
@@ -782,8 +783,8 @@ contains
    !> This function constructs a tree node for carriage return (CR) and line feed (LF) characters.
    pure subroutine make_tree_caret_dollar(tree, top)
       implicit none
-      type(tree_node_t), intent(inout) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty
 
@@ -814,9 +815,9 @@ contains
    pure subroutine shorthand(tape, tree, top)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
-      type(tape_t), intent(inout) :: tape
-      type(tree_node_t), intent(inout) ::tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
-      integer(int32), intent(inout) :: top
+      type(tape_t),               intent(inout) :: tape
+      type(tree_node_t), pointer, intent(inout) :: tree(:)
+      integer(int32),             intent(inout) :: top
 
       type(tree_node_t) :: node
       type(segment_t), allocatable :: seglist(:)
@@ -906,7 +907,7 @@ contains
 
    subroutine dump_tree_table(tree)
       implicit none
-      class(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      class(tree_node_t), intent(in), pointer :: tree(:)
 
       integer :: i, k
 
@@ -931,7 +932,7 @@ contains
 
    subroutine print_tree_wrap(tree, node_i)
       implicit none
-      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), intent(in), pointer :: tree(:)
       integer, intent(in) :: node_i
 
       integer :: i
@@ -949,7 +950,7 @@ contains
 
    recursive subroutine print_tree_internal(tree, node_i)
       implicit none
-      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), intent(in), pointer :: tree(:)
       integer, intent(in) :: node_i
 
       select case (tree(node_i)%op)
@@ -988,7 +989,7 @@ contains
       use :: forgex_segment_m, only: SEG_EMPTY
       use :: forgex_utf8_m
       implicit none
-      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), intent(in), pointer :: tree(:)
       integer(int32) :: root_i
       character(:), allocatable :: str
 
