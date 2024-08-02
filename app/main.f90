@@ -1,6 +1,10 @@
 program main
    use :: forgex
+#ifdef OMP
    use :: forgex_time_measurement_omp_m ! exec: fpm run --flag "-DOMP -fopenmp"
+#else
+   use :: forgex_time_measurement_cpu_m
+#endif
    implicit none
 
    logical :: res, entire
