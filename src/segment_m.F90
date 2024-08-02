@@ -8,6 +8,10 @@
 !
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
+#ifdef IMPURE
+! #define elemental
+#define pure
+#endif
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY
@@ -35,8 +39,8 @@ module forgex_segment_m
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
    !> when building automata where a range characters share the same transition destination.
    type, public :: segment_t
-      integer(int32) :: min = -2 ! = -2
-      integer(int32) :: max = -2 ! = -2
+      integer(int32) :: min = UTF8_CODE_MAX+2 ! = 2097153
+      integer(int32) :: max = UTF8_CODE_MAX+2 ! = 2097153
    contains
 #if defined(IMPURE) && defined(DEBUG)
       procedure :: print => segment_for_print
@@ -45,7 +49,7 @@ module forgex_segment_m
    end type
 
    ! See ASCII code set
-   type(segment_t), parameter, public :: SEG_INIT  = segment_t(-2, -2)
+   type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
    type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
@@ -397,10 +401,21 @@ contains
    pure subroutine merge_segments(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)
-      integer :: i, j, n
+      integer :: i, j, n, m
 
       n = size(segments)
-      if (n <= 1) return
+
+      m = 1
+      do i = 2, n
+         if (segments(i) == SEG_INIT) exit
+         m = m+1
+      end do
+      n = m
+
+      if (n <= 1) then
+         segments = segments(:n)
+         return
+      end if
 
       j = 1
       do i = 2, n
@@ -412,9 +427,10 @@ contains
          endif
       end do
 
-      if (j < n) then
-         segments = segments(1:j)    ! reallocation implicitly.
+      if (j <= n) then
+         segments = segments(:j)    ! reallocation implicitly.
       end if
+
    end subroutine merge_segments
 
 
