@@ -63,25 +63,25 @@ contains
       res = self%tra_top
    end function dfa_state_node__get_transition_top
 
+
+   !> This subroutine initialize the top index of the transition array of the dfa
+   !> node with the value of the given argument.
    pure subroutine dfa_state_node__initialize_transition_top(self, top)
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
       integer, intent(in) :: top
 
       self%tra_top = top
-
    end subroutine dfa_state_node__initialize_transition_top
 
 
+   !> This subroutine deallocates the transition array of a DFA state node.
    pure subroutine dfa_state_node__deallocate(self)
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
-      integer :: j, k
 
       if (allocated(self%transition)) deallocate(self%transition)
-
    end subroutine dfa_state_node__deallocate
-
 
 
    !> This subroutine increments the value of top transition index.
@@ -101,7 +101,6 @@ contains
 
       integer :: j
 
-
       if (.not. self%initialized) then
          call self%realloc_f()
       end if
@@ -113,11 +112,9 @@ contains
       call self%increment_tra_top()
       j = self%get_tra_top()
 
-
       if (j >= size(self%transition, dim=1)) then
          call self%realloc_f()
       end if
-
 
       self%transition(j) = tra
    end subroutine dfa_state_node__add_transition
@@ -163,14 +160,12 @@ contains
       end if
 
       prev_count = self%alloc_count_f
-      self%alloc_count_f = prev_count + 1
+      self%alloc_count_f = prev_count + 1 ! Increment
 
       new_part_begin = siz + 1
       new_part_end = self%alloc_count_f * DFA_TRANSITION_UNIT
 
       allocate(self%transition(1:new_part_end))
-
-      ! If siz equals to zero, this loop will be ignored.
 
       self%transition(1:siz) = tmp(1:siz)
 

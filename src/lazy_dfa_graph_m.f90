@@ -42,8 +42,6 @@ contains
 
    !> This subroutine determines the number of DFA nodes the graph has
    !> and allocate the array.
-   !>
-   !> @note Currently, only the ability to reference constants defined in `paramter_m` is provided.
    pure subroutine lazy_dfa__preprocess (self)
       implicit none
       class(dfa_graph_t), intent(inout) :: self
@@ -65,6 +63,11 @@ contains
    end subroutine lazy_dfa__preprocess
 
 
+   !> This subroutine performs reallocating array that represents the DFA graph.
+   !>
+   !> It evaluates the current upper limit for the array reallocation request call,
+   !> and if the hard limit is not exceeded, performs the reallocation and updates the
+   !> upper limit, otherwise the program stops with `ERROR STOP`.
    pure subroutine lazy_dfa__reallocate(self)
       implicit none
       class(dfa_graph_t), intent(inout) :: self
@@ -105,6 +108,8 @@ write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
    end subroutine lazy_dfa__reallocate
 
 
+   !> This subroutine performs deallocation of the arrays representing 
+   !> the DFA node transitions for every node in the DFA graph.
    pure subroutine lazy_dfa__deallocate(self)
       implicit none
       class(dfa_graph_t), intent(inout) :: self
@@ -149,13 +154,12 @@ write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
       use :: forgex_segment_m
       use :: forgex_nfa_state_set_m
       implicit none
-      class(dfa_graph_t), intent(inout) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
-      integer, intent(in) :: src, dst
-      type(segment_t), intent(in) :: seg
+      class(dfa_graph_t),    intent(inout) :: self
+      type(nfa_state_set_t), intent(in)    :: state_set
+      integer,               intent(in)    :: src, dst
+      type(segment_t),       intent(in)    :: seg
 
       type(dfa_transition_t) :: tra
-
 
       tra%c = seg
       tra%dst = dst
