@@ -109,6 +109,10 @@ module forgex_parameters_m
    !> representing the DFA graph.
    integer(int32), parameter, public :: DFA_INITIAL_INDEX = 1
 
+   !> This constant defines the lower bound of the array that represents
+   !> the DFA transitions.
+   integer(int32), parameter, public :: DFA_TRANSITION_BASE = 1
+
    !> This constant defines the unit of additional allocation for DFA transitions.
    integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 32
 

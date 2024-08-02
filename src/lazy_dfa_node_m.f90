@@ -16,8 +16,8 @@
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_NOT_INIT_TRAENSITION_TOP, &
-         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_NOT_INIT_TRAENSITION_TOP, &
-         ALLOC_COUNT_INITTIAL
+         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_TRANSITION_BASE, &
+         DFA_NOT_INIT_TRAENSITION_TOP, ALLOC_COUNT_INITTIAL
    use :: forgex_segment_m, only: segment_t
    use :: forgex_nfa_state_set_m, only: nfa_state_set_t
    implicit none
@@ -142,7 +142,7 @@ contains
 
       type(dfa_transition_t), allocatable :: tmp(:)
       integer :: siz, j
-      integer :: prev_count, new_part_begin, new_part_end
+      integer :: new_part_begin, new_part_end
 
       siz = 0
 
@@ -159,20 +159,19 @@ contains
          call self%init_tra_top(DFA_INIT_TRANSITION_TOP)
       end if
 
-      prev_count = self%alloc_count_f
-      self%alloc_count_f = prev_count + 1 ! Increment
+      self%alloc_count_f = self%alloc_count_f + 1 ! Increment
 
       new_part_begin = siz + 1
       new_part_end = self%alloc_count_f * DFA_TRANSITION_UNIT
 
-      allocate(self%transition(1:new_part_end))
+      allocate(self%transition(DFA_TRANSITION_BASE:new_part_end))
 
-      self%transition(1:siz) = tmp(1:siz)
+      ! Copy registered data
+      self%transition(DFA_TRANSITION_BASE:siz) = tmp(DFA_TRANSITION_BASE:siz) 
 
+      ! Initialize the new part of the array.
       self%transition(new_part_begin:new_part_end)%own_j = [(j, j=new_part_begin, new_part_end)]
       self%initialized = .true.
-
-
    end subroutine dfa_state_node__reallocate_transition_forward
 
 
