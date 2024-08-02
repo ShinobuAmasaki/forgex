@@ -9,7 +9,6 @@
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
 #ifdef IMPURE
-! #define elemental
 #define pure
 #endif
 module forgex_segment_m

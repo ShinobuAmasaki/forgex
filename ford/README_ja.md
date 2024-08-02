@@ -46,12 +46,12 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `\D`, 非半角数字 (`[^0-9]`)
 
 ## 使用方法
-動作確認は以下のコンパイラーで行われています。
+動作確認は以下のコンパイラーで行っています。
 
 - GNU Fortran (`gfortran`) v13.2.1
 - Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
 
-以下では、Fortranパッケージマネージャー（`fpm`）を利用することを前提とします。
+以下では、ビルドとAPIの使い方について解説しますが、Fortranパッケージマネージャー（`fpm`）を利用することを前提とします。
 
 ### ビルド
 まず初めに、あなたのプロジェクトの`fpm.toml`に以下の記述を追加します。
@@ -60,13 +60,11 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 [dependencies]
 forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 ```
-注意：
-Intelのコンパイラを使用していて、メインブランチの`forgex`を使用する場合は、ビルド時にプリプロセッサオプションを有効にしてください。
-つまり、fpm コマンドに Windows では `--flag "/fpp"`、Unix では `--flag "-fpp"` を追加してください。
+
 
 ### APIの使い方
-そのプロジェクトのプログラムのヘッダーに`use forgex`と記述すると、`.in.`と`.match.`の演算子と
-`regex`関数が導入され、`use`文の有効なスコープでこれらの三つを使用することができます。
+そのプロジェクトのプログラムのヘッダーに`use forgex`と記述すると、`.in.`と`.match.`の演算子、
+`regex`サブルーチンと`regex_f`関数が導入され、`use`文の有効なスコープでこれらの4つを使用することができます。
 
 ```fortran
 program main
@@ -114,7 +112,7 @@ block
    str = 'foobarbaz'
 
    call regex(pattern, str, res)              
-   print *, res										! foobar
+   print *, res                              ! foobar
    
    ! call regex(pattern, str, res, length) 
         ! the value 6 stored in optional `length` variable.
@@ -132,7 +130,7 @@ block
    str = 'abcdefghi'
 
    call regex(pattern, str, res, from=from, to=to)
-   print *, res 						! def
+   print *, res                   ! def
    
    ! The `from` and `to` variables store the indices of the start and end points
    ! of the matched part of the string `str`, respectively.
@@ -151,7 +149,11 @@ end block
 
 `regex`関数の宣言部（インタフェース）は次の通りです。
 ```fortran
-pure subroutine procedure__regex(pattern, text, res, length, from, to)
+interface regex
+   module procedure :: subroutine__regex
+end interface
+
+pure subroutine subroutine__regex(pattern, text, res, length, from, to)
    implicit none
    character(*),              intent(in)    :: pattern, text
    character(:), allocatable, intent(inout) :: res
@@ -186,7 +188,7 @@ block
    
    print *, pattern .in. str            ! T
    call regex(pattern, str, res, length)
-   print *, res								 ! 夢爲胡蝶　栩栩然胡蝶
+   print *, res                         ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
    
 end block
@@ -197,12 +199,12 @@ end block
 ## To Do
 - UTF-8において無効なバイトストリームへの対処
 - リテラル検索によるマッチングの最適化
-- ✅️ すべてのAPI手続きに`pure`属性を追加
-- ~~マッチングの並列化~~
+- ✅️ すべてのAPI演算子に`pure elemental`属性を追加
 - ✅️ ドキュメントの公開
 - ✅️ UTF-8文字の基本的なサポート
 - ✅️ On-the-FlyのDFA構築
 - ✅️ CMakeによるビルドのサポート
+- ~~マッチングの並列化~~
 
 ## コーディング規約
 本プロジェクトに含まれるすべてのコードは、3スペースのインデントで記述されます。

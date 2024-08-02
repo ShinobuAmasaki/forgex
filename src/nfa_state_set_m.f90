@@ -66,8 +66,8 @@ contains
 
    !> This function determines if two NFA state sets (logical vectors) are equivalent.
    !>
-   !> It takes a pointer to NFA state set and NFA state set, and returns logical result
-   !> indicating equivalent (`.true.` if equivalent, `.false.` otherwise).
+   !> It takes two NFA state sets, compares all elements of a logical vector, perform a
+   !> logical AND, and returns it.
    pure elemental function equivalent_nfa_state_set(a, b) result(res)
       implicit none
       type(nfa_state_set_t), intent(in) :: a, b

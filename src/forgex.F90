@@ -18,7 +18,6 @@ module forgex
    use :: forgex_syntax_tree_m, only: print_tree, dump_tree_table
 #endif
 
-
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    implicit none
@@ -40,8 +39,8 @@ module forgex
    end interface
 
    interface regex
-      !! The generic name for the `regex` function implemented as `procedure__regex`.
-      module procedure :: procedure__regex
+      !! The generic name for the `regex` subroutine implemented as `procedure__regex`.
+      module procedure :: subroutine__regex
    end interface
 
    interface regex_f
@@ -157,7 +156,7 @@ contains
    end function operator__match
 
    !> The function implemented for the `regex` subroutine.
-   pure subroutine procedure__regex(pattern, text, res, length, from, to)
+   pure subroutine subroutine__regex(pattern, text, res, length, from, to)
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -214,7 +213,7 @@ contains
 
       call automaton%free()
 
-   end subroutine procedure__regex
+   end subroutine subroutine__regex
 
 
    !> The function implemented for the `regex_f` function.
@@ -223,7 +222,7 @@ contains
       character(*), intent(in)  :: pattern, text
       character(:), allocatable :: res
 
-      call procedure__regex(pattern, text, res)
+      call subroutine__regex(pattern, text, res)
 
    end function function__regex
 

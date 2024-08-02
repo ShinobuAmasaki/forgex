@@ -16,8 +16,8 @@
 module forgex_lazy_dfa_node_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_NOT_INIT_TRAENSITION_TOP, &
-         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_NOT_INIT_TRAENSITION_TOP, &
-         ALLOC_COUNT_INITTIAL
+         DFA_TRANSITION_UNIT, DFA_INIT_TRANSITION_TOP, DFA_TRANSITION_BASE, &
+         DFA_NOT_INIT_TRAENSITION_TOP, ALLOC_COUNT_INITTIAL
    use :: forgex_segment_m, only: segment_t
    use :: forgex_nfa_state_set_m, only: nfa_state_set_t
    implicit none
@@ -63,25 +63,25 @@ contains
       res = self%tra_top
    end function dfa_state_node__get_transition_top
 
+
+   !> This subroutine initialize the top index of the transition array of the dfa
+   !> node with the value of the given argument.
    pure subroutine dfa_state_node__initialize_transition_top(self, top)
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
       integer, intent(in) :: top
 
       self%tra_top = top
-
    end subroutine dfa_state_node__initialize_transition_top
 
 
+   !> This subroutine deallocates the transition array of a DFA state node.
    pure subroutine dfa_state_node__deallocate(self)
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
-      integer :: j, k
 
       if (allocated(self%transition)) deallocate(self%transition)
-
    end subroutine dfa_state_node__deallocate
-
 
 
    !> This subroutine increments the value of top transition index.
@@ -101,7 +101,6 @@ contains
 
       integer :: j
 
-
       if (.not. self%initialized) then
          call self%realloc_f()
       end if
@@ -113,11 +112,9 @@ contains
       call self%increment_tra_top()
       j = self%get_tra_top()
 
-
       if (j >= size(self%transition, dim=1)) then
          call self%realloc_f()
       end if
-
 
       self%transition(j) = tra
    end subroutine dfa_state_node__add_transition
@@ -145,7 +142,7 @@ contains
 
       type(dfa_transition_t), allocatable :: tmp(:)
       integer :: siz, j
-      integer :: prev_count, new_part_begin, new_part_end
+      integer :: new_part_begin, new_part_end
 
       siz = 0
 
@@ -162,22 +159,19 @@ contains
          call self%init_tra_top(DFA_INIT_TRANSITION_TOP)
       end if
 
-      prev_count = self%alloc_count_f
-      self%alloc_count_f = prev_count + 1
+      self%alloc_count_f = self%alloc_count_f + 1 ! Increment
 
       new_part_begin = siz + 1
       new_part_end = self%alloc_count_f * DFA_TRANSITION_UNIT
 
-      allocate(self%transition(1:new_part_end))
+      allocate(self%transition(DFA_TRANSITION_BASE:new_part_end))
 
-      ! If siz equals to zero, this loop will be ignored.
+      ! Copy registered data
+      self%transition(DFA_TRANSITION_BASE:siz) = tmp(DFA_TRANSITION_BASE:siz) 
 
-      self%transition(1:siz) = tmp(1:siz)
-
+      ! Initialize the new part of the array.
       self%transition(new_part_begin:new_part_end)%own_j = [(j, j=new_part_begin, new_part_end)]
       self%initialized = .true.
-
-
    end subroutine dfa_state_node__reallocate_transition_forward
 
 

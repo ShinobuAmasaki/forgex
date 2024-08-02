@@ -1,6 +1,3 @@
-#ifdef IMPURE
-#define pure
-#endif
 ! Fortran Regular Expression (Forgex)
 !
 ! MIT License
@@ -14,6 +11,9 @@
 !> The`forgex_syntax_tree_m` module defines parsing and
 !> the `tree_node_t` derived-type for building syntax-tree.
 !>
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_syntax_tree_m
    use, intrinsic :: iso_fortran_env, stderr => error_unit
    use :: forgex_parameters_m, only: UTF8_CHAR_SIZE, UTF8_CODE_MAX, &
