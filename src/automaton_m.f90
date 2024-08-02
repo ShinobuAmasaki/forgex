@@ -70,7 +70,6 @@ contains
       call self%nfa%print()
 #endif
 
-
       !-- DFA initialize
       ! Invokes DFA preprocessing.
       call self%dfa%preprocess()
