@@ -88,7 +88,7 @@ contains
       new_part_end = self%alloc_count_node * DFA_STATE_UNIT
 
       if (new_part_end > DFA_STATE_HARD_LIMIT) then
-         error stop "Abort: too many DFA state nodes requested."
+         error stop "Too many DFA state nodes requested."
       end if
 
       allocate(self%nodes(0:new_part_end))

@@ -24,8 +24,7 @@ module forgex_priority_queue_m
    public :: priority_queue_t
 
    !> The `priority_queue_t` derived-type has an array containing segment data
-   !> and the number of data. The array component is allocatable (with `pointer`
-   !> attribute).
+   !> and the number of data. The array component is allocatable.
    type priority_queue_t
       integer(int32) :: number = 0
       type(segment_t), allocatable :: heap(:)
