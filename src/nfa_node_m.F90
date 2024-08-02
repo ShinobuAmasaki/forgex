@@ -18,8 +18,8 @@ module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
-   use :: forgex_segment_m, only: segment_t, seg__merge_segments=>merge_segments, SEG_INIT, &
-      SEG_EPSILON, operator(/=), operator(==)
+   use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
+      seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
 
    use :: forgex_syntax_tree_m
 
@@ -98,7 +98,7 @@ contains
       nfa_exit = nfa_top
 
       call generate_nfa(tree, root_i, nfa, nfa_top, nfa_entry, nfa_exit)
-      
+
       do i = 1, nfa_top
          call nfa(i)%merge_segments()
       end do
@@ -114,8 +114,10 @@ contains
       end do 
 #endif
 
-
       call disjoin_nfa(nfa, nfa_top, all_segments)
+#ifdef IMPURE
+      write(0, *) "all_segments", all_segments
+#endif
 
    end subroutine build_nfa_graph
 
@@ -218,8 +220,8 @@ contains
 
       !== Forward transition process
       j = NFA_NULL_TRANSITION
-      if (allocated(self%forward)) then
-         ! 同じ行き先の遷移があるかどうか検索する
+      if (allocated(self%forward) .and. c /= SEG_EPSILON) then
+         ! ε遷移でない場合、同じ行き先の遷移があるかどうか検索する
          do jj = 1, self%forward_top
             if (dst == self%forward(jj)%dst) j = jj
          end do
@@ -239,7 +241,7 @@ contains
          allocate(self%forward(j)%c(1:NFA_C_SIZE))
       end if
 
-      self%forward(j)%c_top = self%forward(j)%c_top + 1
+      self%forward(j)%c_top = self%forward(j)%c_top + 1  ! Increment
       k = self%forward(j)%c_top
 
       self%forward(j)%c(k) = c
@@ -250,7 +252,7 @@ contains
 
       !== Backward transition process
       j = NFA_NULL_TRANSITION
-      if (allocated(nfa_graph(dst)%backward)) then
+      if (allocated(nfa_graph(dst)%backward) .and. c /= SEG_EPSILON) then
          do jj = 1, nfa_graph(dst)%backward_top
             if (src == nfa_graph(dst)%backward(jj)%dst) j = jj
          end do
@@ -367,6 +369,7 @@ contains
       if (.not. allocated(transition%c)) return
 
       siz = size(seg_list, dim=1)
+
       allocate(tmp(siz))
 
       block
@@ -522,14 +525,17 @@ contains
       if(allocated(self%forward)) then
          do j = 1, self%forward_top
             if (allocated(self%forward(j)%c)) then
+               call seg__sort_segments(self%forward(j)%c)
                call seg__merge_segments(self%forward(j)%c)
                self%forward(j)%c_top = size(self%forward(j)%c, dim=1)
             end if
          end do
       end if
+
       if (allocated(self%backward)) then
          do j = 1, self%backward_top
             if (allocated(self%backward(j)%c)) then
+               call seg__sort_segments(self%backward(j)%c)
                call seg__merge_segments(self%backward(j)%c)
                self%backward(j)%c_top = size(self%backward(j)%c, dim=1)
             end if
