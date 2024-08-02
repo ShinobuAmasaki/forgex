@@ -61,6 +61,10 @@ program test_005
    ! text_a = trim(text_a)//"abcde"//"fghij"//"klmno"//"pqrst"//"uvwxy"
    ! call runner_match(pattern, text, .true., res)
 
+   ! Testing for discontinuous segment patterns
+   pattern = "(a|c|e|g|i|k|m|o|q|s|u|w|y|1|3|5|7|9|A|C|E|G|I|K|M|O|Q|S|U|W|あ|う|お|き|け|さ|す|そ|ち|て)*"
+   call runner_match(pattern, 'aCEksuW', .true., res)
+
    if (res) then
       print *, "=== TEST CASE 5 END ==="
       stop
