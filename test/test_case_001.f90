@@ -122,6 +122,7 @@ program test_001
    call runner_match('[a]{7,7}', 'aaaaaa', .false., res)
    call runner_match("hoge(fuga|piyo)", 'hogepiyo', .true., res)
    call runner_match("f[a-zA-Z]*z", 'fooBARbaz', .true., res)
+   call runner_match("f[a-zA-z]*z", 'fooBARbaz', .true., res)
 
    call runner_match("(@|@)(a|a)*", "aa", .false., res)
    call runner_match("aaa", "aa", .false., res)

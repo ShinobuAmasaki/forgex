@@ -103,21 +103,7 @@ contains
          call nfa(i)%merge_segments()
       end do
 
-#ifdef IMPURE
-      do i = 1, nfa_top
-         if (.not. allocated(nfa(i)%forward)) cycle
-         do j = 1, nfa(i)%forward_top
-            if (allocated(nfa(i)%forward(j)%c)) then
-               write(0, *) i, j, ": ", nfa(i)%forward(j)%c
-            endif
-         end do
-      end do 
-#endif
-
       call disjoin_nfa(nfa, nfa_top, all_segments)
-#ifdef IMPURE
-      write(0, *) "all_segments", all_segments
-#endif
 
    end subroutine build_nfa_graph
 
@@ -223,7 +209,10 @@ contains
       if (allocated(self%forward) .and. c /= SEG_EPSILON) then
          ! ε遷移でない場合、同じ行き先の遷移があるかどうか検索する
          do jj = 1, self%forward_top
-            if (dst == self%forward(jj)%dst) j = jj
+            if ( dst == self%forward(jj)%dst .and. self%forward(jj)%c_top < NFA_C_SIZE) then
+               ! セグメント配列のサイズを超える場合には新しい遷移にセグメントを追加する
+               j = jj
+            end if
          end do
       end if
 
@@ -254,10 +243,11 @@ contains
       j = NFA_NULL_TRANSITION
       if (allocated(nfa_graph(dst)%backward) .and. c /= SEG_EPSILON) then
          do jj = 1, nfa_graph(dst)%backward_top
-            if (src == nfa_graph(dst)%backward(jj)%dst) j = jj
+            if (src == nfa_graph(dst)%backward(jj)%dst .and. nfa_graph(dst)%backward(jj)%c_top < NFA_C_SIZE) j = jj
+               ! セグメント配列のサイズを超える場合には新しい遷移にセグメントを追加する
          end do
       end if
-      
+
       if (j == NFA_NULL_TRANSITION) then
          j = nfa_graph(dst)%backward_top
       end if
@@ -520,7 +510,7 @@ contains
    pure elemental subroutine nfa__merge_segments_of_transition(self)
       implicit none
       class(nfa_state_node_t), intent(inout) :: self
-      
+
       integer :: j
 
       if(allocated(self%forward)) then
