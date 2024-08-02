@@ -8,6 +8,7 @@
 !
 !! This file contains
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_segment_disjoin_m

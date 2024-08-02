@@ -11,6 +11,7 @@
 !> `forgex_nfa_m` module defines a derived-type which is the set of NFA nodes.
 !> `nfa_state_set_t` represents a set of NFA nodes for the power set construction method.
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_nfa_state_set_m

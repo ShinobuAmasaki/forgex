@@ -1,4 +1,5 @@
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 ! Fortran Regular Expression (Forgex)
@@ -16,8 +17,10 @@
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
-       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
-   use :: forgex_segment_m
+      NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
+   use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
+      seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
+
    use :: forgex_syntax_tree_m
 
    implicit none
@@ -48,8 +51,9 @@ module forgex_nfa_node_m
       ! type(segment_t), allocatable :: all_segments(:)
    contains
       procedure :: add_transition => nfa__add_transition
-      procedure :: realloc_f => nfa__reallocate_transition_forward
-      procedure :: realloc_b => nfa__reallocate_transition_backward
+      procedure :: realloc_f      => nfa__reallocate_transition_forward
+      procedure :: realloc_b      => nfa__reallocate_transition_backward
+      procedure :: merge_segments => nfa__merge_segments_of_transition
    end type
 
 contains
@@ -95,7 +99,25 @@ contains
 
       call generate_nfa(tree, root_i, nfa, nfa_top, nfa_entry, nfa_exit)
 
+      do i = 1, nfa_top
+         call nfa(i)%merge_segments()
+      end do
+
+#ifdef IMPURE
+      do i = 1, nfa_top
+         if (.not. allocated(nfa(i)%forward)) cycle
+         do j = 1, nfa(i)%forward_top
+            if (allocated(nfa(i)%forward(j)%c)) then
+               write(0, *) i, j, ": ", nfa(i)%forward(j)%c
+            endif
+         end do
+      end do 
+#endif
+
       call disjoin_nfa(nfa, nfa_top, all_segments)
+#ifdef IMPURE
+      write(0, *) "all_segments", all_segments
+#endif
 
    end subroutine build_nfa_graph
 
@@ -194,10 +216,20 @@ contains
       integer(int32), intent(in) :: src, dst
       type(segment_t) ,intent(in) :: c
 
-      integer(int32) :: j, k
+      integer(int32) :: j, jj, k
 
       !== Forward transition process
-      j = self%forward_top
+      j = NFA_NULL_TRANSITION
+      if (allocated(self%forward) .and. c /= SEG_EPSILON) then
+         ! ε遷移でない場合、同じ行き先の遷移があるかどうか検索する
+         do jj = 1, self%forward_top
+            if (dst == self%forward(jj)%dst) j = jj
+         end do
+      end if
+
+      if (j == NFA_NULL_TRANSITION) then
+         j = self%forward_top
+      end if
 
       !> @note Note that the return value of the size function on an unallocated array is undefined.
       if (j >= size(self%forward, dim=1) .or. .not. allocated(self%forward)) then
@@ -209,7 +241,7 @@ contains
          allocate(self%forward(j)%c(1:NFA_C_SIZE))
       end if
 
-      self%forward(j)%c_top = self%forward(j)%c_top + 1
+      self%forward(j)%c_top = self%forward(j)%c_top + 1  ! Increment
       k = self%forward(j)%c_top
 
       self%forward(j)%c(k) = c
@@ -219,7 +251,16 @@ contains
       self%forward_top = j + 1
 
       !== Backward transition process
-      j = nfa_graph(dst)%backward_top
+      j = NFA_NULL_TRANSITION
+      if (allocated(nfa_graph(dst)%backward) .and. c /= SEG_EPSILON) then
+         do jj = 1, nfa_graph(dst)%backward_top
+            if (src == nfa_graph(dst)%backward(jj)%dst) j = jj
+         end do
+      end if
+      
+      if (j == NFA_NULL_TRANSITION) then
+         j = nfa_graph(dst)%backward_top
+      end if
 
       if (j >= size(nfa_graph(dst)%backward, dim=1) .or. .not. allocated(nfa_graph(dst)%backward)) then
          ! Reallocate backward array component.
@@ -328,6 +369,7 @@ contains
       if (.not. allocated(transition%c)) return
 
       siz = size(seg_list, dim=1)
+
       allocate(tmp(siz))
 
       block
@@ -372,9 +414,10 @@ contains
       integer :: j, k
       if (.not. allocated(transition%c)) return
 
-      k = 1
-      do while(transition%c(k) /= SEG_INIT)
+      k = 0
+      do while(k+1 <= size(transition%c, dim=1))
          k = k + 1
+         if (transition%c(k) == SEG_INIT) exit
       end do
       transition%c_top = k
 
@@ -471,5 +514,33 @@ contains
          [(jj, jj= new_part_begin, new_part_end)]
 
    end subroutine nfa__reallocate_transition_backward
+
+
+   pure elemental subroutine nfa__merge_segments_of_transition(self)
+      implicit none
+      class(nfa_state_node_t), intent(inout) :: self
+      
+      integer :: j
+
+      if(allocated(self%forward)) then
+         do j = 1, self%forward_top
+            if (allocated(self%forward(j)%c)) then
+               call seg__sort_segments(self%forward(j)%c)
+               call seg__merge_segments(self%forward(j)%c)
+               self%forward(j)%c_top = size(self%forward(j)%c, dim=1)
+            end if
+         end do
+      end if
+
+      if (allocated(self%backward)) then
+         do j = 1, self%backward_top
+            if (allocated(self%backward(j)%c)) then
+               call seg__sort_segments(self%backward(j)%c)
+               call seg__merge_segments(self%backward(j)%c)
+               self%backward(j)%c_top = size(self%backward(j)%c, dim=1)
+            end if
+         end do
+      end if
+   end subroutine nfa__merge_segments_of_transition
 
 end module forgex_nfa_node_m

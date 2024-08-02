@@ -11,6 +11,7 @@
 !> The `forgex_api_internal_m` defines the procedures that the API call directly.
 !> Currently, it contains two procedures: `do_matching_including` and `do_matching_exactly`.
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_api_internal_m

@@ -1,4 +1,5 @@
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_nfa_graph_m

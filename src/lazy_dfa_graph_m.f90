@@ -10,6 +10,7 @@
 
 !> This module defines a derived-type `dfa_graph_t` that contains all the states of the DFA.
 #ifdef IMPURE
+#define elemental
 #define pure
 #endif
 module forgex_lazy_dfa_graph_m
