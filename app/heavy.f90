@@ -1,6 +1,11 @@
 program main
    use :: forgex
+#if OMP
    use :: forgex_time_measurement_omp_m
+#else
+   use :: forgex_time_measurement_cpu_m
+#endif
+
    implicit none
 
    character(:), allocatable :: text, pattern
