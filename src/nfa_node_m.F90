@@ -324,9 +324,10 @@ contains
 
       !-- The seg_list arrays are now sorted.
 
+      seg_list = seg_list(:num_f) ! reallocation implicitly
+
       ! Disjoin the segment lists to ensure no over laps
       call disjoin(seg_list)
-
 
       ! Apply disjoining to all transitions over the NFA graph.
 
