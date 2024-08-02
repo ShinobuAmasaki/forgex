@@ -51,15 +51,12 @@ First of all, add the following to your project's `fpm.toml`:
 
 ```toml
 [dependencies]
-forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
+forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
-**NOTE:**
-If you are using the Intel compiler and want to use forgex from the main branch, please enable the preprocessor option when building.
-That is, add `--flag "/fpp"` on Windows and `--flag "-fpp"` on Unix for `fpm` commands.
 
 ### APIs
-When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
+When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
 ```fortran
 program main
@@ -108,7 +105,7 @@ block
    str = 'foobarbaz'
 
    call regex(pattern, str, res)              
-   print *, res										! foobar
+   print *, res                              ! foobar
    
    ! call regex(pattern, str, res, length)   
          ! the value 6 stored in optional `length` variable.
@@ -127,7 +124,7 @@ block
    str = 'abcdefghi'
 
    call regex(pattern, str, res, from=from, to=to)
-   print *, res 						! def
+   print *, res                   ! def
    
    ! The `from` and `to` variables store the indices of the start and end points
    ! of the matched part of the string `str`, respectively.
@@ -148,10 +145,10 @@ The interface of `regex` subroutine is following:
 
 ```fortran
 interface regex
-   module procedure :: procedure__regex
+   module procedure :: subroutine__regex
 end interface
 
-pure subroutine procedure__regex(pattern, text, res, length, from, to)
+pure subroutine subroutine__regex(pattern, text, res, length, from, to)
    implicit none
    character(*),              intent(in)    :: pattern, text
    character(:), allocatable, intent(inout) :: res
@@ -188,7 +185,7 @@ block
    
    print *, pattern .in. str            ! T
    call regex(pattern, str, res, length)
-   print *, res								 ! 夢爲胡蝶　栩栩然胡蝶
+   print *, res                         ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
    
 end block
@@ -198,12 +195,12 @@ end block
 
 - Dealing with invalid byte strings in UTF-8
 - Literal search optimization
-- ✅️ All API procedures with `pure` attribute
-- ~~Parallelization on matching~~
+- ✅️ All API operators with `pure elemental` attributes
 - ✅️ Publishing the documentation
 - ✅️ UTF-8 basic support
 - ✅️ DFA construction on-the-fly
 - ✅️ CMake Support
+- ~~Parallelization on matching~~
 
 ## Code Convention
 
