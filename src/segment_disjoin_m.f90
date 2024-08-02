@@ -12,7 +12,7 @@
 #define pure
 #endif
 module forgex_segment_disjoin_m
-   use :: forgex_segment_m, only: segment_t, SEG_UPPER, SEG_EMPTY, operator(.in.), operator(/=)
+   use :: forgex_segment_m, only: segment_t, SEG_UPPER, SEG_INIT, operator(.in.), operator(/=)
    use :: forgex_priority_queue_m, only: priority_queue_t
    implicit none
    private
@@ -161,7 +161,7 @@ contains
       ! This loop calculates the actual number of non-empty segments in the new `list`.
       real_size = 0
       do i = 1, size(list)
-         if (list(i) /= SEG_EMPTY) real_size = real_size + 1
+         if (list(i) /= SEG_INIT) real_size = real_size + 1
       end do
 
       ! Move `list` to `cache` and reallocate `list` to the real size.
