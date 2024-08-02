@@ -1,3 +1,11 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_nfa_graph_m module is a part of Forgex.
+!
 #ifdef IMPURE
 #define elemental
 #define pure

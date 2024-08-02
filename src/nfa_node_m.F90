@@ -1,7 +1,3 @@
-#ifdef IMPURE
-#define elemental
-#define pure
-#endif
 ! Fortran Regular Expression (Forgex)
 !
 ! MIT License
@@ -14,6 +10,10 @@
 
 !> The `forgex_nfa_m` module defines the data structure of NFA.
 !> The `nfa_t` is defined as a class representing NFA.
+#ifdef IMPURE
+#define elemental
+#define pure
+#endif
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &

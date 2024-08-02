@@ -7,12 +7,11 @@
 !     forgex_lazy_dfa_graph_m module is a part of Forgex.
 !
 !! This file contains `dfa_graph_t` class definition and its type-bound procedures.
-
-!> This module defines a derived-type `dfa_graph_t` that contains all the states of the DFA.
 #ifdef IMPURE
 #define elemental
 #define pure
 #endif
+!> This module defines a derived-type `dfa_graph_t` that contains all the states of the DFA.
 module forgex_lazy_dfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_UNIT, DFA_STATE_HARD_LIMIT, &
