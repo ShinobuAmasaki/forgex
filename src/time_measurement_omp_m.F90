@@ -3,6 +3,9 @@ module forgex_time_measurement_omp_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    use :: omp_lib
    implicit none
+   private
+
+   public time_begin, time_end, time_lap
 
    real(real64) :: begin_s, last_s, end_s
    integer :: i_cpu = 1
@@ -22,6 +25,7 @@ contains
       begin_s = 0d0
       last_s = 0d0
       end_s = 0d0
+      i = 1
 
       begin_s = omp_get_wtime()
       last_s = begin_s

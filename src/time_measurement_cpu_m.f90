@@ -7,7 +7,7 @@ module forgex_time_measurement_cpu_m
 
    real(real64) :: begin_s, last_s, end_s
    integer :: i_cpu = 1
-   integer :: i, ii
+   integer :: ii
    type record
       real(real64) :: lap_time
       character(:), allocatable :: description
