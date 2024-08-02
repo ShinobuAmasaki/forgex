@@ -3,7 +3,7 @@ program test_005
    implicit none
 
    logical :: res = .true.
-   character(1000) :: text
+   character(10000) :: text
    character(:), allocatable :: text_a
    character(:), allocatable ::  pattern
 
@@ -64,6 +64,29 @@ program test_005
    ! Testing for discontinuous segment patterns
    pattern = "(a|c|e|g|i|k|m|o|q|s|u|w|y|1|3|5|7|9|A|C|E|G|I|K|M|O|Q|S|U|W|あ|う|お|き|け|さ|す|そ|ち|て)*"
    call runner_match(pattern, 'aCEksuW', .true., res)
+
+   pattern = "a(a|b){200}"
+   text = "ababababababababababababababababababababababababab" ! (ab) x25
+   text = trim(text)//"ababababababababababababababababababababababababab" !x50
+   text = trim(text)//"ababababababababababababababababababababababababab" !x75
+   text = trim(text)//"ababababababababababababababababababababababababab" !x100
+   text = "a"//trim(text)
+   call runner_match(pattern, trim(text), .true., res)
+
+   pattern = ".*a(a|b){500}c{20}"
+   text =             "ababababababababababababababababababababababababab" ! (ab) x25
+   text = trim(text)//"ababababababababababababababababababababababababab" !      x50
+   text = trim(text)//"ababababababababababababababababababababababababab" !      x75
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x100
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x125
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x150
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x175
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x200
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x225
+   text = trim(text)//"ababababababababababababababababababababababababab" !     x250
+   text = "akkkkkkkksscga"//trim(text)
+   text = trim(text)//"cccccccccccccccccccc"
+   call runner_match(pattern, trim(text), .true., res)
 
    if (res) then
       print *, "=== TEST CASE 5 END ==="

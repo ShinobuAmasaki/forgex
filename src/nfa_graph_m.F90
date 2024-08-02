@@ -37,7 +37,7 @@ contains
       use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(inout) :: self
-      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t),allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: root_i
       integer(int32), intent(inout) :: nfa_entry, nfa_exit
       type(segment_t), allocatable, intent(inout) :: all_segments(:)
@@ -60,7 +60,7 @@ contains
       use :: forgex_syntax_tree_m
       implicit none
       class(nfa_graph_t), intent(inout) :: self
-      type(tree_node_t), intent(in) :: tree(:)
+      type(tree_node_t), allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: tree_root
       integer(int32), intent(in) :: entry, exit
 

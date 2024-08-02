@@ -61,7 +61,7 @@ contains
    pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
-      type(tree_node_t),      intent(in)                 :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t),      intent(in),    allocatable :: tree(:)
       integer(int32),         intent(in)                 :: root_i
       type(nfa_state_node_t), intent(inout), allocatable :: nfa(:)
       integer(int32),         intent(inout)              :: nfa_entry
@@ -136,7 +136,7 @@ contains
    pure recursive subroutine generate_nfa(tree, tree_idx, nfa_graph, nfa_top, entry, exit)
       use :: forgex_enums_m
       implicit none
-      type(tree_node_t),       intent(in)    :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t), allocatable, intent(in) :: tree(:)
       type(nfa_state_node_t),  intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
       integer(int32), intent(in) :: tree_idx
       integer(int32), intent(inout) :: nfa_top

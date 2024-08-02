@@ -2,10 +2,15 @@ module forgex_parameters_m
    use, intrinsic :: iso_fortran_env, only: int32
    implicit none
 
-   !> The maximum size of nodes for building the syntax tree.
-   integer(int32), parameter :: TREE_NODE_LIMIT = 256
+   integer(int32), parameter :: TREE_NODE_UNIT = 256
       ! If it's too large it will cause a stack overflow.
-   integer(int32), parameter :: TREE_NODE_BASE = 0
+   integer(int32), parameter :: TREE_NODE_BASE = 1
+
+   !> The initial maximum size of nodes for building the syntax tree.
+   integer(int32), parameter :: TREE_NODE_LIMIT = TREE_NODE_UNIT
+   !> The maximum value that can be allocated to a syntax tree graph;
+   !> exceeding this will cause ERROR STOP.
+   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_UNIT*16
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
