@@ -56,7 +56,7 @@ contains
       use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(tree_node_t), intent(in) :: tree(TREE_NODE_BASE:TREE_NODE_LIMIT)
+      type(tree_node_t),allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: tree_top
 
       type(nfa_state_set_t) :: nfa_entry_set, initial_closure
