@@ -6,8 +6,8 @@
 !     benchmark_heavy is a part of Forgex.
 !
 !! This file includes a heavy test case of regular expression matching.
-!> This program performs some heavyweight tests to verify that Forgex `.match.` operator 
-!< is enable to be used in `do concurrent`. Do execute followings:  
+!> This program performs some heavyweight tests to verify that Forgex `.match.` operator
+!< is enable to be used in `do concurrent`. Do execute followings:
 !> `fpm run heavy --example --profile release --compiler ifx --flag "/Qopenmp  /Qopenmp-target-do-concurrent"` for Windows.
 !> `fpm run heavy --example --profile release --compiler ifx --flag "-fopenmp -fopenmp-target-do-concurrent" for Linux.
 !> @note This command may not be parallelized depending on the CPU or compiler environment.
@@ -20,8 +20,8 @@ program benchmark_heavy
 
    integer, parameter :: siz = 16
       !! With 4 threads, it requires approximately 500MB of RAM.
-   integer :: i   
-   logical :: res(siz), answer
+   integer :: i
+   logical :: res(siz), answer, entire
    character(:), allocatable :: pattern, text
 
    write(stderr, *) "============ FORGEX BENCHMARKING TEST: heavy ============"
@@ -44,32 +44,39 @@ program benchmark_heavy
 
    ! !$ call omp_set_num_threads(4)
 
-      write(stderr, *) "=== Information ==="
-      write(stderr, *)              "Pattern    : ", pattern
-      write(stderr, *)              "Text       : ", text
-      write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
-      write(stderr, *)              "Operator   : ", ".match."
-      write(stderr, "(1x, a, l1)")  "Answer     : ", answer
+   write(stderr, *) "=== Information ==="
+   write(stderr, *)              "Pattern    : ", pattern
+   write(stderr, *)              "Text       : ", text
+   write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
+   write(stderr, *)              "Operator   : ", ".match."
+   write(stderr, "(1x, a, l1)")  "Answer     : ", answer
    ! !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
 
    !! WARNING: Do NOT use the `.in.` operator for this test, as it will take too long to wait
    !! on currently version.
 
    ! Time measurement of ordinary DO loop
+   res(:) = .false.
    call time_begin()
    do i = 1, siz
       res(i) = pattern .match. text
    end do
    call time_end("ordinary DO loop")
+   entire =  all(res)
 
+#ifndef IMPURE
    ! Time measurement of DO CONCURRENT loop
+   res(:) = .false.
    call time_begin()
    do concurrent (i = 1:siz)
       res(i) = pattern .match. text
    end do
    call time_end("DO CONCURRENT loop")
+   entire = entire .and. all(res)
+#endif
 
-      ! Time measurement of OPENMP PARALLEL DO
+   ! Time measurement of OPENMP PARALLEL DO
+   res(:) = .false.
    call time_begin()
    !$omp parallel do
    do i = 1, siz
@@ -77,7 +84,7 @@ program benchmark_heavy
    end do
    !$omp end parallel do
    call time_end("OpenMP parallel do loop")
-
+   entire = entire .and. all(res)
 
    write(stderr, *) "---------------------------------------------------------"
    if (all(res) .eqv. answer) then
