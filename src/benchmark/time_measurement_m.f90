@@ -1,12 +1,13 @@
 module forgex_time_measurement_omp_m
 #ifdef OMP
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
-   use :: omp_lib
+   !$use :: omp_lib
    implicit none
    private
 
    public time_begin, time_end, time_lap
 
+   integer, parameter :: record_siz = 200
    real(real64) :: begin_s, last_s, end_s
    integer :: i_cpu = 1
    integer :: i, ii
@@ -15,7 +16,7 @@ module forgex_time_measurement_omp_m
       character(:), allocatable :: description
    end type record
 
-   type(record) :: records(200)
+   type(record) :: records(record_siz)
 
 contains
 
@@ -27,7 +28,8 @@ contains
       end_s = 0d0
       i = 1
 
-      begin_s = omp_get_wtime()
+      call cpu_time(begin_s)
+      !$begin_s = omp_get_wtime()
       last_s = begin_s
 
    end subroutine time_begin
@@ -38,8 +40,8 @@ contains
       character(*), intent(in) :: description
 
 
-
-      end_s = omp_get_wtime()
+      call cpu_time(end_s)
+      !$ end_s = omp_get_wtime()
 
       records(i)%lap_time = end_s - last_s
       records(i)%description = trim(description)
@@ -52,8 +54,8 @@ contains
       implicit none
       character(*), intent(in) :: description
 
-
-      end_s = omp_get_wtime()
+      call cpu_time(end_s)
+      !$ end_s = omp_get_wtime()
 
       records(i)%lap_time = end_s - begin_s
       records(i)%description = "sec. : TOTAL: "//trim(description)
@@ -63,7 +65,7 @@ contains
       end do
 
 
-      write(stderr,*) "-----------------------------------------------"
+      write(stderr,*) "-------------------------------------------------"
       write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
    end subroutine time_end
 #endif

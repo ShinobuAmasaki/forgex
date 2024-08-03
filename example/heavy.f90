@@ -1,13 +1,25 @@
+! Fortran Regular Expression (Forgex)
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     benchmark_heavy is a part of Forgex.
+!
+!! This file includes a heavy test case of regular expression matching.
 program benchmark_heavy
    use :: iso_fortran_env, only: stderr=>error_unit
    use :: forgex_time_measurement_omp_m
    use :: forgex
    implicit none
 
-   integer :: i
-   integer, parameter :: siz = 36
+   integer, parameter :: siz = 16
+      !! With 4 threads, it requires approximately 500MB of RAM.
+   
+   integer :: i   
    logical :: res(siz), answer
    character(:), allocatable :: pattern, text
+
+   write(stderr, *) "=== FORGEX BENCHMARKING TEST: heavy ==="
 
    res(:) = .false.
    pattern = ".*a(a|b){500}c{20}"
@@ -39,7 +51,7 @@ program benchmark_heavy
    end do
    call time_end("DO CONCURRENT loop")
 
-   write(stderr, *) "-------------------------------"
+   write(stderr, *) "-------------------------------------------------"
    write(stderr, *) "answer:", all(res) .eqv. answer
 
 end program benchmark_heavy
