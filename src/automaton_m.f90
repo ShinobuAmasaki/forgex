@@ -129,7 +129,7 @@ contains
       closure = state_set
 
       i = self%nfa_entry
-      ! ! すべての順方向の遷移をスキャンする
+      ! すべての順方向の遷移をスキャンする
       do j = 1, self%nfa%nodes(i)%forward_top
 
          ! 一時変数にコピー
@@ -396,7 +396,7 @@ contains
    end subroutine automaton__print_info
 
 
-   !> This subroutine prints DFA states and transitions to standard error. 
+   !> This subroutine prints DFA states and transitions to standard error.
    subroutine automaton__print_dfa(self)
       use, intrinsic :: iso_fortran_env, only: stderr => error_unit
       use :: forgex_nfa_state_set_m
