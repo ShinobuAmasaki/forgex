@@ -193,14 +193,14 @@ end block
 
 ## To do
 
-- Dealing with invalid byte strings in UTF-8
-- Literal search optimization
-- ✅️ All API operators with `pure elemental` attributes
-- ✅️ Publishing the documentation
-- ✅️ UTF-8 basic support
-- ✅️ DFA construction on-the-fly
-- ✅️ CMake Support
-- <s>Parallelization on matching</s>
+- Deal with invalid byte strings in UTF-8
+- Optimize by literal searching method
+- ✅️ Make all operators `pure elemental` attribute
+- ✅️ Publish the documentation
+- ✅️ Support UTF-8 basic feature
+- ✅️ Construct DFA on-the-fly
+- ✅️ Support CMake building
+- <s>Parallelize on matching</s>
 
 ## Code Convention
 
