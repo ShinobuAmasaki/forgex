@@ -14,7 +14,6 @@
 !> @note This command may not be parallelized depending on the CPU or compiler environment.
 program benchmark_light_in
    use :: iso_fortran_env, only: stderr=>error_unit
-   !$ use :: omp_lib
    use :: forgex_time_measurement_m
    use :: forgex
    implicit none
@@ -24,6 +23,7 @@ program benchmark_light_in
    integer :: i
    logical :: res(siz), answer, entire
    character(:), allocatable :: pattern, text
+   character(*), parameter :: pat="a[^x]{20}b", txt='aaaaabbbbccccddddeeeeffffb'
 
    write(stderr, *) "============ FORGEX BENCHMARKING TEST: light ============"
 
@@ -32,7 +32,6 @@ program benchmark_light_in
    answer = .true.
 
    res(:) = .false.
-   ! !$ call omp_set_num_threads(4)
 
    write(stderr, *) "=== Information ==="
    write(stderr, *)              "Pattern    : ", pattern
@@ -60,18 +59,6 @@ program benchmark_light_in
    call time_end("DO CONCURRENT loop")
    entire = entire .and. all(res)
 #endif
-
-   ! Time measurement of OPENMP PARALLEL DO
-   res(:) = .false.
-   call time_begin()
-   !$omp parallel do
-   do i = 1, siz
-      res(i) = pattern .in. text
-   end do
-   !$omp end parallel do
-   call time_end("OpenMP parallel do loop")
-   entire = entire .and. all(res)
-
 
    write(stderr, *) "---------------------------------------------------------"
    if (entire .eqv. answer) then

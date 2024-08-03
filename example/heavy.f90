@@ -75,17 +75,6 @@ program benchmark_heavy
    entire = entire .and. all(res)
 #endif
 
-   ! Time measurement of OPENMP PARALLEL DO
-   res(:) = .false.
-   call time_begin()
-   !$omp parallel do
-   do i = 1, siz
-      res(i) = pattern .match. text
-   end do
-   !$omp end parallel do
-   call time_end("OpenMP parallel do loop")
-   entire = entire .and. all(res)
-
    write(stderr, *) "---------------------------------------------------------"
    if (all(res) .eqv. answer) then
       write(stderr, *) "result: Success"
