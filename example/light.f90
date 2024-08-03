@@ -11,6 +11,7 @@
 !! `fpm run light --example --compiler ifx --flag "" for Linux.
 program benchmark_light
    use :: iso_fortran_env, only: stderr=>error_unit
+   !$ use :: omp_lib
    use :: forgex_time_measurement_m
    use :: forgex
    implicit none
@@ -26,8 +27,16 @@ program benchmark_light
    res(:) = .false.
    pattern = "'a[^x]{20}b'"
    text = 'aaakkkkkkkkkkkkkkkkkkkb'
-
    answer = .false.
+   !$ call omp_set_num_threads(4)
+
+      write(stderr, *) "=== Information ==="
+      write(stderr, *)              "Pattern    : ", pattern
+      write(stderr, *)              "Text       : ", text
+      write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
+      write(stderr, *)              "Operator   : ", ".match."
+      write(stderr, "(1x, a, l1)")  "Answer     : ", answer
+   !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
 
    ! Time measurement of ordinary DO loop
    call time_begin()
@@ -45,9 +54,9 @@ program benchmark_light
 
    write(stderr, *) "---------------------------------------------------------"
    if (all(res) .eqv. answer) then
-      write(stderr, *) "result: Success"
+      write(stderr, *) "result     : Success"
    else
-      write(stderr, *) "result: FAILED"
+      write(stderr, *) "result     : FAILED"
    endif
    
 end program benchmark_light
