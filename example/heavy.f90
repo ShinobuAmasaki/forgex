@@ -1,14 +1,18 @@
-program main
-   use :: forgex
+program benchmark_heavy
+   use :: iso_fortran_env, only: stderr=>error_unit
    use :: forgex_time_measurement_omp_m
+   use :: forgex
    implicit none
 
-   character(:), allocatable :: text, pattern
-   logical :: res, entire, answer
    integer :: i
+   integer, parameter :: siz = 36
+   logical :: res(siz), answer
+   character(:), allocatable :: pattern, text
 
+   res(:) = .false.
    pattern = ".*a(a|b){500}c{20}"
-   text =             "ababababababababababababababababababababababababab" ! (ab) x25
+   text = "akkkkkkkksscga"
+   text = trim(text)//"ababababababababababababababababababababababababab" ! ab   x25
    text = trim(text)//"ababababababababababababababababababababababababab" !      x50
    text = trim(text)//"ababababababababababababababababababababababababab" !      x75
    text = trim(text)//"ababababababababababababababababababababababababab" !     x100
@@ -18,20 +22,24 @@ program main
    text = trim(text)//"ababababababababababababababababababababababababab" !     x200
    text = trim(text)//"ababababababababababababababababababababababababab" !     x225
    text = trim(text)//"ababababababababababababababababababababababababab" !     x250
-   text = "akkkkkkkksscga"//trim(text)
-   text = trim(text)//"ccccccccccccccccccc"
-   answer = .false.
+   text = trim(text)//"cccccccccccccccccccc"
+   answer = .true.
 
+   ! Time measurement of ordinary DO loop
    call time_begin()
-   do i = 1, 10
-      res = pattern .match. text
-      entire = entire .and. res
-      print *, "i = ", i
+   do i = 1, siz
+      res(i) = pattern .match. text
    end do
+   call time_end("ordinary DO loop")
 
-   call time_lap("")
-   call time_end(" matching by .match. operator")
+   ! Time measurement of DO CONCURRENT loop
+   call time_begin()
+   do concurrent (i = 1:siz)
+      res(i) = pattern .match. text
+   end do
+   call time_end("DO CONCURRENT loop")
 
-   print *, entire .eqv. answer
+   write(stderr, *) "-------------------------------"
+   write(stderr, *) "answer:", all(res) .eqv. answer
 
-end program main
+end program benchmark_heavy

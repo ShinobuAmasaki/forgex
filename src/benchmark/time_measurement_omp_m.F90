@@ -63,7 +63,7 @@ contains
       end do
 
 
-      write(stderr,*) "-------------------------------"
+      write(stderr,*) "-----------------------------------------------"
       write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
    end subroutine time_end
 #endif
