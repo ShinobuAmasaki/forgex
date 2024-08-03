@@ -60,11 +60,11 @@ contains
       records(i)%description = "sec. : TOTAL: "//trim(description)
 
       do ii = 1, i-1
-         write(stderr, *) records(ii)%lap_time, "sec. : "//records(ii)%description
+         write(stderr, "(f20.13, a, a)") records(ii)%lap_time, "sec. : "//records(ii)%description
       end do
 
 
       write(stderr,*) "---------------------------------------------------------"
-      write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
+      write(stderr,"(f20.13, a, a)") end_s - begin_s, " sec. : TOTAL: ", trim(description)
    end subroutine time_end
 end module forgex_time_measurement_m
