@@ -1,3 +1,14 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_time_measurement_m module is a part of Forgex.
+!
+!! This file provides procedures for time measurement. 
+!
+!> This module provides procedures to measure the time it takes to execute.
 module forgex_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    !$ use :: omp_lib
