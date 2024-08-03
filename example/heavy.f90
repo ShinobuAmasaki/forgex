@@ -6,6 +6,11 @@
 !     benchmark_heavy is a part of Forgex.
 !
 !! This file includes a heavy test case of regular expression matching.
+!> This program performs some heavyweight tests to verify that Forgex `.match.` operator 
+!< is enable to be used in `do concurrent`. Do execute followings:  
+!> `fpm run heavy --example --profile release --compiler ifx --flag "/Qopenmp  /Qopenmp-target-do-concurrent"` for Windows.
+!> `fpm run heavy --example --profile release --compiler ifx --flag "-fopenmp -fopenmp-target-do-concurrent" for Linux.
+!> @note This command may not be parallelized depending on the CPU or compiler environment.
 program benchmark_heavy
    use :: iso_fortran_env, only: stderr=>error_unit
    !$ use :: omp_lib
@@ -37,7 +42,7 @@ program benchmark_heavy
    text = trim(text)//"cccccccccccccccccccc"
    answer = .true.
 
-   !$ call omp_set_num_threads(4)
+   ! !$ call omp_set_num_threads(4)
 
       write(stderr, *) "=== Information ==="
       write(stderr, *)              "Pattern    : ", pattern
@@ -45,7 +50,7 @@ program benchmark_heavy
       write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
       write(stderr, *)              "Operator   : ", ".match."
       write(stderr, "(1x, a, l1)")  "Answer     : ", answer
-   !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
+   ! !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
 
    !! WARNING: Do NOT use the `.in.` operator for this test, as it will take too long to wait
    !! on currently version.
@@ -63,6 +68,16 @@ program benchmark_heavy
       res(i) = pattern .match. text
    end do
    call time_end("DO CONCURRENT loop")
+
+      ! Time measurement of OPENMP PARALLEL DO
+   call time_begin()
+   !$omp parallel do
+   do i = 1, siz
+      res(i) = pattern .match. text
+   end do
+   !$omp end parallel do
+   call time_end("OpenMP parallel do loop")
+
 
    write(stderr, *) "---------------------------------------------------------"
    if (all(res) .eqv. answer) then

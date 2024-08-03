@@ -6,10 +6,13 @@
 !     benchmark_light is a part of Forgex.
 !
 !! This file includes a light test case of regular expression matching.
-!! do execute followings: 
-!! `fpm run light --example --compiler ifx --flag "/Qopenmp"` for Windows.
-!! `fpm run light --example --compiler ifx --flag "" for Linux.
-program benchmark_light
+
+!> This program performs some lightweight tests to verify that Forgex operators
+!> are thread-safe. Do execute followings: 
+!> `fpm run light-match --example --profile release --compiler ifx --flag "/Qopenmp  /Qopenmp-target-do-concurrent"` for Windows.
+!> `fpm run light-match --example --profile release --compiler ifx --flag "-fopenmp -fopenmp-target-do-concurrent" for Linux.
+!> @note This command may not be parallelized depending on the CPU or compiler environment.
+program benchmark_light_in
    use :: iso_fortran_env, only: stderr=>error_unit
    !$ use :: omp_lib
    use :: forgex_time_measurement_m
@@ -28,7 +31,7 @@ program benchmark_light
    pattern = "'a[^x]{20}b'"
    text = 'aaakkkkkkkkkkkkkkkkkkkb'
    answer = .false.
-   !$ call omp_set_num_threads(4)
+   ! !$ call omp_set_num_threads(4)
 
       write(stderr, *) "=== Information ==="
       write(stderr, *)              "Pattern    : ", pattern
@@ -36,7 +39,7 @@ program benchmark_light
       write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
       write(stderr, *)              "Operator   : ", ".match."
       write(stderr, "(1x, a, l1)")  "Answer     : ", answer
-   !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
+   ! !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
 
    ! Time measurement of ordinary DO loop
    call time_begin()
@@ -52,6 +55,15 @@ program benchmark_light
    end do
    call time_end("DO CONCURRENT loop")
 
+   ! Time measurement of OPENMP PARALLEL DO
+   call time_begin()
+   !$omp parallel do
+   do i = 1, siz
+      res(i) = pattern .in. text
+   end do
+   !$omp end parallel do
+   call time_end("OpenMP parallel do loop")
+
    write(stderr, *) "---------------------------------------------------------"
    if (all(res) .eqv. answer) then
       write(stderr, *) "result     : Success"
@@ -59,4 +71,4 @@ program benchmark_light
       write(stderr, *) "result     : FAILED"
    endif
    
-end program benchmark_light
+end program benchmark_light_in
