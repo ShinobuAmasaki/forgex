@@ -17,7 +17,7 @@
 module forgex_automaton_m
    use, intrinsic :: iso_fortran_env, only: int32, stderr=>error_unit
    use :: forgex_parameters_m, only: DFA_NOT_INIT, TREE_NODE_BASE, TREE_NODE_LIMIT, &
-         NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_TRANSITION_UNIT, DFA_INITIAL_INDEX
+         NFA_STATE_BASE, NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_TRANSITION_UNIT, DFA_INITIAL_INDEX
    use :: forgex_segment_m
    use :: forgex_nfa_state_set_m
    use :: forgex_nfa_graph_m
