@@ -9,7 +9,6 @@
 !! This file contains definitions of `dfa_transition_t` type and `dfa_state_node_t` class,
 !! and its type-bound procedures.
 #ifdef IMPURE
-#define elemental
 #define pure
 #endif
 !> The `forgex_lazy_dfa_node_m` module defines the state nodes and transitions of DFA.

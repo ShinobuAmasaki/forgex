@@ -8,7 +8,6 @@
 !
 !! This file contains `dfa_graph_t` class definition and its type-bound procedures.
 #ifdef IMPURE
-#define elemental
 #define pure
 #endif
 !> This module defines a derived-type `dfa_graph_t` that contains all the states of the DFA.

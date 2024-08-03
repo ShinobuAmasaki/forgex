@@ -1,3 +1,10 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_parameters_m module is a part of Forgex.
 module forgex_parameters_m
    use, intrinsic :: iso_fortran_env, only: int32
    implicit none

@@ -11,7 +11,6 @@
 !> The `forgex_nfa_m` module defines the data structure of NFA.
 !> The `nfa_t` is defined as a class representing NFA.
 #ifdef IMPURE
-#define elemental
 #define pure
 #endif
 module forgex_nfa_node_m

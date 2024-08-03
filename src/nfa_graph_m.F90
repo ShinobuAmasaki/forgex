@@ -7,7 +7,6 @@
 !     forgex_nfa_graph_m module is a part of Forgex.
 !
 #ifdef IMPURE
-#define elemental
 #define pure
 #endif
 module forgex_nfa_graph_m
