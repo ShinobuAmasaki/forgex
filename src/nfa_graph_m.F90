@@ -76,15 +76,15 @@ contains
    end subroutine nfa_graph__generate
 
 
-   pure subroutine nfa_graph__disjoin(self, all_segments)
-      use :: forgex_segment_m
-      implicit none
-      class(nfa_graph_t), intent(inout) :: self
-      type(segment_t), allocatable, intent(inout) :: all_segments(:)
+   ! pure subroutine nfa_graph__disjoin(self, all_segments)
+   !    use :: forgex_segment_m
+   !    implicit none
+   !    class(nfa_graph_t), intent(inout) :: self
+   !    type(segment_t), allocatable, intent(inout) :: all_segments(:)
 
-      call disjoin_nfa(self%nodes, self%nfa_top, all_segments)
+   !    call disjoin_nfa(self%nodes, self%nfa_top, all_segments)
 
-   end subroutine nfa_graph__disjoin
+   ! end subroutine nfa_graph__disjoin
 
 
    pure recursive subroutine nfa_graph__mark_epsilon_transition(self, state_set, idx)

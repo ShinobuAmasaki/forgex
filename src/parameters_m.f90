@@ -25,7 +25,7 @@ module forgex_parameters_m
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
-   integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x21: '!'
+   integer(int32), parameter, public :: UTF8_CODE_MIN     = 33 ! = 0x21: '!'
    integer(int32), parameter, public :: UTF8_CODE_EMPTY   = 0
    integer(int32), parameter, public :: UTF8_CODE_INVALID = -1
    integer(int32), parameter, public :: UTF8_CHAR_SIZE    = 4

@@ -19,7 +19,6 @@ module forgex_time_measurement_m
 
    integer, parameter :: record_siz = 200
    real(real64) :: begin_s, last_s, end_s
-   integer :: i_cpu = 1
    integer :: i, ii
    type record
       real(real64) :: lap_time

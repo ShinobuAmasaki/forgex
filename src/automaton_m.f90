@@ -58,7 +58,7 @@ contains
       type(tree_node_t),allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: tree_top
 
-      type(nfa_state_set_t) :: nfa_entry_set, initial_closure
+      type(nfa_state_set_t) :: initial_closure
       integer(int32) :: new_index
 
       !-- NFA building
@@ -156,7 +156,7 @@ contains
       type(nfa_state_set_t), intent(in)    :: state_set
       integer(int32),        intent(inout) :: res       ! resulting the new dfa index
 
-      integer(int32) :: i, j, k
+      integer(int32) :: i
 
       ! If the set is already registered, returns the index of the corresponding DFA state.
       i = self%dfa%registered(state_set)
@@ -331,12 +331,10 @@ contains
       character(*),       intent(in)    :: symbol
 
       type(dfa_transition_t) :: d_tra
-      type(segment_t), allocatable :: segments(:)
-      integer(int32) :: prev_i, res
+      integer(int32) :: prev_i
 
       dst_i = DFA_INVALID_INDEX
       prev_i = curr_i
-      segments = self%all_segments
 
       ! ε遷移を除いた行き先のstate_setを取得する。
       ! Get the state set for the destination excluding epsilon-transition.

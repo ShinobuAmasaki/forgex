@@ -239,6 +239,8 @@ contains
       character(:), allocatable :: buff
       logical :: res
 
+      res = .false.
+
       buff = adjustl(pattern)
       if (len(buff) == 0) return
 
@@ -255,6 +257,8 @@ contains
 
       logical :: res
 
+      res = .false.
+      
       buff = trim(pattern)
       if (len(buff) == 0) return
 

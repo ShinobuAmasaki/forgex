@@ -71,7 +71,6 @@ contains
       implicit none
       type(nfa_state_set_t), intent(in) :: a, b
 
-      integer(int32) :: ii
       logical        :: res
 
       ! If all elements match, set the result `res` to `.true.` indicating equivalence.
@@ -89,7 +88,7 @@ contains
       integer(int32),         intent(in)    :: nfa_i, nfa_top
 
       integer :: dst
-      integer :: iii, j, k
+      integer :: iii, j
 
       ! Add the current state to the state set.
       call add_nfa_state(nfa_set, nfa_i)

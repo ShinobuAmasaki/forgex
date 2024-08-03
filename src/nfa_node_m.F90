@@ -70,7 +70,6 @@ contains
 
 
       integer(int32) :: i, i_begin, i_end ! index for states array
-      integer(int32) :: j                 ! index for transitions array
 
       i_begin = NFA_STATE_BASE
       i_end   = NFA_STATE_LIMIT
@@ -401,7 +400,7 @@ contains
       implicit none
       type(nfa_transition_t), intent(inout) :: transition
 
-      integer :: j, k
+      integer :: k
       if (.not. allocated(transition%c)) return
 
       k = 0
@@ -414,22 +413,22 @@ contains
    end subroutine update_c_top
 
 
-   pure subroutine transition_to_seg_list(transition_list, top_idx, segment_list)
-      implicit none
-      type(nfa_transition_t),       intent(in)    :: transition_list(:)
-      integer(int32),               intent(in)    :: top_idx
-      type(segment_t), allocatable, intent(inout) :: segment_list(:)
+   ! pure subroutine transition_to_seg_list(transition_list, top_idx, segment_list)
+   !    implicit none
+   !    type(nfa_transition_t),       intent(in)    :: transition_list(:)
+   !    integer(int32),               intent(in)    :: top_idx
+   !    type(segment_t), allocatable, intent(inout) :: segment_list(:)
 
-      integer :: j, k
+   !    integer :: j, k
 
-      allocate(segment_list(top_idx))
+   !    allocate(segment_list(top_idx))
 
-      do j = 1, top_idx
-         do k = 1, size(transition_list(j)%c, dim=1)
-            segment_list(j) = transition_list(j)%c(k)
-         end do
-      end do
-   end subroutine transition_to_seg_list
+   !    do j = 1, top_idx
+   !       do k = 1, size(transition_list(j)%c, dim=1)
+   !          segment_list(j) = transition_list(j)%c(k)
+   !       end do
+   !    end do
+   ! end subroutine transition_to_seg_list
 
 
    pure subroutine nfa__reallocate_transition_forward (self)

@@ -119,7 +119,7 @@ contains
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer,                    intent(in)    :: alloc_count
       
-      type(tree_node_t), allocatable  :: new_tree(:), tmp(:)
+      type(tree_node_t), allocatable  :: tmp(:)
       integer                     :: new_part_begin, new_part_end, i
 
       if (.not. allocated(tree)) then

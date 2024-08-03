@@ -41,7 +41,7 @@ contains
       type(priority_queue_t)       :: pqueue
       type(segment_t), allocatable :: buff(:)
       type(segment_t), allocatable :: cache(:)
-      type(segment_t)              :: new, tmp
+      type(segment_t)              :: new
       integer(int32), allocatable  :: index_list(:)
 
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
