@@ -8,7 +8,7 @@
 !! This file includes a heavy test case of regular expression matching.
 program benchmark_heavy
    use :: iso_fortran_env, only: stderr=>error_unit
-   use :: forgex_time_measurement_omp_m
+   use :: forgex_time_measurement_m
    use :: forgex
    implicit none
 
@@ -19,7 +19,7 @@ program benchmark_heavy
    logical :: res(siz), answer
    character(:), allocatable :: pattern, text
 
-   write(stderr, *) "=== FORGEX BENCHMARKING TEST: heavy ==="
+   write(stderr, *) "============ FORGEX BENCHMARKING TEST: heavy ============"
 
    res(:) = .false.
    pattern = ".*a(a|b){500}c{20}"
@@ -51,7 +51,11 @@ program benchmark_heavy
    end do
    call time_end("DO CONCURRENT loop")
 
-   write(stderr, *) "-------------------------------------------------"
-   write(stderr, *) "answer:", all(res) .eqv. answer
+   write(stderr, *) "---------------------------------------------------------"
+   if (all(res) .eqv. answer) then
+      write(stderr, *) "result: Success"
+   else
+      write(stderr, *) "result: FAILED"
+   endif
 
 end program benchmark_heavy

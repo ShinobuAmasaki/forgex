@@ -1,7 +1,6 @@
-module forgex_time_measurement_omp_m
-#ifdef OMP
+module forgex_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
-   !$use :: omp_lib
+   !$ use :: omp_lib
    implicit none
    private
 
@@ -29,7 +28,7 @@ contains
       i = 1
 
       call cpu_time(begin_s)
-      !$begin_s = omp_get_wtime()
+      !$ begin_s = omp_get_wtime()
       last_s = begin_s
 
    end subroutine time_begin
@@ -65,8 +64,7 @@ contains
       end do
 
 
-      write(stderr,*) "-------------------------------------------------"
+      write(stderr,*) "---------------------------------------------------------"
       write(stderr,*) end_s - begin_s, "sec. : TOTAL: ", trim(description)
    end subroutine time_end
-#endif
-end module forgex_time_measurement_omp_m
+end module forgex_time_measurement_m
