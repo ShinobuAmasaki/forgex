@@ -8,13 +8,13 @@
 !! This file includes a heavy test case of regular expression matching.
 program benchmark_heavy
    use :: iso_fortran_env, only: stderr=>error_unit
+   !$ use :: omp_lib
    use :: forgex_time_measurement_m
    use :: forgex
    implicit none
 
    integer, parameter :: siz = 16
       !! With 4 threads, it requires approximately 500MB of RAM.
-   
    integer :: i   
    logical :: res(siz), answer
    character(:), allocatable :: pattern, text
@@ -36,6 +36,19 @@ program benchmark_heavy
    text = trim(text)//"ababababababababababababababababababababababababab" !     x250
    text = trim(text)//"cccccccccccccccccccc"
    answer = .true.
+
+   !$ call omp_set_num_threads(4)
+
+      write(stderr, *) "=== Information ==="
+      write(stderr, *)              "Pattern    : ", pattern
+      write(stderr, *)              "Text       : ", text
+      write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
+      write(stderr, *)              "Operator   : ", ".match."
+      write(stderr, "(1x, a, l1)")  "Answer     : ", answer
+   !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
+
+   !! WARNING: Do NOT use the `.in.` operator for this test, as it will take too long to wait
+   !! on currently version.
 
    ! Time measurement of ordinary DO loop
    call time_begin()
