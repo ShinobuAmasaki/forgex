@@ -20,7 +20,7 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 - inverted character class `[^a-z]`
 - character class on UTF-8 code set `[α-ωぁ-ん]`
 
-Note that inveted class does not match the control characters.
+Note that inverted character class does not match the control characters.
 
 ### Range of repetition
 - `{num}`,
