@@ -215,7 +215,7 @@ The following features are planned to be implemented in the future:
 - [x] Support UTF-8 basic feature
 - [x] Construct DFA on-the-fly
 - [x] Support CMake building
-- [x] Add Time measurement toools
+- [x] Add Time measurement tools
 - ~~Parallelize on matching~~
 
 ## Code Convention
@@ -224,9 +224,9 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
-The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
-The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
+The implementation of the priority queue is based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
+The idea of applying the `.in.` operator to strings is inspired by kazulagi's one.
 
 ## References
 
