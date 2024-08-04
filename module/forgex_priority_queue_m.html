@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.1% of total for modules and submodules.">66 statements</a>
+                 title=" 2.6% of total for modules and submodules.">73 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -129,18 +129,7 @@
       </div>
     </div>
 
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#funcs-0"
-         aria-expanded="false" aria-controls="funcs-0">
-         <h4 class="card-header bg-primary text-white">Functions</h4>
-      </a>
-      <div id="funcs-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_priority_queue_m.html#proc-dequeue">dequeue</a>
-        </div>
-      </div>
-    </div>
-
+  
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#subs-0"
          aria-expanded="false" aria-controls="subs-0">
@@ -149,6 +138,7 @@
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_priority_queue_m.html#proc-clear">clear</a>
+            <a class="list-group-item" href="../module/forgex_priority_queue_m.html#proc-dequeue">dequeue</a>
             <a class="list-group-item" href="../module/forgex_priority_queue_m.html#proc-enqueue">enqueue</a>
         </div>
       </div>
@@ -205,8 +195,7 @@ This implementation was originally provided by ue1221.</p>
     </div>
     <div class="card-body">
       <p>The <code>priority_queue_t</code> derived-type has an array containing segment data
-and the number of data. The array component is allocatable (with <code>pointer</code>
-attribute).</p>
+and the number of data. The array component is allocatable.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -226,12 +215,12 @@ attribute).</p>
             </td>
               <td>public,</td>
             <td>
-              pointer
+              allocatable
             </td>
             <td>::</td>
             <td><strong>heap</strong>(:)</td>
-<td>=&gt; </td>
-                <td>null()</td>
+                <td></td>
+                <td></td>
             <td>
 
             </td>
@@ -259,66 +248,37 @@ attribute).</p>
 
 
 
+        <h4>Type-Bound Procedures</h4>
+        <table class="table table-striped varlist">
+          <tbody>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/priority_queue_t.html#boundprocedure-clear'>clear</a></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/priority_queue_t.html#boundprocedure-dequeue'>dequeue</a></strong></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/priority_queue_t.html#boundprocedure-enqueue'>enqueue</a></strong></td>
+                <td></td>
+              </tr>
+          </tbody>
+        </table>
     </div>
   </div>
 
         </section>
         <br>
 
-        <section>
-          <h2>Functions</h2>
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-dequeue"></span> <h3>public  function <a href='../proc/dequeue.html'>dequeue</a>(pq) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>The <code>dequeue</code> function takes out and returns the prior segment from the queue. </p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pq~2"></span>
-              type(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>pq</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/segment_t.html'>segment_t</a>)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-        </section>
-        <br>
 
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-clear"></span> <h3>public  subroutine <a href='../proc/clear.html'>clear</a>(pq)  
+    <div class="card-header codesum"><span class="anchor" id="proc-clear"></span> <h3>private pure subroutine <a href='../proc/clear.html'>clear</a>(pq)  
 </h3></div>
     <div class="card-body">
           
@@ -338,7 +298,7 @@ attribute).</p>
         <tr>
             <td>
               <span class="anchor" id="variable-pq~3"></span>
-              type(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
+              class(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
             </td>
 <td>intent(inout)</td>
               <td></td>            <td>
@@ -358,7 +318,62 @@ attribute).</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-enqueue"></span> <h3>public  subroutine <a href='../proc/enqueue.html'>enqueue</a>(pq, seg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-dequeue"></span> <h3>private pure subroutine <a href='../proc/dequeue.html'>dequeue</a>(pq, res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>The <code>dequeue</code> function takes out and returns the prior segment from the queue.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pq~2"></span>
+              class(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pq</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-res~27"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-enqueue"></span> <h3>private pure subroutine <a href='../proc/enqueue.html'>enqueue</a>(pq, seg)  
 </h3></div>
     <div class="card-body">
           
@@ -379,7 +394,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
         <tr>
             <td>
               <span class="anchor" id="variable-pq"></span>
-              type(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
+              class(<a href='../type/priority_queue_t.html'>priority_queue_t</a>),
             </td>
 <td>intent(inout)</td>
               <td></td>            <td>
@@ -393,7 +408,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg"></span>
+              <span class="anchor" id="variable-seg~8"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -436,7 +451,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

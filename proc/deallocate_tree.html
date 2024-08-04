@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.6% of total for procedures.">11 statements</a>
+                 title=" 0.4% of total for procedures.">9 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,16 +141,42 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public  subroutine deallocate_tree()  
+    <h2>public pure subroutine deallocate_tree(tree)  
 </h2>
     
 
-    <p>Access the monitor array and deallocate all allocated nodes.</p>
+    <p>This subroutine deallocate the syntax tree.</p>
 
 
     <h3>Arguments</h3>
-    <em>None</em>
-    <br>
+        <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tree~6"></span>
+              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>tree</strong>(:)</td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
     <br>
 
 
@@ -165,20 +191,18 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">deallocate_tree</span><span class="p">()</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">deallocate_tree</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">tree_node_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="p">(:)</span>
 
-<span class="nb">      max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_node_count</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
 
-<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
-<span class="nb">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            deallocate</span><span class="p">(</span><span class="k">array</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">node</span><span class="p">)</span>
-<span class="w">            </span><span class="n">tree_node_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree_node_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">         </span><span class="k">end if</span>
-<span class="k">      end do</span>
-<span class="k">         </span>
-<span class="k">   end subroutine </span><span class="n">deallocate_tree</span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">lbound</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb">ubound</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">tree</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">tree</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span>
+<span class="w">      </span><span class="k">end do</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">tree</span><span class="p">))</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<span class="w">   </span><span class="k">end subroutine </span><span class="n">deallocate_tree</span>
 </pre></div>
 
     </section>
@@ -202,7 +226,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

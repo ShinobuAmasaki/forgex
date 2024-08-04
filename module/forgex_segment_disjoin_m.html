@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 7.4% of total for modules and submodules.">160 statements</a>
+                 title=" 5.9% of total for modules and submodules.">164 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -108,18 +108,7 @@
         <div id="sidebar">
       <h3>Contents</h3>
   
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#vars-0"
-         aria-expanded="false" aria-controls="vars-0">
-         <h4 class="card-header bg-primary text-white">Variables</h4>
-      </a>
-      <div id="vars-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_segment_disjoin_m.html#variable-seg_upper">SEG_UPPER</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -181,8 +170,7 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>The <code>forgex_segment_disjoin_m</code> module support to disjoin and split overlapping segments.
-Without these procedures, we cannot building a valid DFA from NFA.</p>
+      
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
       <div class="card-body">
@@ -201,40 +189,6 @@ Without these procedures, we cannot building a valid DFA from NFA.</p>
       <br>
 
 
-        <section>
-          <h2>Variables</h2>
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-seg_upper"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-              <td>private,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>SEG_UPPER</strong></td>
-<td> =</td>
-                <td>segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)</td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-        </section>
-        <br>
 
 
         <section>
@@ -246,12 +200,12 @@ parameter
       </h3>
     </div>
       <div class="card-body">
-        <p>Interface for the procedure <code>disjoin_kernel</code>. </p>
+        <p>Interface for the procedure <code>disjoin_kernel</code>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  subroutine <a href='../proc/disjoin_kernel.html'>disjoin_kernel</a>(list)  
+    private pure subroutine <a href='../proc/disjoin_kernel.html'>disjoin_kernel</a>(list)  
 
     </h3>
     
@@ -273,7 +227,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~2"></span>
+              <span class="anchor" id="variable-list~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -302,11 +256,11 @@ to sort the segments and processes them to ensure they are disjoined.</p>
         <section>
           <h2>Functions</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_overlap_to_seg_list"></span> <h3>public  function <a href='../proc/is_overlap_to_seg_list.html'>is_overlap_to_seg_list</a>(seg, list, len) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_overlap_to_seg_list"></span> <h3>public pure function <a href='../proc/is_overlap_to_seg_list.html'>is_overlap_to_seg_list</a>(seg, list, len) result(res)  
 </h3></div>
     <div class="card-body">
           
-  <p>Checks if a segment overlaps with any segments in a list. </p><a href="../proc/is_overlap_to_seg_list.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>Checks if a segment overlaps with any segments in a list.</p><a href="../proc/is_overlap_to_seg_list.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -321,7 +275,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~5"></span>
+              <span class="anchor" id="variable-seg~6"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -336,7 +290,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~4"></span>
+              <span class="anchor" id="variable-list~5"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -377,7 +331,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_prime_semgment"></span> <h3>public  function <a href='../proc/is_prime_semgment.html'>is_prime_semgment</a>(seg, disjoined_list) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_prime_semgment"></span> <h3>public pure function <a href='../proc/is_prime_semgment.html'>is_prime_semgment</a>(seg, disjoined_list) result(res)  
 </h3></div>
     <div class="card-body">
           
@@ -396,7 +350,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~4"></span>
+              <span class="anchor" id="variable-seg~5"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -442,7 +396,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-disjoin_kernel"></span> <h3>private  subroutine <a href='../proc/disjoin_kernel.html'>disjoin_kernel</a>(list)  
+    <div class="card-header codesum"><span class="anchor" id="proc-disjoin_kernel"></span> <h3>private pure subroutine <a href='../proc/disjoin_kernel.html'>disjoin_kernel</a>(list)  
 </h3></div>
     <div class="card-body">
           
@@ -461,7 +415,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~2"></span>
+              <span class="anchor" id="variable-list~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -482,7 +436,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-index_list_from_segment_list"></span> <h3>private  subroutine <a href='../proc/index_list_from_segment_list.html'>index_list_from_segment_list</a>(index_list, seg_list)  
+    <div class="card-header codesum"><span class="anchor" id="proc-index_list_from_segment_list"></span> <h3>private pure subroutine <a href='../proc/index_list_from_segment_list.html'>index_list_from_segment_list</a>(index_list, seg_list)  
 </h3></div>
     <div class="card-body">
           
@@ -537,7 +491,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-register_seg_list"></span> <h3>private  subroutine <a href='../proc/register_seg_list.html'>register_seg_list</a>(new, list, k)  
+    <div class="card-header codesum"><span class="anchor" id="proc-register_seg_list"></span> <h3>private pure subroutine <a href='../proc/register_seg_list.html'>register_seg_list</a>(new, list, k)  
 </h3></div>
     <div class="card-body">
           
@@ -571,7 +525,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~3"></span>
+              <span class="anchor" id="variable-list~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -586,7 +540,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-k~4"></span>
+              <span class="anchor" id="variable-k~10"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -596,7 +550,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
             <td>::</td>
             <td><strong>k</strong></td>
             <td>
-<p>This implementation is badly behaved and should be fixed as soon as possible. </p><a href="../proc/register_seg_list.html#variable-k~4" class="pull-right"><emph>Read more&hellip;</emph></a>
+<p>This implementation is badly behaved and should be fixed as soon as possible.</p><a href="../proc/register_seg_list.html#variable-k~10" class="pull-right"><emph>Read more&hellip;</emph></a>
             </td>
         </tr>
     </tbody>
@@ -629,7 +583,7 @@ to sort the segments and processes them to ensure they are disjoined.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

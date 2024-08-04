@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p> 4.0% of total for derived types.</p>Including implementation: 4 statements,  0.6% of total for derived types.">4 statements</a>
+                 title="<p> 6.2% of total for derived types.</p>Including implementation: 65 statements,  7.7% of total for derived types.">8 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -137,7 +137,20 @@
   
   
   
-  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#boundprocs-0"
+         aria-expanded="false" aria-controls="boundprocs-0">
+         <h4 class="card-header bg-primary text-white">Type-Bound Procedures</h4>
+      </a>
+      <div id="boundprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/priority_queue_t.html#boundprocedure-clear">clear</a>
+            <a class="list-group-item" href="../type/priority_queue_t.html#boundprocedure-dequeue">dequeue</a>
+            <a class="list-group-item" href="../type/priority_queue_t.html#boundprocedure-enqueue">enqueue</a>
+        </div>
+      </div>
+    </div>
+
   
   
 
@@ -150,8 +163,7 @@
       <h2 id="type-def-statement">
         type, public :: priority_queue_t</h2>
     <p>The <code>priority_queue_t</code> derived-type has an array containing segment data
-and the number of data. The array component is allocatable (with <code>pointer</code>
-attribute).</p>
+and the number of data. The array component is allocatable.</p>
     <br>
 
     <section>
@@ -173,12 +185,12 @@ attribute).</p>
             </td>
               <td>public,</td>
             <td>
-              pointer
+              allocatable
             </td>
             <td>::</td>
             <td><strong>heap</strong>(:)</td>
-<td>=&gt; </td>
-                <td>null()</td>
+                <td></td>
+                <td></td>
             <td>
                 
             </td>
@@ -208,6 +220,202 @@ attribute).</p>
     
 
 
+      <section>
+        <h2>Type-Bound Procedures</h2>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-clear"></span>
+      <h3>
+          procedure, public ::
+  <strong>clear</strong>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/clear.html'>clear</a>(pq)  
+</h3>
+    
+
+  <p>The <code>clear</code> subroutine deallocates the queue.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='priority_queue_t.html'>priority_queue_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pq</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-dequeue"></span>
+      <h3>
+          procedure, public ::
+  <strong>dequeue</strong>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/dequeue.html'>dequeue</a>(pq, res)  
+</h3>
+    
+
+  <p>The <code>dequeue</code> function takes out and returns the prior segment from the queue.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='priority_queue_t.html'>priority_queue_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pq</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-enqueue"></span>
+      <h3>
+          procedure, public ::
+  <strong>enqueue</strong>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/enqueue.html'>enqueue</a>(pq, seg)  
+</h3>
+    
+
+  <p>The <code>enqueue</code> subroutine is responsible for allocating heap structure and
+holding the disjoined segment data with ascending priority order.</p><a href="../proc/enqueue.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='priority_queue_t.html'>priority_queue_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pq</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>seg</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+      </section>
 
     
     </div>
@@ -228,7 +436,7 @@ attribute).</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

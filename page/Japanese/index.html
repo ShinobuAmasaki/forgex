@@ -160,24 +160,21 @@
 <li><code>\D</code>, 非半角数字 (<code>[^0-9]</code>)</li>
 </ul>
 <h2>使用方法</h2>
-<p>動作確認は以下のコンパイラーで行われています。</p>
+<p>動作確認は以下のコンパイラーで行っています。</p>
 <ul>
 <li>GNU Fortran (<code>gfortran</code>) v13.2.1</li>
 <li>Intel Fortran Compiler (<code>ifx</code>) 2024.0.0 20231017</li>
 </ul>
-<p>以下では、Fortranパッケージマネージャー（<code>fpm</code>）を利用することを前提とします。</p>
+<p>以下では、ビルドとAPIの使い方について解説しますが、Fortranパッケージマネージャー（<code>fpm</code>）を利用することを前提とします。</p>
 <h3>ビルド</h3>
 <p>まず初めに、あなたのプロジェクトの<code>fpm.toml</code>に以下の記述を追加します。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
 <span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">=</span><span class="s2">&quot;v2.0&quot;</span><span class="p">}</span>
 </code></pre></div>
 
-<p>注意：
-Intelのコンパイラを使用していて、メインブランチの<code>forgex</code>を使用する場合は、ビルド時にプリプロセッサオプションを有効にしてください。
-つまり、fpm コマンドに Windows では <code>--flag "/fpp"</code>、Unix では <code>--flag "-fpp"</code> を追加してください。</p>
 <h3>APIの使い方</h3>
-<p>そのプロジェクトのプログラムのヘッダーに<code>use forgex</code>と記述すると、<code>.in.</code>と<code>.match.</code>の演算子と
-<code>regex</code>関数が導入され、<code>use</code>文の有効なスコープでこれらの三つを使用することができます。</p>
+<p>そのプロジェクトのプログラムのヘッダーに<code>use forgex</code>と記述すると、<code>.in.</code>と<code>.match.</code>の演算子、
+<code>regex</code>サブルーチンと<code>regex_f</code>関数が導入され、<code>use</code>文の有効なスコープでこれらの4つを使用することができます。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span>
 <span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex</span>
 <span class="w">   </span><span class="k">implicit none</span>
@@ -211,37 +208,39 @@ Intelのコンパイラを使用していて、メインブランチの<code>for
 
 <p><code>regex</code>関数は、入力文字列の中でパターンに一致した部分文字列を返します。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
-<span class="w">   </span><span class="k">character</span><span class="p">(</span><span class="o">:</span><span class="p">),</span><span class="w"> </span><span class="n">allocatable</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">   </span><span class="k">character</span><span class="p">(</span><span class="o">:</span><span class="p">),</span><span class="w"> </span><span class="n">allocatable</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
 <span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">length</span><span class="w"> </span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foobarbaz&#39;</span>
 
-<span class="w">   </span><span class="n">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w">              </span><span class="o">!</span><span class="w"> </span><span class="n">foobar</span>
-<span class="w">   </span><span class="n">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w">      </span><span class="o">!</span><span class="w"> </span><span class="n">foobar</span>
-<span class="w">      </span><span class="o">!</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">stored</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="n n-Quoted">`length`</span><span class="w"> </span><span class="n">variable</span><span class="p">.</span>
+<span class="w">   </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w">              </span>
+<span class="w">   </span><span class="n">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                              </span><span class="o">!</span><span class="w"> </span><span class="n">foobar</span>
+
+<span class="w">   </span><span class="o">!</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span>
+<span class="w">        </span><span class="o">!</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">stored</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="n n-Quoted">`length`</span><span class="w"> </span><span class="n">variable</span><span class="p">.</span>
 
 <span class="k">end</span><span class="w"> </span><span class="k">block</span>
 </code></pre></div>
 
 <p>オプショナル引数の<code>from</code>/<code>to</code>を使用すると、与えた文字列から添字を指定して部分文字列を切り出すことができます。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
-<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
 <span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;[d-f]{3}&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;abcdefghi&#39;</span>
 
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">=</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span><span class="w">  </span><span class="c">! def</span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">=</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                   </span><span class="c">! def</span>
 
-<span class="w">   </span><span class="c">! The `from` and `to` variables store the indices of the start and</span>
-<span class="w">   </span><span class="c">! end points of the matched part of the string `str`, respectively.</span>
+<span class="w">   </span><span class="c">! The `from` and `to` variables store the indices of the start and end points</span>
+<span class="w">   </span><span class="c">! of the matched part of the string `str`, respectively.</span>
 
 <span class="w">   </span><span class="c">! Cut out before the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">from</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">        </span><span class="c">! abc</span>
 
-<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the</span>
-<span class="w">   </span><span class="c">! `regex` function. </span>
+<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the `regex` function. </span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def </span>
 
 <span class="w">   </span><span class="c">! Cut out after the matched part. </span>
@@ -251,13 +250,29 @@ Intelのコンパイラを使用していて、メインブランチの<code>for
 </code></pre></div>
 
 <p><code>regex</code>関数の宣言部（インタフェース）は次の通りです。</p>
-<div class="codehilite"><pre><span></span><code><span class="k">function </span><span class="n">regex</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">subroutine__regex</span>
+<span class="k">end interface</span>
+
+<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
 <span class="w">   </span><span class="k">implicit none</span>
-<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
-<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w">      </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+</code></pre></div>
+
+<p>マッチした文字列を関数の戻り値として得たい場合には、<code>regex_f</code>関数を使用してください。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex_f</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">function__regex</span>
+<span class="k">end interface </span><span class="n">regex_f</span>
+
+<span class="k">pure function </span><span class="n">function__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 </code></pre></div>
 
+<p>現時点のバージョンでは、これらのAPIをループ内で使用する場合、<code>do</code>ループと<code>do concurrent</code>ループでは使用できますが、OpenMPの並列コードブロックでは使用できない点に注意してください。</p>
 <h3>UTF-8文字列のマッチング</h3>
 <p>UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。
 以下の例は、漢文の一節に対してマッチングを試みています。</p>
@@ -269,7 +284,8 @@ Intelのコンパイラを使用していて、メインブランチの<code>for
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;昔者莊周夢爲胡蝶　栩栩然胡蝶也&quot;</span>
 
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">            </span><span class="c">! T</span>
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="c">! 夢爲胡蝶　栩栩然胡蝶</span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                         </span><span class="c">! 夢爲胡蝶　栩栩然胡蝶</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w">                      </span><span class="c">! 30 (is 3-byte * 10 characters)</span>
 
 <span class="k">end block</span>
@@ -279,13 +295,14 @@ Intelのコンパイラを使用していて、メインブランチの<code>for
 <h2>To Do</h2>
 <ul>
 <li>UTF-8において無効なバイトストリームへの対処</li>
-<li>時間計測ツールの実装</li>
 <li>リテラル検索によるマッチングの最適化</li>
-<li>マッチングの並列化</li>
+<li>✅️ すべてのAPI演算子に<code>pure elemental</code>属性を追加</li>
 <li>✅️ ドキュメントの公開</li>
 <li>✅️ UTF-8文字の基本的なサポート</li>
 <li>✅️ On-the-FlyのDFA構築</li>
 <li>✅️ CMakeによるビルドのサポート</li>
+<li>✅️ 時間計測ツールの追加</li>
+<li><s>マッチングの並列化</s></li>
 </ul>
 <h2>コーディング規約</h2>
 <p>本プロジェクトに含まれるすべてのコードは、3スペースのインデントで記述されます。</p>
@@ -320,7 +337,7 @@ Intelのコンパイラを使用していて、メインブランチの<code>for
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

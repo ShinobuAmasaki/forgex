@@ -81,7 +81,7 @@
           <h1>Forgex—Fortran Regular Expression</h1>
           <p>Forgex is a regular expression engine written entirely in Fortran.</p>
 <p>This project is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager (FPM)</a>, providing basic processing of regular expression, and as a freely available under the MIT license. 
-The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice was focused on runtime performance.</p>
+The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.</p>
 <h2>Features</h2>
 <h4>Metacharacter</h4>
 <ul>
@@ -96,7 +96,8 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 <ul>
 <li>character class <code>[a-z]</code></li>
 <li>inverted character class <code>[^a-z]</code></li>
-<li>character class on UTF-8 codeset <code>[α-ωぁ-ん]</code></li>
+<li>character class on UTF-8 codeset <code>[α-ωぁ-ん]</code>
+Note that inverted class does not match the control characters. </li>
 </ul>
 <h4>Range of repetition</h4>
 <ul>
@@ -104,7 +105,7 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 <li><code>{,max}</code>,</li>
 <li><code>{min,}</code>,</li>
 <li><code>{min, max}</code>,
-   where <code>num</code> and <code>max</code> must NOT be zero.</li>
+where <code>num</code> and <code>max</code> must NOT be zero.</li>
 </ul>
 <h4>Anchor</h4>
 <ul>
@@ -133,14 +134,11 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 <p>It is assumed that you will use the Fortran Package Manager(<code>fpm</code>).</p>
 <p>First of all, add the following to your project's <code>fpm.toml</code>:</p>
 <div class="codehilite"><pre><span></span><code><span class="k">[dependencies]</span>
-<span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">=</span><span class="s2">&quot;v2.0&quot;</span><span class="p">}</span>
+<span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">}</span>
 </code></pre></div>
 
-<p><strong>NOTE:</strong>
-If you are using the Intel compiler and want to use forgex from the main branch, please enable the preprocessor option when building.
-That is, add <code>--flag "/fpp"</code> on Windows and <code>--flag "-fpp"</code> on Unix for <code>fpm</code> commands.</p>
 <h3>APIs</h3>
-<p>When you write <code>use forgex</code> at the header on your program, <code>.in.</code> and <code>.match.</code> operators, and <code>regex</code> function are introduced.</p>
+<p>When you write <code>use forgex</code> at the header on your program, <code>.in.</code> and <code>.match.</code> operators, <code>regex</code> subroutine, and <code>regex_f</code> function are introduced.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span>
 <span class="w">   </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex</span>
 <span class="w">   </span><span class="k">implicit none</span>
@@ -172,39 +170,41 @@ That is, add <code>--flag "/fpp"</code> on Windows and <code>--flag "-fpp"</code
 <span class="k">end block</span>
 </code></pre></div>
 
-<p>The <code>regex</code> is a function that returns the substring of a string that matches pattern.</p>
+<p>The <code>regex</code> is a subroutine that returns the substring of a string that matches pattern as <code>intent(out)</code> argument.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
-<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
 <span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w"> </span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foobarbaz&#39;</span>
 
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w">              </span><span class="c">! foobar</span>
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w">      </span><span class="c">! foobar</span>
-<span class="w">      </span><span class="c">! the value 6 stored in optional `length` variable.</span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w">              </span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                              </span><span class="c">! foobar</span>
+
+<span class="w">   </span><span class="c">! call regex(pattern, str, res, length)   </span>
+<span class="w">         </span><span class="c">! the value 6 stored in optional `length` variable.</span>
 
 <span class="k">end block</span>
 </code></pre></div>
 
 <p>By using the <code>from</code>/<code>to</code> arugments, you can extract substrings from the given string.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
-<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
 <span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;[d-f]{3}&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;abcdefghi&#39;</span>
 
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">=</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span><span class="w">  </span><span class="c">! def</span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="o">=</span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="o">=</span><span class="n">to</span><span class="p">)</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                   </span><span class="c">! def</span>
 
-<span class="w">   </span><span class="c">! The `from` and `to` variables store the indices of the start and</span>
-<span class="w">   </span><span class="c">! end points of the matched part of the string `str`, respectively.</span>
+<span class="w">   </span><span class="c">! The `from` and `to` variables store the indices of the start and end points</span>
+<span class="w">   </span><span class="c">! of the matched part of the string `str`, respectively.</span>
 
 <span class="w">   </span><span class="c">! Cut out before the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">from</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">        </span><span class="c">! abc</span>
 
-<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the</span>
-<span class="w">   </span><span class="c">! `regex` function. </span>
+<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result argument of the `regex` subrouine. </span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def </span>
 
 <span class="w">   </span><span class="c">! Cut out after the matched part. </span>
@@ -213,14 +213,32 @@ That is, add <code>--flag "/fpp"</code> on Windows and <code>--flag "-fpp"</code
 <span class="k">end block</span>
 </code></pre></div>
 
-<p>The interface of <code>regex</code> function is following:</p>
-<div class="codehilite"><pre><span></span><code><span class="k">function </span><span class="n">regex</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<p>The interface of <code>regex</code> subroutine is following:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">subroutine__regex</span>
+<span class="k">end interface</span>
+
+<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
 <span class="w">   </span><span class="k">implicit none</span>
-<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
-<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w">      </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+</code></pre></div>
+
+<p>If you want to the matched character string as the return value of the function,
+consider using <code>regex_f</code> defined in the <code>forgex</code> module. </p>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex_f</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">function__regex</span>
+<span class="k">end interface </span><span class="n">regex_f</span>
+
+<span class="k">pure function </span><span class="n">function__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 </code></pre></div>
 
+<h2>Examples</h2>
+<p>Note that in the current version, these APIs can be used in <code>do</code> loops and <code>do concurrent</code> loops, but not in OpenMP parallel blocks.</p>
 <h3>UTF-8 String matching</h3>
 <p>UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters. 
@@ -233,7 +251,8 @@ In this example, the <code>length</code> variable stores the byte length, and in
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;昔者莊周夢爲胡蝶　栩栩然胡蝶也&quot;</span>
 
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pattern</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">str</span><span class="w">            </span><span class="c">! T</span>
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span><span class="c">! 夢爲胡蝶　栩栩然胡蝶</span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                         </span><span class="c">! 夢爲胡蝶　栩栩然胡蝶</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="w">                      </span><span class="c">! 30 (is 3-byte * 10 characters)</span>
 
 <span class="k">end block</span>
@@ -241,14 +260,14 @@ In this example, the <code>length</code> variable stores the byte length, and in
 
 <h2>To do</h2>
 <ul>
-<li>Dealing with invalid byte strings in UTF-8</li>
-<li>Implementing a time measurement tool</li>
-<li>Literal search optimization</li>
-<li>Parallelization on matching</li>
-<li>✅️ Publishing the documentation</li>
-<li>✅️ UTF-8 basic support</li>
-<li>✅️ DFA construction on-the-fly</li>
-<li>✅️ CMake Support</li>
+<li>Deal with invalid byte strings in UTF-8</li>
+<li>Optimize by literal searching method</li>
+<li>✅️ Make all operators <code>pure elemental</code> attribute</li>
+<li>✅️ Publish the documentation</li>
+<li>✅️ Support UTF-8 basic feature</li>
+<li>✅️ Construct DFA on-the-fly</li>
+<li>✅️ Support CMake building</li>
+<li><s>Parallelize on matching</s></li>
 </ul>
 <h2>Code Convention</h2>
 <p>All code contained herein shall be written with a three-space indentation.</p>
@@ -290,7 +309,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Source Files</h3>
-              <ul><li><a href='sourcefile/enums_m.f90.html'>enums_m.f90</a></li><li><a href='sourcefile/forgex.f90.html'>forgex.F90</a></li><li><a href='sourcefile/lazy_dfa_m.f90.html'>lazy_dfa_m.F90</a></li><li><a href='sourcefile/nfa_m.f90.html'>nfa_m.F90</a></li><li><a href='sourcefile/priority_queue_m.f90.html'>priority_queue_m.f90</a></li><li><a href='sourcefile/segment_disjoin_m.f90.html'>segment_disjoin_m.f90</a></li><li><a href='sourcefile/segment_m.f90.html'>segment_m.f90</a></li><li><a href='sourcefile/sort_m.f90.html'>sort_m.f90</a></li><li><a href='sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.F90</a></li><li><a href='sourcefile/test_m.f90.html'>test_m.f90</a></li></ul>
+              <ul><li><a href='sourcefile/api_internal_m.f90.html'>api_internal_m.f90</a></li><li><a href='sourcefile/automaton_m.f90.html'>automaton_m.f90</a></li><li><a href='sourcefile/enums_m.f90.html'>enums_m.f90</a></li><li><a href='sourcefile/forgex.f90.html'>forgex.F90</a></li><li><a href='sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.f90</a></li><li><a href='sourcefile/lazy_dfa_node_m.f90.html'>lazy_dfa_node_m.f90</a></li><li><a href='sourcefile/nfa_graph_m.f90.html'>nfa_graph_m.F90</a></li><li><a href='sourcefile/nfa_node_m.f90.html'>nfa_node_m.F90</a></li><li><a href='sourcefile/nfa_state_set_m.f90.html'>nfa_state_set_m.f90</a></li><li><a href='sourcefile/parameters_m.f90.html'>parameters_m.f90</a></li></ul>
             </div>
             <div>
               <ul>
@@ -301,7 +320,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Modules</h3>
-              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_enums_m.html'>forgex_enums_m</a></li><li><a href='module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></li><li><a href='module/forgex_nfa_m.html'>forgex_nfa_m</a></li><li><a href='module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></li><li><a href='module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></li><li><a href='module/forgex_segment_m.html'>forgex_segment_m</a></li><li><a href='module/forgex_sort_m.html'>forgex_sort_m</a></li><li><a href='module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li><li><a href='module/forgex_test_m.html'>forgex_test_m</a></li></ul>
+              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li><li><a href='module/forgex_automaton_m.html'>forgex_automaton_m</a></li><li><a href='module/forgex_enums_m.html'>forgex_enums_m</a></li><li><a href='module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li><li><a href='module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li><li><a href='module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li><li><a href='module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></li><li><a href='module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li><li><a href='module/forgex_parameters_m.html'>forgex_parameters_m</a></li></ul>
             </div>
             <div>
               <ul>
@@ -312,7 +331,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Procedures</h3>
-              <ul><li><a href='proc/add_dfa_transition.html'>add_dfa_transition</a></li><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/bubble_sort.html'>bubble_sort</a></li><li><a href='proc/build_automaton.html'>build_automaton</a></li><li><a href='proc/build_syntax_tree.html'>build_syntax_tree</a></li><li><a href='proc/char_class.html'>char_class</a></li><li><a href='proc/char_utf8.html'>char_utf8</a></li><li><a href='proc/check_nfa_state.html'>check_nfa_state</a></li></ul>
+              <ul><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a></li><li><a href='proc/automaton__construct_dfa.html'>automaton__construct_dfa</a></li><li><a href='proc/automaton__deallocate.html'>automaton__deallocate</a></li><li><a href='proc/automaton__destination.html'>automaton__destination</a></li><li><a href='proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a></li><li><a href='proc/automaton__initialize.html'>automaton__initialize</a></li><li><a href='proc/automaton__move.html'>automaton__move</a></li></ul>
             </div>
             <div>
               <ul>
@@ -323,7 +342,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Derived Types</h3>
-              <ul><li><a href='type/allocated_list_t.html'>allocated_list_t</a></li><li><a href='type/d_list_t.html'>d_list_t</a></li><li><a href='type/d_state_t.html'>d_state_t</a></li><li><a href='type/d_transition_t.html'>d_transition_t</a></li><li><a href='type/dfa_t.html'>dfa_t</a></li><li><a href='type/dlist_pointer_list_t.html'>dlist_pointer_list_t</a></li><li><a href='type/dstate_pointer_list_t.html'>dstate_pointer_list_t</a></li><li><a href='type/dtransition_pointer_list_t.html'>dtransition_pointer_list_t</a></li><li><a href='type/nfa_state_set_t.html'>nfa_state_set_t</a></li><li><a href='type/nfa_t.html'>nfa_t</a></li></ul>
+              <ul><li><a href='type/automaton_t.html'>automaton_t</a></li><li><a href='type/dfa_graph_t.html'>dfa_graph_t</a></li><li><a href='type/dfa_state_node_t.html'>dfa_state_node_t</a></li><li><a href='type/dfa_transition_t.html'>dfa_transition_t</a></li><li><a href='type/nfa_graph_t.html'>nfa_graph_t</a></li><li><a href='type/nfa_state_node_t.html'>nfa_state_node_t</a></li><li><a href='type/nfa_state_set_t.html'>nfa_state_set_t</a></li><li><a href='type/nfa_transition_t.html'>nfa_transition_t</a></li><li><a href='type/priority_queue_t.html'>priority_queue_t</a></li><li><a href='type/record.html'>record</a></li></ul>
             </div>
             <div>
               <ul>
@@ -347,7 +366,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.7% of total for procedures.">70 statements</a>
+                 title=" 2.9% of total for procedures.">69 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine get_token(self, class)  
+    <h2>private pure subroutine get_token(self, class_flag)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -149,6 +149,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></li>
               </ul>
             </li>
@@ -158,25 +159,9 @@
 
 
     <p>Get the currently focused character (1 to 4 bytes) from the entire string inside
-  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
-  <code>current_token</code> component.
-  This is a type-bound procedure of <code>tape_t</code>.</p>
-<h3>Internal implementation</h3>
-<div class="alert alert-info">
-<p class="alert-title h4">Note</p>
-<p>It is importrant to note that patterns may contain UTF-8 characters,
- and therefore, the character representing the next token to focus may be
- multibyte neighbor. Because of this rule, we must use the <code>idxutf8</code> function
- to get the index of the next character.</p>
-</div>
-<div class="alert alert-info">
-<p class="alert-title h4">Note</p>
-<p>If the character class flag is true, the process branches to perform
- character class-specific parsing.
- If we are focusing a character that is not in square brackets,
- generate a token from the current character ordinarily.</p>
-</div>
-<p>cf. <a href="../module/forgex_enums_m.html">forgex_enums_m</a></p>
+ the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
+ <code>current_token</code> component.
+ This is a type-bound procedure of <code>tape_t</code>.</p>
 
     <h3>Type Bound</h3>
     <p><a href='../type/tape_t.html'>tape_t</a></p>
@@ -194,10 +179,10 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~21"></span>
-              class(<a href='../type/tape_t.html'>tape_t</a>)
+              <span class="anchor" id="variable-self~16"></span>
+              class(<a href='../type/tape_t.html'>tape_t</a>),
             </td>
-<td></td>
+<td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
@@ -209,7 +194,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-class"></span>
+              <span class="anchor" id="variable-class_flag"></span>
               logical,
             </td>
 <td>intent(in),</td>
@@ -217,7 +202,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>class</strong></td>
+            <td><strong>class_flag</strong></td>
             <td>
                 
             </td>
@@ -239,92 +224,73 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">get_token</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="k">class</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">get_token</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">class_flag</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_enums_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">idxutf8</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">tape_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span><span class="w"> </span>
-<span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">class</span>
-<span class="k">      </span>
-<span class="k">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">class_flag</span>
+<span class="k">      class</span><span class="p">(</span><span class="n">tape_t</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
+<span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">class_flag</span>
 
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">nexti</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">UTF8_CHAR_SIZE</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">c</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">ib</span><span class="p">,</span><span class="w"> </span><span class="n">ie</span>
 
-<span class="w">      </span><span class="n">class_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="k">class</span><span class="p">))</span><span class="w"> </span><span class="n">class_flag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">class</span>
-
-<span class="k">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">idx</span>
-
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="n">ib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">idx</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ib</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_end</span>
 <span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
 <span class="w">      </span><span class="k">else</span>
-<span class="w">         </span><span class="c">!!### Internal implementation</span>
-<span class="w">         </span><span class="c">!!@note It is importrant to note that patterns may contain UTF-8 characters,</span>
-<span class="w">         </span><span class="c">!! and therefore, the character representing the next token to focus may be</span>
-<span class="w">         </span><span class="c">!! multibyte neighbor. Because of this rule, we must use the `idxutf8` function</span>
-<span class="w">         </span><span class="c">!! to get the index of the next character.</span>
-<span class="w">         </span><span class="n">nexti</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="w">         </span><span class="c">! Assign the single character of interest to the `c` variable</span>
-<span class="w">         </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">nexti</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">         </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ib</span><span class="p">)</span>
 
-<span class="w">         </span><span class="c">!!</span>
-<span class="w">         </span><span class="c">!!@note If the character class flag is true, the process branches to perform</span>
-<span class="w">         </span><span class="c">!! character class-specific parsing.</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">class_flag</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">(</span><span class="n">ib</span><span class="p">:</span><span class="n">ie</span><span class="p">)</span>
 
-<span class="k">            select case</span><span class="w"> </span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;]&#39;</span><span class="p">)</span>
-<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_rsbracket</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
-<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_hyphen</span>
-<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span>
-<span class="w">            </span><span class="k">case </span><span class="n">default</span>
-<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_char</span>
-<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span>
-<span class="w">            </span><span class="k">end select</span>
-<span class="k">         </span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">class_flag</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">class_flag</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">               select case</span><span class="w"> </span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="w">               </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_RSBK</span><span class="p">)</span>
+<span class="w">                  </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_rsbracket</span>
+<span class="w">               </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_HYPN</span><span class="p">)</span>
+<span class="w">                  </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_hyphen</span>
+<span class="w">                  </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span>
+<span class="w">               </span><span class="k">case </span><span class="n">default</span>
+<span class="w">                  </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_char</span>
+<span class="w">                  </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span>
+<span class="w">               </span><span class="k">end select</span>
+<span class="k">            end if</span>
 <span class="k">         else</span>
-
-<span class="w">            </span><span class="c">!! If we are focusing a character that is not in square brackets,</span>
-<span class="w">            </span><span class="c">!! generate a token from the current character ordinarily.</span>
-<span class="w">            </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)</span>
+<span class="k">            select case</span><span class="p">(</span><span class="nb">trim</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_VBAR</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_union</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_LPAR</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_lpar</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_RPAR</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_rpar</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_STAR</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_star</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_PLUS</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_plus</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_QUES</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_question</span>
-<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;\&#39;)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_BSLH</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_backslash</span>
 
-<span class="s1">               !!</span>
-<span class="s1">               self%current_token = tk_backslash</span>
-<span class="s1">            </span>
-<span class="s1">               i = nexti</span>
-<span class="s1">               nexti = idxutf8(self%str, i) + 1</span>
+<span class="w">               </span><span class="n">ib</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ie</span><span class="w"> </span><span class="o">+</span><span class="mi">1</span>
+<span class="w">               </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ib</span><span class="p">)</span>
 
-<span class="s1">               c = self%str(i:nexti-1)</span>
-<span class="s1">               self%token_char = c</span>
-<span class="s1">            case  (&#39;</span><span class="p">[</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_lsbracket</span>
-<span class="s1">            case (&#39;</span><span class="p">]</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_rsbracket</span>
-<span class="s1">            case (&#39;</span><span class="err">{</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_lcurlybrace</span>
-<span class="s1">            case (&#39;</span><span class="err">}</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_rcurlybrace</span>
-<span class="s1">            case (&#39;</span><span class="p">.</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_dot</span>
-<span class="s1">            case (&#39;</span><span class="err">^</span><span class="s1">&#39;)</span>
-<span class="s1">               self%current_token = tk_caret</span>
-<span class="s1">            case (&#39;</span><span class="err">$&#39;</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">token_char</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">str</span><span class="p">(</span><span class="n">ib</span><span class="p">:</span><span class="n">ie</span><span class="p">)</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_LSBK</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_lsbracket</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_RSBK</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_rsbracket</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_LCRB</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_lcurlybrace</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_RCRB</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_rcurlybrace</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_DOT</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_dot</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_CRET</span><span class="p">)</span>
+<span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_caret</span>
+<span class="w">            </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYMBOL_DOLL</span><span class="p">)</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_dollar</span>
 <span class="w">            </span><span class="k">case </span><span class="n">default</span>
 <span class="w">               </span><span class="n">self</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk_char</span>
@@ -332,12 +298,10 @@
 <span class="w">            </span><span class="k">end select</span>
 <span class="k">         end if</span>
 
-<span class="k">         </span><span class="n">self</span><span class="p">%</span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nexti</span>
+<span class="k">         </span><span class="n">self</span><span class="p">%</span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ie</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+
 <span class="w">      </span><span class="k">end if</span>
-
-<span class="w">      </span><span class="c">!! cf. [[forgex_enums_m(module)]]</span>
-
-<span class="w">   </span><span class="k">end subroutine </span><span class="n">get_token</span>
+<span class="k">   end subroutine </span><span class="n">get_token</span>
 </pre></div>
 
     </section>
@@ -361,7 +325,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

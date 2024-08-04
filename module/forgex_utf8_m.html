@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="11.0% of total for modules and submodules.">238 statements</a>
+                 title=" 8.4% of total for modules and submodules.">234 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -108,21 +108,7 @@
         <div id="sidebar">
       <h3>Contents</h3>
   
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#vars-0"
-         aria-expanded="false" aria-controls="vars-0">
-         <h4 class="card-header bg-primary text-white">Variables</h4>
-      </a>
-      <div id="vars-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_utf8_m.html#variable-utf8_char_size">UTF8_CHAR_SIZE</a>
-            <a class="list-group-item" href="../module/forgex_utf8_m.html#variable-utf8_code_empty">UTF8_CODE_EMPTY</a>
-            <a class="list-group-item" href="../module/forgex_utf8_m.html#variable-utf8_code_max">UTF8_CODE_MAX</a>
-            <a class="list-group-item" href="../module/forgex_utf8_m.html#variable-utf8_code_min">UTF8_CODE_MIN</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -183,91 +169,6 @@
       <br>
 
 
-        <section>
-          <h2>Variables</h2>
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-utf8_char_size"></span>
-              integer,
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>UTF8_CHAR_SIZE</strong></td>
-<td> =</td>
-                <td>4</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-utf8_code_empty"></span>
-              integer,
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>UTF8_CODE_EMPTY</strong></td>
-<td> =</td>
-                <td>0</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-utf8_code_max"></span>
-              integer,
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>UTF8_CODE_MAX</strong></td>
-<td> =</td>
-                <td>2**21-1</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-utf8_code_min"></span>
-              integer,
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>UTF8_CODE_MIN</strong></td>
-<td> =</td>
-                <td>32</td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-        </section>
-        <br>
 
 
 
@@ -276,7 +177,7 @@ parameter
         <section>
           <h2>Functions</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-char_utf8"></span> <h3>public  function <a href='../proc/char_utf8.html'>char_utf8</a>(code) result(str)  
+    <div class="card-header codesum"><span class="anchor" id="proc-char_utf8"></span> <h3>public pure function <a href='../proc/char_utf8.html'>char_utf8</a>(code) result(str)  
 </h3></div>
     <div class="card-body">
           
@@ -322,7 +223,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-count_token"></span> <h3>public  function <a href='../proc/count_token.html'>count_token</a>(str, token) result(count)  
+    <div class="card-header codesum"><span class="anchor" id="proc-count_token"></span> <h3>public pure function <a href='../proc/count_token.html'>count_token</a>(str, token) result(count)  
 </h3></div>
     <div class="card-body">
           
@@ -341,7 +242,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~11"></span>
+              <span class="anchor" id="variable-str~10"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -382,13 +283,13 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-ichar_utf8"></span> <h3>public  function <a href='../proc/ichar_utf8.html'>ichar_utf8</a>(chara) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-ichar_utf8"></span> <h3>public pure function <a href='../proc/ichar_utf8.html'>ichar_utf8</a>(chara) result(res)  
 </h3></div>
     <div class="card-body">
           
   <p>Take a UTF-8 character as an argument and
-return the integer (also known as "code point" in Unicode) representing 
-its UTF-8 binary string. </p><a href="../proc/ichar_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+return the integer (also known as "code point" in Unicode) representing
+its UTF-8 binary string.</p><a href="../proc/ichar_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -449,7 +350,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~6"></span>
+              <span class="anchor" id="variable-str~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -464,7 +365,7 @@ given the string str and the current index curr.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr"></span>
+              <span class="anchor" id="variable-curr~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -494,7 +395,7 @@ given the string str and the current index curr.</p>
 </h3></div>
     <div class="card-body">
           
-  <p>This function determines if a given character is the first byte of 
+  <p>This function determines if a given character is the first byte of
 a UTF-8 multibyte character. It takes a 1-byte character as input
 and returns a logical value indicating if it is the first byte of
 an UTF-8 binary string.</p>
@@ -538,11 +439,56 @@ an UTF-8 binary string.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-len_trim_utf8"></span> <h3>public  function <a href='../proc/len_trim_utf8.html'>len_trim_utf8</a>(str) result(count)  
+    <div class="card-header codesum"><span class="anchor" id="proc-len_trim_utf8"></span> <h3>public pure function <a href='../proc/len_trim_utf8.html'>len_trim_utf8</a>(str) result(count)  
 </h3></div>
     <div class="card-body">
           
   <p>This function calculates the length of a UTF-8 string excluding tailing spaces.</p><a href="../proc/len_trim_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-len_utf8"></span> <h3>public pure function <a href='../proc/len_utf8.html'>len_utf8</a>(str) result(count)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This function calculates the length of a UTF-8 string.</p><a href="../proc/len_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -583,57 +529,12 @@ an UTF-8 binary string.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-len_utf8"></span> <h3>public  function <a href='../proc/len_utf8.html'>len_utf8</a>(str) result(count)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This function calculates the length of a UTF-8 string.</p><a href="../proc/len_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-str~9"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>str</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-set_continuation_byte"></span> <h3>private  function <a href='../proc/set_continuation_byte.html'>set_continuation_byte</a>(byte) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-set_continuation_byte"></span> <h3>private pure function <a href='../proc/set_continuation_byte.html'>set_continuation_byte</a>(byte) result(res)  
 </h3></div>
     <div class="card-body">
           
   <p>This function take one byte, set the first two bits to 10, and
-returns one byte of the continuation part. </p>
+returns one byte of the continuation part.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -679,7 +580,7 @@ returns one byte of the continuation part. </p>
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_first_byte_of_character_array"></span> <h3>public  subroutine <a href='../proc/is_first_byte_of_character_array.html'>is_first_byte_of_character_array</a>(str, array, length)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_first_byte_of_character_array"></span> <h3>public pure subroutine <a href='../proc/is_first_byte_of_character_array.html'>is_first_byte_of_character_array</a>(str, array, length)  
 </h3></div>
     <div class="card-body">
           
@@ -699,7 +600,7 @@ It takes a UTF-8 string and return a logical array indicating for each position 
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~10"></span>
+              <span class="anchor" id="variable-str~9"></span>
               character(len=length),
             </td>
 <td>intent(in)</td>
@@ -772,7 +673,7 @@ It takes a UTF-8 string and return a logical array indicating for each position 
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

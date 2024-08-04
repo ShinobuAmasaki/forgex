@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 7.4% of total for modules and submodules.">160 statements</a>
+                 title=" 5.1% of total for modules and submodules.">141 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -108,20 +108,7 @@
         <div id="sidebar">
       <h3>Contents</h3>
   
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#vars-0"
-         aria-expanded="false" aria-controls="vars-0">
-         <h4 class="card-header bg-primary text-white">Variables</h4>
-      </a>
-      <div id="vars-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex.html#variable-dfa">dfa</a>
-            <a class="list-group-item" href="../module/forgex.html#variable-nfa">nfa</a>
-            <a class="list-group-item" href="../module/forgex.html#variable-pattern_cache">pattern_cache</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
   
@@ -135,9 +122,10 @@
       </a>
       <div id="inters-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex.html#interface-operator%28.in.%29">operator(.in.)</a>
+            <a class="list-group-item" href="../module/forgex.html#interface-operator%28.in.%29~2">operator(.in.)</a>
             <a class="list-group-item" href="../module/forgex.html#interface-operator%28.match.%29">operator(.match.)</a>
             <a class="list-group-item" href="../module/forgex.html#interface-regex">regex</a>
+            <a class="list-group-item" href="../module/forgex.html#interface-regex_f">regex_f</a>
         </div>
       </div>
     </div>
@@ -151,11 +139,11 @@
       </a>
       <div id="funcs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex.html#proc-in__matching">in__matching</a>
+            <a class="list-group-item" href="../module/forgex.html#proc-function__regex">function__regex</a>
             <a class="list-group-item" href="../module/forgex.html#proc-is_there_caret_at_the_top">is_there_caret_at_the_top</a>
             <a class="list-group-item" href="../module/forgex.html#proc-is_there_dollar_at_the_end">is_there_dollar_at_the_end</a>
-            <a class="list-group-item" href="../module/forgex.html#proc-match__matching">match__matching</a>
-            <a class="list-group-item" href="../module/forgex.html#proc-regex__matching">regex__matching</a>
+            <a class="list-group-item" href="../module/forgex.html#proc-operator__in">operator__in</a>
+            <a class="list-group-item" href="../module/forgex.html#proc-operator__match">operator__match</a>
         </div>
       </div>
     </div>
@@ -167,8 +155,7 @@
       </a>
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex.html#proc-build_automaton">build_automaton</a>
-            <a class="list-group-item" href="../module/forgex.html#proc-initialize_pattern_cache">initialize_pattern_cache</a>
+            <a class="list-group-item" href="../module/forgex.html#proc-subroutine__regex">subroutine__regex</a>
         </div>
       </div>
     </div>
@@ -187,17 +174,16 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>The <code>forgex</code> module defines APIs of Forgex.</p>
+      
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
       <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_nfa_m.html'>forgex_nfa_m</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_api_internal_m.html'>forgex_api_internal_m</a></li>
               </ul>
             </li>
         </ul>
@@ -208,82 +194,14 @@
       <br>
 
 
-        <section>
-          <h2>Variables</h2>
-            <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-dfa"></span>
-              type(<a href='../type/dfa_t.html'>dfa_t</a>),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>dfa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-nfa"></span>
-              type(<a href='../type/nfa_t.html'>nfa_t</a>),
-            </td>
-              <td>private,</td>
-            <td>
-              target
-            </td>
-            <td>::</td>
-            <td><strong>nfa</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pattern_cache"></span>
-              character(len=:),
-            </td>
-              <td>private,</td>
-            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>pattern_cache</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-        </section>
-        <br>
 
 
         <section>
           <h2>Interfaces</h2>
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.in.%29"></span>
-      <h3>public        interface <a href='../interface/operator(.in.).html'>operator(.in.)</a> 
+      <span class="anchor" id="interface-operator%28.in.%29~2"></span>
+      <h3>public        interface <a href='../interface/operator(.in.)~2.html'>operator(.in.)</a> 
       </h3>
     </div>
       <div class="card-body">
@@ -292,16 +210,11 @@
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/in__matching.html'>in__matching</a>(pattern, str) result(res)  
+    private pure elemental function <a href='../proc/operator__in.html'>operator__in</a>(pattern, str) result(res)  
 
     </h3>
     
   <p>The function implemented for the <code>.in.</code> operator.</p>
-<div class="alert alert-info">
-<p class="alert-title h4">Note</p>
-<p>We will add code later to handle the case where the cache string
- exists but the automatons are no longer there.</p>
-</div>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -331,7 +244,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str"></span>
+              <span class="anchor" id="variable-str~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -369,16 +282,11 @@
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/match__matching.html'>match__matching</a>(pattern, str) result(res)  
+    private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
 
     </h3>
     
   <p>The function implemented for the <code>.match.</code> operator.</p>
-<div class="alert alert-info">
-<p class="alert-title h4">Note</p>
-<p>We will add code later to handle the case where the cache string
- exists but the automatons are no longer there.</p>
-</div>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -408,7 +316,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~2"></span>
+              <span class="anchor" id="variable-str~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -441,21 +349,16 @@
       </h3>
     </div>
       <div class="card-body">
-        <p>The generic name for the <code>regex</code> function implemented as <code>regex__matching</code>.</p>
+        <p>The generic name for the <code>regex</code> subroutine implemented as <code>procedure__regex</code>.</p>
       </div>
     <ul class="list-group">
           <li class="list-group-item">
                 <h3>
-    private  function <a href='../proc/regex__matching.html'>regex__matching</a>(pattern, str, length, from, to) result(res)  
+    private pure subroutine <a href='../proc/subroutine__regex.html'>subroutine__regex</a>(pattern, text, res, length, from, to)  
 
     </h3>
     
-  <p>The function implemented for the <code>regex</code> function.</p>
-<div class="alert alert-info">
-<p class="alert-title h4">Note</p>
-<p>We will add code later to handle the case where the cache string
- exists but the automatons are no longer there.</p>
-</div>
+  <p>The function implemented for the <code>regex</code> subroutine.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -485,7 +388,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~3"></span>
+              <span class="anchor" id="variable-text"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -493,7 +396,22 @@
               
             </td>
             <td>::</td>
-            <td><strong>str</strong></td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-res~14"></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
             <td>
 
             </td>
@@ -501,7 +419,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-length"></span>
-              integer(kind=int32),
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -515,8 +433,8 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~3"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-from~2"></span>
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -530,8 +448,8 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-to~2"></span>
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -546,90 +464,28 @@
     </tbody>
   </table>
 
-    <h4>
-    Return Value
-    <small>character(len=:), allocatable</small>
-    </h4>
-    
 
           </li>
     </ul>
   </div>
 
-        </section>
-        <br>
-
-
-
-        <section>
-          <h2>Functions</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-in__matching"></span> <h3>private  function <a href='../proc/in__matching.html'>in__matching</a>(pattern, str) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>The function implemented for the <code>.in.</code> operator.</p><a href="../proc/in__matching.html" class="pull-right"><emph>Read more&hellip;</emph></a>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pattern"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>pattern</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-str"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>str</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-regex_f"></span>
+      <h3>public        interface <a href='../interface/regex_f.html'>regex_f</a> 
+      </h3>
     </div>
-  </div>
+      <div class="card-body">
+        <p>The generic name for the <code>regex_f</code> function implemented as <code>function__regex</code>.</p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure function <a href='../proc/function__regex.html'>function__regex</a>(pattern, text) result(res)  
 
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_there_caret_at_the_top"></span> <h3>private  function <a href='../proc/is_there_caret_at_the_top.html'>is_there_caret_at_the_top</a>(pattern) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This function returns .true. if the pattern contains the caret character
-at the top that matches the beginning of a line.</p>
+    </h3>
+    
+  <p>The function implemented for the <code>regex_f</code> function.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -657,12 +513,95 @@ at the top that matches the beginning of a line.</p>
 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-text~2"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
     <h4>
     Return Value
-    <small>logical</small>
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+        </section>
+        <br>
+
+
+
+        <section>
+          <h2>Functions</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-function__regex"></span> <h3>private pure function <a href='../proc/function__regex.html'>function__regex</a>(pattern, text) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>The function implemented for the <code>regex_f</code> function.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-text~2"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
     </h4>
     
 
@@ -670,12 +609,12 @@ at the top that matches the beginning of a line.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_there_dollar_at_the_end"></span> <h3>private  function <a href='../proc/is_there_dollar_at_the_end.html'>is_there_dollar_at_the_end</a>(pattern) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_there_caret_at_the_top"></span> <h3>private pure function <a href='../proc/is_there_caret_at_the_top.html'>is_there_caret_at_the_top</a>(pattern) result(res)  
 </h3></div>
     <div class="card-body">
           
-  <p>This funciton returns .true. if the pattern contains the doller character
-at the end that matches the ending of a line.</p>
+  <p>This function returns .true. if the pattern contains the caret character
+at the top that matches the beginning of a line.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -716,11 +655,117 @@ at the end that matches the ending of a line.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-match__matching"></span> <h3>private  function <a href='../proc/match__matching.html'>match__matching</a>(pattern, str) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_there_dollar_at_the_end"></span> <h3>private pure function <a href='../proc/is_there_dollar_at_the_end.html'>is_there_dollar_at_the_end</a>(pattern) result(res)  
 </h3></div>
     <div class="card-body">
           
-  <p>The function implemented for the <code>.match.</code> operator.</p><a href="../proc/match__matching.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>This funciton returns .true. if the pattern contains the doller character
+at the end that matches the ending of a line.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~6"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-operator__in"></span> <h3>private pure elemental function <a href='../proc/operator__in.html'>operator__in</a>(pattern, str) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>The function implemented for the <code>.in.</code> operator.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~3"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-operator__match"></span> <h3>private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>The function implemented for the <code>.match.</code> operator.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -750,7 +795,7 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~2"></span>
+              <span class="anchor" id="variable-str~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -775,12 +820,17 @@ at the end that matches the ending of a line.</p>
     </div>
   </div>
 
+        </section>
+        <br>
+
+        <section>
+          <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-regex__matching"></span> <h3>private  function <a href='../proc/regex__matching.html'>regex__matching</a>(pattern, str, length, from, to) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-subroutine__regex"></span> <h3>private pure subroutine <a href='../proc/subroutine__regex.html'>subroutine__regex</a>(pattern, text, res, length, from, to)  
 </h3></div>
     <div class="card-body">
           
-  <p>The function implemented for the <code>regex</code> function.</p><a href="../proc/regex__matching.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+  <p>The function implemented for the <code>regex</code> subroutine.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -810,7 +860,7 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~3"></span>
+              <span class="anchor" id="variable-text"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -818,7 +868,22 @@ at the end that matches the ending of a line.</p>
               
             </td>
             <td>::</td>
-            <td><strong>str</strong></td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-res~14"></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
             <td>
 
             </td>
@@ -826,7 +891,7 @@ at the end that matches the ending of a line.</p>
         <tr>
             <td>
               <span class="anchor" id="variable-length"></span>
-              integer(kind=int32),
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -840,8 +905,8 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~3"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-from~2"></span>
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -855,8 +920,8 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-to~2"></span>
+              integer,
             </td>
 <td>intent(inout),</td>
               <td>optional</td>            <td>
@@ -871,89 +936,6 @@ at the end that matches the ending of a line.</p>
     </tbody>
   </table>
 
-    <h4>
-    Return Value
-    <small>character(len=:), allocatable</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-        </section>
-        <br>
-
-        <section>
-          <h2>Subroutines</h2>
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-build_automaton"></span> <h3>private  subroutine <a href='../proc/build_automaton.html'>build_automaton</a>(syntax_root, pattern)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This subroutine performs the common tasks for the three public procedures:
-freeing, initializing, and constructing the NFA and DFA.
-Also, an assignment to the <code>pattern_cache</code> variable is done here.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-syntax_root"></span>
-              type(<a href='../type/tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>syntax_root</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pattern~6"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>pattern</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-initialize_pattern_cache"></span> <h3>private  subroutine <a href='../proc/initialize_pattern_cache.html'>initialize_pattern_cache</a>()  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This subroutine initializes the <code>pattern_cache</code> variable that remembers
-the pattern of the previous matching.
-Without this initialization, the Intel's compiler <code>ifx</code> will complain
-about comparison with unallocated character variable.</p>
-
-  <h4>Arguments</h4>
-    <em>None</em>
 
     </div>
   </div>
@@ -981,7 +963,7 @@ about comparison with unallocated character variable.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

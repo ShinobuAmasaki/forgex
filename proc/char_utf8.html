@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.7% of total for procedures.">51 statements</a>
+                 title=" 2.1% of total for procedures.">51 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public  function char_utf8(code) result(str)  
+    <h2>public pure function char_utf8(code) result(str)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -193,7 +193,7 @@ and returns the corresponding character as UTF-8 binary string.</p>
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-str~7"></span>
+          <span class="anchor" id="variable-str~6"></span>
           character(len=:), allocatable
         </small>
       </h3>
@@ -212,7 +212,7 @@ and returns the corresponding character as UTF-8 binary string.</p>
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">char_utf8</span><span class="w"> </span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure function </span><span class="n">char_utf8</span><span class="w"> </span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">str</span><span class="p">)</span>
 <span class="w">      </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">code</span><span class="w">        </span><span class="c">! Input Unicode code point.</span>
@@ -221,7 +221,7 @@ and returns the corresponding character as UTF-8 binary string.</p>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="mi">32</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">bin</span><span class="w">         </span><span class="c">! A 32-digit number expressed in character format for masking.</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">             </span><span class="kd">::</span><span class="w"> </span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">mask</span><span class="w">   </span><span class="c">! Buffer and mask for bit operations.</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w">     </span><span class="c">! Array to hold up 4 bytes of the UTF-8 character.</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w">    </span><span class="c">! Initialize result string.</span>
 <span class="w">      </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code</span><span class="w">  </span><span class="c">! Initialize buffer with input `code` point.</span>
 
@@ -229,18 +229,18 @@ and returns the corresponding character as UTF-8 binary string.</p>
 <span class="w">      </span><span class="k">read</span><span class="p">(</span><span class="n">bin</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(b32.32)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">mask</span><span class="w">              </span><span class="c">! Read the `mask` from the `bin` character string.</span>
 
 <span class="w">      </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">iand</span><span class="p">(</span><span class="nb">ishft</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">18</span><span class="p">),</span><span class="w"> </span><span class="n">mask</span><span class="p">),</span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span><span class="w">    </span><span class="c">! First byte</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code</span>
 <span class="w">      </span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">iand</span><span class="p">(</span><span class="nb">ishft</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">12</span><span class="p">),</span><span class="w"> </span><span class="n">mask</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span><span class="w">   </span><span class="c">! Second byte</span>
 
 <span class="w">      </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code</span>
 <span class="w">      </span><span class="k">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">iand</span><span class="p">(</span><span class="nb">ishft</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="p">),</span><span class="w"> </span><span class="n">mask</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span><span class="w">    </span><span class="c">! Third byte</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="n">buf</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">code</span>
 <span class="w">      </span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">iand</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span><span class="w"> </span><span class="n">mask</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span><span class="w">               </span><span class="c">! Fourth byte</span>
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">code</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2</span><span class="o">**</span><span class="mi">7</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">    </span><span class="c">! Check if the `code` point is greater than 127 (non-ASCII character).</span>
-<span class="w">        </span>
+
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">16</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">code</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">     </span><span class="c">! 4-byte character</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ibset</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">7</span><span class="p">)</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ibset</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">6</span><span class="p">)</span>
@@ -250,9 +250,9 @@ and returns the corresponding character as UTF-8 binary string.</p>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set_continuation_byte</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w">  </span><span class="c">! Set continuation bytes.</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set_continuation_byte</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">set_continuation_byte</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
-<span class="w">            </span>
+
 <span class="w">         </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="mi">11</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">code</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">  </span><span class="c">! 3-byte character</span>
-<span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
+<span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ibset</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="mi">7</span><span class="p">)</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ibset</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span>
 <span class="w">            </span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ibset</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="mi">5</span><span class="p">)</span>
@@ -271,7 +271,7 @@ and returns the corresponding character as UTF-8 binary string.</p>
 
 <span class="k">         </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="w"> </span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span><span class="w">  </span><span class="c">! Concatenate bytes into a string.</span>
 <span class="w">         </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w">   </span><span class="c">! Trim leading and tailing space.</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="k">else</span>
 <span class="k">         </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="n">code</span><span class="p">)</span><span class="w">  </span><span class="c">! For ASCII characters.</span>
 <span class="w">      </span><span class="k">end if</span>
@@ -300,7 +300,7 @@ and returns the corresponding character as UTF-8 binary string.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

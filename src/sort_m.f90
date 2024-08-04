@@ -14,13 +14,13 @@
 module forgex_sort_m
    use, intrinsic :: iso_fortran_env
    implicit none
-   
+
    !| Currently, complex sorting algorithms are not required, only simple algorithms
    !  are used, but this does not constrain future implementations.
-   
+
 contains
 
-   subroutine bubble_sort(list)
+   pure subroutine bubble_sort(list)
       !! Implementing insertion sort instead of this algorithm is considered.
       implicit none
       integer(int32), intent(inout) :: list(:)
@@ -40,5 +40,25 @@ contains
       end do
 
    end subroutine bubble_sort
+
+
+   pure subroutine insertion_sort(list)
+      implicit none
+      integer, intent(inout) :: list(:)
+
+      integer :: i, j, key
+
+      do i = 2, size(list, dim=1)
+         key = list(i)
+         j = i - 1
+
+         do while(j > 0 .and. list(j) > key)
+            list(j+1) = list(j)
+            j = j - 1
+            if (j == 0) exit
+         end do
+         list(j + 1) = key
+      end do
+   end subroutine insertion_sort
 
 end module forgex_sort_m

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.2% of total for procedures.">60 statements</a>
+                 title=" 2.5% of total for procedures.">60 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public  function ichar_utf8(chara) result(res)  
+    <h2>public pure function ichar_utf8(chara) result(res)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -158,8 +158,8 @@
 
 
     <p>Take a UTF-8 character as an argument and
-return the integer (also known as "code point" in Unicode) representing 
-its UTF-8 binary string. </p>
+return the integer (also known as "code point" in Unicode) representing
+its UTF-8 binary string.</p>
 <p>This function is like an extension of char() for the UTF-8 codeset.</p>
 
 
@@ -194,7 +194,7 @@ its UTF-8 binary string. </p>
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~15"></span>
+          <span class="anchor" id="variable-res~21"></span>
           integer(kind=int32)
         </small>
       </h3>
@@ -213,25 +213,25 @@ its UTF-8 binary string. </p>
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">ichar_utf8</span><span class="w"> </span><span class="p">(</span><span class="n">chara</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure function </span><span class="n">ichar_utf8</span><span class="w"> </span><span class="p">(</span><span class="n">chara</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="k">use</span><span class="p">,</span><span class="w"> </span><span class="k">intrinsic</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">iso_fortran_env</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chara</span><span class="w">   </span><span class="c">! Input one UTF-8 character</span>
 
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="w">         </span><span class="c">! Resulting integer representing an UTF-8 binary string.</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w">     </span><span class="c">! Byte array (32bit) </span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="k">byte</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w">     </span><span class="c">! Byte array (32bit)</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">shift_3</span><span class="p">,</span><span class="w"> </span><span class="n">shift_4</span><span class="p">,</span><span class="w"> </span><span class="n">shift_5</span><span class="p">,</span><span class="w"> </span><span class="n">shift_7</span><span class="w">              </span><span class="c">! Shift values</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int8</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">mask_2_bit</span><span class="p">,</span><span class="w"> </span><span class="n">mask_3_bit</span><span class="p">,</span><span class="w"> </span><span class="n">mask_4_bit</span><span class="p">,</span><span class="w"> </span><span class="n">mask_5_bit</span><span class="w">  </span><span class="c">! Masks for bit operations</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">buf</span><span class="w">         </span><span class="c">! Buffer for bit operations</span>
 
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">binary</span><span class="w">        </span><span class="c">! 8-byte character string representing binary.</span>
-<span class="w"> </span>
+
 <span class="w">      </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;00111111&#39;</span><span class="w">           </span><span class="c">! 6-bit mask for continuation bytes.</span>
 <span class="w">      </span><span class="k">read</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(b8.8)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">mask_2_bit</span>
 
 <span class="w">      </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;00011111&#39;</span><span class="w">           </span><span class="c">! 5-bit mask for 2-byte characters.</span>
 <span class="w">      </span><span class="k">read</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(b8.8)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">mask_3_bit</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="n">binary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;00001111&#39;</span><span class="w">           </span><span class="c">! 4-bit mask for 3-byte characters.</span>
 <span class="w">      </span><span class="k">read</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(b8.8)&#39;</span><span class="p">)</span><span class="w"> </span><span class="n">mask_4_bit</span>
 
@@ -257,7 +257,7 @@ its UTF-8 binary string. </p>
 <span class="w">      </span><span class="n">shift_5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">)</span>
 <span class="w">      </span><span class="n">shift_7</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">)</span>
 
-<span class="w">      </span><span class="c">! 1-byte character </span>
+<span class="w">      </span><span class="c">! 1-byte character</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_7</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
@@ -265,7 +265,7 @@ its UTF-8 binary string. </p>
 
 <span class="w">      </span><span class="c">! 4-byte character</span>
 <span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="w">         </span>
+
 <span class="w">         </span><span class="c">! First 1 byte</span>
 <span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="nb">iand</span><span class="p">(</span><span class="k">byte</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="n">mask_5_bit</span><span class="p">)</span>
 
@@ -329,7 +329,7 @@ its UTF-8 binary string. </p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

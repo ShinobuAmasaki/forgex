@@ -73,7 +73,18 @@
 			   <tr class="active">
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td><a href='../sourcefile/forgex.f90.html'>forgex.F90</a></td>
-                 <td><p>The <code>forgex</code> module defines APIs of Forgex.</p></td>
+                 <td></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></td>
+                 <td><a href='../sourcefile/api_internal_m.f90.html'>api_internal_m.f90</a></td>
+                 <td><p>The <code>forgex_api_internal_m</code> defines the procedures that the API call directly.
+Currently, it contains two procedures: <code>do_matching_including</code> and <code>do_matching_exactly</code>.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
+                 <td><a href='../sourcefile/automaton_m.f90.html'>automaton_m.f90</a></td>
+                 <td><p>The <code>forgex_automaton_m</code> module contains <code>automaton_t</code> definition and its type-bound procedures.</p></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></td>
@@ -81,18 +92,36 @@
                  <td><p>The <code>forgex_enums_m</code> defines enumerators of tokens and operators for syntax-tree building.</p><a href="../module/forgex_enums_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 <!---->			   <tr class="active">
-                 <td><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></td>
-                 <td><a href='../sourcefile/lazy_dfa_m.f90.html'>lazy_dfa_m.F90</a></td>
-                 <td><p>The <code>forgex_lazy_dfa_m</code> module defines the data structure of DFA
-from NFA. The <code>dfa_t</code> is defined as a class representing DFA
-which is constructed dynamically with lazy-evaluation.
-This module was previously named <code>dfa_m</code>.</p></td>
+                 <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
+                 <td><a href='../sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.f90</a></td>
+                 <td><p>This module defines a derived-type <code>dfa_graph_t</code> that contains all the states of the DFA.</p></td>
                </tr>
 <!--active-->			   <tr class="">
-                 <td><a href='../module/forgex_nfa_m.html'>forgex_nfa_m</a></td>
-                 <td><a href='../sourcefile/nfa_m.f90.html'>nfa_m.F90</a></td>
+                 <td><a href='../module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></td>
+                 <td><a href='../sourcefile/lazy_dfa_node_m.f90.html'>lazy_dfa_node_m.f90</a></td>
+                 <td><p>The <code>forgex_lazy_dfa_node_m</code> module defines the state nodes and transitions of DFA.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td><a href='../sourcefile/nfa_graph_m.f90.html'>nfa_graph_m.F90</a></td>
+                 <td></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../sourcefile/nfa_node_m.f90.html'>nfa_node_m.F90</a></td>
                  <td><p>The <code>forgex_nfa_m</code> module defines the data structure of NFA.
 The <code>nfa_t</code> is defined as a class representing NFA.</p></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
+                 <td><a href='../sourcefile/nfa_state_set_m.f90.html'>nfa_state_set_m.f90</a></td>
+                 <td><p><code>forgex_nfa_m</code> module defines a derived-type which is the set of NFA nodes.
+<code>nfa_state_set_t</code> represents a set of NFA nodes for the power set construction method.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
+                 <td><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></td>
+                 <td><a href='../sourcefile/parameters_m.f90.html'>parameters_m.f90</a></td>
+                 <td></td>
                </tr>
 <!---->			   <tr class="active">
                  <td><a href='../module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></td>
@@ -103,14 +132,13 @@ This implementation was originally provided by ue1221.</p></td>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td><a href='../sourcefile/segment_disjoin_m.f90.html'>segment_disjoin_m.f90</a></td>
-                 <td><p>The <code>forgex_segment_disjoin_m</code> module support to disjoin and split overlapping segments.
-Without these procedures, we cannot building a valid DFA from NFA.</p></td>
+                 <td></td>
                </tr>
 <!---->			   <tr class="active">
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td><a href='../sourcefile/segment_m.f90.html'>segment_m.f90</a></td>
-                 <td><p>The <code>forgex_segment_m</code> module defines <code>segment_t</code> derived-type representing
-a subset of the UTF-8 character set.</p><a href="../module/forgex_segment_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                 <td><a href='../sourcefile/segment_m.f90.html'>segment_m.F90</a></td>
+                 <td><p>Support for handling many Unicode whitespace characters is currently not
+available, but will be added in the future.</p><a href="../module/forgex_segment_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
@@ -122,7 +150,7 @@ sorting algorithms for integer arrays.</p><a href="../module/forgex_sort_m.html"
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td><a href='../sourcefile/syntax_tree_m.f90.html'>syntax_tree_m.F90</a></td>
                  <td><p>The<code>forgex_syntax_tree_m</code> module defines parsing and
-the <code>tree_t</code> derived-type for building syntax-tree.</p><a href="../module/forgex_syntax_tree_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+the <code>tree_node_t</code> derived-type for building syntax-tree.</p><a href="../module/forgex_syntax_tree_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
@@ -130,11 +158,16 @@ the <code>tree_t</code> derived-type for building syntax-tree.</p><a href="../mo
                  <td><p>The <code>forgex_test_m</code> module provides helper procedures to unit testing for Forgex.</p></td>
                </tr>
 <!---->			   <tr class="active">
+                 <td><a href='../module/forgex_time_measurement_m.html'>forgex_time_measurement_m</a></td>
+                 <td><a href='../sourcefile/time_measurement_m.f90.html'>time_measurement_m.f90</a></td>
+                 <td><p>This module provides procedures to measure the time it takes to execute.</p></td>
+               </tr>
+<!--active-->			   <tr class="">
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td><a href='../sourcefile/utf8_m.f90.html'>utf8_m.f90</a></td>
                  <td><p>The <code>forgex_utf8_m</code> module processes a byte-indexed character strings type as UTF-8 strings.</p></td>
                </tr>
-<!--active-->			 </tbody></table>
+<!---->			 </tbody></table>
              
         </div>
       </div>
@@ -153,7 +186,7 @@ the <code>tree_t</code> derived-type for building syntax-tree.</p><a href="../mo
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>

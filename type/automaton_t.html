@@ -1,0 +1,1215 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>automaton_t &ndash; Forgex—Fortran Regular Expression </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../page/index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>automaton_t
+      <small>Derived Type</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+            <li class="list-inline-item" id="meta-license"><i class="fa fa-legal"></i> <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a></li>
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title="<p>14.7% of total for derived types.</p>Including implementation: 221 statements, 26.3% of total for derived types.">19 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/automaton_m.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/automaton_m.f90.html'>automaton_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
+            <li class="breadcrumb-item active" aria-current="page">automaton_t</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+  
+  <div class="row">
+    <div class="col-md-3 hidden-xs hidden-sm visible-md visible-lg">
+      <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/automaton_t.html#variable-all_segments~2">all_segments</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-dfa">dfa</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-entry_set">entry_set</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-initial_index">initial_index</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa~3">nfa</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_entry~2">nfa_entry</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_exit~2">nfa_exit</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#boundprocs-0"
+         aria-expanded="false" aria-controls="boundprocs-0">
+         <h4 class="card-header bg-primary text-white">Type-Bound Procedures</h4>
+      </a>
+      <div id="boundprocs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-construct">construct</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-destination">destination</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-epsilon_closure">epsilon_closure</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-free">free</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-get_reachable">get_reachable</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-init">init</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-move">move</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-print">print</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-print_dfa">print_dfa</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-register_state">register_state</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+    <div class="card card-primary">
+      <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
+      <div class="list-group">
+        <a class="list-group-item" href="../type/automaton_t.html#src">automaton_t</a>
+      </div>
+    </div>
+
+
+  </div>
+
+    </div>
+    
+    <div class="col-md-9" id='text'>
+      <h2 id="type-def-statement">
+        type, public :: automaton_t</h2>
+    <p>This type contains an NFA graph, and the DFA graph that are derived from it.</p>
+    <br>
+
+    <section>
+    <h2>Components</h2>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-all_segments~2"></span>
+              type(<a href='segment_t.html'>segment_t</a>),
+            </td>
+              <td>public,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>all_segments</strong>(:)</td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dfa"></span>
+              type(<a href='dfa_graph_t.html'>dfa_graph_t</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dfa</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-entry_set"></span>
+              type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>entry_set</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-initial_index"></span>
+              integer(kind=int32),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>initial_index</strong></td>
+<td> =</td>
+                <td>DFA_NOT_INIT</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa~3"></span>
+              type(<a href='nfa_graph_t.html'>nfa_graph_t</a>),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nfa</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_entry~2"></span>
+              integer(kind=int32),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nfa_entry</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_exit~2"></span>
+              integer(kind=int32),
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nfa_exit</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+                
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    </section>
+    <br>
+    
+
+
+      <section>
+        <h2>Type-Bound Procedures</h2>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-construct"></span>
+      <h3>
+          procedure, public ::
+  <strong>construct</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__construct_dfa.html'>automaton__construct_dfa</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__construct_dfa.html'>automaton__construct_dfa</a>(self, curr_i, dst_i, symbol)  
+</h3>
+    
+
+  <p>This subroutine gets the destination index of DFA nodes from the current index with given symbol,
+adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr_i</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dst_i</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>symbol</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-destination"></span>
+      <h3>
+          procedure, public ::
+  <strong>destination</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__destination.html'>automaton__destination</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__destination.html'>automaton__destination</a>(self, curr, symbol, next, next_set)  
+</h3>
+    
+
+  <p>This subroutine gets the next DFA nodes index from current index and symbol,
+and stores the result in <code>next</code> and <code>next_set</code>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>symbol</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>next</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>next_set</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-epsilon_closure"></span>
+      <h3>
+          procedure, public ::
+  <strong>epsilon_closure</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a>(self, state_set, closure)  
+</h3>
+    
+
+  <p>Compute the ε-closure for a set of NFA states.</p><a href="../proc/automaton__epsilon_closure.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>state_set</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>closure</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-free"></span>
+      <h3>
+          procedure, public ::
+  <strong>free</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__deallocate.html'>automaton__deallocate</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__deallocate.html'>automaton__deallocate</a>(self)  
+</h3>
+    
+
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-get_reachable"></span>
+      <h3>
+          procedure, public ::
+  <strong>get_reachable</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a>(self, curr_i, symbol) result(state_set)  
+</h3>
+    
+
+  <p>This function calculates a set of possible NFA states from the current DFA state by the input
+character <code>symbol</code>.</p><a href="../proc/automaton__compute_reachable_state.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr_i</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>symbol</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-init"></span>
+      <h3>
+          procedure, public ::
+  <strong>init</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__initialize.html'>automaton__initialize</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__initialize.html'>automaton__initialize</a>(self, tree, tree_top)  
+</h3>
+    
+
+  <p>This subroutine reads <code>tree</code> and <code>tree_top</code> variable, constructs the NFA graph,
+and then initializes the DFA graph.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='tree_node_t.html'>tree_node_t</a>),
+            </td>
+<td>intent(in),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>tree</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tree_top</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-move"></span>
+      <h3>
+          procedure, public ::
+  <strong>move</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__move.html'>automaton__move</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure function <a href='../proc/automaton__move.html'>automaton__move</a>(self, curr, symbol) result(res)  
+</h3>
+    
+
+  <p>This function returns the dfa transition object, that contains the destination index
+and the corresponding set of transitionable NFA state.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>symbol</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='dfa_transition_t.html'>dfa_transition_t</a>)</small>
+    </h4>
+    
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-print"></span>
+      <h3>
+          procedure, public ::
+  <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__print_info.html'>automaton__print_info</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/automaton__print_info.html'>automaton__print_info</a>(self)  
+</h3>
+    
+
+  <p>This subroutine provides the automata' summarized information.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-print_dfa"></span>
+      <h3>
+          procedure, public ::
+  <strong>print_dfa</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__print_dfa.html'>automaton__print_dfa</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private  subroutine <a href='../proc/automaton__print_dfa.html'>automaton__print_dfa</a>(self)  
+</h3>
+    
+
+  <p>This subroutine prints DFA states and transitions to standard error.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-register_state"></span>
+      <h3>
+          procedure, public ::
+  <strong>register_state</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__register_state.html'>automaton__register_state</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/automaton__register_state.html'>automaton__register_state</a>(self, state_set, res)  
+</h3>
+    
+
+  <p>This subroutine takes a <code>nfa_state_set_t</code> type argument as input and register
+the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__register_state.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>state_set</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+      </section>
+
+    <section>
+    <h3><span class="anchor" id="src"></span>Source Code</h3>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">type</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton_t</span>
+<span class="w">      </span><span class="c">!! This type contains an NFA graph, and the DFA graph that are derived from it.</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_graph_t</span><span class="p">)</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">dfa_graph_t</span><span class="p">)</span><span class="w">            </span><span class="kd">::</span><span class="w"> </span><span class="n">dfa</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w">        </span><span class="kd">::</span><span class="w"> </span><span class="n">entry_set</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">all_segments</span><span class="p">(:)</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_exit</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w">               </span><span class="kd">::</span><span class="w"> </span><span class="n">initial_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DFA_NOT_INIT</span>
+<span class="w">   </span><span class="k">contains</span>
+<span class="k">      procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">init</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__initialize</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">epsilon_closure</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__epsilon_closure</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">register_state</span><span class="w">  </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__register_state</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">construct</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__construct_dfa</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">get_reachable</span><span class="w">   </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__compute_reachable_state</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">move</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__move</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">destination</span><span class="w">     </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__destination</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">free</span><span class="w">            </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__deallocate</span>
+<span class="cp">#if  defined(IMPURE) &amp;&amp; defined(DEBUG)</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">print</span><span class="w">           </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__print_info</span>
+<span class="w">      </span><span class="k">procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">print_dfa</span><span class="w">       </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">automaton__print_dfa</span>
+<span class="cp">#endif</span>
+<span class="w">   </span><span class="k">end type </span><span class="n">automaton_t</span>
+</pre></div>
+
+    </section>
+    
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-08-04 06:24              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

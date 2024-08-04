@@ -32,7 +32,7 @@ contains
       logical,      intent(in) :: correct_answer
 
       logical :: res
-      
+
       res = (pattern .in. str) .eqv. correct_answer
    end function is_valid__in
 
@@ -50,7 +50,7 @@ contains
    end function is_valid__match
 
 
-   !> This function checks if a pattern matches a string using the `regex` 
+   !> This function checks if a pattern matches a string using the `regex`
    !> function and compares the result to the expected answer.
    function is_valid__regex(pattern, str, answer, substr) result(res)
       implicit none
@@ -60,12 +60,13 @@ contains
 
       character(:), allocatable :: local
       integer(int32)            :: length
-      logical                   :: res 
+      logical                   :: res
 
-      local = regex(pattern, str, length)
+      call regex(pattern, str, local, length)
       substr = local
 
-      res = trim(local) == trim(answer)
+      res = local == answer
+
    end function is_valid__regex
 
 
@@ -99,9 +100,13 @@ contains
 
       res = is_valid__match(pattern, str, answer)
 
-      ! write(error_unit, '(a)', advance='no') '                                          '//char(13)
+
       if (res) then
-         write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
+         if (answer) then
+            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
+         else
+            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern)
+         end if
       else
          write(error_unit, '(a, a, a)') 'result(match): FAILED ' , ' '//trim(pattern),' "'//trim(str)//'"'
       end if
@@ -124,7 +129,11 @@ contains
       res = is_valid__regex(pattern, str, answer, substr)
 
       if (res) then
-         write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
+         if (answer == substr) then
+            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
+         else
+            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
+         end if
       else
          write(error_unit, '(a, a, a)') 'result(regex): FAILED ', ' '//trim(pattern), ' "'//trim(substr)//'"'
       end if

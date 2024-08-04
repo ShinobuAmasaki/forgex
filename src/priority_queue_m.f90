@@ -1,13 +1,13 @@
 ! Fortran Regular Expression (Forgex)
-! 
+!
 ! MIT License
 !
 ! (C) Amasaki Shinobu, 2023-2024
 !     A regular expression engine for Fortran.
 !     forgex_priority_queue_m module is a part of Forgex.
-! 
+!
 ! (C) ue1221, 2021
-! 
+!
 ! The original Fortran implementation of priority queue is by ue1221.
 ! cf. https://github.com/ue1221/fortran-utilities
 
@@ -16,31 +16,38 @@
 !> The `forgex_priority_queue_m` module defines `priority_queue_t`.
 !> This implementation was originally provided by ue1221.
 module forgex_priority_queue_m
-   use, intrinsic :: iso_fortran_env
-   use :: forgex_segment_m
+   use, intrinsic :: iso_fortran_env, only: int32
+   use :: forgex_segment_m, only: segment_t
    implicit none
+   private
+
+   public :: priority_queue_t
 
    !> The `priority_queue_t` derived-type has an array containing segment data
-   !> and the number of data. The array component is allocatable (with `pointer`
-   !> attribute).
+   !> and the number of data. The array component is allocatable.
    type priority_queue_t
       integer(int32) :: number = 0
-      type(segment_t), pointer :: heap(:) => null()
+      type(segment_t), allocatable :: heap(:)
+   contains
+      procedure :: enqueue
+      procedure :: dequeue
+      procedure :: clear
    end type
 
 contains
-   
+
    !> The `enqueue` subroutine is responsible for allocating heap structure and
    !> holding the disjoined segment data with ascending priority order.
-   subroutine enqueue(pq, seg)
+   pure subroutine enqueue(pq, seg)
       implicit none
-      type(priority_queue_t), intent(inout) :: pq
-      type(segment_t), intent(in) :: seg
-      type(segment_t) :: t
-      type(segment_t), allocatable :: tmp(:)
-      integer(int32) :: n, i
+      class(priority_queue_t), intent(inout) :: pq
+      type(segment_t),         intent(in) :: seg
 
-      if (.not. associated(pq%heap)) allocate(pq%heap(1))
+      type(segment_t)              :: t
+      type(segment_t), allocatable :: tmp(:)
+      integer(int32)               :: n, i
+
+      if (.not.allocated(pq%heap)) allocate(pq%heap(1))
 
       !  Managing the size of array in the queue.
       !! @note This implementation shall be rewritten using the `move_alloc` statement.
@@ -66,28 +73,29 @@ contains
             t = pq%heap(n)
             pq%heap(n) = pq%heap(i)
             pq%heap(i) = t
-         end if 
+         end if
          n = i
       end do
    end subroutine enqueue
 
-   !> The `dequeue` function takes out and returns the prior segment from the queue. 
-   function dequeue(pq) result(res)
+   !> The `dequeue` function takes out and returns the prior segment from the queue.
+   pure subroutine dequeue(pq, res)
       implicit none
-      type(priority_queue_t), intent(inout) :: pq
-      type(segment_t) :: res, tmp 
+      class(priority_queue_t), intent(inout) :: pq
+      type(segment_t),         intent(inout) :: res
 
+      type(segment_t) :: tmp
       integer :: n, i, j
-      
+
       ! Hold the number of data in a temporary variable.
       n = pq%number
-      
+
       ! The prior element of the array is returned.
       res = pq%heap(1)
 
-      ! The tailing data is moved to the beginning. 
+      ! The tailing data is moved to the beginning.
       pq%heap(1) = pq%heap(n)
-      
+
       ! Reduce the number of data by one.
       pq%number = pq%number - 1
 
@@ -103,16 +111,16 @@ contains
          end if
          i = j
       end do
-   end function dequeue
+   end subroutine dequeue
 
    !> The `clear` subroutine deallocates the queue.
-   subroutine clear(pq)
+   pure subroutine clear(pq)
       implicit none
-      type(priority_queue_t), intent(inout) :: pq
-      
-      if (associated(pq%heap)) deallocate(pq%heap)
+      class(priority_queue_t), intent(inout) :: pq
+
+      if (allocated(pq%heap)) deallocate(pq%heap)
       pq%number = 0
-   end subroutine
+   end subroutine clear
 
 
 end module forgex_priority_queue_m

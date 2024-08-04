@@ -76,20 +76,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.9% of total for procedures.">36 statements</a>
+                 title=" 0.3% of total for procedures.">8 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/lazy_dfa_m.F90"> Source File</a>
+              <a href="../src/lazy_dfa_graph_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/lazy_dfa_m.f90.html'>lazy_dfa_m.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_lazy_dfa_m.html'>forgex_lazy_dfa_m</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">lazy_dfa__deallocate</li>
           </ol>
         </nav>
@@ -141,14 +141,15 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private  subroutine lazy_dfa__deallocate(self)  
+    <h2>private pure subroutine lazy_dfa__deallocate(self)  
 </h2>
     
 
-    <p>Deallocates all nodes registered in the monitor pointer arrays.</p>
+    <p>This subroutine performs deallocation of the arrays representing 
+the DFA node transitions for every node in the DFA graph.</p>
 
     <h3>Type Bound</h3>
-    <p><a href='../type/dfa_t.html'>dfa_t</a></p>
+    <p><a href='../type/dfa_graph_t.html'>dfa_graph_t</a></p>
 
     <h3>Arguments</h3>
         <table class="table table-striped varlist">
@@ -163,8 +164,8 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~2"></span>
-              class(<a href='../type/dfa_t.html'>dfa_t</a>),
+              <span class="anchor" id="variable-self~27"></span>
+              class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
               <td></td>            <td>
@@ -193,62 +194,16 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine  </span><span class="n">lazy_dfa__deallocate</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">lazy_dfa__deallocate</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      class</span><span class="p">(</span><span class="n">dfa_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
+<span class="k">      class</span><span class="p">(</span><span class="n">dfa_graph_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
 
-<span class="w">      </span><span class="c">! Deallocate the initial dfa state node if it is associated.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">initial_dfa_state</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         deallocate</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">initial_dfa_state</span><span class="p">)</span>
-<span class="w">      </span><span class="k">end if</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
+<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">dfa_limit</span>
+<span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">free</span><span class="p">()</span>
+<span class="w">      </span><span class="k">end do</span>
 
-<span class="w">      </span><span class="c">! Deallocate all nodes in the `dlist_pointer_list` array.</span>
-<span class="w">      </span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlist_pointer_count</span>
-<span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
-<span class="nb">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">dlist_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="w">            </span><span class="c">! Deallocate the character segment array if it is allocated.</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">dlist_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">%</span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               deallocate</span><span class="p">(</span><span class="n">dlist_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">%</span><span class="n">c</span><span class="p">)</span><span class="w"> </span>
-<span class="w">            </span><span class="k">end if</span>
-
-<span class="w">            </span><span class="c">! Deallocate the node itself.</span>
-<span class="w">            </span><span class="k">deallocate</span><span class="p">(</span><span class="n">dlist_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">)</span>
-<span class="w">            </span><span class="c">! Decrement the count of allocated `dlist` pointers.</span>
-<span class="w">            </span><span class="n">dlist_pointer_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dlist_pointer_count</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span>
-<span class="w">         </span><span class="k">end if</span>
-<span class="k">      end do</span>
-
-<span class="w">      </span><span class="c">! Deallocate all nodes in the `dtransition_pointer_list` array.</span>
-<span class="w">      </span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtransition_pointer_count</span>
-<span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
-<span class="nb">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">dtransition_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="w">            </span><span class="c">! Deallocate the character segment array if it is allocated.</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">dtransition_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">%</span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               deallocate</span><span class="p">(</span><span class="n">dtransition_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">%</span><span class="n">c</span><span class="p">)</span>
-<span class="w">            </span><span class="k">end if</span>
-
-<span class="w">            </span><span class="c">! Deallocate the node itself.</span>
-<span class="w">            </span><span class="k">deallocate</span><span class="p">(</span><span class="n">dtransition_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">)</span>
-<span class="w">            </span><span class="c">! Decrement the count of allocated dtransition pointers.</span>
-<span class="w">            </span><span class="n">dtransition_pointer_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dtransition_pointer_count</span><span class="w"> </span><span class="o">-</span><span class="mi">1</span>
-<span class="w">         </span><span class="k">end if</span>
-<span class="k">      end do</span>
-
-<span class="w">      </span><span class="c">! Nullify all nodes in the `dstate_pointer_list` array.</span>
-<span class="w">      </span><span class="nb">max</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dstate_pointer_count</span>
-<span class="w">      </span><span class="k">do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">max</span>
-<span class="nb">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">dstate_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            nullify</span><span class="w"> </span><span class="p">(</span><span class="n">dstate_pointer_list</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="c">! DO NOT use `deallocate`</span>
-
-<span class="w">            </span><span class="c">! Decrement the count of allocated dstate pointers.</span>
-<span class="w">            </span><span class="n">dstate_pointer_count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dstate_pointer_count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">         </span><span class="k">end if</span>
-<span class="k">      end do</span><span class="w"> </span>
-
-<span class="w">      </span><span class="c">! Deallocate the array of DFA states if it is associated.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">associated</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">))</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">states</span><span class="p">)</span>
-<span class="w">   </span><span class="k">end subroutine </span><span class="n">lazy_dfa__deallocate</span>
+<span class="k">   end subroutine </span><span class="n">lazy_dfa__deallocate</span>
 </pre></div>
 
     </section>
@@ -272,7 +227,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-07-24 00:26              </p>
+ on 2024-08-04 06:24              </p>
           </div>
         </div>
         <br>
