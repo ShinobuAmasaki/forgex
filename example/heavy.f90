@@ -13,7 +13,6 @@
 !> @note This command may not be parallelized depending on the CPU or compiler environment.
 program benchmark_heavy
    use :: iso_fortran_env, only: stderr=>error_unit
-   !$ use :: omp_lib
    use :: forgex_time_measurement_m
    use :: forgex
    implicit none
@@ -42,15 +41,12 @@ program benchmark_heavy
    text = trim(text)//"cccccccccccccccccccc"
    answer = .true.
 
-   ! !$ call omp_set_num_threads(4)
-
    write(stderr, *) "=== Information ==="
    write(stderr, *)              "Pattern    : ", pattern
    write(stderr, *)              "Text       : ", text
    write(stderr, "(1x, a, i0)")  "Loop size  : ", siz
    write(stderr, *)              "Operator   : ", ".match."
    write(stderr, "(1x, a, l1)")  "Answer     : ", answer
-   ! !$ write(stderr, "(1x, a, i0)")  "NUM_THREADS: ", omp_get_num_threads()
 
    !! WARNING: Do NOT use the `.in.` operator for this test, as it will take too long to wait
    !! on currently version.
