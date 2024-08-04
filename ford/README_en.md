@@ -7,35 +7,40 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 
 
 #### Metacharacter
-   - `|`  Vertical bar for alternation,
-   - `*`  Asterisk, match zero or more,
-   - `+`  Plus, match one or more,
-   - `?`  Question, match zero or one,
-   - `\`  escape metacharacter,
-   - `.`  match any character.
+- `|`  Vertical bar for alternation,
+- `*`  Asterisk, match zero or more,
+- `+`  Plus, match one or more,
+- `?`  Question, match zero or one,
+- `\`  escape metacharacter,
+- `.`  match any character.
+
 #### Character class
-   - character class `[a-z]`
-   - inverted character class `[^a-z]`
-   - character class on UTF-8 codeset `[α-ωぁ-ん]`
+- character class `[a-z]`
+- inverted character class `[^a-z]`
+- character class on UTF-8 codeset `[α-ωぁ-ん]`
+Note that inverted class does not match the control characters. 
+
 #### Range of repetition
-   - `{num}`,
-   - `{,max}`,
-   - `{min,}`,
-   - `{min, max}`,
-   where `num` and `max` must NOT be zero.
+- `{num}`,
+- `{,max}`,
+- `{min,}`,
+- `{min, max}`,
+where `num` and `max` must NOT be zero.
+
 #### Anchor
-   - `^`, matches the beginning of a line
-   - `$`, matches the end of a line
+- `^`, matches the beginning of a line
+- `$`, matches the end of a line
+
 #### Shorthand
-   - `\t`, tab character
-   - `\n`, new line character (LF or CRLF)
-   - `\r`, return character (CR)
-   - `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
-   - `\S`, non-blank character
-   - `\w`, (`[a-zA-Z0-9_]`)
-   - `\W`, (`[^a-zA-Z0-9_]`)
-   - `\d`, digit character (`[0-9]`)
-   - `\D`, non-digit character (`[^0-9]`)
+- `\t`, tab character
+- `\n`, new line character (LF or CRLF)
+- `\r`, return character (CR)
+- `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
+- `\S`, non-blank character
+- `\w`, (`[a-zA-Z0-9_]`)
+- `\W`, (`[^a-zA-Z0-9_]`)
+- `\d`, digit character (`[0-9]`)
+- `\D`, non-digit character (`[^0-9]`)
 
 ## Usage
 ### Build
@@ -45,6 +50,8 @@ Operation has been confirmed with the following compilers:
 - GNU Fortran (`gfortran`) v13.2.1
 - Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
 
+
+
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 
 First of all, add the following to your project's `fpm.toml`:
@@ -53,7 +60,6 @@ First of all, add the following to your project's `fpm.toml`:
 [dependencies]
 forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
-
 
 ### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
@@ -168,6 +174,10 @@ pure function function__regex(pattern, text) result(res)
    character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
 ```
+
+## Examples
+
+Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
 
 ### UTF-8 String matching
 

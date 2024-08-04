@@ -7,36 +7,42 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 
 ## Features
 
-- Metacharacter
-   - `|` Vertical bar, alternation
-   - `*` Asterisk, match zero or more
-   - `+` Plus, match one or more
-   - `?` Question, match zero or one
-   - `\` escape metacharacter
-   - `.` matches any character
-- Character class
-   - character class `[a-z]`
-   - inverted character class `[^a-z]`
-   - character class on UTF-8 code set `[α-ωぁ-ん]`
-- Range of repetition
-   - `{num}`,
-   - `{,max}`,
-   - `{min,}`,
-   - `{min, max}`,
-   where `num` and `max` must NOT be zero.
-- Anchor
-   - `^`, matches the beginning of a line
-   - `$`, matches the end of a line
-- Shorthand
-   - `\t`, tab character
-   - `\n`, new line character (LF or CRLF)
-   - `\r`, return character (CR)
-   - `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
-   - `\S`, non-blank character
-   - `\w`, (`[a-zA-Z0-9_]`)
-   - `\W`, (`[^a-zA-Z0-9_]`)
-   - `\d`, digit character (`[0-9]`)
-   - `\D`, non-digit character (`[^0-9]`)
+### Metacharacter
+- `|` Vertical bar, alternation
+- `*` Asterisk, match zero or more
+- `+` Plus, match one or more
+- `?` Question, match zero or one
+- `\` escape metacharacter
+- `.` matches any character
+
+### Character class
+- character class `[a-z]`
+- inverted character class `[^a-z]`
+- character class on UTF-8 code set `[α-ωぁ-ん]`
+Note that inveted class does not match the control characters. 
+
+### Range of repetition
+- `{num}`,
+- `{,max}`,
+- `{min,}`,
+- `{min, max}`,
+where `num` and `max` must NOT be zero.
+
+### Anchor
+- `^`, matches the beginning of a line
+- `$`, matches the end of a line
+
+### Shorthand
+- `\t` tab character
+- `\n` new line character (LF or CRLF)
+- `\r` return character (CR)
+- `\s` blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
+- `\S` non-blank character
+- `\w` (`[a-zA-Z0-9_]`)
+- `\W` (`[^a-zA-Z0-9_]`)
+- `\d` digit character (`[0-9]`)
+- `\D` non-digit character (`[^0-9]`)
+
 
 ## Documentation
 The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
@@ -58,7 +64,7 @@ First of all, add the following to your project's `fpm.toml`:
 forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
-### API
+### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
 ```fortran
@@ -171,6 +177,8 @@ pure function function__regex(pattern, text) result(res)
    character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
 ```
+
+Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
 
 ### UTF-8 String matching
 

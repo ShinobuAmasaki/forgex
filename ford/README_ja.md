@@ -173,6 +173,8 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
+現時点のバージョンでは、これらのAPIをループ内で使用する場合、`do`ループと`do concurrent`ループでは使用できますが、OpenMPの並列コードブロックでは使用できない点に注意してください。
+
 ### UTF-8文字列のマッチング
 
 UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。
