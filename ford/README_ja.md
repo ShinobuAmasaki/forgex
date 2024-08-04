@@ -23,6 +23,8 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - 否定クラス（例: `[^a-z]`）
 - Unicode文字クラス（例: `[α-ωぁ-ん]`）
 
+否定クラスは制御文字にはマッチしないことに注意してください。
+
 ### 繰り返し回数の指定
 - `{num}`,
 - `{,max}`,
@@ -106,15 +108,15 @@ end block
 ```
 block
    character(:), allocatable :: pattern, str, res
-   integer :: length 
+   integer :: length
 
    pattern = 'foo(bar|baz)'
    str = 'foobarbaz'
 
-   call regex(pattern, str, res)              
+   call regex(pattern, str, res)
    print *, res                              ! foobar
-   
-   ! call regex(pattern, str, res, length) 
+
+   ! call regex(pattern, str, res, length)
         ! the value 6 stored in optional `length` variable.
 
 end block
@@ -124,24 +126,24 @@ end block
 ```fortran
 block
    character(:), allocatable :: pattern, str, res
-   integer :: from, to 
+   integer :: from, to
 
    pattern = '[d-f]{3}'
    str = 'abcdefghi'
 
    call regex(pattern, str, res, from=from, to=to)
    print *, res                   ! def
-   
+
    ! The `from` and `to` variables store the indices of the start and end points
    ! of the matched part of the string `str`, respectively.
 
    ! Cut out before the matched part.
    print *, str(1:from-1)        ! abc
 
-   ! Cut out the matched part that equivalent to the result of the `regex` function. 
-   print *, str(from:to)         ! def 
+   ! Cut out the matched part that equivalent to the result of the `regex` function.
+   print *, str(from:to)         ! def
 
-   ! Cut out after the matched part. 
+   ! Cut out after the matched part.
    print *, str(to+1:len(str))   ! ghi
 
 end block
@@ -184,15 +186,15 @@ UTF-8の文字列についても、ASCII文字と同様に正規表現のパタ�
 block
    character(:), allocatable :: pattern, str
    integer :: length
-   
+
    pattern = "夢.{1,7}胡蝶"
    str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
-   
+
    print *, pattern .in. str            ! T
    call regex(pattern, str, res, length)
    print *, res                         ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
-   
+
 end block
 ```
 

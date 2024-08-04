@@ -2,7 +2,7 @@
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
-This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
+This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license.
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.
 
 ## Features
@@ -19,7 +19,8 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 - character class `[a-z]`
 - inverted character class `[^a-z]`
 - character class on UTF-8 code set `[α-ωぁ-ん]`
-Note that inveted class does not match the control characters. 
+
+Note that inveted class does not match the control characters.
 
 ### Range of repetition
 - `{num}`,
@@ -108,14 +109,14 @@ The `regex` is a subroutine that returns the substring of a string that matches 
 ```fortran
 block
    character(:), allocatable :: pattern, str, res
-   integer :: length 
+   integer :: length
 
    pattern = 'foo(bar|baz)'
    str = 'foobarbaz'
 
-   call regex(pattern, str, res)              
+   call regex(pattern, str, res)
    print *, res                              ! foobar
-   
+
    ! call regex(pattern, str, res, length)
       ! the value 6 stored in optional `length` variable.
 
@@ -127,24 +128,24 @@ By using the `from`/`to` arugments, you can extract substrings from the given st
 ```fortran
 block
    character(:), allocatable :: pattern, str, res
-   integer :: from, to 
+   integer :: from, to
 
    pattern = '[d-f]{3}'
    str = 'abcdefghi'
 
    call regex(pattern, str, res, from=from, to=to)
    print *, res                   ! def
-   
+
    ! The `from` and `to` variables store the indices of the start and end points
    ! of the matched part of the string `str`, respectively.
 
    ! Cut out before the matched part.
    print *, str(1:from-1)        ! abc
 
-   ! Cut out the matched part that equivalent to the result of the `regex` function. 
-   print *, str(from:to)         ! def 
+   ! Cut out the matched part that equivalent to the result of the `regex` function.
+   print *, str(from:to)         ! def
 
-   ! Cut out after the matched part. 
+   ! Cut out after the matched part.
    print *, str(to+1:len(str))   ! ghi
 
 end block
@@ -165,7 +166,7 @@ pure subroutine subroutine__regex(pattern, text, res, length, from, to)
 ```
 
 If you want to the matched character string as the return value of a function,
-consider using `regex_f` defined in the `forgex` module. 
+consider using `regex_f` defined in the `forgex` module.
 
 ```fortran
 interface regex_f
@@ -183,7 +184,7 @@ Note that in the current version, these APIs can be used in `do` loops and `do c
 ### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
-The following example demonstrates matching Chinese characters. 
+The following example demonstrates matching Chinese characters.
 In this example, the `length` variable stores the byte length, and in this case there
 10 3-byte characters, so the length is 30.
 
@@ -191,21 +192,21 @@ In this example, the `length` variable stores the byte length, and in this case 
 block
    character(:), allocatable :: pattern, str
    integer :: length
-   
+
    pattern = "夢.{1,7}胡蝶"
    str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
-   
+
    print *, pattern .in. str            ! T
    call regex(pattern, str, res, length)
    print *, res                         ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
-   
+
 end block
 ```
 
 ## To do
 
-The following features are planned to be implemented in the future: 
+The following features are planned to be implemented in the future:
 
 - [ ] Deal with invalid byte strings in UTF-8
 - [ ] Optimize by literal searching method
@@ -229,10 +230,10 @@ The idea of applying the `.in.` operator to strings was inspired by kazulagi's o
 
 ## References
 
-1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007 
+1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007
 2. 近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
-4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi), 
+4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi),
 [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
 
 ## License
