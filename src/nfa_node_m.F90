@@ -459,9 +459,11 @@ contains
 
       allocate(self%forward(1:new_part_end))
 
-      do j = 1, siz
-         self%forward(j) = tmp(j)
-      end do
+      if (allocated(tmp)) then
+         do j = 1, siz
+            self%forward(j) = tmp(j)
+         end do
+      end if
 
       self%forward(1:new_part_end)%own_j = &
          [(j, j= 1, new_part_end)]
@@ -497,7 +499,7 @@ contains
 
       allocate(self%backward(1:new_part_end))
 
-      self%backward(1:siz) = tmp(1:siz)
+      if(allocated(tmp)) self%backward(1:siz) = tmp(1:siz)
 
       self%backward(new_part_begin:new_part_end)%own_j = &
          [(jj, jj= new_part_begin, new_part_end)]

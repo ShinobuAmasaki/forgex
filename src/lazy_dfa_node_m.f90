@@ -166,7 +166,7 @@ contains
       allocate(self%transition(DFA_TRANSITION_BASE:new_part_end))
 
       ! Copy registered data
-      self%transition(DFA_TRANSITION_BASE:siz) = tmp(DFA_TRANSITION_BASE:siz) 
+      if(allocated(tmp)) self%transition(DFA_TRANSITION_BASE:siz) = tmp(DFA_TRANSITION_BASE:siz) 
 
       ! Initialize the new part of the array.
       self%transition(new_part_begin:new_part_end)%own_j = [(j, j=new_part_begin, new_part_end)]
