@@ -134,6 +134,7 @@
 <li>否定クラス（例: <code>[^a-z]</code>）</li>
 <li>Unicode文字クラス（例: <code>[α-ωぁ-ん]</code>）</li>
 </ul>
+<p>否定クラスは制御文字にはマッチしないことに注意してください。</p>
 <h3>繰り返し回数の指定</h3>
 <ul>
 <li><code>{num}</code>,</li>
@@ -209,15 +210,15 @@
 <p><code>regex</code>関数は、入力文字列の中でパターンに一致した部分文字列を返します。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="w">   </span><span class="k">character</span><span class="p">(</span><span class="o">:</span><span class="p">),</span><span class="w"> </span><span class="n">allocatable</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">length</span><span class="w"> </span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">length</span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foobarbaz&#39;</span>
 
-<span class="w">   </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w">              </span>
+<span class="w">   </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span>
 <span class="w">   </span><span class="n">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                              </span><span class="o">!</span><span class="w"> </span><span class="n">foobar</span>
 
-<span class="w">   </span><span class="o">!</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span><span class="w"> </span>
+<span class="w">   </span><span class="o">!</span><span class="w"> </span><span class="k">call</span><span class="w"> </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">)</span>
 <span class="w">        </span><span class="o">!</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="k">stored</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">optional</span><span class="w"> </span><span class="n n-Quoted">`length`</span><span class="w"> </span><span class="n">variable</span><span class="p">.</span>
 
 <span class="k">end</span><span class="w"> </span><span class="k">block</span>
@@ -226,7 +227,7 @@
 <p>オプショナル引数の<code>from</code>/<code>to</code>を使用すると、与えた文字列から添字を指定して部分文字列を切り出すことができます。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;[d-f]{3}&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;abcdefghi&#39;</span>
@@ -240,10 +241,10 @@
 <span class="w">   </span><span class="c">! Cut out before the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">from</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">        </span><span class="c">! abc</span>
 
-<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the `regex` function. </span>
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def </span>
+<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result of the `regex` function.</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def</span>
 
-<span class="w">   </span><span class="c">! Cut out after the matched part. </span>
+<span class="w">   </span><span class="c">! Cut out after the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">to</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w">   </span><span class="c">! ghi</span>
 
 <span class="k">end block</span>
@@ -337,7 +338,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-04 06:24              </p>
+ on 2024-08-04 06:32              </p>
           </div>
         </div>
         <br>

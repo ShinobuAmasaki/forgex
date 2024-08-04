@@ -80,7 +80,7 @@
         <div class=col-md-8>
           <h1>Forgex—Fortran Regular Expression</h1>
           <p>Forgex is a regular expression engine written entirely in Fortran.</p>
-<p>This project is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager (FPM)</a>, providing basic processing of regular expression, and as a freely available under the MIT license. 
+<p>This project is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager (FPM)</a>, providing basic processing of regular expression, and as a freely available under the MIT license.
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.</p>
 <h2>Features</h2>
 <h4>Metacharacter</h4>
@@ -96,9 +96,9 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 <ul>
 <li>character class <code>[a-z]</code></li>
 <li>inverted character class <code>[^a-z]</code></li>
-<li>character class on UTF-8 codeset <code>[α-ωぁ-ん]</code>
-Note that inverted class does not match the control characters. </li>
+<li>character class on UTF-8 codeset <code>[α-ωぁ-ん]</code></li>
 </ul>
+<p>Note that inverted class does not match the control characters.</p>
 <h4>Range of repetition</h4>
 <ul>
 <li><code>{num}</code>,</li>
@@ -173,15 +173,15 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <p>The <code>regex</code> is a subroutine that returns the substring of a string that matches pattern as <code>intent(out)</code> argument.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="w"> </span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foo(bar|baz)&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;foobarbaz&#39;</span>
 
-<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span><span class="w">              </span>
+<span class="w">   </span><span class="k">call </span><span class="n">regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">)</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="w">                              </span><span class="c">! foobar</span>
 
-<span class="w">   </span><span class="c">! call regex(pattern, str, res, length)   </span>
+<span class="w">   </span><span class="c">! call regex(pattern, str, res, length)</span>
 <span class="w">         </span><span class="c">! the value 6 stored in optional `length` variable.</span>
 
 <span class="k">end block</span>
@@ -190,7 +190,7 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <p>By using the <code>from</code>/<code>to</code> arugments, you can extract substrings from the given string.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="w"> </span>
+<span class="w">   </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
 
 <span class="w">   </span><span class="n">pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;[d-f]{3}&#39;</span>
 <span class="w">   </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;abcdefghi&#39;</span>
@@ -204,10 +204,10 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <span class="w">   </span><span class="c">! Cut out before the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">from</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="w">        </span><span class="c">! abc</span>
 
-<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result argument of the `regex` subrouine. </span>
-<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def </span>
+<span class="w">   </span><span class="c">! Cut out the matched part that equivalent to the result argument of the `regex` subrouine.</span>
+<span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">from</span><span class="p">:</span><span class="n">to</span><span class="p">)</span><span class="w">         </span><span class="c">! def</span>
 
-<span class="w">   </span><span class="c">! Cut out after the matched part. </span>
+<span class="w">   </span><span class="c">! Cut out after the matched part.</span>
 <span class="w">   </span><span class="k">print</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">to</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w">   </span><span class="c">! ghi</span>
 
 <span class="k">end block</span>
@@ -226,7 +226,7 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 </code></pre></div>
 
 <p>If you want to the matched character string as the return value of the function,
-consider using <code>regex_f</code> defined in the <code>forgex</code> module. </p>
+consider using <code>regex_f</code> defined in the <code>forgex</code> module.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex_f</span>
 <span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">function__regex</span>
 <span class="k">end interface </span><span class="n">regex_f</span>
@@ -241,7 +241,7 @@ consider using <code>regex_f</code> defined in the <code>forgex</code> module. <
 <p>Note that in the current version, these APIs can be used in <code>do</code> loops and <code>do concurrent</code> loops, but not in OpenMP parallel blocks.</p>
 <h3>UTF-8 String matching</h3>
 <p>UTF-8 string can be matched using regular expression patterns just like ASCII strings.
-The following example demonstrates matching Chinese characters. 
+The following example demonstrates matching Chinese characters.
 In this example, the <code>length</code> variable stores the byte length, and in this case there 10 3-byte characters, so the length is 30.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
@@ -277,7 +277,7 @@ The implementation of the priority queue was based on <a href="https://github.co
 The idea of applying the <code>.in.</code> operator to strings was inspired by kazulagi's one.</p>
 <h2>References</h2>
 <ol>
-<li>Russ Cox <a href="https://swtch.com/~rsc/regexp/regexp1.html">"Regular Expression Matching Can Be Simple And Fast"</a>, 2007 </li>
+<li>Russ Cox <a href="https://swtch.com/~rsc/regexp/regexp1.html">"Regular Expression Matching Can Be Simple And Fast"</a>, 2007</li>
 <li>近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.</li>
 <li><a href="https://github.com/ue1221/fortran-utilities">ue1221/fortran-utilities</a></li>
 <li>Haruka Tomobe (kazulagi), <a href="https://github.com/kazulagi">https://github.com/kazulagi</a>, <a href="https://qiita.com/soybean/items/7cdd2156a9d8843c0d91">his article in Japanese</a></li>
@@ -366,7 +366,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-04 06:24              </p>
+ on 2024-08-04 06:32              </p>
           </div>
         </div>
         <br>
