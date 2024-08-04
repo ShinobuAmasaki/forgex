@@ -1,41 +1,46 @@
 Forgex is a regular expression engine written entirely in Fortran.
 
 This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license. 
-The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice was focused on runtime performance.
+The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.
 
 ## Features
 
 
 #### Metacharacter
-   - `|`  Vertical bar for alternation,
-   - `*`  Asterisk, match zero or more,
-   - `+`  Plus, match one or more,
-   - `?`  Question, match zero or one,
-   - `\`  escape metacharacter,
-   - `.`  match any character.
+- `|`  Vertical bar for alternation,
+- `*`  Asterisk, match zero or more,
+- `+`  Plus, match one or more,
+- `?`  Question, match zero or one,
+- `\`  escape metacharacter,
+- `.`  match any character.
+
 #### Character class
-   - character class `[a-z]`
-   - inverted character class `[^a-z]`
-   - character class on UTF-8 codeset `[α-ωぁ-ん]`
+- character class `[a-z]`
+- inverted character class `[^a-z]`
+- character class on UTF-8 codeset `[α-ωぁ-ん]`
+Note that inverted class does not match the control characters. 
+
 #### Range of repetition
-   - `{num}`,
-   - `{,max}`,
-   - `{min,}`,
-   - `{min, max}`,
-   where `num` and `max` must NOT be zero.
+- `{num}`,
+- `{,max}`,
+- `{min,}`,
+- `{min, max}`,
+where `num` and `max` must NOT be zero.
+
 #### Anchor
-   - `^`, matches the beginning of a line
-   - `$`, matches the end of a line
+- `^`, matches the beginning of a line
+- `$`, matches the end of a line
+
 #### Shorthand
-   - `\t`, tab character
-   - `\n`, new line character (LF or CRLF)
-   - `\r`, return character (CR)
-   - `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
-   - `\S`, non-blank character
-   - `\w`, (`[a-zA-Z0-9_]`)
-   - `\W`, (`[^a-zA-Z0-9_]`)
-   - `\d`, digit character (`[0-9]`)
-   - `\D`, non-digit character (`[^0-9]`)
+- `\t`, tab character
+- `\n`, new line character (LF or CRLF)
+- `\r`, return character (CR)
+- `\s`, blank character (white space, TAB, CR, LF, FF, "Zenkaku" space U+3000)
+- `\S`, non-blank character
+- `\w`, (`[a-zA-Z0-9_]`)
+- `\W`, (`[^a-zA-Z0-9_]`)
+- `\d`, digit character (`[0-9]`)
+- `\D`, non-digit character (`[^0-9]`)
 
 ## Usage
 ### Build
@@ -45,21 +50,19 @@ Operation has been confirmed with the following compilers:
 - GNU Fortran (`gfortran`) v13.2.1
 - Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
 
+
+
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 
 First of all, add the following to your project's `fpm.toml`:
 
 ```toml
 [dependencies]
-forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
+forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
-**NOTE:**
-If you are using the Intel compiler and want to use forgex from the main branch, please enable the preprocessor option when building.
-That is, add `--flag "/fpp"` on Windows and `--flag "-fpp"` on Unix for `fpm` commands.
-
 ### APIs
-When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, and `regex` function are introduced.
+When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
 ```fortran
 program main
@@ -97,19 +100,21 @@ block
 end block
 ```
 
-The `regex` is a function that returns the substring of a string that matches pattern.
+The `regex` is a subroutine that returns the substring of a string that matches pattern as `intent(out)` argument.
 
 ```fortran
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: length 
 
    pattern = 'foo(bar|baz)'
    str = 'foobarbaz'
 
-   print *, regex(pattern, str)              ! foobar
-   print *, regex(pattern, str, length)      ! foobar
-      ! the value 6 stored in optional `length` variable.
+   call regex(pattern, str, res)              
+   print *, res                              ! foobar
+   
+   ! call regex(pattern, str, res, length)   
+         ! the value 6 stored in optional `length` variable.
 
 end block
 ```
@@ -118,22 +123,22 @@ By using the `from`/`to` arugments, you can extract substrings from the given st
 
 ```fortran
 block
-   character(:), allocatable :: pattern, str
+   character(:), allocatable :: pattern, str, res
    integer :: from, to 
 
    pattern = '[d-f]{3}'
    str = 'abcdefghi'
 
-   print *, regex(pattern, str, from=from, to=to)  ! def
+   call regex(pattern, str, res, from=from, to=to)
+   print *, res                   ! def
    
-   ! The `from` and `to` variables store the indices of the start and
-   ! end points of the matched part of the string `str`, respectively.
+   ! The `from` and `to` variables store the indices of the start and end points
+   ! of the matched part of the string `str`, respectively.
 
    ! Cut out before the matched part.
    print *, str(1:from-1)        ! abc
 
-   ! Cut out the matched part that equivalent to the result of the
-   ! `regex` function. 
+   ! Cut out the matched part that equivalent to the result argument of the `regex` subrouine. 
    print *, str(from:to)         ! def 
 
    ! Cut out after the matched part. 
@@ -142,15 +147,37 @@ block
 end block
 ```
 
-The interface of `regex` function is following:
+The interface of `regex` subroutine is following:
 
 ```fortran
-function regex (pattern, str, length, from, to) result(res)
+interface regex
+   module procedure :: subroutine__regex
+end interface
+
+pure subroutine subroutine__regex(pattern, text, res, length, from, to)
    implicit none
-   character(*), intent(in) :: pattern, str
-   integer, intent(inout), optional :: length, from, to
+   character(*),              intent(in)    :: pattern, text
+   character(:), allocatable, intent(inout) :: res
+   integer,      optional,    intent(inout) :: length, from, to
+```
+
+If you want to the matched character string as the return value of the function,
+consider using `regex_f` defined in the `forgex` module. 
+
+```fortran
+interface regex_f
+   module procedure :: function__regex
+end interface regex_f
+
+pure function function__regex(pattern, text) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
 ```
+
+## Examples
+
+Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
 
 ### UTF-8 String matching
 
@@ -167,7 +194,8 @@ block
    str = "昔者莊周夢爲胡蝶　栩栩然胡蝶也"
    
    print *, pattern .in. str            ! T
-   print *, regex(pattern, str, length) ! 夢爲胡蝶　栩栩然胡蝶
+   call regex(pattern, str, res, length)
+   print *, res                         ! 夢爲胡蝶　栩栩然胡蝶
    print *, length                      ! 30 (is 3-byte * 10 characters)
    
 end block
@@ -175,14 +203,14 @@ end block
 
 ## To do
 
-- Dealing with invalid byte strings in UTF-8
-- Implementing a time measurement tool
-- Literal search optimization
-- Parallelization on matching
-- ✅️ Publishing the documentation
-- ✅️ UTF-8 basic support
-- ✅️ DFA construction on-the-fly
-- ✅️ CMake Support
+- Deal with invalid byte strings in UTF-8
+- Optimize by literal searching method
+- ✅️ Make all operators `pure elemental` attribute
+- ✅️ Publish the documentation
+- ✅️ Support UTF-8 basic feature
+- ✅️ Construct DFA on-the-fly
+- ✅️ Support CMake building
+- <s>Parallelize on matching</s>
 
 ## Code Convention
 

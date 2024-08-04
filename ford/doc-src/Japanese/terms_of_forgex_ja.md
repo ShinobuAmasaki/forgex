@@ -123,7 +123,7 @@ cf. [Disjoin](#disjoin)、 [セグメント](#segment)、 [`forgex_sort_m`](../.
 
 Forgexの実装において、テープ（tape）とは、シーケンシャルなデータアクセスと読み取りヘッダーを備えたストレージ（磁気テープなど）に例えて、それを模倣した派生型を使用しています。これは構文解析モジュール（`forgex_syntax_tree_m`）において`tape_t`派生型として定義されています。この型には、入力パターンの文字列全体（巻かれた磁気テープの例え）とインデックス番号（読み取りヘッダーの例え）に関する情報が含まれています。Forgexの開発者は、現在読み込まれている文字とトークンを、それの型束縛手続を通じて使用することができます。
 
-cf. forgex_syntax_tree_m`](../../module/forgex_syntax_tree_m.html)、 [`tape_t`](../../type/tape_t.html)
+cf. [`forgex_syntax_tree_m`](../../module/forgex_syntax_tree_m.html)、 [`tape_t`](../../type/tape_t.html)
 
 ### <span id=unicode>Unicode</span>
 

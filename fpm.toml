@@ -1,5 +1,5 @@
 name = "forgex"
-version = "2.0.0"
+version = "3.0.0"
 license = "MIT"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
@@ -16,3 +16,7 @@ library = true
 implicit-typing = false
 implicit-external = false
 source-form = "free"
+[preprocess]
+[preprocess.cpp]
+macros = ["RELEASE"]
+# This macro is not defined in the source codes, but it tells fpm to use the preprocessor.

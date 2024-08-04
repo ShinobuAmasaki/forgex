@@ -5,14 +5,15 @@ program test_001
 
    logical :: res = .true.
 
-   ! Test case #1. 
+   ! Test case #1.
    ! Tests for ASCII Character set.
-   
+
    print *, "=== TEST CASE 1 BEGIN ==="
 
    call runner_match('', '', .true., res)
    call runner_regex('', '', '', res)
 
+   call runner_match(".*a(a|b)", "kkkab", .true., res)
 
    call runner_regex('[a-z]{,7}', 'aaaaaaab', 'aaaaaaa', res)
    call runner_regex('[a-z]{,6}', 'aaaaaaab', 'aaaaaa', res)
@@ -21,11 +22,11 @@ program test_001
    call runner_regex('[a-z]{,3}', 'aaaaaaab', 'aaa', res)
    call runner_regex('[a-z]{,2}', 'aaaaaaab', 'aa', res)
    call runner_regex('[a-z]{,1}', 'aaaaaaab', 'a', res)
-   
+
    call runner_regex('[a-z]{0,3}', 'aaab', 'aaa', res)
    call runner_regex('[a-z]{0,2}', 'aaab', 'aa', res)
    call runner_regex('[a-z]{0,1}', 'aaab', 'a', res)
-   
+
 
    call runner_match('[a]{1,4}', 'aaaaa', .false., res)
    call runner_match('[a]{1,4}', 'aaaa', .true., res)
@@ -40,7 +41,7 @@ program test_001
    call runner_match('[a]{1,2}', 'aa', .true., res)
    call runner_match('[a]{1,2}', 'a', .true., res)
    call runner_match('[a]{1,2}', '', .false., res)
-   
+
    call runner_match('[a]{,2}', 'aaa', .false., res)
    call runner_match('[a]{,2}', 'aa', .true., res)
    call runner_match('[a]{,2}', 'a', .true., res)
@@ -87,7 +88,7 @@ program test_001
    call runner_regex('[a-z]{2,4}', 'aaaaaaab', 'aaaa', res)
    call runner_regex('[a-z]{2,3}', 'aaaaaaab', 'aaa', res)
    call runner_regex('[a-z]{2,2}', 'aaaaaaab', 'aa', res)
-   
+
    call runner_match('[a]{2, 4}', "aaaaa", .false., res)
    call runner_match('[a]{2, 4}', "aaaa", .true., res)
    call runner_match('[a]{2, 4}', "aaa", .true., res)
@@ -101,7 +102,7 @@ program test_001
    call runner_match('[a]{1,}', "aa", .true., res)
    call runner_match('[a]{1,}', "a", .true., res)
    call runner_match('[a]{1,}', "", .false., res)
-   
+
    call runner_match('[a]{2,}', "aaaaa", .true., res)
    call runner_match('[a]{2,}', "aaaa", .true., res)
    call runner_match('[a]{2,}', "aaa", .true., res)
@@ -121,7 +122,8 @@ program test_001
    call runner_match('[a]{7,7}', 'aaaaaa', .false., res)
    call runner_match("hoge(fuga|piyo)", 'hogepiyo', .true., res)
    call runner_match("f[a-zA-Z]*z", 'fooBARbaz', .true., res)
- 
+   call runner_match("f[a-zA-z]*z", 'fooBARbaz', .true., res)
+
    call runner_match("(@|@)(a|a)*", "aa", .false., res)
    call runner_match("aaa", "aa", .false., res)
    call runner_match("(a|b)", "b", .true., res)
@@ -133,7 +135,7 @@ program test_001
    call runner_in("^abc$", "foo"//char(10)//"abc", .true., res)
    call runner_in("^[a-z][A-Z]$", "aT", .true., res)
    call runner_in("^[a-z]$foo$", "a"//char(10)//"foo", .true., res)
-   
+
    call runner_in("[^a-z]", "A", .true., res)
    call runner_match("[^a-z]", "B", .true., res)
 
@@ -143,7 +145,7 @@ program test_001
       stop
    else
       error stop
-   end if 
+   end if
 
 
 end program test_001

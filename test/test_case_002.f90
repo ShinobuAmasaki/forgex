@@ -4,11 +4,11 @@ program test_002
    implicit none
 
    logical :: res = .true.
-   
-   ! Test case #2. 
+
+   ! Test case #2.
    ! Tests for UTF-8 Character set.
    print *, "=== TEST CASE 2 BEGIN ==="
-   
+
    call runner_regex('[ぁ-ん]{,7}', 'あいうえおかきくけこ', 'あいうえおかき', res )
    call runner_regex('[ぁ-ん]{,6}', 'あいうえおかきくけこ', 'あいうえおか', res )
    call runner_regex('[ぁ-ん]{,5}', 'あいうえおかきくけこ', 'あいうえお', res )
@@ -28,23 +28,23 @@ program test_002
    ! 鿿 U+9fff
 
    call runner_regex('[ぁ-んァ-ン一-鿿]*', 'あいうえおアイウエオ安伊宇衣於', &
-    'あいうえおアイウエオ安伊宇衣於', res) 
+    'あいうえおアイウエオ安伊宇衣於', res)
    call runner_regex('[一-鿿]*', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊宇衣於', res) 
+    '安伊宇衣於', res)
     call runner_regex('[一-鿿]{1,10}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊宇衣於', res) 
+    '安伊宇衣於', res)
     call runner_regex('[一-鿿]{1,7}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊宇衣於', res) 
+    '安伊宇衣於', res)
     call runner_regex('[一-鿿]{1,5}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊宇衣於', res) 
+    '安伊宇衣於', res)
     call runner_regex('[一-鿿]{1,3}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊宇', res) 
+    '安伊宇', res)
     call runner_regex('[一-鿿]{,2}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安伊', res) 
+    '安伊', res)
     call runner_regex('[一-鿿]{,1}', 'あいうえおアイウエオ安伊宇衣於', &
-    '安', res) 
+    '安', res)
 
-   
+
 
 
    call runner_in('[い]{7,7}', 'いろはにほへとち', .false., res)
@@ -69,7 +69,7 @@ program test_002
       stop
    else
       error stop
-   end if 
+   end if
 
 
 end program test_002
