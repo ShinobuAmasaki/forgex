@@ -59,6 +59,16 @@ program benchmark_light_in
    call time_end("DO CONCURRENT loop")
    entire = entire .and. all(res)
 #endif
+   ! Time measurement of OPENMP PARALLEL DO
+   res(:) = .false.
+   call time_begin()
+   !$omp parallel do
+   do i = 1, siz
+      res(i) = pattern .match. text
+   end do
+   !$omp end parallel do
+   call time_end("OpenMP parallel do loop")
+   entire = entire .and. all(res)
 
    write(stderr, *) "---------------------------------------------------------"
    if (entire .eqv. answer) then
