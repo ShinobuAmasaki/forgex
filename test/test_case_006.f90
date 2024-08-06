@@ -6,11 +6,11 @@ program test_006
    logical :: res = .true.
 
    ! Test case #6.
-   ! Tests for character classes of shorthand.
+   ! Tests for shorthand of character classes.
 
    print *, "=== TEST CASE 6 BEGIN ==="
 
-   call runner_match("\s", ' ', .true., res)
+   call runner_match("\s", ' ', .true., res)       ! == char(32)
    call runner_match("\s", char(9), .true., res)
    call runner_match("\s", char(10), .true., res)
    call runner_match("\s", char(12), .true., res)
@@ -18,7 +18,7 @@ program test_006
    call runner_match("\s", "　", .true., res)
 
 
-   call runner_match("\S", "!", .true., res)
+   call runner_match("\S", "!", .true., res)       ! == char(33)
    call runner_match("\S", char(31), .true., res)
    call runner_match("\S", " ", .false., res)
    call runner_match("\S", "a", .true., res)
