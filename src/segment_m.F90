@@ -290,8 +290,11 @@ contains
       integer(int32) :: i, i_end, code
 
       ! If `symbol` is a empty character, return SEG_EMPTY
-      if (symbol == '') then
+      if (symbol == char(0)) then
          res = SEG_EMPTY
+         return
+      else if (symbol == char(32)) then
+         res = SEG_SPACE
          return
       end if
 
