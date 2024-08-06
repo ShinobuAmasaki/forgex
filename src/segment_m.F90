@@ -379,14 +379,41 @@ contains
 
       if (seg == SEG_ANY) then
          res = "<ANY>"
-      else if (seg == SEG_LF) then
-         res = "<LF>"
-      else if (seg == SEG_CR) then
-         res = "<CR>"
-      else if (seg == SEG_FF) then
-         res = "<FF>"
+
       else if (seg == SEG_TAB) then
          res = "<TAB>"
+      else if (seg == segment_t(9, 10)) then
+         res = "<TAB, LF>"
+      else if (seg == segment_t(9, 11)) then
+         res = "<TAB, LF, VT>"   
+      else if (seg == segment_t(9, 12)) then
+         res = "<TAB, LF, VT, FF>"   
+      else if (seg == segment_t(9, 13)) then
+         res = "<TAB, LF, VT, FF, CR>"
+
+      else if (seg == SEG_LF) then
+         res = "<LF>"
+      else if (seg == segment_t(10, 11)) then
+         res = "<LF, VT>"   
+      else if (seg == segment_t(10, 12)) then
+         res = "<LF, VT, FF>"   
+      else if (seg == segment_t(10, 13)) then
+         res = "<LF, VT, FF, CR>"  
+
+      else if (seg == segment_t(11, 11)) then
+         res = "<VT>"   
+      else if (seg == segment_t(11, 12)) then
+         res = "<VT, FF>"   
+      else if (seg == segment_t(11, 13)) then
+         res = "<VT, FF, CR>"
+
+      else if (seg == SEG_FF) then
+         res = "<FF>"
+      else if (seg == segment_t(12, 13)) then
+         res = "<FF, CR>"
+
+      else if (seg == SEG_CR) then
+         res = "<CR>"
       else if (seg == SEG_SPACE) then
          res = "<SPACE>"
       else if (seg == SEG_ZENKAKU_SPACE) then
@@ -397,7 +424,6 @@ contains
          res = "<INIT>"
       else if (seg == SEG_EMPTY) then
          res = "<EMPTY>"
-
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then
