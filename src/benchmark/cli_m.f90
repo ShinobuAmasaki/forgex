@@ -1,5 +1,6 @@
 module forgex_cli_m
    use, intrinsic :: iso_fortran_env, only: int32, stderr => error_unit
+   use :: forgex, only: operator(.match.)
    use :: forgex_cli_type_m
    implicit none
    private
@@ -15,11 +16,12 @@ module forgex_cli_m
       type(subc_t) :: subc
       character(:), allocatable :: sub_sub_command
       character(:), allocatable :: value(:)
-      type(flag_t) :: flags(NUM_FLAGS)
+      logical :: flags(NUM_FLAGS)
    contains
       procedure :: init => cla__initialize
       procedure :: read_sub => cla__read_subcommand
       procedure :: read_subsub => cla__read_sub_subcommand
+      procedure :: collect_flags => cla__collect_flags
    end type cla_t
 
    type(flag_t)  :: all_flags(NUM_FLAGS)
@@ -27,12 +29,45 @@ module forgex_cli_m
 
 contains
 
+   subroutine cla__collect_flags(cla)
+      implicit none
+      class(cla_t), intent(inout) :: cla
+
+      type(argv_t), allocatable :: input_flags(:)
+      integer :: n, i, j, k
+
+      n = cla%arg_info%argc
+
+      allocate(input_flags(n))
+
+      j = 0
+      do i = 1, n
+         if ("(--)(\w+-?)+" .match. cla%arg_info%arg(i)%v) then
+            j = j + 1
+            input_flags(j)%v = cla%arg_info%arg(i)%v
+         end if
+      end do
+
+      if (j == 0) return
+
+      do k = 1, j
+         if (input_flags(k)%v .in. all_flags) then
+            do i = 1, ubound(all_flags, dim=1)
+               if (input_flags(k)%v == all_flags(i)%name) cla%flags(i) = .true.
+            end do
+         end if
+      end do
+
+   end subroutine
+
+
    subroutine cla__read_subcommand(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
       character(:), allocatable :: subc
 
       subc = trim(cla%arg_info%arg(1)%v)
+
       if (subc .in. all_subcs) then
          cla%subc%name = subc
       else

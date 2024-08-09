@@ -12,7 +12,7 @@ module forgex_cli_type_m
    integer, parameter, public :: NUM_FLAGS = 1
    integer, parameter, public :: NUM_SUB_C = 1
 
-   type :: argv_t
+   type, public :: argv_t
       character(:), allocatable :: v
    end type argv_t
 
@@ -23,7 +23,7 @@ module forgex_cli_type_m
    end type arg_t
 
    type :: subsubc_t
-      character(16) :: name
+      character(16) :: name = ''
    end type subsubc_t
 
    type, public :: subc_t  ! sub command type
@@ -73,7 +73,6 @@ contains
          call get_command_argument(number=i, value=arg(i)%v)
 
       end do
-      
    end subroutine get_arg_command_line
 
 
@@ -89,7 +88,6 @@ contains
       do i = lbound(subsubc_list, dim=1), ubound(subsubc_list, dim=1)
          res = res .or. trim(arg) == trim(subsubc_list (i)%name)
       end do
-
    end function does_sub_subcommand_exist
 
 
@@ -122,7 +120,6 @@ contains
                   .or. trim(arg) == trim(flag_list(i)%long_f)
          if (res) return
       end do
-
    end function does_flag_exist
       
 
