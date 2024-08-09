@@ -323,7 +323,7 @@ contains
    !> excluding epsilon transitions, and then registers the new DFA state node if it has not already been registered.
    !> Finally, it adds the transition from the `current` node to the `destination` node in the DFA graph.
    pure subroutine automaton__construct_dfa (self, curr_i, dst_i, symbol)
-      use :: forgex_lazy_dfa_node_m
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(inout) :: self
       integer(int32),     intent(in)    :: curr_i
@@ -396,8 +396,8 @@ contains
    !> This subroutine prints DFA states and transitions to standard error.
    subroutine automaton__print_dfa(self)
       use, intrinsic :: iso_fortran_env, only: stderr => error_unit
-      use :: forgex_nfa_state_set_m
-      use :: forgex_lazy_dfa_node_m
+      use :: forgex_nfa_state_set_m, only: print_nfa_state_set
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
       type(dfa_transition_t) :: p
