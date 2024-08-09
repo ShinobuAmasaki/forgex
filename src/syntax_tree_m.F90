@@ -977,56 +977,58 @@ contains
       end do
    end subroutine dump_tree_table
 
-   subroutine print_tree_wrap(tree, node_i)
+   subroutine print_tree_wrap(tree, node_i, uni)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer, intent(in) :: node_i
+      integer :: uni
 
       integer :: i
 
-      call print_tree_internal(tree, node_i)
-      write(stderr, *) ''
+      call print_tree_internal(tree, node_i, uni)
+      write(uni, *) ''
 
-      i = 0
-      do while (tree(i+1)%is_registered)
-         i = i + 1
-      enddo
+      ! i = 0
+      ! do while (tree(i+1)%is_registered)
+      !    i = i + 1
+      ! enddo
 
-      write(stderr, *) "Tree node counts: ", i
+      ! write(stderr, *) "Tree node counts: ", i
    end subroutine print_tree_wrap
 
-   recursive subroutine print_tree_internal(tree, node_i)
+   recursive subroutine print_tree_internal(tree, node_i, uni)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer, intent(in) :: node_i
+      integer, intent(in) :: uni
 
       select case (tree(node_i)%op)
       case (op_char)
-         write(stderr, '(a)', advance='no') trim(print_class_simplify(tree, node_i))
+         write(uni, '(a)', advance='no') trim(print_class_simplify(tree, node_i))
       case (op_concat)
-         write(stderr, '(a)', advance='no') "(concatenate "
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ' '
-         call print_tree_internal(tree, tree(node_i)%right_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(concatenate "
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_union)
-         write(stderr, '(a)', advance='no') "(or "
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ' '
-         call print_tree_internal(tree, tree(node_i)%right_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(or "
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_closure)
-         write(stderr, '(a)', advance='no') "(closure"
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(closure"
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_empty)
-         write(stderr, '(a)', advance='no') 'EMPTY'
+         write(uni, '(a)', advance='no') 'EMPTY'
 
       case default
-         write(stderr, '(a)') "This will not occur in 'print_tree'."
+         write(uni, '(a)') "This will not occur in 'print_tree'."
          error stop
       end select
    end subroutine print_tree_internal
