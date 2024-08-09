@@ -45,6 +45,7 @@ module forgex_enums_m
    enum, bind(c)
       enumerator :: FLAG_INVALID = 0
       enumerator :: FLAG_HELP
+      enumerator :: FLAG_VERBOSE
    end enum
 
 end module forgex_enums_m

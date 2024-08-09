@@ -4,13 +4,6 @@ module forgex_cli_type_m
    implicit none
    private
 
-   public :: get_arg_command_line
-   public :: get_flag_index
-   public :: operator(.in.)
-   public :: register_flag
-   public :: register_subc
-
-
    type, public :: arg_element_t
       character(:), allocatable :: v
    end type arg_element_t
@@ -40,6 +33,16 @@ module forgex_cli_type_m
       character(:), allocatable :: long_f, short_f
    end type flag_t
 
+   type(flag_t), public :: all_flags(NUM_FLAGS)
+   type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
+
+   public :: get_arg_command_line
+   public :: get_flag_index
+   public :: operator(.in.)
+   public :: register_flag
+   public :: register_subc
+
+
    interface operator(.in.)
       module procedure :: does_flag_exist
       module procedure :: does_subcommand_exist
@@ -47,8 +50,6 @@ module forgex_cli_type_m
       module procedure :: is_arg_contained_in_flags
    end interface
 
-   type(flag_t), public :: all_flags(NUM_FLAGS)
-   type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
 
 
 contains
@@ -186,10 +187,6 @@ contains
 
       subc%name = name
    end subroutine register_subc
-
-
-
-
 
 
 end module forgex_cli_type_m

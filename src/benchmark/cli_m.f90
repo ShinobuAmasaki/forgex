@@ -1,4 +1,6 @@
 module forgex_cli_m
+#if defined(IMPURE) || defined(DEBUG)
+
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
    use :: forgex_cli_parameters_m
@@ -8,6 +10,7 @@ module forgex_cli_m
 
    public :: print_help_message
    public :: print_help_message_for_debug
+
 
 
    ! The type which represents command line arguments
@@ -27,6 +30,7 @@ module forgex_cli_m
       procedure :: init_debug => cla__init_debug_subc
       procedure :: do_debug => cla__do_debug_subc
    end type cla_t
+
 
 contains
 
@@ -49,7 +53,7 @@ contains
       case (SUB_SUBC_AST)
          call cla%get_patterns()
          if (size(cla%patterns) > 1) then
-            write(stderr, '(a, i0)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
+            write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
          end if
          call do_debug_ast(cla%flags, cla%patterns(1)%p, ast, time)
 
@@ -80,18 +84,24 @@ contains
       integer :: i, j, k
       integer, allocatable :: idx(:)
 
-
       j = 0
-      do i = 3, cla%arg_info%argc
-         if (i /= cla%flag_idx(i))  then
-            j = j + 1
-            if (.not. allocated(idx)) then
-               idx = [i]
-               cycle
-            end if
-            idx = [idx, i]
+      outer: do i = 3, cla%arg_info%argc
+
+         ! 
+         if (i <= maxval(cla%flag_idx)) then
+            do k = 1, ubound(cla%flags, dim=1)
+               if ( i == cla%flag_idx(k))  cycle outer
+            end do
          end if
-      end do
+
+         j = j + 1
+         if (.not. allocated(idx)) then
+            idx = [i]
+            cycle
+         end if
+         idx = [idx, i]
+
+      end do outer
 
       allocate(cla%patterns(j))
 
@@ -199,7 +209,8 @@ contains
       implicit none
       integer :: i
 
-      call register_flag(all_flags(1),'help','--help', '-h')
+      call register_flag(all_flags(1), 'help','--help', '-h')
+      call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
    end subroutine init_flags
 
 
@@ -236,6 +247,6 @@ contains
       write(stderr, '(a)') "   thompson   Print the debug representation of a Thompson NFA."
    end subroutine print_help_message_for_debug
 
-
+#endif
 
 end module forgex_cli_m

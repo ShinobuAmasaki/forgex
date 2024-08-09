@@ -1,4 +1,5 @@
 module forgex_cli_debug_m
+#if defined(IMPURE) && defined(DEBUG)
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit, stdout => output_unit
    use :: forgex_time_measurement_m
    use :: forgex_cli_parameters_m
@@ -45,6 +46,10 @@ contains
       ast = trim(buff)
 
       write(stdout, "(a, a13)") "parse time:", get_lap_time_in_appropriate_unit(time)
+      if (flags(FLAG_VERBOSE)) then
+         write(stdout, "(a, i4)") "tree node count:", root
+         write(stdout, "(a, i4)") "tree node allocated:", size(tree, dim=1)
+      end if
       write(stdout, "(a)") ast
 
    end subroutine do_debug_ast
@@ -61,5 +66,5 @@ contains
       write(stderr, *) ""
       write(stderr, *) "OPTIONS:"
    end subroutine
-
+#endif
 end module forgex_cli_debug_m
