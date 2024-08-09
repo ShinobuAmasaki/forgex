@@ -42,5 +42,9 @@ module forgex_enums_m
       enumerator :: op_empty        ! 5  for epsilon transition
    end enum
 
+   enum, bind(c)
+      enumerator :: FLAG_INVALID = 0
+      enumerator :: FLAG_HELP
+   end enum
 
 end module forgex_enums_m
