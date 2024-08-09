@@ -96,7 +96,7 @@ contains
       allocate(self%nodes(0:new_part_end))
 
 #if defined(IMPURE) && defined(DEBUG)
-write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
+! write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
 #endif
 
       self%nodes(1:siz) = tmp(1:siz)

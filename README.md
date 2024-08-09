@@ -210,12 +210,13 @@ The following features are planned to be implemented in the future:
 
 - [ ] Deal with invalid byte strings in UTF-8
 - [ ] Optimize by literal searching method
+- [ ] Add a CLI tool for debugging and benchmarking
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
 - [x] Support UTF-8 basic feature
 - [x] Construct DFA on-the-fly
 - [x] Support CMake building
-- [x] Add Time measurement toools
+- [x] Add Time measurement toools (basic)
 - ~~Parallelize on matching~~
 
 ## Code Convention

@@ -139,7 +139,7 @@ contains
       allocate(tree(TREE_NODE_BASE:new_part_end))
 
 #if defined(IMPURE) && defined(DEBUG)
-      write(stderr, *) "Tree reallocated count: ", alloc_count+1
+      ! write(stderr, *) "Tree reallocated count: ", alloc_count+1
 #endif
 
       ! Deep copy
