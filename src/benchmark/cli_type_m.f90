@@ -1,26 +1,29 @@
 module forgex_cli_type_m
-   use, intrinsic :: iso_fortran_env, only: int32, stderr => error_unit
+   use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
+   use :: forgex_cli_parameters_m
    implicit none
    private
 
    public :: get_arg_command_line
+   public :: get_flag_index
    public :: operator(.in.)
    public :: register_flag
    public :: register_subc
 
 
-   integer, parameter, public :: NUM_FLAGS = 1
-   integer, parameter, public :: NUM_SUB_C = 1
-
-   type, public :: argv_t
+   type, public :: arg_element_t
       character(:), allocatable :: v
-   end type argv_t
+   end type arg_element_t
 
    type, public :: arg_t
       integer :: argc
-      type(argv_t), allocatable :: arg(:)
+      type(arg_element_t), allocatable :: arg(:)
       character(:), allocatable :: entire
    end type arg_t
+
+   type, public :: pattern_t
+      character(:), allocatable :: p
+   end type pattern_t
 
    type :: subsubc_t
       character(16) :: name = ''
@@ -28,7 +31,7 @@ module forgex_cli_type_m
 
    type, public :: subc_t  ! sub command type
       character(16) :: name = ''
-      type(subsubc_t), allocatable :: subsubc(:)
+      type(subsubc_t), allocatable :: subsubcmd(:)
    end type subc_t
 
    ! option flags, such as '--help', '-h'
@@ -41,15 +44,55 @@ module forgex_cli_type_m
       module procedure :: does_flag_exist
       module procedure :: does_subcommand_exist
       module procedure :: does_sub_subcommand_exist
+      module procedure :: is_arg_contained_in_flags
    end interface
+
+   type(flag_t), public :: all_flags(NUM_FLAGS)
+   type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
 
 
 contains
 
+   function get_flag_index(arg, flags) result(res)
+      implicit none
+      type(arg_element_t), intent(in) :: arg
+      type(flag_t), intent(in) :: flags(:)
+      integer :: res
+      integer :: i
+
+      res = -1
+      do i = 1, NUM_FLAGS
+         if (arg%v == flags(i)%long_f .or. arg%v == flags(i)%short_f) then
+            res = i
+            return
+         end if
+      end do
+
+   end function get_flag_index
+
+
+   function is_arg_contained_in_flags(arg, flags) result(res)
+      implicit none
+      type(arg_element_t), intent(in) :: arg
+      type(flag_t), intent(in) :: flags(:)
+      logical :: res
+
+      integer :: i
+
+      res = .false.
+      do i = 1, ubound(flags, dim=1)
+         res = res  &
+                  .or. flags(i)%long_f == arg%v &
+                  .or. flags(i)%short_f == arg%v
+         if (res) return
+      end do
+   end function is_arg_contained_in_flags
+
+
    subroutine get_arg_command_line(argc, arg, entire)
       implicit none
       integer(int32), intent(inout) :: argc  ! argc
-      type(argv_t), allocatable, intent(inout) :: arg(:)
+      type(arg_element_t), allocatable, intent(inout) :: arg(:)
       character(:), allocatable, intent(inout) :: entire
 
       integer :: i, len_ith, entire_len
@@ -59,7 +102,7 @@ contains
       call get_command(length=entire_len)
       allocate(character(entire_len) :: entire)
       call get_command(command=entire)
-      
+
       allocate(arg(0:argc))
 
       do i = 0, argc
@@ -115,21 +158,20 @@ contains
       res = .false.
 
       do i = lbound(flag_list, dim=1), ubound(flag_list, dim=1)
-         res = res & 
+         res = res &
                   .or. trim(arg) == trim(flag_list(i)%short_f) &
                   .or. trim(arg) == trim(flag_list(i)%long_f)
          if (res) return
       end do
    end function does_flag_exist
-      
 
 
-   subroutine register_flag(flag, name, long, short, has_value)
+
+   subroutine register_flag(flag, name, long, short)
       implicit none
       type(flag_t), intent(inout) :: flag
       character(*), intent(in) :: name
       character(*), intent(in) :: long, short
-      logical, intent(in) :: has_value
 
       flag%name = name
       flag%long_f = long
@@ -144,5 +186,10 @@ contains
 
       subc%name = name
    end subroutine register_subc
+
+
+
+
+
 
 end module forgex_cli_type_m

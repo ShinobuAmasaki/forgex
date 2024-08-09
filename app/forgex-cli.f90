@@ -10,22 +10,32 @@
 !! regular expressions.
 program forgex_cli
 #if defined(IMPURE) && defined(DEBUG)
+   use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
+   use :: forgex_cli_parameters_m
    use :: forgex, only: operator(.match.), operator(.in.)
+   use :: forgex_enums_m, only: FLAG_HELP
    use :: forgex_cli_m
    implicit none
 
    type(cla_t) :: cla
 
-
    call cla%init
-   call cla%read_sub
+
    call cla%collect_flags
 
-   if (cla%subc%name == 'debug') then
-      call print_help_message_for_debug
-   else
+   if (cla%flags(FLAG_HELP) .and. cla%flag_idx(FLAG_HELP) == 1) then
       call print_help_message
    end if
+
+   call cla%read_sub
+
+   select case (cla%subc%name)
+   case (SUBC_DEBUG)
+      call cla%do_debug
+   case ('')
+      write(stderr, *) "L37"
+      call print_help_message
+   end select
 
 
 #else

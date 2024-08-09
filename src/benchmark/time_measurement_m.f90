@@ -6,26 +6,22 @@
 !     A regular expression engine for Fortran.
 !     forgex_time_measurement_m module is a part of Forgex.
 !
-!! This file provides procedures for time measurement. 
+!! This file provides procedures for time measurement.
 !
 !> This module provides procedures to measure the time it takes to execute.
 module forgex_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    !$ use :: omp_lib
+   use :: forgex_cli_parameters_m
    implicit none
    private
 
-   public time_begin, time_end, time_lap
+   public :: time_begin, time_lap
+   public :: get_lap_time_in_appropriate_unit
 
-   integer, parameter :: record_siz = 200
    real(real64) :: begin_s, last_s, end_s
    integer :: i, ii
-   type record
-      real(real64) :: lap_time
-      character(:), allocatable :: description
-   end type record
 
-   type(record) :: records(record_siz)
 
 contains
 
@@ -43,38 +39,45 @@ contains
 
    end subroutine time_begin
 
-
-   subroutine time_lap(description)
+   function time_lap() result(res)
       implicit none
-      character(*), intent(in) :: description
-
+      real(real64) :: res
 
       call cpu_time(end_s)
       !$ end_s = omp_get_wtime()
 
-      records(i)%lap_time = end_s - last_s
-      records(i)%description = trim(description)
-      i = i + 1
+      res = end_s - last_s
       last_s = end_s
 
-   end subroutine time_lap
+   end function time_lap
 
-   subroutine time_end(description)
+
+   function get_lap_time_in_appropriate_unit(lap_time) result(res)
       implicit none
-      character(*), intent(in) :: description
+      real(real64), intent(in) :: lap_time
+      character(NUM_DIGIT_TIME) :: res
 
-      call cpu_time(end_s)
-      !$ end_s = omp_get_wtime()
+      character(2) :: unit
+      real(real64) :: multiplied
 
-      records(i)%lap_time = end_s - begin_s
-      records(i)%description = "sec. : TOTAL: "//trim(description)
+      unit = 's'
 
-      do ii = 1, i-1
-         write(stderr, "(f20.13, a, a)") records(ii)%lap_time, "sec. : "//records(ii)%description
-      end do
+      if (lap_time >= 6d1) then
+         unit = 'm'
+         multiplied = lap_time / 6d1
+      else if (lap_time >= 1d0) then
+         unit = 's'
+         multiplied = lap_time
+      else if (lap_time >= 1d-3) then
+         unit = 'ms'
+         multiplied = lap_time * 1d3
+      else if (lap_time >= 1d-6) then
+         unit = 'μs'
+         multiplied = lap_time * 1d6
+      end if
 
+      write(res, '(f6.1, a)') multiplied, unit
 
-      write(stderr,*) "---------------------------------------------------------"
-      write(stderr,"(f20.13, a, a)") end_s - begin_s, " sec. : TOTAL: ", trim(description)
-   end subroutine time_end
+   end function get_lap_time_in_appropriate_unit
+
 end module forgex_time_measurement_m
