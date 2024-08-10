@@ -12,6 +12,7 @@ module forgex_cli_debug_m
 contains
 
    subroutine do_debug_ast(flags, pattern, ast, time)
+      use :: forgex_cli_utils_m
       use :: forgex_enums_m
       use :: forgex_syntax_tree_m
       implicit none
@@ -45,11 +46,23 @@ contains
 
       ast = trim(buff)
 
-      write(stdout, "(a, a13)") "parse time:", get_lap_time_in_appropriate_unit(time)
-      if (flags(FLAG_VERBOSE)) then
-         write(stdout, "(a, i4)") "tree node count:", root
-         write(stdout, "(a, i4)") "tree node allocated:", size(tree, dim=1)
-      end if
+      output: block
+         character(NUM_DIGIT_KEY) :: parse_time, tree_count, tree_allocated, cbuff(3)
+         parse_time = "parse time:"
+         tree_count = "tree node count:"
+         tree_allocated = "tree node allocated:"
+
+         if (flags(FLAG_VERBOSE)) then
+            cbuff = [parse_time, tree_count, tree_allocated]
+            call right_justify(cbuff)
+
+            write(stdout, "(a, a13)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
+            write(stdout, "(a, i8)") trim(cbuff(2)), root
+            write(stdout, "(a, i8)") trim(cbuff(3)), size(tree, dim=1)
+         else
+            write(stdout, "(a, a)") trim(parse_time), get_lap_time_in_appropriate_unit(time)
+         end if
+      end block output
       write(stdout, "(a)") ast
 
    end subroutine do_debug_ast

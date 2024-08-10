@@ -5,6 +5,7 @@ module forgex_cli_parameters_m
    integer, parameter, public :: NUM_FLAGS = 2
    integer, parameter, public :: NUM_SUB_C = 1
    integer, parameter, public :: NUM_DIGIT_TIME = 13
+   integer, parameter, public :: NUM_DIGIT_KEY = 32
 
    integer, parameter, public :: TREE_BUFF_LEN = 2**16
 

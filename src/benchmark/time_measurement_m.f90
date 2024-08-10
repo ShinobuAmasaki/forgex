@@ -136,7 +136,7 @@ contains
          multiplied = lap_time * 1d6
       end if
 
-      write(res, '(f6.1, a)') multiplied, unit
+      write(res, '(f10.1, a)') multiplied, unit
 
    end function get_lap_time_in_appropriate_unit
 
