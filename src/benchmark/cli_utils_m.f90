@@ -27,9 +27,16 @@ contains
       use :: forgex_enums_m
       implicit none
       integer :: res
+      integer, save :: res_save
+      logical, save :: is_first = .true.
       
       character(LEN_ENV_VAR) :: val1, val2
       integer :: len1, len2, stat1, stat2
+
+      if (.not. is_first) then
+         res = res_save
+         return
+      end if
 
       res = OS_UNKNOWN
 
@@ -37,7 +44,9 @@ contains
 
       if (stat1 == 0 .and. len1 > 0) then
          if ("Windows_NT" .in. val1) then
-            res = OS_WINDOWS
+            res_save = OS_WINDOWS
+            res = res_save
+            is_first = .false.
             return
          end if
       end if
