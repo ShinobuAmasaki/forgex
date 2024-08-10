@@ -14,4 +14,6 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: SUB_SUBC_AST = "ast"
    character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
 
+   character(*), parameter, public :: fmt_out_int = "(a, i8)"
+
 end module forgex_cli_parameters_m

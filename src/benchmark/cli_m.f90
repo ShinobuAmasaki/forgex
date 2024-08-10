@@ -46,15 +46,17 @@ contains
          stop
       end if
 
+      call cla%get_patterns()
+      if (size(cla%patterns) > 1) then
+         write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
+      end if
+
       select case (cla%sub_subc)
       case (SUB_SUBC_AST)
-         call cla%get_patterns()
-         if (size(cla%patterns) > 1) then
-            write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
-         end if
          call do_debug_ast(cla%flags, cla%patterns(1)%p)
 
       case (SUB_SUBC_THOMPSON)
+         call do_debug_thompson(cla%flags, cla%patterns(1)%p)
 
       end select
 

@@ -138,23 +138,27 @@ contains
 
 #if defined(IMPURE) && defined(DEBUG)
 
-   subroutine nfa_graph__print(self)
+   subroutine nfa_graph__print(self, uni, nfa_exit)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
       use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(in) :: self
+      integer(int32), intent(in) :: uni
+      integer(int32), intent(in) :: nfa_exit
 
       type(nfa_state_node_t) :: node
       type(nfa_transition_t) :: transition
       character(:), allocatable :: buf
       integer(int32) :: i, j, k
 
-      write(stderr, *) "--- PRINT NFA ---"
-
       do i = self%nfa_base+1, self%nfa_top
 
-         write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
+         write(uni, '(a, i6, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
+         if (i == nfa_exit) then
+            write(uni, '(a)') "<Accepted>"
+            cycle
+         end if
 
          do j = 1, node%forward_top
             if (.not. allocated(node%forward)) cycle
@@ -166,15 +170,14 @@ contains
                   if (transition%c(k) == SEG_INIT) cycle
 
                   buf = transition%c(k)%print()
-
                   if (transition%c(k) == SEG_EPSILON) buf = '?'
-                  write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
+                  write(uni, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
 
                enddo
             end if
          end do
 
-         write(stderr, *) ''
+         write(uni, '(a)') ""
       end do
    end subroutine nfa_graph__print
 
