@@ -833,7 +833,7 @@ contains
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer(int32),             intent(inout) :: top
 
-      type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty
+      type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty_r
 
 
       cr = make_atom(SEG_CR)
@@ -848,11 +848,11 @@ contains
       node_r = make_tree_node(op_union)
       call register_and_connector(tree, top, node_r, lf, node_r_r)
 
-      empty = make_atom(SEG_EMPTY)
-      call register_and_connector(tree, top, empty, terminal_node, terminal_node)
+      empty_r = make_atom(SEG_EMPTY)
+      call register_and_connector(tree, top, empty_r, terminal_node, terminal_node)
 
       node = make_tree_node(op_union)
-      call register_and_connector(tree, top, node, node_r, empty)
+      call register_and_connector(tree, top, node, node_r, empty_r)
 
    end subroutine make_tree_caret_dollar
 
