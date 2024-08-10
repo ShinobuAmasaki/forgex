@@ -219,7 +219,7 @@ contains
 
       ! Fill the new list with the component segments
       count = 1
-      current_min = UTF8_CODE_EMPTY + 1
+      current_min = UTF8_CODE_MIN
 
       do i = 1, n
          if (current_min < list(i)%min) then
