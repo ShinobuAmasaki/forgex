@@ -33,7 +33,6 @@ program forgex_cli
    case (SUBC_DEBUG)
       call cla%do_debug
    case ('')
-      write(stderr, *) "L37"
       call print_help_message
    end select
 

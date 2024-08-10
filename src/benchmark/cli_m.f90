@@ -5,6 +5,7 @@ module forgex_cli_m
    use :: forgex, only: operator(.match.)
    use :: forgex_cli_parameters_m
    use :: forgex_cli_type_m
+   use :: forgex_cli_utils_m
    implicit none
    private
 
@@ -179,6 +180,11 @@ contains
       class(cla_t), intent(inout) :: cla
 
       character(:), allocatable :: subc
+
+      if (ubound(cla%arg_info%arg, dim=1) < 1) then
+         subc = ""
+         return
+      end if
 
       subc = trim(cla%arg_info%arg(1)%v)
       if (subc .in. all_sub_cmds) then
