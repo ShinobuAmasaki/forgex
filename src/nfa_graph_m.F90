@@ -14,7 +14,7 @@ module forgex_nfa_graph_m
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
          NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
    use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t, &
-         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa, disjoin_nfa
+         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa
 
    implicit none
    private
@@ -74,17 +74,6 @@ contains
       call generate_nfa(tree, tree_root, self%nodes, self%nfa_top, entry, exit)
 
    end subroutine nfa_graph__generate
-
-
-   ! pure subroutine nfa_graph__disjoin(self, all_segments)
-   !    use :: forgex_segment_m
-   !    implicit none
-   !    class(nfa_graph_t), intent(inout) :: self
-   !    type(segment_t), allocatable, intent(inout) :: all_segments(:)
-
-   !    call disjoin_nfa(self%nodes, self%nfa_top, all_segments)
-
-   ! end subroutine nfa_graph__disjoin
 
 
    pure recursive subroutine nfa_graph__mark_epsilon_transition(self, state_set, idx)

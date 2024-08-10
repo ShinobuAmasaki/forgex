@@ -304,15 +304,31 @@ contains
 
       ! Dequeue
       ! Allocate memory for the segment list and dequeue all segments for the priority queue.
-      num_f = queue_f%number
-      allocate(seg_list(num_f))
-      do j = 1, num_f
-         call queue_f%dequeue(seg_list(j))
-      end do
+      block
+         integer :: m
+         type(segment_t) :: cache
+         num_f = queue_f%number
 
-      !-- The seg_list arrays are now sorted.
+         allocate(seg_list(num_f))
+         m = 0
+         do j = 1, num_f
+            if (j == 1) then
+               m = m + 1
+               call queue_f%dequeue(seg_list(j))
+               cycle
+            end if
 
-      seg_list = seg_list(:num_f) ! reallocation implicitly
+            call queue_f%dequeue(cache)
+            if (seg_list(m) /= cache) then
+               m = m + 1
+               seg_list(m) = cache
+            end if
+         end do
+
+         !-- The seg_list arrays are now sorted.
+         seg_list = seg_list(:m) ! reallocation implicitly
+      end block
+
 
       ! Disjoin the segment lists to ensure no over laps
       call disjoin(seg_list)
