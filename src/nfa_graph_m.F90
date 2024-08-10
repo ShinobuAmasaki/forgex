@@ -137,11 +137,9 @@ contains
       character(:), allocatable :: buf
       integer(int32) :: i, j, k
 
-      write(stderr, *) "--- PRINT NFA ---"
-
       do i = self%nfa_base, self%nfa_top
 
-         write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
+         write(uni, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
          if (i == nfa_exit) then
             write(uni, '(a)') "<Accepted>"
