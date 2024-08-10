@@ -87,7 +87,7 @@ contains
       self%alloc_count_node = prev_count + 1
 
       new_part_begin = siz + 1
-      new_part_end = self%alloc_count_node * DFA_STATE_UNIT
+      new_part_end = DFA_STATE_UNIT * 2**self%alloc_count_node
 
       if (new_part_end > DFA_STATE_HARD_LIMIT) then
          error stop "Too many DFA state nodes requested."

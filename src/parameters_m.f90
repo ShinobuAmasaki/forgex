@@ -80,10 +80,10 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
 
    !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 32
+   integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 16
 
    !> Upper limit of segments size of NFA transition instance
-   integer(int32), parameter, public :: NFA_C_SIZE = 32
+   integer(int32), parameter, public :: NFA_C_SIZE = 16
 
    integer(int32), parameter, public :: ZERO_C_TOP = 0
 
@@ -99,15 +99,15 @@ module forgex_parameters_m
 
    !> This constant defines the unit of reallocation for the array representing
    !> a DFA graph.
-   integer(int32), parameter, public :: DFA_STATE_UNIT = 128
+   integer(int32), parameter, public :: DFA_STATE_UNIT = 16
 
    !> This constant is provided to define the upper limit of DFA nodes,
    !> but is currently only used to define DFA_STATE_HARD_LIMIT.
-   integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
+   integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024*16 +1
 
    !> If this limit is exceeded, program will do ERROR STOP.
    !> This hard limit is approximately on the order of gigabytes.
-   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT*16 + 1
+   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT
 
    !> This constant is used for the purpose of determining invalid DFA index.
    integer(int32), parameter, public :: DFA_INVALID_INDEX = 0
