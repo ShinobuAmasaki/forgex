@@ -50,7 +50,7 @@ contains
       type(segment_t), allocatable, intent(inout) :: all_segments(:)
 
       call build_nfa_graph(tree, root_i, self%nodes, nfa_entry, nfa_exit, self%nfa_top, all_segments)
-
+      self%nfa_limit = ubound(self%nodes, dim=1)
    end subroutine nfa_graph__build
 
 
@@ -72,19 +72,7 @@ contains
       integer(int32), intent(in) :: entry, exit
 
       call generate_nfa(tree, tree_root, self%nodes, self%nfa_top, entry, exit)
-
    end subroutine nfa_graph__generate
-
-
-   ! pure subroutine nfa_graph__disjoin(self, all_segments)
-   !    use :: forgex_segment_m
-   !    implicit none
-   !    class(nfa_graph_t), intent(inout) :: self
-   !    type(segment_t), allocatable, intent(inout) :: all_segments(:)
-
-   !    call disjoin_nfa(self%nodes, self%nfa_top, all_segments)
-
-   ! end subroutine nfa_graph__disjoin
 
 
    pure recursive subroutine nfa_graph__mark_epsilon_transition(self, state_set, idx)
@@ -113,7 +101,6 @@ contains
          end do
          j = j + 1
       end do
-
    end subroutine nfa_graph__mark_epsilon_transition
 
 
@@ -133,7 +120,6 @@ contains
 
          end if
       end do
-
    end subroutine nfa_graph__collect_epsilon_transition
 
 #if defined(IMPURE) && defined(DEBUG)
@@ -151,7 +137,7 @@ contains
 
       write(stderr, *) "--- PRINT NFA ---"
 
-      do i = self%nfa_base+1, self%nfa_top
+      do i = self%nfa_base, self%nfa_top
 
          write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)

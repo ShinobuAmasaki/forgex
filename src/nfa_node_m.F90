@@ -16,7 +16,8 @@
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
-      NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
+      NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_UNIT, NFA_STATE_LIMIT, &
+      NFA_C_SIZE
    use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
       seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
 
@@ -72,7 +73,7 @@ contains
       integer(int32) :: i, i_begin, i_end ! index for states array
 
       i_begin = NFA_STATE_BASE
-      i_end   = NFA_STATE_LIMIT
+      i_end   = NFA_STATE_UNIT
 
       ! initialize
       nfa_top = 0
@@ -113,7 +114,7 @@ contains
 
       if (.not. allocated(nfa)) return
 
-      do i = NFA_STATE_BASE, NFA_STATE_LIMIT
+      do i = NFA_STATE_BASE, ubound(nfa, dim=1)
          if (allocated(nfa(i)%forward)) deallocate(nfa(i)%forward)
          if (allocated(nfa(i)%backward)) deallocate(nfa(i)%backward)
       end do
@@ -130,12 +131,41 @@ contains
 
    end subroutine make_nfa_node
 
+   pure function is_exceeded (nfa_top, nfa_graph) result(res)
+      implicit none
+      integer(int32), intent(in) :: nfa_top
+      type(nfa_state_node_t), intent(in) :: nfa_graph(:)
+      logical :: res
+
+      res = ubound(nfa_graph, dim=1) < nfa_top
+
+   end function is_exceeded
+
+   pure subroutine reallocate_nfa(nfa_graph)
+      implicit none
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
+
+      type(nfa_state_node_t), allocatable :: tmp(:)
+      integer :: siz
+
+      siz = ubound(nfa_graph, dim=1)
+
+      call move_alloc(nfa_graph, tmp)
+
+      allocate(nfa_graph(NFA_STATE_BASE:siz*2))
+
+      nfa_graph(NFA_STATE_BASE:siz) = tmp(NFA_STATE_BASE:siz)
+
+      nfa_graph(siz+1:siz*2)%forward_top = 1
+      nfa_graph(siz+1:siz*2)%backward_top = 1
+
+   end subroutine
 
    pure recursive subroutine generate_nfa(tree, tree_idx, nfa_graph, nfa_top, entry, exit)
       use :: forgex_enums_m
       implicit none
       type(tree_node_t), allocatable, intent(in) :: tree(:)
-      type(nfa_state_node_t),  intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
       integer(int32), intent(in) :: tree_idx
       integer(int32), intent(inout) :: nfa_top
       integer(int32), intent(in) :: entry
@@ -167,8 +197,15 @@ contains
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node1 = nfa_top
+
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node2 = nfa_top
 
          call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
@@ -181,7 +218,11 @@ contains
       case (op_concat)
          ! Handle concatenation operations by recursively generating NFA for left and right subtrees.
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node1 = nfa_top
+
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, node1)
          call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
@@ -196,7 +237,7 @@ contains
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
       class(nfa_state_node_t), intent(inout) :: self
-      type(nfa_state_node_t), intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(inout) :: nfa_graph(:)
       integer(int32), intent(in) :: src, dst
       type(segment_t) ,intent(in) :: c
 
@@ -273,7 +314,7 @@ contains
       use :: forgex_segment_m
       use :: forgex_segment_disjoin_m
       implicit none
-      type(nfa_state_node_t), intent(inout) :: graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(inout) :: graph(:)
       integer, intent(in) :: nfa_top
       type(segment_t), allocatable, intent(inout) :: seg_list(:)
 

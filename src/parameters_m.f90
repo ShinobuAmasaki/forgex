@@ -74,7 +74,10 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
 
    !> Lower end of NFA state instance
-   integer(int32), parameter, public :: NFA_STATE_BASE = 0
+   integer(int32), parameter, public :: NFA_STATE_BASE = 1
+
+   !> This constant defines the unit of  reallocation for the array representing a NFA graph.
+   integer(int32), parameter, public :: NFA_STATE_UNIT = 16
 
    !> Upper limit of NFA state nodes
    integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
