@@ -11,7 +11,8 @@ module forgex_cli_m
    public :: print_help_message
    public :: print_help_message_for_debug
 
-
+   type(flag_t), public :: all_flags(NUM_FLAGS)
+   type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
 
    ! The type which represents command line arguments
    type, public :: cla_t
