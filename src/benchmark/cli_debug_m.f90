@@ -1,7 +1,7 @@
 module forgex_cli_debug_m
 #if defined(IMPURE) && defined(DEBUG)
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit, stdout => output_unit
-   use :: forgex_time_measurement_m
+   use :: forgex_cli_time_measurement_m
    use :: forgex_cli_parameters_m
    use :: forgex_cli_type_m
    use :: forgex_enums_m

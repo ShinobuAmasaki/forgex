@@ -9,7 +9,7 @@
 !! This file provides procedures for time measurement.
 !
 !> This module provides procedures to measure the time it takes to execute.
-module forgex_time_measurement_m
+module forgex_cli_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    use, intrinsic :: iso_c_binding, only: c_long_long, c_bool
    !$ use :: omp_lib
@@ -140,4 +140,4 @@ contains
 
    end function get_lap_time_in_appropriate_unit
 
-end module forgex_time_measurement_m
+end module forgex_cli_time_measurement_m
