@@ -11,17 +11,17 @@ module forgex_parameters_m
 
    !> This constant defines the unit for adding nodes in the abstract syntax tree (AST).
    !> If it's too large it will cause a stack overflow.
-   integer(int32), parameter :: TREE_NODE_UNIT = 128
+   integer(int32), parameter :: TREE_NODE_UNIT = 32
 
    !> This constant defines the lower bound of the array that represents AST.
    integer(int32), parameter :: TREE_NODE_BASE = 1
 
    !> The initial maximum size of nodes for building AST.
-   integer(int32), parameter :: TREE_NODE_LIMIT = TREE_NODE_UNIT
+   integer(int32), parameter :: TREE_NODE_LIMIT = TREE_NODE_UNIT*64 ! 32x64 = 2048 elements
 
    !> The maximum value that can be allocated to a syntax tree graph;
    !> exceeding this will cause ERROR STOP.
-   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_UNIT*16   ! 128x16 = 2048 elements
+   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_LIMIT
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !

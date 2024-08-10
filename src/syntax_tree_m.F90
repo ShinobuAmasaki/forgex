@@ -100,8 +100,8 @@ contains
       integer :: i
 
       ! Initial allocation of the tree allocatable
-      allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT))
-      tree(TREE_NODE_BASE:TREE_NODE_LIMIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_LIMIT)]
+      allocate(tree(TREE_NODE_BASE:TREE_NODE_UNIT))
+      tree(TREE_NODE_BASE:TREE_NODE_UNIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_UNIT)]
 
       tape%idx = 1
       tape%str = str
@@ -123,24 +123,20 @@ contains
       integer                     :: new_part_begin, new_part_end, i
 
       if (.not. allocated(tree)) then
-         allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT))
+         allocate(tree(TREE_NODE_BASE:TREE_NODE_UNIT))
          return
       end if
 
-      new_part_begin = TREE_NODE_UNIT*(alloc_count) +1
-      new_part_end   = TREE_NODE_UNIT*(alloc_count+1)
+      new_part_begin = ubound(tree, dim=1) + 1
+      new_part_end   = ubound(tree, dim=1)*2
 
-      if (TREE_NODE_UNIT*(alloc_count+1) > TREE_NODE_HARD_LIMIT) then
+      if (new_part_end > TREE_NODE_HARD_LIMIT) then
          error stop "Exceeded the maximum number of tree nodes can be allocated."
       end if
 
       call move_alloc(tree, tmp)
 
       allocate(tree(TREE_NODE_BASE:new_part_end))
-
-#if defined(IMPURE) && defined(DEBUG)
-      ! write(stderr, *) "Tree reallocated count: ", alloc_count+1
-#endif
 
       ! Deep copy
       tree(TREE_NODE_BASE:new_part_begin-1) = tmp(TREE_NODE_BASE:new_part_begin-1)
