@@ -1,3 +1,4 @@
+// This file is a stub to building on Unix-like systems.
 #if defined(_WIN32) || defined(_WIN64)
 #else
 #include <stdbool.h>
