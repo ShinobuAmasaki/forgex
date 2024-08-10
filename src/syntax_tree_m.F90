@@ -955,7 +955,7 @@ contains
       integer :: i, k
 
       write(stderr, '(1x, a)') '  own index|  operation|     parent|       left|      right|   registered|  segments'
-      do i = TREE_NODE_BASE, TREE_NODE_LIMIT
+      do i = TREE_NODE_BASE, ubound(tree, dim=1)
          if (tree(i)%is_registered) then
             write(stderr, '(5i12, a, 10x, 1l, 3x)', advance='no') tree(i)%own_i, &
                tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
