@@ -23,8 +23,8 @@ module forgex_cli_time_measurement_m
    real(real64) :: begin_s, last_s, end_s
    integer :: i, ii
 
-   
-   !! cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b
+
+
 #if defined(_WIN32) || defined(_WIN64)
 
    integer(c_long_long) :: time_begin_qhc, time_end_qhc, frequency
@@ -38,8 +38,6 @@ module forgex_cli_time_measurement_m
          integer(c_long_long), intent(out) :: lPerformanceCount_count
          logical(c_bool) :: is_succeeded
       end function QueryPerformanceCounter
-   end interface
-   interface
       function QueryPerformanceFrequency(lFrequency_countPerSec) result(is_supported) &
             bind(c, name="QueryPerformanceFrequency")
          use, intrinsic :: iso_c_binding
@@ -48,6 +46,7 @@ module forgex_cli_time_measurement_m
          logical(c_bool) :: is_supported
       end function QueryPerformanceFrequency
    end interface
+   !! cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b
 #endif
 
 contains

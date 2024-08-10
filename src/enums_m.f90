@@ -46,6 +46,7 @@ module forgex_enums_m
       enumerator :: FLAG_INVALID = 0
       enumerator :: FLAG_HELP
       enumerator :: FLAG_VERBOSE
+      enumerator :: FLAG_NO_TABLE
    end enum
 
 end module forgex_enums_m

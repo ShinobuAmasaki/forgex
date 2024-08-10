@@ -172,11 +172,16 @@ contains
       implicit none
       type(flag_t), intent(inout) :: flag
       character(*), intent(in) :: name
-      character(*), intent(in) :: long, short
+      character(*), intent(in) :: long
+      character(*), intent(in), optional :: short
 
       flag%name = name
       flag%long_f = long
-      flag%short_f = short
+      if (present(short)) then
+         flag%short_f = short
+      else
+         flag%short_f = INVALID_FLAG
+      end if
    end subroutine
 
 

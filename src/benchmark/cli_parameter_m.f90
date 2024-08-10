@@ -2,7 +2,7 @@ module forgex_cli_parameters_m
    implicit none
    private
 
-   integer, parameter, public :: NUM_FLAGS = 2
+   integer, parameter, public :: NUM_FLAGS = 3
    integer, parameter, public :: NUM_SUB_C = 1
    integer, parameter, public :: NUM_DIGIT_TIME = 13
    integer, parameter, public :: NUM_DIGIT_KEY = 32
@@ -13,6 +13,8 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: SUBC_DEBUG = "debug"
    character(*), parameter, public :: SUB_SUBC_AST = "ast"
    character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
+
+   character(*), parameter, public :: INVALID_FLAG = "INVALID"
 
    character(*), parameter, public :: fmt_out_int = "(a, i8)"
    character(*), parameter, public :: fmta = "(a)"
