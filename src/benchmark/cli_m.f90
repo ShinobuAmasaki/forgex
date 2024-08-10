@@ -232,6 +232,7 @@ contains
       call register_flag(all_flags(1), 'help','--help', '-h')
       call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
       call register_flag(all_flags(3), 'no-table', '--no-table')
+      call register_flag(all_flags(4), 'table-only', '--table-only')
    end subroutine init_flags
 
 

@@ -2,7 +2,7 @@ module forgex_cli_parameters_m
    implicit none
    private
 
-   integer, parameter, public :: NUM_FLAGS = 3
+   integer, parameter, public :: NUM_FLAGS = 4
    integer, parameter, public :: NUM_SUB_C = 1
    integer, parameter, public :: NUM_DIGIT_TIME = 13
    integer, parameter, public :: NUM_DIGIT_KEY = 32

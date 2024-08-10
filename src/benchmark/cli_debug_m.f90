@@ -69,6 +69,8 @@ contains
             write(stdout, "(a, a)") trim(parse_time), get_lap_time_in_appropriate_unit(time)
          end if
       end block output
+
+      if (flags(FLAG_TABLE_ONLY)) return
       write(stdout, "(a)") ast
 
    end subroutine do_debug_ast
@@ -121,7 +123,8 @@ contains
       close(uni)
 
       output: block
-         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, nfa_count, nfa_allocated, tree_count, tree_allocated, cbuff(6) = ''
+         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, nfa_count, nfa_allocated, tree_count, tree_allocated
+         character(NUM_DIGIT_KEY) :: cbuff(6) = ''
          parse_time = "parse time:"
          nfa_time = "compile nfa time:"
          nfa_count = "nfa states:"
@@ -140,7 +143,6 @@ contains
             write(stdout, fmt_out_int) trim(cbuff(4)), size(tree, dim=1)
             write(stdout, fmt_out_int) trim(cbuff(5)), automaton%nfa%nfa_top
             write(stdout, fmt_out_int) trim(cbuff(6)), automaton%nfa%nfa_limit
-            write(stdout, *) ""
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
@@ -149,9 +151,12 @@ contains
 
             write(stdout, "(a, a)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, "(a, a)") trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
-            write(stdout, *) ""
+
          end if
 
+         if (flags(FLAG_TABLE_ONLY)) return
+         
+         write(stdout, *) ""
          write(stdout, fmta) "=== NFA ==="
          write(stdout, fmta) trim(nfa)
          write(stdout, fmta) "Note: all segments of NFA were disjoined with overlapping portions."
@@ -174,6 +179,7 @@ contains
       write(stderr, fmta) "OPTIONS:"
       write(stderr, fmta) "   --verbose      Print more information."
       write(stderr, fmta) "   --no-table     Passing this flag suppresses the output of the property information table."
+      write(stderr, fmta) "   --table-only   Print the property information table only."
       stop
    end subroutine
 
@@ -186,7 +192,8 @@ contains
       write(stderr, fmta) ""
       write(stderr, fmta) "OPTIONS:"
       write(stderr, fmta) "   --verbose      Print more information."
-      write(stderr, fmta) "   --no-table     Passing this flag suppresses the output of the property information table."
+      write(stderr, fmta) "   --no-table     Suppresses the output of the property information table."
+      write(stderr, fmta) "   --table-only   Print the property information table only."
       stop
    end subroutine print_help_debug_thompson
 #endif

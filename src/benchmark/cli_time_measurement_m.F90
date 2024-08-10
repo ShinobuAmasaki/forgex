@@ -30,19 +30,19 @@ module forgex_cli_time_measurement_m
    logical(c_bool) :: is_succeeded = .false.
 
    interface
-      function QueryPerformanceCounter(PerformanceCount_count) result(is_succeeded) &
+      function QueryPerformanceCounter(PerformanceCount_count) result(is_succeeded_c) &
             bind(c, name="QueryPerformanceCounter")
          use, intrinsic :: iso_c_binding
          implicit none
          integer(c_long_long), intent(out) :: PerformanceCount_count
-         logical(c_bool) :: is_succeeded
+         logical(c_bool) :: is_succeeded_c
       end function QueryPerformanceCounter
-      function QueryPerformanceFrequency(Frequency_countPerSec) result(is_supported) &
+      function QueryPerformanceFrequency(Frequency_countPerSec) result(is_supported_c) &
             bind(c, name="QueryPerformanceFrequency")
          use, intrinsic :: iso_c_binding
          implicit none
          integer(c_long_long), intent(out) :: Frequency_countPerSec
-         logical(c_bool) :: is_supported
+         logical(c_bool) :: is_supported_c
       end function QueryPerformanceFrequency
    end interface
    !! cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b
