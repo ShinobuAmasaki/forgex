@@ -131,8 +131,13 @@ contains
       else if (lap_time >= 1d-3) then
          unit = 'ms'
          multiplied = lap_time * 1d3
-      else if (lap_time >= 1d-6) then
+      ! else if (lap_time >= 1d-6) then
+      else
+#if defined(_WIN32) || defined(_WIN64)
+         unit = 'us'
+#else
          unit = 'μs'
+#endif
          multiplied = lap_time * 1d6
       end if
 
