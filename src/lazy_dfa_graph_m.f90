@@ -138,6 +138,7 @@ contains
       res = DFA_INVALID_INDEX
 
       do i = DFA_INITIAL_INDEX, self%dfa_top
+         if (.not. allocated(self%nodes(i)%nfa_set%vec)) cycle
          is_registered = equivalent_nfa_state_set(self%nodes(i)%nfa_set, set)
          if (is_registered) then
             res = i
@@ -162,6 +163,7 @@ contains
 
       tra%c = seg
       tra%dst = dst
+
       tra%nfa_set = state_set
 
       call self%nodes(src)%add_transition(tra)

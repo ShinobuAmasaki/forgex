@@ -78,9 +78,11 @@ contains
          error stop "DFA graph initialization is failed."
       end if
 
+      call init_state_set(self%entry_set, self%nfa%nfa_top)
       ! Constructing a DFA initial state from the NFA initial state.
       call add_nfa_state(self%entry_set, self%nfa_entry)
 
+      call init_state_set(initial_closure, self%nfa%nfa_top)
       ! Add an NFA node reachable by epsilon transitions to the entrance state set within DFA.
       call self%epsilon_closure(self%entry_set, initial_closure)
 
@@ -175,6 +177,7 @@ contains
       i = self%dfa%dfa_top
       self%dfa%dfa_top = i + 1 ! increment dfa_top
 
+
       self%dfa%nodes(i)%nfa_set    = state_set
       self%dfa%nodes(i)%accepted   = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
@@ -210,6 +213,8 @@ contains
       type(segment_t), allocatable :: segs(:)
       type(nfa_transition_t)       :: n_tra
 
+
+      call init_state_set(state_set, self%nfa%nfa_top)
 
       current_set = self%dfa%nodes(curr_i)%nfa_set
 
@@ -279,7 +284,7 @@ contains
       next = DFA_INVALID_INDEX
 
       ! Scan the entire DFA nodes.
-      do i = 1, self%dfa%dfa_top
+      do i = 1, self%dfa%dfa_top-1
 
          ! If there is an existing node corresponding to the NFA state set,
          ! return the index of that node.
@@ -304,6 +309,7 @@ contains
 
       type(nfa_state_set_t) :: set
       integer(int32)        :: next
+
 
       call self%destination(curr, symbol, next, set)
 
@@ -368,7 +374,8 @@ contains
 
       ! 遷移を追加する
       ! Add a DFA transition from `prev` to `next` for the given `symbol`.
-      call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
+      call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i,  &
+             which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
 

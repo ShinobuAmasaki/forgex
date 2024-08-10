@@ -85,6 +85,7 @@ contains
 
       type(nfa_transition_t) :: p
       integer :: j, k
+
       call add_nfa_state(state_set, idx)
 
       j = 1

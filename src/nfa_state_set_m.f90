@@ -23,6 +23,7 @@ module forgex_nfa_state_set_m
    public :: check_nfa_state
    public :: equivalent_nfa_state_set
    public :: collect_epsilon_transition
+   public :: init_state_set
 
 #if defined(IMPURE) && defined(DEBUG)
    public :: print_nfa_state_set
@@ -30,10 +31,22 @@ module forgex_nfa_state_set_m
 
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
-      logical :: vec(NFA_STATE_LIMIT) = .false.
+      logical, allocatable :: vec(:)
    end type
 
 contains
+
+   pure subroutine init_state_set(state_set, ntop)
+      implicit none
+      type(nfa_state_set_t), intent(inout) :: state_set
+      integer(int32), intent(in) :: ntop
+
+      if (.not. allocated(state_set%vec)) then
+         allocate(state_set%vec(ntop))
+         state_set%vec(:) = .false.
+      end if
+
+   end subroutine init_state_set
 
 
    !> This function checks if the arguement 'state' (set of NFA state) includes state 's'.
@@ -117,7 +130,7 @@ contains
    pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
-      type(nfa_state_node_t), intent(in)    :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(in)    :: nfa_graph(:)
       integer(int32),         intent(in)    :: nfa_top
       type(nfa_state_set_t),  intent(inout) :: nfa_set
 
