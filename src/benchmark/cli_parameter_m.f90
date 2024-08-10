@@ -15,6 +15,7 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
 
    character(*), parameter, public :: fmt_out_int = "(a, i8)"
+   character(*), parameter, public :: fmta = "(a)"
 
 #if defined(_WIN32) || defined(_WIN64)
    character(*), parameter, public :: newline = char(13)//char(10)

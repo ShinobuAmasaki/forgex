@@ -13,6 +13,8 @@ module forgex_cli_debug_m
 
    public :: do_debug_ast
    public :: do_debug_thompson
+   public :: print_help_debug_ast
+   public :: print_help_debug_thompson
 
 contains
 
@@ -43,7 +45,7 @@ contains
       allocate(character(siz+2) :: buff)
 
       rewind(uni)
-      read(uni, '(a)', iostat=ierr) buff
+      read(uni, fmta, iostat=ierr) buff
       close(uni)
 
       ast = trim(buff)
@@ -89,6 +91,7 @@ contains
       nfa = ''
 
       if (flags(FLAG_HELP)) call print_help_debug_thompson
+      if (pattern == '') call print_help_debug_thompson
 
       call time_begin()
       call build_syntax_tree(trim(pattern), tape, tree, root)
@@ -103,7 +106,8 @@ contains
       rewind(uni)
       ierr = 0
       do while (ierr == 0)
-         read(uni, '(a)', iostat=ierr) line
+         read(uni, fmta, iostat=ierr) line
+         if (ierr /= 0) exit
          nfa = nfa//trim(line)//newline
       end do
       close(uni)
@@ -137,10 +141,10 @@ contains
          end if
 
          write(stdout, *) ""
-         write(stdout, '(a)') "=== NFA ==="
-         write(stdout, '(a)') trim(nfa)
-         write(stdout, '(a)') "Note: all segments of NFA were disjoined with overlapping portions."
-         write(stdout, '(a)') "==========="
+         write(stdout, fmta) "=== NFA ==="
+         write(stdout, fmta) trim(nfa)
+         write(stdout, fmta) "Note: all segments of NFA were disjoined with overlapping portions."
+         write(stdout, fmta) "==========="
 
       end block output
 
@@ -151,25 +155,25 @@ contains
 
    subroutine print_help_debug_ast
       implicit none
-      write(stderr, *) "Print the debug representation of an abstract syntax tree (AST)."
-      write(stderr, *) ""
-      write(stderr, *) "USAGE:"
-      write(stderr, *) "   forgex-cli debug ast <pattern>"
-      write(stderr, *) ""
-      write(stderr, *) "OPTIONS:"
-      write(stderr, *) "   --verbose      Print more information"
+      write(stderr, fmta) "Print the debug representation of an abstract syntax tree (AST)."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "USAGE:"
+      write(stderr, fmta) "   forgex-cli debug ast <pattern>"
+      write(stderr, fmta) ""
+      write(stderr, fmta) "OPTIONS:"
+      write(stderr, fmta) "   --verbose      Print more information"
       stop
    end subroutine
 
    subroutine print_help_debug_thompson
       implicit none
-      write(stderr, *) "Print the debug representaion of a Thompson NFA."
-      write(stderr, *) ""
-      write(stderr, *) "USAGE:"
-      write(stderr, *) "   forgex-cli debug thompson <pattern>"
-      write(stderr, *) ""
-      write(stderr, *) "OPTIONS:"
-      write(stderr, *) "   --verbose      Print more information"
+      write(stderr, fmta) "Print the debug representaion of a Thompson NFA."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "USAGE:"
+      write(stderr, fmta) "   forgex-cli debug thompson <pattern>"
+      write(stderr, fmta) ""
+      write(stderr, fmta) "OPTIONS:"
+      write(stderr, fmta) "   --verbose      Print more information"
       stop
    end subroutine print_help_debug_thompson
 #endif

@@ -51,6 +51,18 @@ contains
          write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
       end if
 
+      ! Handle errors when a pattern does not exist.
+      if (.not. allocated(cla%patterns)) then
+         select case (cla%sub_subc)
+         case (SUB_SUBC_AST)
+            call print_help_debug_ast
+         case (SUB_SUBC_THOMPSON)
+            call print_help_debug_thompson
+         case default
+            call print_help_message_for_debug
+         end select
+      end if
+
       select case (cla%sub_subc)
       case (SUB_SUBC_AST)
          call do_debug_ast(cla%flags, cla%patterns(1)%p)
@@ -102,6 +114,8 @@ contains
 
       end do outer
 
+      if (j == 0) return
+
       allocate(cla%patterns(j))
 
       do i = 1, j
@@ -151,7 +165,7 @@ contains
             cla%flags(i) = .true.
             cla%flag_idx(i) = indices(k)
          else
-            write(stderr, '(a)') "invalid option "//"'"//input_flags(k)%v//"'"
+            write(stderr, fmta) "invalid option "//"'"//input_flags(k)%v//"'"
             stop
          end if
       end do
@@ -224,26 +238,26 @@ contains
    subroutine print_help_message()
       implicit none
 
-      write(stderr, '(a)') "A tool for interacting with Forgex on the command line."
-      write(stderr, '(a)') ""
-      write(stderr, '(a)') "USAGE:"
-      write(stderr, '(a)') "   forgex-cli <command> ..."
-      write(stderr, '(a)') ""
-      write(stderr, '(a)') "COMMANDS:"
-      write(stderr, '(a)') "   debug   Print the debug representations from Forgex's regex engine."
+      write(stderr, fmta) "A tool for interacting with Forgex on the command line."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "USAGE:"
+      write(stderr, fmta) "   forgex-cli <command> ..."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "COMMANDS:"
+      write(stderr, fmta) "   debug   Print the debug representations from Forgex's regex engine."
       stop
    end subroutine print_help_message
 
 
    subroutine  print_help_message_for_debug()
-      write(stderr, '(a)') "Prints the debug representation Forgex provides."
-      write(stderr, '(a)') ""
-      write(stderr, '(a)') "USAGE:"
-      write(stderr, '(a)') "   forgex-cli debug <command> ..."
-      write(stderr, '(a)') ""
-      write(stderr, '(a)') "COMMANDS:"
-      write(stderr, '(a)') "   ast        Print the debug representation of an AST."
-      write(stderr, '(a)') "   thompson   Print the debug representation of a Thompson NFA."
+      write(stderr, fmta) "Prints the debug representation Forgex provides."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "USAGE:"
+      write(stderr, fmta) "   forgex-cli debug <command> ..."
+      write(stderr, fmta) ""
+      write(stderr, fmta) "COMMANDS:"
+      write(stderr, fmta) "   ast        Print the debug representation of an AST."
+      write(stderr, fmta) "   thompson   Print the debug representation of a Thompson NFA."
    end subroutine print_help_message_for_debug
 
 #endif
