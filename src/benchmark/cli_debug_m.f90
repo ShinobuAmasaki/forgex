@@ -11,21 +11,21 @@ module forgex_cli_debug_m
 
 contains
 
-   subroutine do_debug_ast(flags, pattern, ast, time)
+   subroutine do_debug_ast(flags, pattern)
       use :: forgex_cli_utils_m
       use :: forgex_enums_m
       use :: forgex_syntax_tree_m
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
-      character(:),allocatable, intent(inout) :: ast
-      real(real64), intent(inout) :: time
 
       type(tree_node_t), allocatable :: tree(:)
       type(tape_t) :: tape
       integer :: root
       integer :: uni, ierr, siz
       character(:), allocatable :: buff
+      character(:),allocatable :: ast
+      real(real64) :: time
 
       open(newunit=uni, status='scratch')
 

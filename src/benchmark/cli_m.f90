@@ -39,9 +39,6 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      character(:), allocatable :: ast
-      real(real64) :: time
-
       call cla%init_debug
       call cla%read_subsub()
       if (cla%sub_subc == '') then
@@ -55,7 +52,7 @@ contains
          if (size(cla%patterns) > 1) then
             write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
          end if
-         call do_debug_ast(cla%flags, cla%patterns(1)%p, ast, time)
+         call do_debug_ast(cla%flags, cla%patterns(1)%p)
 
       case (SUB_SUBC_THOMPSON)
 
