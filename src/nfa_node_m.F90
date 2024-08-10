@@ -445,7 +445,6 @@ contains
 
       if (allocated(self%forward)) then
          siz = size(self%forward, dim=1)
-         allocate(tmp(siz))
          call move_alloc(self%forward, tmp)
       else
          siz = 0
@@ -455,7 +454,7 @@ contains
       self%alloc_count_f = prev_count + 1
 
       new_part_begin = (siz) + 1
-      new_part_end = self%alloc_count_f * NFA_TRANSITION_UNIT
+      new_part_end = NFA_TRANSITION_UNIT * 2**self%alloc_count_f
 
       allocate(self%forward(1:new_part_end))
 
@@ -485,7 +484,6 @@ contains
 
       if (allocated(self%backward)) then
          siz = size(self%backward, dim=1)
-         allocate(tmp(siz))
          call move_alloc(self%backward, tmp)
       else
          siz = 0
@@ -495,7 +493,7 @@ contains
       self%alloc_count_b = prev_count + 1
 
       new_part_begin = (siz) + 1
-      new_part_end = self%alloc_count_b * NFA_TRANSITION_UNIT
+      new_part_end =  NFA_TRANSITION_UNIT * 2**self%alloc_count_b
 
       allocate(self%backward(1:new_part_end))
 
