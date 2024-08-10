@@ -35,7 +35,9 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: INVALID_FLAG = "INVALID"
 
    !> Output format for displaying an integer in tables.
-   character(*), parameter, public :: fmt_out_int = "(a, i8)"
+   character(*), parameter, public :: fmt_out_int = "(a, i10)"
+
+   character(*), parameter, public :: fmt_out_time = "(a, a15)"
 
    !> Format for outputting text only.
    character(*), parameter, public :: fmta = "(a)"

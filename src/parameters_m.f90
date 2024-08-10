@@ -80,7 +80,7 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_STATE_UNIT = 16
 
    !> Upper limit of NFA state nodes
-   integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
+   integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024+1
 
    !> Upper limit of NFA transition instance
    integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 16

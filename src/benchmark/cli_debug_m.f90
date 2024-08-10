@@ -20,6 +20,7 @@ contains
 
    subroutine do_debug_ast(flags, pattern)
       use :: forgex_syntax_tree_m
+      use :: forgex_cli_memory_calculation_m
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
@@ -51,22 +52,30 @@ contains
       ast = trim(buff)
 
       output: block
-         character(NUM_DIGIT_KEY) :: parse_time, tree_count, tree_allocated, cbuff(3)
+         character(NUM_DIGIT_KEY) :: parse_time, tree_count, tree_allocated, memory
+         character(NUM_DIGIT_KEY) :: cbuff(4)
+         integer :: i
          parse_time = "parse time:"
          tree_count = "tree node count:"
          tree_allocated = "tree node allocated:"
+         memory = "memory (estimated):"
 
          if (flags(FLAG_VERBOSE)) then
-            cbuff = [parse_time, tree_count, tree_allocated]
+            cbuff = [parse_time, memory, tree_count, tree_allocated]
             call right_justify(cbuff)
 
-            write(stdout, "(a, a13)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
-            write(stdout, "(a, i8)") trim(cbuff(2)), root
-            write(stdout, "(a, i8)") trim(cbuff(3)), size(tree, dim=1)
+            write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
+            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tape) + mem_tree(tree)
+            write(stdout, fmt_out_int) trim(cbuff(3)), root
+            write(stdout, fmt_out_int) trim(cbuff(4)), size(tree, dim=1)
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
-            write(stdout, "(a, a)") trim(parse_time), get_lap_time_in_appropriate_unit(time)
+            cbuff = [parse_time, memory, (repeat(" ", NUM_DIGIT_KEY), i=1, 2)]
+            call right_justify(cbuff)
+
+            write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
+            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tape)+mem_tree(tree)
          end if
       end block output
 
@@ -77,6 +86,7 @@ contains
 
 
    subroutine do_debug_thompson(flags, pattern)
+      use :: forgex_cli_memory_calculation_m
       use :: forgex_automaton_m
       use :: forgex_syntax_tree_m
       implicit none
@@ -123,35 +133,48 @@ contains
       close(uni)
 
       output: block
-         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, nfa_count, nfa_allocated, tree_count, tree_allocated
-         character(NUM_DIGIT_KEY) :: cbuff(6) = ''
-         parse_time = "parse time:"
-         nfa_time = "compile nfa time:"
-         nfa_count = "nfa states:"
-         nfa_allocated = "nfa states allocated:"
+         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, memory, nfa_count, nfa_allocated, tree_count, tree_allocated
+         character(NUM_DIGIT_KEY) :: cbuff(7) = ''
+         integer :: memsiz
 
-         tree_count = "tree node count:"
+         parse_time     = "parse time:"
+         nfa_time       = "compile nfa time:"
+         memory         = "memory (estimated):"
+         
+         nfa_count      = "nfa states:"
+         nfa_allocated  = "nfa states allocated:"
+         tree_count     = "tree node count:"
          tree_allocated = "tree node allocated:"
 
+         memsiz = mem_tape(tape) + mem_tree(tree) &
+                  + mem_nfa_graph(automaton%nfa) + 4*3
+         if (allocated(automaton%entry_set%vec)) then 
+            memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
+         end if
+         if (allocated(automaton%all_segments)) then
+            memsiz = memsiz + size(automaton%all_segments, dim=1)*8
+         end if
+
          if (flags(FLAG_VERBOSE)) then
-            cbuff = [parse_time,  nfa_time, tree_count, tree_allocated, nfa_count, nfa_allocated]
+            cbuff = [parse_time,  nfa_time, memory, tree_count, tree_allocated, nfa_count, nfa_allocated]
             call right_justify(cbuff)
 
-            write(stdout, "(a, a13)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, "(a, a13)") trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
-            write(stdout, fmt_out_int) trim(cbuff(3)), root
-            write(stdout, fmt_out_int) trim(cbuff(4)), size(tree, dim=1)
-            write(stdout, fmt_out_int) trim(cbuff(5)), automaton%nfa%nfa_top
-            write(stdout, fmt_out_int) trim(cbuff(6)), automaton%nfa%nfa_limit
+            write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
+            write(stdout, fmt_out_time) trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
+            write(stdout, fmt_out_int)  trim(cbuff(3)), memsiz
+            write(stdout, fmt_out_int) trim(cbuff(4)), root
+            write(stdout, fmt_out_int) trim(cbuff(5)), size(tree, dim=1)
+            write(stdout, fmt_out_int) trim(cbuff(6)), automaton%nfa%nfa_top
+            write(stdout, fmt_out_int) trim(cbuff(7)), automaton%nfa%nfa_limit
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
-            cbuff(:) = [parse_time, nfa_time, (repeat(" ", NUM_DIGIT_KEY), i = 1, 4)]
+            cbuff(:) = [parse_time, nfa_time, memory, (repeat(" ", NUM_DIGIT_KEY), i = 1, 4)]
             call right_justify(cbuff)
 
-            write(stdout, "(a, a)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, "(a, a)") trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
-
+            write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
+            write(stdout, fmt_out_time) trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
+            write(stdout, fmt_out_int) trim(cbuff(3)), memsiz
          end if
 
          if (flags(FLAG_TABLE_ONLY)) return
