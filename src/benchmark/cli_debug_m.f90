@@ -88,7 +88,7 @@ contains
       
       nfa = ''
 
-      ! if (flags(FLAG_HELP)) call print_help_debug_thompson
+      if (flags(FLAG_HELP)) call print_help_debug_thompson
 
       call time_begin()
       call build_syntax_tree(trim(pattern), tape, tree, root)
@@ -104,9 +104,7 @@ contains
       ierr = 0
       do while (ierr == 0)
          read(uni, '(a)', iostat=ierr) line
-         nfa = trim(nfa)//trim(line)
-         if (ierr /= 0) exit
-         nfa = nfa//char(13)//char(10)
+         nfa = nfa//trim(line)//newline
       end do
       close(uni)
 
@@ -114,20 +112,20 @@ contains
          character(NUM_DIGIT_KEY) :: parse_time, nfa_time, nfa_count, nfa_allocated, tree_count, tree_allocated, cbuff(6) = ''
          parse_time = "parse time:"
          nfa_time = "compile nfa time:"
-         nfa_count = "number of nfa nodes:"
-         nfa_allocated = "number of nfa allocated:"
+         nfa_count = "nfa states:"
+         nfa_allocated = "nfa states allocated:"
 
          tree_count = "tree node count:"
          tree_allocated = "tree node allocated:"
 
          if (flags(FLAG_VERBOSE)) then
-            cbuff = [parse_time, tree_count, tree_allocated, nfa_time, nfa_count, nfa_allocated]
+            cbuff = [parse_time,  nfa_time, tree_count, tree_allocated, nfa_count, nfa_allocated]
             call right_justify(cbuff)
 
             write(stdout, "(a, a13)") trim(cbuff(1)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, "(a, a13)") trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
-            write(stdout, fmt_out_int) trim(cbuff(2)), root
-            write(stdout, fmt_out_int) trim(cbuff(3)), size(tree, dim=1)
+            write(stdout, "(a, a13)") trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
+            write(stdout, fmt_out_int) trim(cbuff(3)), root
+            write(stdout, fmt_out_int) trim(cbuff(4)), size(tree, dim=1)
             write(stdout, fmt_out_int) trim(cbuff(5)), automaton%nfa%nfa_top
             write(stdout, fmt_out_int) trim(cbuff(6)), automaton%nfa%nfa_limit
          else
@@ -141,8 +139,7 @@ contains
          write(stdout, *) ""
          write(stdout, '(a)') "=== NFA ==="
          write(stdout, '(a)') trim(nfa)
-         write(stdout, '(a)') ""
-         write(stdout, '(a)') "Note: all segments of NFA have been disjoined."
+         write(stdout, '(a)') "Note: all segments of NFA were disjoined with overlapping portions."
          write(stdout, '(a)') "==========="
 
       end block output
@@ -160,6 +157,20 @@ contains
       write(stderr, *) "   forgex-cli debug ast <pattern>"
       write(stderr, *) ""
       write(stderr, *) "OPTIONS:"
+      write(stderr, *) "   --verbose      Print more information"
+      stop
    end subroutine
+
+   subroutine print_help_debug_thompson
+      implicit none
+      write(stderr, *) "Print the debug representaion of a Thompson NFA."
+      write(stderr, *) ""
+      write(stderr, *) "USAGE:"
+      write(stderr, *) "   forgex-cli debug thompson <pattern>"
+      write(stderr, *) ""
+      write(stderr, *) "OPTIONS:"
+      write(stderr, *) "   --verbose      Print more information"
+      stop
+   end subroutine print_help_debug_thompson
 #endif
 end module forgex_cli_debug_m

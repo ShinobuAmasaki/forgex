@@ -16,4 +16,10 @@ module forgex_cli_parameters_m
 
    character(*), parameter, public :: fmt_out_int = "(a, i8)"
 
+#if defined(_WIN32) || defined(_WIN64)
+   character(*), parameter, public :: newline = char(13)//char(10)
+#else
+   character(*), parameter, public :: newline = char(10)
+#endif
+
 end module forgex_cli_parameters_m
