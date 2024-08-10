@@ -42,5 +42,17 @@ module forgex_enums_m
       enumerator :: op_empty        ! 5  for epsilon transition
    end enum
 
+   enum, bind(c)
+      enumerator :: FLAG_INVALID = 0
+      enumerator :: FLAG_HELP
+      enumerator :: FLAG_VERBOSE
+      enumerator :: FLAG_NO_TABLE
+   end enum
+
+   enum, bind(c)
+      enumerator :: OS_UNKNOWN
+      enumerator :: OS_WINDOWS
+      enumerator :: OS_UNIX
+   end enum
 
 end module forgex_enums_m

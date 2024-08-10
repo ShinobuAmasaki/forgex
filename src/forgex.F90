@@ -70,8 +70,8 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
+      ! call dump_tree_table(tree)
+      ! call print_tree(tree, root)
 #endif
 
       ! Initialize automaton with tree and root.
@@ -82,7 +82,7 @@ contains
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
 
 #if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
+      ! call automaton%print_dfa()
 #endif
 
 
@@ -137,8 +137,8 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
+      ! call dump_tree_table(tree)
+      ! call print_tree(tree, root)
 #endif
 
       ! Initialize automaton with tree and root.
@@ -148,7 +148,7 @@ contains
       call do_matching_exactly(automaton, str, res)
 
 #if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
+      ! call automaton%print_dfa()
 #endif
 
       call automaton%free()
@@ -174,8 +174,8 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
 #if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
+      ! call dump_tree_table(tree)
+      ! call print_tree(tree, root)
 #endif
 
       call automaton%init(tree, root)
@@ -183,7 +183,7 @@ contains
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
 
 #if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
+      ! call automaton%print_dfa()
 #endif
 
       if (is_there_caret_at_the_top(pattern)) then

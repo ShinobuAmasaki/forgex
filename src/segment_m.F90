@@ -219,7 +219,7 @@ contains
 
       ! Fill the new list with the component segments
       count = 1
-      current_min = UTF8_CODE_EMPTY + 1
+      current_min = UTF8_CODE_MIN
 
       do i = 1, n
          if (current_min < list(i)%min) then
@@ -379,6 +379,7 @@ contains
       implicit none
       class(segment_t), intent(in) :: seg
       character(:), allocatable :: res
+      character(:), allocatable :: cache
 
       if (seg == SEG_ANY) then
          res = "<ANY>"
@@ -430,9 +431,19 @@ contains
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then
-         res = '["'//char_utf8(seg%min)//'"-'//"<U+1FFFFF>"//']'
+         if (seg%min == ichar(' ')) then
+            cache = "<SPACE>"
+         else
+            cache = '"'//char_utf8(seg%min)//'"'
+         end if
+         res = '['//cache//'-'//"<U+1FFFFF>"//']'
       else
-         res = '["'//char_utf8(seg%min)//'"-"'//char_utf8(seg%max)//'"]'
+         if (seg%min == ichar(' ')) then
+            cache = "<SPACE>"
+         else
+            cache = '"'//char_utf8(seg%min)//'"'
+         end if
+         res = '['//cache//'-"'//char_utf8(seg%max)//'"]'
       end if
 
       !!

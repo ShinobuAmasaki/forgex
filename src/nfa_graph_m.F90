@@ -14,7 +14,7 @@ module forgex_nfa_graph_m
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
          NFA_STATE_BASE, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
    use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t, &
-         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa, disjoin_nfa
+         nfa_deallocate, make_nfa_node, build_nfa_graph, generate_nfa
 
    implicit none
    private
@@ -124,11 +124,13 @@ contains
 
 #if defined(IMPURE) && defined(DEBUG)
 
-   subroutine nfa_graph__print(self)
+   subroutine nfa_graph__print(self, uni, nfa_exit)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
       use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(in) :: self
+      integer(int32), intent(in) :: uni
+      integer(int32), intent(in) :: nfa_exit
 
       type(nfa_state_node_t) :: node
       type(nfa_transition_t) :: transition
@@ -141,6 +143,10 @@ contains
 
          write(stderr, '(a, i4, a)', advance='no') "state ", i, ": "
          node = self%nodes(i)
+         if (i == nfa_exit) then
+            write(uni, '(a)') "<Accepted>"
+            cycle
+         end if
 
          do j = 1, node%forward_top
             if (.not. allocated(node%forward)) cycle
@@ -152,15 +158,14 @@ contains
                   if (transition%c(k) == SEG_INIT) cycle
 
                   buf = transition%c(k)%print()
-
                   if (transition%c(k) == SEG_EPSILON) buf = '?'
-                  write(stderr, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
+                  write(uni, '(a,a,a2,i0,a1)', advance='no') "(", trim(buf), ", ", transition%dst, ")"
 
                enddo
             end if
          end do
 
-         write(stderr, *) ''
+         write(uni, '(a)') ""
       end do
    end subroutine nfa_graph__print
 

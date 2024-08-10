@@ -66,7 +66,7 @@ contains
 
 
 #if  defined(IMPURE) && defined(DEBUG)
-      call self%nfa%print()
+      ! call self%nfa%print()
 #endif
 
       !-- DFA initialize
