@@ -6,6 +6,7 @@ module forgex_cli_parameters_m
    integer, parameter, public :: NUM_SUB_C = 1
    integer, parameter, public :: NUM_DIGIT_TIME = 13
    integer, parameter, public :: NUM_DIGIT_KEY = 32
+   integer, parameter, public :: LEN_ENV_VAR = 255
 
    integer, parameter, public :: TREE_BUFF_LEN = 2**16
 
@@ -19,10 +20,8 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: fmt_out_int = "(a, i8)"
    character(*), parameter, public :: fmta = "(a)"
 
-#if defined(_WIN32) || defined(_WIN64)
-   character(*), parameter, public :: newline = char(13)//char(10)
-#else
-   character(*), parameter, public :: newline = char(10)
-#endif
+
+   character(*), parameter, public :: CRLF = char(13)//char(10)
+   character(*), parameter, public :: LF = char(10)
 
 end module forgex_cli_parameters_m

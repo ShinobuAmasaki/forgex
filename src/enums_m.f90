@@ -49,4 +49,10 @@ module forgex_enums_m
       enumerator :: FLAG_NO_TABLE
    end enum
 
+   enum, bind(c)
+      enumerator :: OS_UNKNOWN
+      enumerator :: OS_WINDOWS
+      enumerator :: OS_UNIX
+   end enum
+
 end module forgex_enums_m

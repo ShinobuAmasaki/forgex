@@ -18,8 +18,36 @@ module forgex_cli_utils_m
    public :: get_flag_index
    public :: register_flag
    public :: register_subc
+   public :: get_os_type
 
 contains
+
+   function get_os_type() result(res)
+      use :: forgex, only: operator(.in.)
+      use :: forgex_enums_m
+      implicit none
+      integer :: res
+      
+      character(LEN_ENV_VAR) :: val1, val2
+      integer :: len1, len2, stat1, stat2
+
+      res = OS_UNKNOWN
+
+      call get_environment_variable(name='OS', value=val1, length=len1, status= stat1)
+
+      if (stat1 == 0 .and. len1 > 0) then
+         if ("Windows_NT" .in. val1) then
+            res = OS_WINDOWS
+            return
+         end if
+      end if
+
+      call get_environment_variable(name='OSTYPE', value=val2, length=len2, status= stat2)
+      if (stat2 == 0 .and. len2 > 0) then
+         !! @todo 
+      end if
+   end function get_os_type
+
 
    function get_flag_index(arg, flags) result(res)
       implicit none

@@ -110,7 +110,13 @@ contains
       do while (ierr == 0)
          read(uni, fmta, iostat=ierr) line
          if (ierr /= 0) exit
-         nfa = nfa//trim(line)//newline
+
+         if (get_os_type() == OS_WINDOWS) then
+            nfa = nfa//trim(line)//CRLF
+         else
+            nfa = nfa//trim(line)//LF
+         end if
+         
       end do
       close(uni)
 
