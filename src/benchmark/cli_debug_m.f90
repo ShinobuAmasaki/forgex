@@ -1,3 +1,11 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_cli_debug_m module is a part of Forgex.
+!
 module forgex_cli_debug_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit, stdout => output_unit
    use :: forgex_cli_time_measurement_m, only: time_begin, time_lap, get_lap_time_in_appropriate_unit

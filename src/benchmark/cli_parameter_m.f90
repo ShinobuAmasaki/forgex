@@ -1,3 +1,11 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_cli_parameter_m module is a part of Forgex.
+!
 module forgex_cli_parameters_m
    implicit none
    private
@@ -25,13 +33,19 @@ module forgex_cli_parameters_m
 
    !> The number of sub-subcommands that debug accepts. 
    integer, parameter, public :: NUM_SUBC_DEBUG = 3
-   
    !> Name of the sub-subcommand ast.
    character(*), parameter, public :: SUB_SUBC_AST = "ast"
    !> Name of the sub-subcommand thompson.
    character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
-   !> Name of the sub-subcommand lazy dfa
+
+!---------------------------------------------------------------------!
+   !> Name of the subcommand find.
+   character(*), parameter, public :: SUBC_FIND = "find"
+   character(*), parameter, public :: SUB_SUBC_MATCH = "match"
    character(*), parameter, public :: SUB_SUBC_LAZY_DFA = "lazy-dfa"
+   character(*), parameter, public :: ENGINE_LAZY_DFA = "lazy-dfa"
+
+   !> Name of the sub-subcommand lazy dfa
    character(*), parameter, public :: OP_MATCH = ".match."
    character(*), parameter, public :: OP_IN = ".in."
 
