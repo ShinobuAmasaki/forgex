@@ -16,7 +16,7 @@ module forgex_cli_cla_m
    use :: forgex_cli_type_m, only: flag_t, subc_t, pattern_t, arg_t, arg_element_t
    use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag, register_subc, &
             get_arg_command_line
-   use :: forgex_cli_help_messages_m, only: print_help_message_for_debug, print_help_debug_ast, &
+   use :: forgex_cli_help_messages_m, only: print_help_debug, print_help_debug_ast, &
             print_help_debug_thompson, print_help_debug_lazy_dfa
    implicit none
    private
@@ -54,7 +54,7 @@ contains
       call cla%init_debug
       call cla%read_subsub()
       if (cla%sub_subc == '') then
-         call print_help_message_for_debug
+         call print_help_debug
          stop
       end if
 
@@ -70,7 +70,7 @@ contains
          case (SUB_SUBC_LAZY_DFA)
             call print_help_debug_lazy_dfa
          case default
-            call print_help_message_for_debug
+            call print_help_debug
          end select
       end if
 
