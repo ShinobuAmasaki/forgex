@@ -205,6 +205,7 @@ contains
       use :: forgex_api_internal_m
       use :: forgex_nfa_state_set_m
       use :: forgex_cli_utils_m
+      use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern

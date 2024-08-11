@@ -27,8 +27,6 @@ module forgex_cli_utils_m
    public :: register_flag
    public :: register_subc
    public :: get_os_type
-   public :: is_there_caret_at_the_top
-   public :: is_there_dollar_at_the_end
 
 contains
 
@@ -232,40 +230,5 @@ contains
 
       array(:) = buff(:)
    end subroutine
-
-   !> This function returns .true. if the pattern contains the caret character
-   !> at the top that matches the beginning of a line.
-   pure function is_there_caret_at_the_top(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-      logical :: res
-
-      res = .false.
-
-      buff = adjustl(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(1:1) == '^'
-   end function is_there_caret_at_the_top
-
-
-   !> This funciton returns .true. if the pattern contains the doller character
-   !> at the end that matches the ending of a line.
-   pure function is_there_dollar_at_the_end(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-
-      logical :: res
-
-      res = .false.
-      
-      buff = trim(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(len_trim(buff):len_trim(buff)) == '$'
-   end function is_there_dollar_at_the_end
-
 
 end module forgex_cli_utils_m

@@ -15,6 +15,7 @@ module forgex
    use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree, print_tree, dump_tree_table
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
+   use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
    implicit none
    private
 
@@ -197,45 +198,5 @@ contains
       call subroutine__regex(pattern, text, res)
 
    end function function__regex
-
-
-!---------------------------------------------------------------------!
-! Private procedures
-!
-
-   !> This function returns .true. if the pattern contains the caret character
-   !> at the top that matches the beginning of a line.
-   pure function is_there_caret_at_the_top(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-      logical :: res
-
-      res = .false.
-
-      buff = adjustl(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(1:1) == '^'
-   end function is_there_caret_at_the_top
-
-
-   !> This funciton returns .true. if the pattern contains the doller character
-   !> at the end that matches the ending of a line.
-   pure function is_there_dollar_at_the_end(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-
-      logical :: res
-
-      res = .false.
-      
-      buff = trim(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(len_trim(buff):len_trim(buff)) == '$'
-   end function is_there_dollar_at_the_end
-
 
 end module forgex
