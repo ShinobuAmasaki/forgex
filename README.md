@@ -228,6 +228,7 @@ All code contained herein shall be written with a three-space indentation.
 For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
+The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
 
 ## References
 
@@ -236,6 +237,7 @@ The idea of applying the `.in.` operator to strings was inspired by kazulagi's o
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi),
 [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
+5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
 
 ## License
 Forgex is as a freely available under the MIT license. See [LICENSE](https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE).
