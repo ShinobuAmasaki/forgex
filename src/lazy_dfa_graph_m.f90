@@ -16,9 +16,7 @@ module forgex_lazy_dfa_graph_m
    use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_UNIT, DFA_STATE_HARD_LIMIT, &
                                      DFA_INITIAL_INDEX, DFA_INVALID_INDEX
    use :: forgex_lazy_dfa_node_m, only: dfa_state_node_t, dfa_transition_t
-#if defined(IMPURE) && defined(DEBUG)
-   use :: iso_fortran_env, only: stderr => error_unit
-#endif
+
    implicit none
    private
 

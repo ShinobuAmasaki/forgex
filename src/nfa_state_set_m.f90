@@ -25,9 +25,8 @@ module forgex_nfa_state_set_m
    public :: collect_epsilon_transition
    public :: init_state_set
 
-#if defined(IMPURE) && defined(DEBUG)
    public :: print_nfa_state_set
-#endif
+
 
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
@@ -144,19 +143,19 @@ contains
    end subroutine collect_epsilon_transition
 
 
-#if defined(IMPURE) && defined(DEBUG)
    ! This subroutine is for debugging, print_lazy_dfa and automaton__print_dfa use this procedure.
-   subroutine print_nfa_state_set(set, top)
+   subroutine print_nfa_state_set(set, top, uni)
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
       implicit none
       type(nfa_state_set_t), intent(in) :: set
       integer(int32),        intent(in) :: top
-
+      integer(int32),        intent(in) :: uni
+ 
       integer(int32) :: i
 
       do i = 1, top
-         if (check_nfa_state(set, i)) write(stderr, '(i0, a)', advance='no') i, ' '
+         if (check_nfa_state(set, i)) write(uni, '(i0, a)', advance='no') i, ' '
       end do
    end subroutine print_nfa_state_set
-#endif
+
 end module forgex_nfa_state_set_m

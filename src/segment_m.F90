@@ -31,9 +31,7 @@ module forgex_segment_m
       integer(int32) :: min = UTF8_CODE_MAX+2 ! = 2097153
       integer(int32) :: max = UTF8_CODE_MAX+2 ! = 2097153
    contains
-#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => segment_for_print
-#endif
       procedure :: validate => segment_is_valid
    end type
 
@@ -367,7 +365,6 @@ contains
    end subroutine merge_segments
 
 
-#if defined(IMPURE) && defined(DEBUG)
    !| Converts a segment to a printable string representation.
    !
    !  This function generates a string representation of the segment `seg` for
@@ -451,5 +448,5 @@ contains
       !! to extract it to `forgex_parameter_m` module and remove the magic strings.
 
    end function segment_for_print
-#endif
+
 end module forgex_segment_m

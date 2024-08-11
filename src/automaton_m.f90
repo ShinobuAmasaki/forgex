@@ -41,10 +41,8 @@ module forgex_automaton_m
       procedure :: move            => automaton__move
       procedure :: destination     => automaton__destination
       procedure :: free            => automaton__deallocate
-#if  defined(IMPURE) && defined(DEBUG)
       procedure :: print           => automaton__print_info
       procedure :: print_dfa       => automaton__print_dfa
-#endif
    end type automaton_t
 
 contains
@@ -382,8 +380,6 @@ contains
 !=====================================================================!
 
 
-#if defined(IMPURE) && defined(DEBUG)
-
    !> This subroutine provides the automata' summarized information.
    subroutine automaton__print_info(self)
       use :: iso_fortran_env, only: stderr => error_unit
@@ -401,45 +397,44 @@ contains
 
 
    !> This subroutine prints DFA states and transitions to standard error.
-   subroutine automaton__print_dfa(self)
-      use, intrinsic :: iso_fortran_env, only: stderr => error_unit
+   subroutine automaton__print_dfa(self, uni)
       use :: forgex_nfa_state_set_m, only: print_nfa_state_set
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
+      integer(int32), intent(in) :: uni
+
       type(dfa_transition_t) :: p
       integer(int32) :: i, j, k
-
-      write(stderr,*) "--- PRINT DFA---"
 
       do i = 1, self%dfa%dfa_top -1
 
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(i4,a, a)', advance='no') i, 'A', ": "
+            write(uni, '(i4,a, a)', advance='no') i, 'A', ": "
          else
-            write(stderr, '(i4,a, a)', advance='no') i, ' ', ": "
+            write(uni, '(i4,a, a)', advance='no') i, ' ', ": "
          end if
 
          do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
-            write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
+            write(uni, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
 
          end do
-         write(stderr, *) ""
+         write(uni, *) ""
       end do
 
       do i = 1, self%dfa%dfa_top - 1
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(a, i4, a)', advance='no') "state ", i, 'A = ( '
+            write(uni, '(a, i4, a)', advance='no') "state ", i, 'A = ( '
          else
-            write(stderr, '(a, i4, a)', advance='no') "state ", i, '  = ( '
+            write(uni, '(a, i4, a)', advance='no') "state ", i, '  = ( '
          end if
 
-         call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top)
+         call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top, uni)
 
-         write(stderr,'(a)') ")"
+         write(uni,'(a)') ")"
       end do
    end subroutine automaton__print_dfa
-#endif
+
 
 end module forgex_automaton_m

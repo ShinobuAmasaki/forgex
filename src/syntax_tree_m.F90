@@ -37,14 +37,14 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: deallocate_tree
 
-#if defined(IMPURE) && defined(DEBUG)
+
    public :: dump_tree_table
 
    public :: print_tree
    interface print_tree
       module procedure :: print_tree_wrap
    end interface print_tree
-#endif
+
 
    !! The regular expression parsing performed by this module
    !! is done using recursive descent parsing.
@@ -946,8 +946,6 @@ contains
 
 
 !=====================================================================!
-#if defined(IMPURE) && defined(DEBUG)
-
    subroutine dump_tree_table(tree)
       implicit none
       class(tree_node_t), intent(in) :: tree(:)
@@ -1102,5 +1100,4 @@ contains
 
    end function print_class_simplify
 
-#endif
 end module forgex_syntax_tree_m

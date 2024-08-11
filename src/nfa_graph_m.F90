@@ -30,9 +30,7 @@ module forgex_nfa_graph_m
       procedure :: generate                   => nfa_graph__generate
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
       procedure :: mark_epsilon_transition    => nfa_graph__mark_epsilon_transition
-#if defined(IMPURE) && defined(DEBUG)
       procedure :: print                      => nfa_graph__print
-#endif
    end type
 
 contains
@@ -123,7 +121,6 @@ contains
       end do
    end subroutine nfa_graph__collect_epsilon_transition
 
-#if defined(IMPURE) && defined(DEBUG)
 
    subroutine nfa_graph__print(self, uni, nfa_exit)
       use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
@@ -182,5 +179,4 @@ contains
       end do
    end subroutine dump_segment_array
 
-#endif
 end module forgex_nfa_graph_m

@@ -12,12 +12,7 @@
 #define pure
 #endif
 module forgex
-   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
-
-#if defined(IMPURE) && defined(DEBUG)
-   use :: forgex_syntax_tree_m, only: print_tree, dump_tree_table
-#endif
-
+   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree, print_tree, dump_tree_table
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    implicit none
@@ -69,22 +64,12 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      ! call dump_tree_table(tree)
-      ! call print_tree(tree, root)
-#endif
-
       ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, char(0)//str//char(0), from, to)
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
-
-#if defined(IMPURE) && defined(DEBUG)
-      ! call automaton%print_dfa()
-#endif
-
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
@@ -136,20 +121,11 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      ! call dump_tree_table(tree)
-      ! call print_tree(tree, root)
-#endif
-
       ! Initialize automaton with tree and root.
       call automaton%init(tree, root)
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_exactly(automaton, str, res)
-
-#if defined(IMPURE) && defined(DEBUG)
-      ! call automaton%print_dfa()
-#endif
 
       call automaton%free()
 
@@ -173,18 +149,9 @@ contains
 
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      ! call dump_tree_table(tree)
-      ! call print_tree(tree, root)
-#endif
-
       call automaton%init(tree, root)
 
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
-
-#if defined(IMPURE) && defined(DEBUG)
-      ! call automaton%print_dfa()
-#endif
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
