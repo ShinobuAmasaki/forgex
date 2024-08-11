@@ -24,6 +24,10 @@ program test_002
    call runner_regex('[ぁ-んァ-ン]{,2}', 'あイうエお', 'あイ', res)
    call runner_regex('[ぁ-んァ-ン]{,1}', 'あイうエお', 'あ', res)
 
+   call runner_match("[^x]{5}", "あいうえお", .true., res)
+   call runner_match("a[^x]{5}b", "aあいうえおb", .true., res)
+
+   call runner_match("a[^x]{20}b", "aあyyyyggggghhhhhあいうえおb", .true., res)
    ! 一 U+4e00
    ! 鿿 U+9fff
 
