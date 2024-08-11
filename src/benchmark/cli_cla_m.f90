@@ -1,9 +1,10 @@
 module forgex_cli_cla_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
-   use :: forgex_cli_parameters_m
-   use :: forgex_cli_type_m
-   use :: forgex_cli_utils_m
+   use :: forgex_cli_parameters_m, only: NUM_FLAGS, NUM_SUB_C, NUM_SUBC_DEBUG, &
+            SUB_SUBC_AST, SUB_SUBC_THOMPSON, SUB_SUBC_LAZY_DFA, OP_MATCH, OP_IN, fmta
+   use :: forgex_cli_type_m, only: flag_t, subc_t, pattern_t, arg_t, arg_element_t
+   use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag
    implicit none
    private
 

@@ -1,7 +1,7 @@
 module forgex_cli_utils_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
-   use :: forgex_cli_parameters_m
-   use forgex_cli_type_m
+   use :: forgex_cli_parameters_m, only: LEN_ENV_VAR, NUM_FLAGS, INVALID_FLAG
+   use forgex_cli_type_m, only: arg_element_t, flag_t, subc_t, subsubc_t
    implicit none
    private
    public :: right_justify

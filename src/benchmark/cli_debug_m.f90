@@ -1,10 +1,10 @@
 module forgex_cli_debug_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit, stdout => output_unit
-   use :: forgex_cli_time_measurement_m
-   use :: forgex_cli_parameters_m
-   use :: forgex_cli_type_m
-   use :: forgex_enums_m
-   use :: forgex_cli_utils_m
+   use :: forgex_cli_time_measurement_m, only: time_begin, time_lap, get_lap_time_in_appropriate_unit
+   use :: forgex_cli_parameters_m, only: NUM_DIGIT_KEY, fmt_out_time, fmt_out_int, fmt_out_ratio, &
+            fmt_out_logi, fmta, CRLF, LF
+   use :: forgex_enums_m, only: FLAG_HELP, FLAG_NO_TABLE, FLAG_VERBOSE, FLAG_TABLE_ONLY, OS_WINDOWS
+   use :: forgex_cli_utils_m, only: get_os_type
 
 
    implicit none

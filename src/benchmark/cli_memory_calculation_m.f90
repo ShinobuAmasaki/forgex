@@ -1,5 +1,5 @@
 module forgex_cli_memory_calculation_m
-   use :: forgex_parameters_m
+   use :: forgex_parameters_m, only: NFA_STATE_BASE
    implicit none
    private
 

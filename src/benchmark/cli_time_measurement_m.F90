@@ -12,10 +12,9 @@
 module forgex_cli_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    use, intrinsic :: iso_c_binding, only: c_long_long, c_bool
-   !$ use :: omp_lib
-   use :: forgex_cli_parameters_m
-   use :: forgex_cli_utils_m
-   use :: forgex_enums_m
+   use :: forgex_cli_parameters_m, only: NUM_DIGIT_TIME
+   use :: forgex_cli_utils_m, only: get_os_type
+   use :: forgex_enums_m, only: OS_WINDOWS
    implicit none
    private
 
