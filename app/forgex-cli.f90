@@ -37,7 +37,7 @@ program forgex_cli
    case (CMD_DEBUG)
       call cla%do_debug
    case (CMD_FIND)
-      ! call cla%do_find
+      call cla%do_find
    case ('')
       call print_help
    end select

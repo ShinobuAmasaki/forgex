@@ -19,6 +19,7 @@ module forgex_cli_utils_m
       module procedure :: does_flag_exist
       module procedure :: does_command_exist
       module procedure :: does_subcommand_exist
+      module procedure :: does_subsubcommand_exist
       module procedure :: is_arg_contained_in_flags
    end interface
 
@@ -129,6 +130,20 @@ contains
 
       end do
    end subroutine get_arg_command_line
+
+!=====================================================================!
+
+   pure function does_subsubcommand_exist(arg, subsubc_list) result(res)
+      character(*), intent(in) :: arg
+      type(sub_subc_t), intent(in) :: subsubc_list(:)
+      logical :: res
+      integer :: i 
+
+      res = .false.
+      do i = lbound(subsubc_list, dim=1), ubound(subsubc_list, dim=1)
+         res = res .or. trim(arg) == trim(subsubc_list(i)%name)
+      end do
+   end function does_subsubcommand_exist
 
 
    pure function does_subcommand_exist(arg, subc_list) result(res)

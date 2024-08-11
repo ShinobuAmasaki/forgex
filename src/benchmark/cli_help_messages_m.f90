@@ -16,7 +16,11 @@ module forgex_cli_help_messages_m
    public :: print_help_debug
    public :: print_help_debug_ast
    public :: print_help_debug_thompson
-   public :: print_help_debug_lazy_dfa
+
+   public :: print_help_find
+   public :: print_help_find_match
+   public :: print_help_find_match_dense_dfa
+   public :: print_help_find_match_lazy_dfa
 
    integer(int32), parameter :: LINE_SIZ = 128
    integer(int32), parameter :: CMD_SIZ = 13
@@ -37,19 +41,25 @@ contains
       character(LINE_SIZ), allocatable :: buff(:)
       integer :: num_line, i, offset
 
-      num_line = 3 + size(desc) + size(usage) + 2 + size(cmd)
-      ! header + blank + DESC + blank+ USAGE + size(usage) + blank + COMMANDS + size(cmd)
+      if (present(desc)) then
+         num_line = 3 + size(desc) + size(usage) + 2 + size(cmd)
+      else
+         num_line = 3 + size(usage) + 2 + size(cmd)
+      end if
+         ! header + blank + DESC + blank+ USAGE + size(usage) + blank + COMMANDS + size(cmd)
       allocate(buff(num_line))
       buff(:) = ""
 
       buff(1) = header
       ! buff(2) blank
       offset = 2
-      do i = 1, size(desc)
-         buff(i+offset) = desc(i)
-      end do
-      
+      if (present(desc)) then
+         do i = 1, size(desc)
+            buff(i+offset) = desc(i)
+         end do
       offset = offset + size(desc)
+      endif
+
       buff(offset+1) = "USAGE:"
 
       offset = offset + 1
@@ -153,14 +163,49 @@ contains
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
    end subroutine print_help_debug_thompson
 
-   ! subroutine print_help_find_match_lazy_dfa
-   subroutine print_help_debug_lazy_dfa
+!=====================================================================!
+
+   subroutine print_help_find
+      implicit none
+      character(LINE_SIZ) :: header
+      character(LINE_SIZ) :: usage(1)
+      character(CMD_SIZ) :: cmd(1)
+      character(CMD_DESC_SIZ) :: cdesc(1)
+
+      header = "Executes a search."
+      usage(1) = "forgex-cli find <command> ..."
+      cmd(1) = "match"
+      cdesc(1) = "Search for full matches."
+      call generate_and_output(header, usage, "COMMANDS", cmd, cdesc)
+   end subroutine print_help_find
+
+
+   subroutine print_help_find_match
+      implicit none
+      character(LINE_SIZ) :: header
+      character(LINE_SIZ) :: usage(1)
+      character(CMD_SIZ) :: cmd(2)
+      character(CMD_DESC_SIZ) :: cdesc(2)
+
+      header = "Executes a search for full matches."
+      usage(1) = "forgex-cli find match <engine>"
+      
+      cmd(1) = "dense"
+      cdesc(1) = "Search with the fully-compiled DFA regex engine"
+      cmd(2) = "lazy-dfa"
+      cdesc(2) = "Search with the lazy DFA regex engine"
+      
+      call generate_and_output(header, usage, "ENGINES", cmd, cdesc)
+   end subroutine print_help_find_match
+
+
+   subroutine print_help_find_match_lazy_dfa
       implicit none
       character(LINE_SIZ) :: header
       character(LINE_SIZ) :: usage(2)
       character(CMD_SIZ) :: op(3)
       character(CMD_DESC_SIZ) :: odesc(3)
-      header = "Do matching and print the debug representation of a lazy DFA."
+      header = "Executes a search for matches using a lazy DFA regex engine."
       usage(1) = "forgex-cli debug lazy-dfa <pattern> .match. <text>"
       usage(2) = "forgex-cli debug lazy-dfa <pattern> .in. <text>"
 
@@ -172,7 +217,26 @@ contains
       odesc(3) = "Print the property information table only. "
 
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
-   end subroutine print_help_debug_lazy_dfa
-   !end subroutine print_help_find_match_lazy_dfa
-   
+   end subroutine print_help_find_match_lazy_dfa
+
+   subroutine print_help_find_match_dense_dfa
+      implicit none
+      character(LINE_SIZ) :: header
+      character(LINE_SIZ) :: usage(2)
+      character(CMD_SIZ) :: op(3)
+      character(CMD_DESC_SIZ) :: odesc(3)
+      header = "Executes a search for matches using a fully-compiled DFA regex engine."
+      usage(1) = "forgex-cli find match dense <pattern> .match. <text>"
+      usage(2) = "forgex-cli find match dense <pattern> .in. <text>"
+
+      op(1)    = "--verbose"
+      odesc(1) = "Print more information."
+      op(2)    = "--no-table"
+      odesc(2) = "Suppresses the output of the property information table."
+      op(3)    = "--table-only"
+      odesc(3) = "Print the property information table only. "
+
+      call generate_and_output(header, usage, "OPTIONS", op, odesc)
+   end subroutine print_help_find_match_dense_dfa
+
 end module forgex_cli_help_messages_m
