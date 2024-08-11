@@ -4,7 +4,7 @@ module forgex_cli_debug_m
    use :: forgex_cli_parameters_m, only: NUM_DIGIT_KEY, fmt_out_time, fmt_out_int, fmt_out_ratio, &
             fmt_out_logi, fmta, CRLF, LF
    use :: forgex_enums_m, only: FLAG_HELP, FLAG_NO_TABLE, FLAG_VERBOSE, FLAG_TABLE_ONLY, OS_WINDOWS
-   use :: forgex_cli_utils_m, only: get_os_type
+   use :: forgex_cli_utils_m, only: get_os_type, right_justify
 
 
    implicit none
