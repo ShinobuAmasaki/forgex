@@ -12,7 +12,7 @@
 !> Most of the implementations is in the cli_cla_m module etc. 
 program forgex_cli
    use :: forgex_enums_m, only: FLAG_HELP
-   use :: forgex_cli_parameters_m, only: SUBC_DEBUG, SUBC_FIND
+   use :: forgex_cli_parameters_m, only: CMD_DEBUG, CMD_FIND
    use :: forgex_cli_cla_m, only: cla_t
    use :: forgex_cli_help_messages_m, only: print_help
    implicit none
@@ -30,13 +30,13 @@ program forgex_cli
    end if
 
    ! Read subcommand. 
-   call cla%read_sub()
+   call cla%read_cmd()
 
    ! Branch by specified subcommand.
-   select case (cla%subc%name)
-   case (SUBC_DEBUG)
+   select case (cla%cmd%name)
+   case (CMD_DEBUG)
       call cla%do_debug
-   case (SUBC_FIND)
+   case (CMD_FIND)
       ! call cla%do_find
    case ('')
       call print_help

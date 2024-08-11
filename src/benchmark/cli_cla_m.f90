@@ -11,10 +11,10 @@
 module forgex_cli_cla_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
-   use :: forgex_cli_parameters_m, only: NUM_FLAGS, NUM_SUB_C, NUM_SUBC_DEBUG, &
-            SUB_SUBC_AST, SUB_SUBC_THOMPSON, SUB_SUBC_LAZY_DFA, OP_MATCH, OP_IN, fmta
-   use :: forgex_cli_type_m, only: flag_t, subc_t, pattern_t, arg_t, arg_element_t
-   use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag, register_subc, &
+   use :: forgex_cli_parameters_m, only: NUM_FLAGS, NUM_CMD, NUM_SUBC_DEBUG, &
+            SUBC_AST, SUBC_THOMPSON, SUBC_LAZY_DFA, OP_MATCH, OP_IN, fmta
+   use :: forgex_cli_type_m, only: flag_t, cmd_t, subc_t, pattern_t, arg_t, arg_element_t
+   use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag, register_cmd, &
             get_arg_command_line
    use :: forgex_cli_help_messages_m, only: print_help_debug, print_help_debug_ast, &
             print_help_debug_thompson, print_help_debug_lazy_dfa
@@ -22,20 +22,21 @@ module forgex_cli_cla_m
    private
 
    type(flag_t), public :: all_flags(NUM_FLAGS)
-   type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
+   type(cmd_t), public :: all_cmds(NUM_CMD)
 
    ! The type which represents command line arguments
    type, public :: cla_t
       type(arg_t) :: arg_info
-      type(subc_t) :: subc
-      character(:), allocatable :: sub_subc
+      type(cmd_t) :: cmd
+      character(:), allocatable :: subc
+      character(:), allocatable :: subsubc
       type(pattern_t), allocatable :: patterns(:)
       logical :: flags(NUM_FLAGS)
       integer :: flag_idx(NUM_FLAGS)
    contains
       procedure :: init => cla__initialize
-      procedure :: read_sub => cla__read_subcommand
-      procedure :: read_subsub => cla__read_sub_subcommand
+      procedure :: read_cmd => cla__read_command
+      procedure :: read_subc => cla__read_subcommand
       procedure :: collect_flags => cla__collect_flags
       procedure :: get_patterns => cla__get_patterns
       procedure :: init_debug => cla__init_debug_subc
@@ -45,6 +46,27 @@ module forgex_cli_cla_m
 
 contains
 
+!=====================================================================!
+
+   subroutine init_flags()
+      implicit none
+      integer :: i
+
+      call register_flag(all_flags(1), 'help','--help', '-h')
+      call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
+      call register_flag(all_flags(3), 'no-table', '--no-table')
+      call register_flag(all_flags(4), 'table-only', '--table-only')
+   end subroutine init_flags
+
+
+   subroutine init_commands()
+      implicit none
+
+      call register_cmd(all_cmds(1), 'debug')
+   end subroutine init_commands
+
+!=====================================================================!
+
    subroutine cla__do_debug_subc(cla)
       use :: forgex_cli_debug_m
       implicit none
@@ -52,8 +74,8 @@ contains
       logical :: is_exactly
 
       call cla%init_debug
-      call cla%read_subsub()
-      if (cla%sub_subc == '') then
+      call cla%read_subc()
+      if (cla%subc == '') then
          call print_help_debug
          stop
       end if
@@ -62,19 +84,19 @@ contains
 
       ! Handle errors when a pattern does not exist.
       if (.not. allocated(cla%patterns)) then
-         select case (cla%sub_subc)
-         case (SUB_SUBC_AST)
+         select case (cla%subc)
+         case (SUBC_AST)
             call print_help_debug_ast
-         case (SUB_SUBC_THOMPSON)
+         case (SUBC_THOMPSON)
             call print_help_debug_thompson
-         case (SUB_SUBC_LAZY_DFA)
+         case (SUBC_LAZY_DFA)
             call print_help_debug_lazy_dfa
          case default
             call print_help_debug
          end select
       end if
 
-      if (cla%sub_subc == SUB_SUBC_LAZY_DFA) then
+      if (cla%subc == SUBC_LAZY_DFA) then
          if (size(cla%patterns) /= 3) then
             write(stderr, "(a, i0, a)") "Three arguments are expected, but ", size(cla%patterns), " were given."
             stop
@@ -98,14 +120,14 @@ contains
       end if
 
 
-      select case (cla%sub_subc)
-      case (SUB_SUBC_AST)
+      select case (cla%subc)
+      case (SUBC_AST)
          call do_debug_ast(cla%flags, cla%patterns(1)%p)
 
-      case (SUB_SUBC_THOMPSON)
+      case (SUBC_THOMPSON)
          call do_debug_thompson(cla%flags, cla%patterns(1)%p)
       
-      case (SUB_SUBC_LAZY_DFA)
+      case (SUBC_LAZY_DFA)
          call do_debug_lazy_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
 
       end select
@@ -119,10 +141,10 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      allocate(cla%subc%subsubcmd(NUM_SUBC_DEBUG))
-      cla%subc%subsubcmd(1)%name = SUB_SUBC_AST
-      cla%subc%subsubcmd(2)%name = SUB_SUBC_THOMPSON
-      cla%subc%subsubcmd(3)%name = SUB_SUBC_LAZY_DFA
+      allocate(cla%cmd%sub_cmd(NUM_SUBC_DEBUG))
+      cla%cmd%sub_cmd(1)%name = SUBC_AST
+      cla%cmd%sub_cmd(2)%name = SUBC_THOMPSON
+      cla%cmd%sub_cmd(3)%name = SUBC_LAZY_DFA
    end subroutine
 
 !=====================================================================!
@@ -212,39 +234,39 @@ contains
    end subroutine
 
 
+   subroutine cla__read_command(cla)
+      implicit none
+      class(cla_t), intent(inout) :: cla
+
+      character(:), allocatable :: cmd
+
+      if (ubound(cla%arg_info%arg, dim=1) < 1) then
+         cmd = ""
+         return
+      end if
+
+      cmd = trim(cla%arg_info%arg(1)%v)
+      if (cmd .in. all_cmds) then
+         cla%cmd%name = cmd
+      else
+         cla%cmd%name = ""
+      end if
+   end subroutine cla__read_command
+
+
    subroutine cla__read_subcommand(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
 
       character(:), allocatable :: subc
 
-      if (ubound(cla%arg_info%arg, dim=1) < 1) then
-         subc = ""
-         return
-      end if
-
-      subc = trim(cla%arg_info%arg(1)%v)
-      if (subc .in. all_sub_cmds) then
-         cla%subc%name = subc
+      subc = trim(cla%arg_info%arg(2)%v)
+      if (subc .in. cla%cmd%sub_cmd) then
+         cla%subc = subc
       else
-         cla%subc%name = ""
+         cla%subc = ""
       end if
    end subroutine cla__read_subcommand
-
-
-   subroutine cla__read_sub_subcommand(cla)
-      implicit none
-      class(cla_t), intent(inout) :: cla
-
-      character(:), allocatable :: ssc
-
-      ssc = trim(cla%arg_info%arg(2)%v)
-      if (ssc .in. cla%subc%subsubcmd) then
-         cla%sub_subc= ssc
-      else
-         cla%sub_subc = ""
-      end if
-   end subroutine cla__read_sub_subcommand
 
 
    subroutine cla__initialize(cla)
@@ -255,28 +277,8 @@ contains
       cla%flags = .false.
       cla%flag_idx = -1
       call init_flags
-      call init_sub_commands
+      call init_commands
 
    end subroutine cla__initialize
-
-
-!=====================================================================!
-
-   subroutine init_flags()
-      implicit none
-      integer :: i
-
-      call register_flag(all_flags(1), 'help','--help', '-h')
-      call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
-      call register_flag(all_flags(3), 'no-table', '--no-table')
-      call register_flag(all_flags(4), 'table-only', '--table-only')
-   end subroutine init_flags
-
-
-   subroutine init_sub_commands()
-      implicit none
-
-      call register_subc(all_sub_cmds(1), 'debug')
-   end subroutine init_sub_commands
 
 end module forgex_cli_cla_m

@@ -24,14 +24,19 @@ module forgex_cli_type_m
       character(:), allocatable :: p
    end type pattern_t
 
-   type, public :: subsubc_t
+   type, public :: sub_subc_t
       character(16) :: name = ''
-   end type subsubc_t
+   end type sub_subc_t
 
-   type, public :: subc_t  ! sub command type
+   type, public :: subc_t
       character(16) :: name = ''
-      type(subsubc_t), allocatable :: subsubcmd(:)
+      type(sub_subc_t), allocatable :: subsub(:)
    end type subc_t
+
+   type, public :: cmd_t  ! command type
+      character(16) :: name = ''
+      type(subc_t), allocatable :: sub_cmd(:)   ! sub commands
+   end type cmd_t
 
    ! option flags, such as '--help', '-h'
    type, public :: flag_t

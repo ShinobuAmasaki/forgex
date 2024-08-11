@@ -14,7 +14,7 @@ module forgex_cli_parameters_m
    integer, parameter, public :: NUM_FLAGS = 4
 
    !> Number of sub-command that forgec-cli accepts.
-   integer, parameter, public :: NUM_SUB_C = 1
+   integer, parameter, public :: NUM_CMD = 1
 
    !> Number of digits for time display.
    integer, parameter, public :: NUM_DIGIT_TIME = 13
@@ -29,20 +29,20 @@ module forgex_cli_parameters_m
    integer, parameter, public :: TREE_BUFF_LEN = 2**16
 
    !> Name of the subcommand debug.
-   character(*), parameter, public :: SUBC_DEBUG = "debug"
+   character(*), parameter, public :: CMD_DEBUG = "debug"
 
    !> The number of sub-subcommands that debug accepts. 
    integer, parameter, public :: NUM_SUBC_DEBUG = 3
    !> Name of the sub-subcommand ast.
-   character(*), parameter, public :: SUB_SUBC_AST = "ast"
+   character(*), parameter, public :: SUBC_AST = "ast"
    !> Name of the sub-subcommand thompson.
-   character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
+   character(*), parameter, public :: SUBC_THOMPSON = "thompson"
 
 !---------------------------------------------------------------------!
    !> Name of the subcommand find.
-   character(*), parameter, public :: SUBC_FIND = "find"
-   character(*), parameter, public :: SUB_SUBC_MATCH = "match"
-   character(*), parameter, public :: SUB_SUBC_LAZY_DFA = "lazy-dfa"
+   character(*), parameter, public :: CMD_FIND = "find"
+   character(*), parameter, public :: SUBC_MATCH = "match"
+   character(*), parameter, public :: SUBC_LAZY_DFA = "lazy-dfa"
    character(*), parameter, public :: ENGINE_LAZY_DFA = "lazy-dfa"
 
    !> Name of the sub-subcommand lazy dfa
