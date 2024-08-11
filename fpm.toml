@@ -21,5 +21,4 @@ name = "forgex-cli"
 main = "forgex-cli.f90"
 [preprocess]
 [preprocess.cpp]
-# macros = ["IMPURE", "DEBUG"]
 macros = ["RELEASE"] # This macro is not defined in the source codes, but it tells fpm to use the preprocessor.
