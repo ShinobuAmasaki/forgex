@@ -24,20 +24,26 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: SUBC_DEBUG = "debug"
 
    !> The number of sub-subcommands that debug accepts. 
-   integer, parameter, public :: NUM_SUBC_DEBUG = 2
+   integer, parameter, public :: NUM_SUBC_DEBUG = 3
    
    !> Name of the sub-subcommand ast.
    character(*), parameter, public :: SUB_SUBC_AST = "ast"
    !> Name of the sub-subcommand thompson.
    character(*), parameter, public :: SUB_SUBC_THOMPSON = "thompson"
+   !> Name of the sub-subcommand lazy dfa
+   character(*), parameter, public :: SUB_SUBC_LAZY_DFA = "lazy-dfa"
+   character(*), parameter, public :: OP_MATCH = ".match."
+   character(*), parameter, public :: OP_IN = ".in."
 
    !> String to indicate invalidity if no short flag is present. 
    character(*), parameter, public :: INVALID_FLAG = "INVALID"
 
    !> Output format for displaying an integer in tables.
    character(*), parameter, public :: fmt_out_int = "(a, i10)"
+   character(*), parameter, public :: fmt_out_ratio = "(a, i10, '/', i0)"
 
    character(*), parameter, public :: fmt_out_time = "(a, a15)"
+   character(*), parameter, public :: fmt_out_logi = "(a, l10)"
 
    !> Format for outputting text only.
    character(*), parameter, public :: fmta = "(a)"

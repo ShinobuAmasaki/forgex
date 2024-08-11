@@ -9,7 +9,6 @@
 !! This file includes a command line tool for debugging, ad hoc benchmarking
 !! regular expressions.
 program forgex_cli
-#if defined(IMPURE) && defined(DEBUG)
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
    use :: forgex_cli_parameters_m
    use :: forgex, only: operator(.match.), operator(.in.)
@@ -37,11 +36,6 @@ program forgex_cli
    end select
 
 
-#else
-   implicit none
-   call print_fpm_message
-
-#endif
 contains
 
    subroutine print_fpm_message

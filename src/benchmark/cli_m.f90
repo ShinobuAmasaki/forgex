@@ -1,6 +1,4 @@
 module forgex_cli_m
-#if defined(IMPURE) || defined(DEBUG)
-
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
    use :: forgex_cli_parameters_m
@@ -40,6 +38,7 @@ contains
       use :: forgex_cli_debug_m
       implicit none
       class(cla_t), intent(inout) :: cla
+      logical :: is_exactly
 
       call cla%init_debug
       call cla%read_subsub()
@@ -49,9 +48,6 @@ contains
       end if
 
       call cla%get_patterns()
-      if (size(cla%patterns) > 1) then
-         write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
-      end if
 
       ! Handle errors when a pattern does not exist.
       if (.not. allocated(cla%patterns)) then
@@ -60,10 +56,36 @@ contains
             call print_help_debug_ast
          case (SUB_SUBC_THOMPSON)
             call print_help_debug_thompson
+         case (SUB_SUBC_LAZY_DFA)
+            call print_help_debug_lazy_dfa
          case default
             call print_help_message_for_debug
          end select
       end if
+
+      if (cla%sub_subc == SUB_SUBC_LAZY_DFA) then
+         if (size(cla%patterns) /= 3) then
+            write(stderr, "(a, i0, a)") "Three arguments are expected, but ", size(cla%patterns), " were given."
+            stop
+         else if (cla%patterns(2)%p /= OP_MATCH .and. cla%patterns(2)%p /= OP_IN) then
+            write(stderr, "(a)") "Operator "//OP_MATCH//" or "//OP_IN//" are expected, but "//cla%patterns(2)%p//" was given."
+            stop
+         end if
+
+         if (cla%patterns(2)%p == OP_MATCH) then
+            is_exactly = .true.
+         else if (cla%patterns(2)%p == OP_IN) then
+            is_exactly = .false.
+         else
+            write(stderr, '(a)') "Unknown operator: "//cla%patterns(2)%p
+         end if
+      else
+         if (size(cla%patterns) > 1) then
+            write(stderr, '(a, i0, a)') "Only single pattern is expected, but ", size(cla%patterns), " were given."
+            stop
+         end if
+      end if
+
 
       select case (cla%sub_subc)
       case (SUB_SUBC_AST)
@@ -71,6 +93,9 @@ contains
 
       case (SUB_SUBC_THOMPSON)
          call do_debug_thompson(cla%flags, cla%patterns(1)%p)
+      
+      case (SUB_SUBC_LAZY_DFA)
+         call do_debug_lazy_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
 
       end select
 
@@ -86,6 +111,7 @@ contains
       allocate(cla%subc%subsubcmd(NUM_SUBC_DEBUG))
       cla%subc%subsubcmd(1)%name = SUB_SUBC_AST
       cla%subc%subsubcmd(2)%name = SUB_SUBC_THOMPSON
+      cla%subc%subsubcmd(3)%name = SUB_SUBC_LAZY_DFA
    end subroutine
 
 !=====================================================================!
@@ -268,7 +294,5 @@ contains
       write(stderr, fmta) "   ast        Print the debug representation of an AST."
       write(stderr, fmta) "   thompson   Print the debug representation of a Thompson NFA."
    end subroutine print_help_message_for_debug
-
-#endif
 
 end module forgex_cli_m
