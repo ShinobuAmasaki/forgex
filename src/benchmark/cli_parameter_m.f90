@@ -16,6 +16,9 @@ module forgex_cli_parameters_m
    !> Number of sub-command that forgec-cli accepts.
    integer, parameter, public :: NUM_CMD = 2
 
+   !> Length
+   integer, parameter, public :: LEN_CMD = 16
+
    !> Number of digits for time display.
    integer, parameter, public :: NUM_DIGIT_TIME = 13
 

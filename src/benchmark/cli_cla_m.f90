@@ -12,7 +12,7 @@ module forgex_cli_cla_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
    use :: forgex_cli_parameters_m
-   use :: forgex_cli_type_m, only: flag_t, cmd_t, subc_t, pattern_t, arg_t, arg_element_t
+   use :: forgex_cli_type_m, only: flag_t, cmd_t, pattern_t, arg_t, arg_element_t
    use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag, register_cmd, &
             get_arg_command_line
    use :: forgex_cli_help_messages_m, only: print_help_debug, print_help_debug_ast, &
@@ -27,11 +27,7 @@ module forgex_cli_cla_m
    ! The type which represents command line arguments
    type, public :: cla_t
       type(arg_t) :: arg_info
-      type(cmd_t) :: cmd
-      character(:), allocatable :: subc
-      integer :: subc_index = 0
-      integer :: subsubc_index =0
-      character(:), allocatable :: subsubc
+      type(cmd_t) :: cmd, sub_cmd, sub_sub_cmd
       type(pattern_t), allocatable :: patterns(:)
       logical :: flags(NUM_FLAGS)
       integer :: flag_idx(NUM_FLAGS)
@@ -65,8 +61,8 @@ contains
 
    subroutine init_commands()
       implicit none
-      call register_cmd(all_cmds(1), 'debug')
-      call register_cmd(all_cmds(2), 'find')
+      call register_cmd(all_cmds(1), CMD_DEBUG)
+      call register_cmd(all_cmds(2), CMD_FIND)
    end subroutine init_commands
 
 !=====================================================================!
@@ -75,17 +71,17 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      allocate(cla%cmd%sub_cmd(NUM_SUBC_DEBUG))
-      cla%cmd%sub_cmd(1)%name = SUBC_AST
-      cla%cmd%sub_cmd(2)%name = SUBC_THOMPSON
+      allocate(cla%cmd%subc(NUM_SUBC_DEBUG))
+      cla%cmd%subc(1) = SUBC_AST
+      cla%cmd%subc(2) = SUBC_THOMPSON
    end subroutine
 
    subroutine cla__init_find_subc(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      allocate(cla%cmd%sub_cmd(NUM_SUBC_FIND))
-      cla%cmd%sub_cmd(1)%name = SUBC_MATCH
+      allocate(cla%cmd%subc(NUM_SUBC_FIND))
+      cla%cmd%subc(1) = SUBC_MATCH
    end subroutine cla__init_find_subc
 
 !---------------------------------!
@@ -94,10 +90,9 @@ contains
       class(cla_t), intent(inout) :: cla
       integer :: idx
 
-      idx = cla%subc_index
-      allocate(cla%cmd%sub_cmd(idx)%subsub(NUM_SUBSUBC_MATCH))
-      cla%cmd%sub_cmd(idx)%subsub(1)%name = ENGINE_LAZY_DFA
-      cla%cmd%sub_cmd(idx)%subsub(2)%name = ENGINE_DENSE_DFA
+      allocate(cla%sub_cmd%subc(NUM_SUBSUBC_MATCH))
+      cla%sub_cmd%subc(1) = ENGINE_LAZY_DFA
+      cla%sub_cmd%subc(2) = ENGINE_DENSE_DFA
    end subroutine cla__init_find_match_subsubc
 
 !=====================================================================!
@@ -114,9 +109,9 @@ contains
 
       cmd = trim(cla%arg_info%arg(1)%v)
       if (cmd .in. all_cmds) then
-         cla%cmd%name = cmd
+         call cla%cmd%set_name(cmd)
       else
-         cla%cmd%name = ""
+         call cla%cmd%set_name("")
       end if
    end subroutine cla__read_command
 
@@ -125,15 +120,14 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      character(:), allocatable :: subc
+      character(:), allocatable :: cmd
       integer :: i
 
-      subc = trim(cla%arg_info%arg(2)%v)
+      cmd = trim(cla%arg_info%arg(2)%v)
 
-      do i = 1, size(cla%cmd%sub_cmd)
-         if (subc == cla%cmd%sub_cmd(i)%name) then
-            cla%subc_index = i
-            cla%subc = subc
+      do i = 1, size(cla%cmd%subc)
+         if (cmd == cla%cmd%subc(i)) then
+            call cla%sub_cmd%set_name(cmd)
             return
          end if
       end do
@@ -145,16 +139,15 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
 
-      character(:), allocatable :: subsubc
+      character(:), allocatable :: cmd
       integer :: i
 
-      cla%subsubc = ''
-      subsubc = trim(cla%arg_info%arg(3)%v)
+      cmd = trim(cla%arg_info%arg(3)%v)
 
-      do i = 1, size(cla%cmd%sub_cmd(cla%subc_index)%subsub)
-         if (subsubc == cla%cmd%sub_cmd(cla%subc_index)%subsub(i)%name) then
-            cla%subsubc_index = i
-            cla%subsubc = subsubc
+      do i = 1, size(cla%sub_cmd%subc)
+         if (cmd == cla%sub_cmd%subc(i)) then
+
+            call cla%sub_sub_cmd%set_name(cmd)
             return
          end if
       end do
@@ -166,19 +159,21 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
       logical :: is_exactly
+      integer :: pattern_offset
 
-      call cla%init_debug
+      pattern_offset = 3
+
+      call cla%init_debug()
       call cla%read_subc()
-      if (cla%subc == '') then
+      if (cla%sub_cmd%get_name() == '') then
          call print_help_debug
-         stop
       end if
 
-      call cla%get_patterns(3)
+      call cla%get_patterns(pattern_offset)
 
       ! Handle errors when a pattern does not exist.
       if (.not. allocated(cla%patterns)) then
-         select case (cla%subc)
+         select case (cla%sub_cmd%get_name())
          case (SUBC_AST)
             call print_help_debug_ast
          case (SUBC_THOMPSON)
@@ -194,7 +189,7 @@ contains
       end if
 
 
-      select case (cla%subc)
+      select case (cla%sub_cmd%get_name())
       case (SUBC_AST)
          call do_debug_ast(cla%flags, cla%patterns(1)%p)
 
@@ -211,28 +206,30 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
       logical :: is_exactly
-      integer :: i
+      integer :: i, pattern_offset
+
+      pattern_offset = 4
 
       call cla%init_find()
       call cla%read_subc()
-      if (cla%subc == '') then
+      if (cla%sub_cmd%get_name() == '') then
          call print_help_find
-      else if (cla%subc == SUBC_MATCH) then
+      else if (cla%sub_cmd%get_name() == SUBC_MATCH) then
          call cla%init_find_match()
       endif
       
       call cla%read_subsubc()
-      if (cla%subsubc == '') then
-         select case (cla%subc)
+      if (cla%sub_sub_cmd%get_name() == '') then
+         select case (cla%sub_cmd%get_name())
          case (SUBC_MATCH)
             call print_help_find_match
          end select
       end if
 
-      call cla%get_patterns(4)
+      call cla%get_patterns(pattern_offset)
 
       if (.not. allocated(cla%patterns)) then
-         select case(cla%subsubc)
+         select case(cla%sub_sub_cmd%get_name())
          case (ENGINE_LAZY_DFA)
             call print_help_find_match_lazy_dfa
          case (ENGINE_DENSE_DFA)
@@ -240,7 +237,7 @@ contains
          end select
       end if
 
-      if (cla%subsubc == ENGINE_LAZY_DFA .or. cla%subsubc == ENGINE_DENSE_DFA) then
+      if (cla%sub_sub_cmd%get_name() == ENGINE_LAZY_DFA .or. cla%sub_sub_cmd%get_name() == ENGINE_DENSE_DFA) then
          if (size(cla%patterns) /= 3) then
             write(stderr, "(a, i0, a)") "Three arguments are expected, but ", size(cla%patterns), " were given."
             stop
@@ -260,7 +257,7 @@ contains
          call print_help_find_match
       end if
 
-      select case (cla%subsubc)
+      select case (cla%sub_sub_cmd%get_name())
       case (ENGINE_LAZY_DFA)
          call do_find_match_lazy_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
       case (ENGINE_DENSE_DFA)

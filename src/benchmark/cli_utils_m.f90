@@ -8,8 +8,8 @@
 !
 module forgex_cli_utils_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
-   use :: forgex_cli_parameters_m, only: LEN_ENV_VAR, NUM_FLAGS, INVALID_FLAG
-   use forgex_cli_type_m, only: arg_element_t, flag_t, cmd_t, subc_t, sub_subc_t
+   use :: forgex_cli_parameters_m, only: LEN_ENV_VAR, NUM_FLAGS, INVALID_FLAG, LEN_CMD
+   use forgex_cli_type_m, only: arg_element_t, flag_t, cmd_t
    implicit none
    private
    public :: right_justify
@@ -18,8 +18,7 @@ module forgex_cli_utils_m
    interface operator(.in.)
       module procedure :: does_flag_exist
       module procedure :: does_command_exist
-      module procedure :: does_subcommand_exist
-      module procedure :: does_subsubcommand_exist
+      module procedure :: does_command_exist_type_cmd
       module procedure :: is_arg_contained_in_flags
    end interface
 
@@ -133,35 +132,22 @@ contains
 
 !=====================================================================!
 
-   pure function does_subsubcommand_exist(arg, subsubc_list) result(res)
-      character(*), intent(in) :: arg
-      type(sub_subc_t), intent(in) :: subsubc_list(:)
-      logical :: res
-      integer :: i 
-
-      res = .false.
-      do i = lbound(subsubc_list, dim=1), ubound(subsubc_list, dim=1)
-         res = res .or. trim(arg) == trim(subsubc_list(i)%name)
-      end do
-   end function does_subsubcommand_exist
-
-
-   pure function does_subcommand_exist(arg, subc_list) result(res)
+   pure function does_command_exist(arg, cmd_list) result(res)
       implicit none
       character(*), intent(in) :: arg
-      type(subc_t), intent(in) :: subc_list(:)
+      character(LEN_CMD), intent(in) :: cmd_list(:)
       logical :: res
-
       integer :: i
 
       res = .false.
-      do i = lbound(subc_list, dim=1), ubound(subc_list, dim=1)
-         res = res .or. trim(arg) == trim(subc_list(i)%name)
+      do i = lbound(cmd_list, dim=1), ubound(cmd_list, dim=1)
+         res = res .or. trim(arg) == trim(cmd_list(i))
+         if (res) return
       end do
-   end function does_subcommand_exist
+   end function does_command_exist
 
 
-   pure function does_command_exist(arg, cmd_list) result(res)
+   pure function does_command_exist_type_cmd(arg, cmd_list) result(res)
       implicit none
       character(*), intent(in) :: arg
       type(cmd_t), intent(in) :: cmd_list(:)
@@ -170,10 +156,10 @@ contains
 
       res = .false.
       do i = lbound(cmd_list, dim=1), ubound(cmd_list, dim=1)
-         res = res .or. trim(arg) == trim(cmd_list(i)%name)
+         res = res .or. trim(arg) == trim(cmd_list(i)%get_name())
          if (res) return
       end do
-   end function does_command_exist
+   end function does_command_exist_type_cmd
 
 
    pure function does_flag_exist(arg, flag_list) result(res)
@@ -216,7 +202,7 @@ contains
       type(cmd_t), intent(inout) :: cmd
       character(*), intent(in) :: name
 
-      cmd%name = name
+      call cmd%set_name(name)
    end subroutine register_cmd
 
 

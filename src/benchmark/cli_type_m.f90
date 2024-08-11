@@ -7,6 +7,7 @@
 !     forgex_cli_type_m module is a part of Forgex.
 !
 module forgex_cli_type_m
+   use :: forgex_cli_parameters_m
    implicit none
    private
 
@@ -24,18 +25,21 @@ module forgex_cli_type_m
       character(:), allocatable :: p
    end type pattern_t
 
-   type, public :: sub_subc_t
-      character(16) :: name = ''
-   end type sub_subc_t
+   ! type, public :: sub_subc_t
+   !    character(LEN_CMD) :: name = ''
+   ! end type sub_subc_t
 
-   type, public :: subc_t
-      character(16) :: name = ''
-      type(sub_subc_t), allocatable :: subsub(:)
-   end type subc_t
+   ! type, public :: subc_t
+   !    character(LEN_CMD) :: name = ''
+   !    character(LEN_CMD), allocatable :: subsub(:)
+   ! end type subc_t
 
    type, public :: cmd_t  ! command type
-      character(16) :: name = ''
-      type(subc_t), allocatable :: sub_cmd(:)   ! sub commands
+      character(LEN_CMD), private :: name = ''
+      character(LEN_CMD), allocatable :: subc(:)
+   contains
+      procedure :: get_name => cmd__get_name
+      procedure :: set_name => cmd__set_name
    end type cmd_t
 
    ! option flags, such as '--help', '-h'
@@ -43,5 +47,24 @@ module forgex_cli_type_m
       character(32) :: name
       character(:), allocatable :: long_f, short_f
    end type flag_t
+
+contains
+
+   pure function cmd__get_name(self) result(res)
+      implicit none
+      class(cmd_t), intent(in) :: self
+      character(:), allocatable :: res
+
+      res = trim(self%name)
+   end function cmd__get_name
+
+   pure subroutine cmd__set_name(self, name)
+      implicit none
+      class(cmd_t), intent(inout) :: self
+      character(*), intent(in) :: name
+
+      self%name = name
+   end subroutine cmd__set_name
+
 
 end module forgex_cli_type_m

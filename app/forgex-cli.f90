@@ -14,7 +14,7 @@ program forgex_cli
    use :: forgex_enums_m, only: FLAG_HELP
    use :: forgex_cli_parameters_m, only: CMD_DEBUG, CMD_FIND
    use :: forgex_cli_cla_m, only: cla_t
-   use :: forgex_cli_help_messages_m, only: print_help
+   use :: forgex_cli_help_messages_m, only: print_help, print_help_debug, print_help_find
    implicit none
 
    type(cla_t) :: cla
@@ -27,13 +27,22 @@ program forgex_cli
    if (cla%flags(FLAG_HELP) .and. cla%flag_idx(FLAG_HELP) == 1) then
       call print_help
       stop
+   else if (cla%arg_info%argc == 1) then
+      select case (cla%arg_info%arg(1)%v)
+      case (CMD_DEBUG)
+         call print_help_debug
+      case (CMD_FIND)
+         call print_help_find
+      case default
+         call print_help
+      end select
    end if
 
    ! Read subcommand. 
    call cla%read_cmd()
 
    ! Branch by specified subcommand.
-   select case (cla%cmd%name)
+   select case (cla%cmd%get_name())
    case (CMD_DEBUG)
       call cla%do_debug
    case (CMD_FIND)
