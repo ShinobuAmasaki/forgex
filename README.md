@@ -210,7 +210,7 @@ The following features are planned to be implemented in the future:
 
 - [ ] Deal with invalid byte strings in UTF-8
 - [ ] Optimize by literal searching method
-- [ ] Add a CLI tool for debugging and benchmarking
+- [x] Add a CLI tool for debugging and benchmarking
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
 - [x] Support UTF-8 basic feature
