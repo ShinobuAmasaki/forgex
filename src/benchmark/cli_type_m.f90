@@ -25,18 +25,9 @@ module forgex_cli_type_m
       character(:), allocatable :: p
    end type pattern_t
 
-   ! type, public :: sub_subc_t
-   !    character(LEN_CMD) :: name = ''
-   ! end type sub_subc_t
-
-   ! type, public :: subc_t
-   !    character(LEN_CMD) :: name = ''
-   !    character(LEN_CMD), allocatable :: subsub(:)
-   ! end type subc_t
-
    type, public :: cmd_t  ! command type
       character(LEN_CMD), private :: name = ''
-      character(LEN_CMD), allocatable :: subc(:)
+      character(LEN_CMD), allocatable :: subc(:)   ! sub-command
    contains
       procedure :: get_name => cmd__get_name
       procedure :: set_name => cmd__set_name

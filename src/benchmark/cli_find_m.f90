@@ -12,16 +12,55 @@ module forgex_cli_find_m
    use :: forgex_enums_m
    use :: forgex_cli_time_measurement_m
    use :: forgex_cli_help_messages_m
+   use :: forgex_cli_utils_m, only: right_justify
    implicit none
    private
 
-   public :: do_find_match
+   public :: do_find_match_forgex
    public :: do_find_match_lazy_dfa
 
 contains
 
-   subroutine do_find_match
-   end subroutine do_find_match
+   subroutine do_find_match_forgex(flags, pattern, text, is_exactly)
+      use :: forgex, only: operator(.in.), operator(.match.)
+      use :: forgex_cli_time_measurement_m
+      implicit none
+      logical, intent(in) :: flags(:)
+      character(*), intent(in) :: pattern, text
+      logical, intent(in) :: is_exactly
+
+      real(real64) :: lap
+      logical :: res
+      call time_begin()
+      if (is_exactly) then
+         res = pattern .match. text
+      else
+         res = pattern .in. text
+      end if
+      lap = time_lap()
+
+      output: block
+         character(NUM_DIGIT_KEY) :: pattern_key, text_key
+         character(NUM_DIGIT_KEY) :: total_time, matching_result
+         character(NUM_DIGIT_KEY) :: buf(4)
+
+         pattern_key = "pattern:"
+         text_key = "text:"
+         total_time = "time:"
+         matching_result = "result:"
+         if (flags(FLAG_NO_TABLE)) then
+            write(stdout, *) res
+         else
+            buf = [pattern_key, text_key, total_time, matching_result]
+            call right_justify(buf)
+            write(stdout, '(a, 1x, a)') trim(buf(1)), trim(adjustl(pattern))
+            write(stdout, '(a, 1x, a)') trim(buf(2)), trim(adjustl(text))
+            write(stdout, fmt_out_time) trim(buf(3)), get_lap_time_in_appropriate_unit(lap)
+            write(stdout, fmt_out_logi) trim(buf(4)), res
+         end if
+      end block output
+
+   end subroutine do_find_match_forgex
 
 
    subroutine do_find_match_lazy_dfa(flags, pattern, text, is_exactly)

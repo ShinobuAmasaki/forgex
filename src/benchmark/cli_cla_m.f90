@@ -17,7 +17,8 @@ module forgex_cli_cla_m
             get_arg_command_line
    use :: forgex_cli_help_messages_m, only: print_help_debug, print_help_debug_ast, &
             print_help_debug_thompson, print_help_find_match_lazy_dfa,  &
-            print_help_find, print_help_find_match, print_help_find_match_lazy_dfa, print_help_find_match_dense_dfa
+            print_help_find, print_help_find_match, print_help_find_match_lazy_dfa,  &
+            print_help_find_match_dense_dfa, print_help_find_match_forgex_api
    implicit none
    private
 
@@ -96,6 +97,7 @@ contains
       allocate(cla%sub_cmd%subc(NUM_SUBSUBC_MATCH))
       cla%sub_cmd%subc(1) = ENGINE_LAZY_DFA
       cla%sub_cmd%subc(2) = ENGINE_DENSE_DFA
+      cla%sub_cmd%subc(3) = ENGINE_FORGEX_API
    end subroutine cla__init_find_match_subsubc
 
 !=====================================================================!
@@ -243,10 +245,14 @@ contains
             call print_help_find_match_lazy_dfa
          case (ENGINE_DENSE_DFA)
             call print_help_find_match_dense_dfa
+         case (ENGINE_FORGEX_API)
+            call print_help_find_match_forgex_api
          end select
       end if
 
-      if (cla%sub_sub_cmd%get_name() == ENGINE_LAZY_DFA .or. cla%sub_sub_cmd%get_name() == ENGINE_DENSE_DFA) then
+      if ( cla%sub_sub_cmd%get_name() == ENGINE_LAZY_DFA  &
+           .or. cla%sub_sub_cmd%get_name() == ENGINE_DENSE_DFA &
+           .or. cla%sub_sub_cmd%get_name() == ENGINE_FORGEX_API) then
          if (size(cla%patterns) /= 3) then
             write(stderr, "(a, i0, a)") "Three arguments are expected, but ", size(cla%patterns), " were given."
             stop
@@ -273,6 +279,8 @@ contains
          ! call do_find_match_dense_dfa
          write(stderr, *) "dense matching is currently unavailable."
          stop
+      case (ENGINE_FORGEX_API)
+         call do_find_match_forgex(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
       case default
          call print_help_find_match
       end select

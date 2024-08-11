@@ -21,6 +21,7 @@ module forgex_cli_help_messages_m
    public :: print_help_find_match
    public :: print_help_find_match_dense_dfa
    public :: print_help_find_match_lazy_dfa
+   public :: print_help_find_match_forgex_api
 
    integer(int32), parameter :: LINE_SIZ = 128
    integer(int32), parameter :: CMD_SIZ = 13
@@ -238,5 +239,22 @@ contains
 
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
    end subroutine print_help_find_match_dense_dfa
+
+   subroutine print_help_find_match_forgex_api
+      implicit none
+      character(LINE_SIZ) :: header
+      character(LINE_SIZ) :: usage(2)
+      character(CMD_SIZ) :: op(1)
+      character(CMD_DESC_SIZ) :: odesc(1)
+      header = "Executes a search for matches using the top-level API regex engine."
+      usage(1) = "forgex-cli find match forgex <pattern> .match. <text>"
+      usage(2) = "forgex-cli find match forgex <pattern> .in. <text>"
+
+      op(1)    = "--no-table"
+      odesc(1) = "Suppresses the output of the property information table."
+      
+      call generate_and_output(header, usage, "OPTIONS", op, odesc)
+   end subroutine print_help_find_match_forgex_api
+
 
 end module forgex_cli_help_messages_m

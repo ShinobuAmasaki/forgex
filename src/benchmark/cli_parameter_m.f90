@@ -46,10 +46,10 @@ module forgex_cli_parameters_m
    integer, parameter, public :: NUM_SUBC_FIND = 1
    character(*), parameter, public :: SUBC_MATCH = "match"
 
-   integer, parameter, public :: NUM_SUBSUBC_MATCH = 2
-   ! character(*), parameter, public :: SUBC_LAZY_DFA = "lazy-dfa"
+   integer, parameter, public :: NUM_SUBSUBC_MATCH = 3
    character(*), parameter, public :: ENGINE_LAZY_DFA = "lazy-dfa"
    character(*), parameter, public :: ENGINE_DENSE_DFA = "dense"
+   character(*), parameter, public :: ENGINE_FORGEX_API = "forgex"
 !---------------------------------------------------------------------!
 
    !> Name of the sub-subcommand lazy dfa
