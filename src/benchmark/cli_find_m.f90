@@ -17,7 +17,7 @@ module forgex_cli_find_m
 
    public :: do_find_match
    public :: do_find_match_lazy_dfa
-   
+
 contains
 
    subroutine do_find_match
@@ -64,7 +64,7 @@ contains
 
       call automaton%init()
       lap3 = time_lap()
-      
+
       if (is_exactly) then
          call do_matching_exactly(automaton, text, res)
       else
@@ -76,13 +76,13 @@ contains
             else
                from = from -1
             end if
-      
+
             if (is_there_dollar_at_the_end(pattern)) then
                to = to - 2
             else
                to = to - 1
             end if
-      
+
             if (from > 0 .and. to > 0) then
                res = .true.
             else
@@ -129,14 +129,14 @@ contains
          matching_time  = "dfa matching time:"
          memory         = "memory (estimated):"
          matching_result= "matching result:"
-         
+
          tree_count     = "tree node count:"
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
 
          memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
                    + mem_dfa_graph(automaton%dfa) + 4*3
-         if (allocated(automaton%entry_set%vec)) then 
+         if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
          end if
          if (allocated(automaton%all_segments)) then
@@ -147,7 +147,7 @@ contains
             cbuff = [pattern_key, text_key, parse_time, nfa_time, dfa_init_time, matching_time, matching_result, memory, &
                      tree_count, nfa_count, dfa_count]
             call right_justify(cbuff)
-            
+
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
             write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)

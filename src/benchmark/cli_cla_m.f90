@@ -67,6 +67,7 @@ contains
 
 !=====================================================================!
 
+   !> Prepare subcommands for the `debug` command.
    subroutine cla__init_debug_subc(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -76,6 +77,7 @@ contains
       cla%cmd%subc(2) = SUBC_THOMPSON
    end subroutine
 
+   !> Prepare subcommands for the `find` command.
    subroutine cla__init_find_subc(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -85,6 +87,7 @@ contains
    end subroutine cla__init_find_subc
 
 !---------------------------------!
+   !> Prepare sub-subcommands for the `match` subcommand.
    subroutine cla__init_find_match_subsubc(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -96,6 +99,8 @@ contains
    end subroutine cla__init_find_match_subsubc
 
 !=====================================================================!
+
+   !> Read the first argument and match it with registered commands.
    subroutine cla__read_command(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -115,7 +120,7 @@ contains
       end if
    end subroutine cla__read_command
 
-
+   !> Read the second argument and match it with registered subcommands.
    subroutine cla__read_subcommand(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -131,10 +136,10 @@ contains
             return
          end if
       end do
-
    end subroutine cla__read_subcommand
 
 
+   !> Read the third argument and match it with registered sub-subcommands.
    subroutine cla__read_sub_subcommand(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
@@ -154,6 +159,8 @@ contains
    end subroutine cla__read_sub_subcommand
 
 !=====================================================================!
+
+   !> Processes the `debug` command, reads a subcommand, and calls the corresponding procedure.
    subroutine cla__do_debug_subc(cla)
       use :: forgex_cli_debug_m
       implicit none
@@ -201,6 +208,8 @@ contains
    end subroutine cla__do_debug_subc
 
 
+   !> Processes the `debug` command, reads a subcommand and a sub-subcommand,
+   !> and calls the corresponding procedure.
    subroutine cla__do_find_subc(cla)
       use :: forgex_cli_find_m
       implicit none
@@ -217,7 +226,7 @@ contains
       else if (cla%sub_cmd%get_name() == SUBC_MATCH) then
          call cla%init_find_match()
       endif
-      
+
       call cla%read_subsubc()
       if (cla%sub_sub_cmd%get_name() == '') then
          select case (cla%sub_cmd%get_name())
@@ -282,7 +291,7 @@ contains
       j = 0
       outer: do i = offset, cla%arg_info%argc
 
-         ! 
+         !
          if (i <= maxval(cla%flag_idx)) then
             do k = 1, ubound(cla%flags, dim=1)
                if ( i == cla%flag_idx(k))  cycle outer

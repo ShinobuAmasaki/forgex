@@ -11,7 +11,7 @@ module forgex_cli_help_messages_m
    use :: forgex_cli_parameters_m, only: fmta
    implicit none
    private
-   
+
    public :: print_help
    public :: print_help_debug
    public :: print_help_debug_ast
@@ -78,7 +78,7 @@ contains
       do i = 1, num_line
          write(stderr, fmta) buff(i)
       end do
-      
+
       stop
    end subroutine generate_and_output
 
@@ -92,12 +92,12 @@ contains
 
       header   = "A tool for interacting with Forgex on the command line."
       usage(1) = "forgex-cli <command> ..."
-      
+
       cmd(1)   = "debug"
       cdesc(1)  = "Print the debug representation from Forgex's regex engine."
 
       cmd(2)   = "find"
-      cdesc(2)  = "Search for a string using one of the regular expression engines." 
+      cdesc(2)  = "Search for a string using one of the regular expression engines."
 
       call generate_and_output(header, usage, "COMMANDS",  cmd, cdesc)
 
@@ -113,12 +113,12 @@ contains
 
       header   = "Prints the debug representation provided by Forgex."
       usage(1) = "forgex-cli debug <command> ..."
-       
+
       cmd(1)   = "ast"
       cdesc(1) = "Print the debug representation of an AST."
       cmd(2)   = "thompson"
       cdesc(2) = "Print the debug representation of a Thompson NFA."
-      
+
       call generate_and_output(header, usage, "COMMANDS", cmd, cdesc)
    end subroutine print_help_debug
 
@@ -189,12 +189,12 @@ contains
 
       header = "Executes a search for full matches."
       usage(1) = "forgex-cli find match <engine>"
-      
+
       cmd(1) = "dense"
       cdesc(1) = "Search with the fully-compiled DFA regex engine"
       cmd(2) = "lazy-dfa"
       cdesc(2) = "Search with the lazy DFA regex engine"
-      
+
       call generate_and_output(header, usage, "ENGINES", cmd, cdesc)
    end subroutine print_help_find_match
 

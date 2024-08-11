@@ -37,7 +37,7 @@ contains
       integer :: res
       integer, save :: res_save
       logical, save :: is_first = .true.
-      
+
       character(LEN_ENV_VAR) :: val1, val2
       integer :: len1, len2, stat1, stat2
 
@@ -61,7 +61,7 @@ contains
 
       call get_environment_variable(name='OSTYPE', value=val2, length=len2, status= stat2)
       if (stat2 == 0 .and. len2 > 0) then
-         !! @todo 
+         !! @todo
       end if
    end function get_os_type
 

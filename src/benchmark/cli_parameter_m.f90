@@ -34,7 +34,7 @@ module forgex_cli_parameters_m
 !---------------------------------------------------------------------!
    !> Name of the subcommand debug.
    character(*), parameter, public :: CMD_DEBUG = "debug"
-   !> The number of sub-subcommands that debug accepts. 
+   !> The number of sub-subcommands that debug accepts.
    integer, parameter, public :: NUM_SUBC_DEBUG = 2
    !> Name of the sub-subcommand ast.
    character(*), parameter, public :: SUBC_AST = "ast"
@@ -56,7 +56,7 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: OP_MATCH = ".match."
    character(*), parameter, public :: OP_IN = ".in."
 
-   !> String to indicate invalidity if no short flag is present. 
+   !> String to indicate invalidity if no short flag is present.
    character(*), parameter, public :: INVALID_FLAG = "INVALID"
 
    !> Output format for displaying an integer in tables.
@@ -71,8 +71,8 @@ module forgex_cli_parameters_m
 
    !> Line ending characters for Windows OS
    character(*), parameter, public :: CRLF = char(13)//char(10)
-   
-   !> Line Feed. 
+
+   !> Line Feed.
    character(*), parameter, public :: LF = char(10)
 
 end module forgex_cli_parameters_m

@@ -28,6 +28,7 @@ module forgex_cli_time_measurement_m
    logical(c_bool) :: is_supported = .false.
    logical(c_bool) :: is_succeeded = .false.
 
+   !> For Windows, use high-resolution system call for timing.
    interface
       function QueryPerformanceCounter(PerformanceCount_count) result(is_succeeded_c) &
             bind(c, name="QueryPerformanceCounter")
@@ -50,6 +51,7 @@ module forgex_cli_time_measurement_m
 contains
 
 
+   !> This subroutine is for timing purpose and starts a stopwatch.
    subroutine time_begin()
       implicit none
 
@@ -59,13 +61,13 @@ contains
             is_succeeded = QueryPerformanceCounter(time_begin_qhc)
          else
             call use_cpu_time_begin
-         end if            
+         end if
       else
          call use_cpu_time_begin
       end if
-      
+
    contains
-      
+
       subroutine use_cpu_time_begin
          implicit none
          begin_s = 0d0
@@ -74,9 +76,12 @@ contains
          call cpu_time(begin_s)
          last_s = begin_s
       end subroutine use_cpu_time_begin
-         
+
    end subroutine time_begin
 
+
+   !> This function is for timing purposes and returns the lap time
+   !> since the last call of `time_begin` or `time_lap`.
    function time_lap() result(res)
       implicit none
       real(real64) :: res
@@ -92,7 +97,7 @@ contains
          call use_cpu_time_end
       end if
    contains
-      
+
       subroutine use_cpu_time_end
          implicit none
          call cpu_time(end_s)
@@ -103,6 +108,8 @@ contains
    end function time_lap
 
 
+   !> This function takes a real number of seconds, converts it to the appropriate
+   !> units, and returns a string with the unit for output.
    function get_lap_time_in_appropriate_unit(lap_time) result(res)
       implicit none
       real(real64), intent(in) :: lap_time
@@ -122,7 +129,6 @@ contains
       else if (lap_time >= 1d-3) then
          unit = 'ms'
          multiplied = lap_time * 1d3
-      ! else if (lap_time >= 1d-6) then
       else
          if (get_os_type() == OS_WINDOWS) then
             unit = 'us'

@@ -15,7 +15,7 @@ module forgex_cli_memory_calculation_m
    public :: mem_tree
    public :: mem_nfa_graph
    public :: mem_dfa_graph
-   
+
 contains
 
    function mem_tape(tape) result(res)

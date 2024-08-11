@@ -105,7 +105,7 @@ contains
       character(:), allocatable :: nfa
       character(256) :: line
       real(real64) :: lap1, lap2
-      
+
       nfa = ''
 
       if (flags(FLAG_HELP)) call print_help_debug_thompson
@@ -120,7 +120,7 @@ contains
 
       open(newunit=uni, status='scratch')
       call automaton%nfa%print(uni, automaton%nfa_exit)
-      
+
       rewind(uni)
       ierr = 0
       do while (ierr == 0)
@@ -132,7 +132,7 @@ contains
          else
             nfa = nfa//trim(line)//LF
          end if
-         
+
       end do
       close(uni)
 
@@ -144,7 +144,7 @@ contains
          parse_time     = "parse time:"
          nfa_time       = "compile nfa time:"
          memory         = "memory (estimated):"
-         
+
          nfa_count      = "nfa states:"
          nfa_allocated  = "nfa states allocated:"
          tree_count     = "tree node count:"
@@ -152,7 +152,7 @@ contains
 
          memsiz = mem_tape(tape) + mem_tree(tree) &
                   + mem_nfa_graph(automaton%nfa) + 4*3
-         if (allocated(automaton%entry_set%vec)) then 
+         if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
          end if
          if (allocated(automaton%all_segments)) then
@@ -182,7 +182,7 @@ contains
          end if
 
          if (flags(FLAG_TABLE_ONLY)) return
-         
+
          write(stdout, *) ""
          write(stdout, fmta) "=== NFA ==="
          write(stdout, fmta) trim(nfa)

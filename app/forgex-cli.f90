@@ -27,7 +27,9 @@ program forgex_cli
    if (cla%flags(FLAG_HELP) .and. cla%flag_idx(FLAG_HELP) == 1) then
       call print_help
       stop
+
    else if (cla%arg_info%argc == 1) then
+      ! Handling the case where only the primary command is used.
       select case (cla%arg_info%arg(1)%v)
       case (CMD_DEBUG)
          call print_help_debug
