@@ -1,4 +1,4 @@
-module forgex_cli_m
+module forgex_cli_cla_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit
    use :: forgex, only: operator(.match.)
    use :: forgex_cli_parameters_m
@@ -295,4 +295,4 @@ contains
       write(stderr, fmta) "   thompson   Print the debug representation of a Thompson NFA."
    end subroutine print_help_message_for_debug
 
-end module forgex_cli_m
+end module forgex_cli_cla_m
