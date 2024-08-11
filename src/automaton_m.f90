@@ -33,6 +33,7 @@ module forgex_automaton_m
       integer(int32)               :: nfa_entry, nfa_exit
       integer(int32)               :: initial_index = DFA_NOT_INIT
    contains
+      procedure :: preprocess      => automaton__build_nfa
       procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
       procedure :: register_state  => automaton__register_state
@@ -47,20 +48,31 @@ module forgex_automaton_m
 
 contains
 
-   !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
-   !> and then initializes the DFA graph.
-   pure subroutine automaton__initialize(self, tree, tree_top)
+   pure subroutine automaton__build_nfa(self, tree, tree_top)
       use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(tree_node_t),allocatable, intent(in) :: tree(:)
+      type(tree_node_t), allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: tree_top
+
+      !-- NFA building
+      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
+   end subroutine automaton__build_nfa
+
+   !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
+   !> and then initializes the DFA graph.
+   pure subroutine automaton__initialize(self)
+      use :: forgex_syntax_tree_m, only: tree_node_t
+      implicit none
+      class(automaton_t), intent(inout) :: self
+      ! type(tree_node_t),allocatable, intent(in) :: tree(:)
+      ! integer(int32), intent(in) :: tree_top
 
       type(nfa_state_set_t) :: initial_closure
       integer(int32) :: new_index
 
-      !-- NFA building
-      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
+      ! !-- NFA building
+      ! call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
 
       !-- DFA initialize
       ! Invokes DFA preprocessing.

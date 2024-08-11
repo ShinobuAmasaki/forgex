@@ -64,8 +64,10 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
+      call automaton%preprocess(tree, root)
+
       ! Initialize automaton with tree and root.
-      call automaton%init(tree, root)
+      call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, char(0)//str//char(0), from, to)
@@ -122,7 +124,9 @@ contains
       call build_syntax_tree(buff, tape, tree, root)
 
       ! Initialize automaton with tree and root.
-      call automaton%init(tree, root)
+      call automaton%preprocess(tree, root)
+
+      call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_exactly(automaton, str, res)
@@ -149,7 +153,8 @@ contains
 
       call build_syntax_tree(buff, tape, tree, root)
 
-      call automaton%init(tree, root)
+      call automaton%preprocess(tree, root)
+      call automaton%init()
 
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
 
