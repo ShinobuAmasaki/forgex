@@ -62,11 +62,6 @@ contains
       !-- NFA building
       call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
 
-
-#if  defined(IMPURE) && defined(DEBUG)
-      ! call self%nfa%print()
-#endif
-
       !-- DFA initialize
       ! Invokes DFA preprocessing.
       call self%dfa%preprocess()
