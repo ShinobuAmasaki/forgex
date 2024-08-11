@@ -16,11 +16,10 @@ module forgex_cli_cla_m
    use :: forgex_cli_type_m, only: flag_t, subc_t, pattern_t, arg_t, arg_element_t
    use :: forgex_cli_utils_m, only: get_flag_index, operator(.in.), register_flag, register_subc, &
             get_arg_command_line
+   use :: forgex_cli_help_messages_m, only: print_help_message_for_debug, print_help_debug_ast, &
+            print_help_debug_thompson, print_help_debug_lazy_dfa
    implicit none
    private
-
-   public :: print_help_message
-   public :: print_help_message_for_debug
 
    type(flag_t), public :: all_flags(NUM_FLAGS)
    type(subc_t), public :: all_sub_cmds(NUM_SUB_C)
@@ -279,32 +278,5 @@ contains
 
       call register_subc(all_sub_cmds(1), 'debug')
    end subroutine init_sub_commands
-
-!=====================================================================!
-
-   subroutine print_help_message()
-      implicit none
-
-      write(stderr, fmta) "A tool for interacting with Forgex on the command line."
-      write(stderr, fmta) ""
-      write(stderr, fmta) "USAGE:"
-      write(stderr, fmta) "   forgex-cli <command> ..."
-      write(stderr, fmta) ""
-      write(stderr, fmta) "COMMANDS:"
-      write(stderr, fmta) "   debug   Print the debug representations from Forgex's regex engine."
-      stop
-   end subroutine print_help_message
-
-
-   subroutine  print_help_message_for_debug()
-      write(stderr, fmta) "Prints the debug representation Forgex provides."
-      write(stderr, fmta) ""
-      write(stderr, fmta) "USAGE:"
-      write(stderr, fmta) "   forgex-cli debug <command> ..."
-      write(stderr, fmta) ""
-      write(stderr, fmta) "COMMANDS:"
-      write(stderr, fmta) "   ast        Print the debug representation of an AST."
-      write(stderr, fmta) "   thompson   Print the debug representation of a Thompson NFA."
-   end subroutine print_help_message_for_debug
 
 end module forgex_cli_cla_m
