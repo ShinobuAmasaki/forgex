@@ -3,9 +3,9 @@
 #else
 #include <stdbool.h>
 bool QueryPerformanceCounter(long long PerformanceCount_count) {
-   return false
+   return false;
 }
 bool QueryPerformanceFrequency(long long Frequency_countPerSec) {
-   return false
+   return false;
 }
 #endif
