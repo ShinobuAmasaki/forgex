@@ -275,27 +275,106 @@ contains
          ! 
       end if
       lap5 = time_lap() ! search time
-print *, res
+
       open(newunit=uni, status='scratch')
-      write(0, fmta) "=== NFA ==="
-      call automaton%nfa%print(0, automaton%nfa_exit)
-      write(0, fmta) "=== DFA ==="
-      call automaton%print_dfa(0)
+      write(uni, fmta) "=== NFA ==="
+      call automaton%nfa%print(uni, automaton%nfa_exit)
+      write(uni, fmta) "=== DFA ==="
+      call automaton%print_dfa(uni)
      
-      ! rewind(uni)
-      ! ierr = 0
-      ! do while (ierr == 0)
-      !    read(uni, fmta, iostat=ierr) line
-      !    if (ierr/=0) exit
-      !    if (get_os_type() == OS_WINDOWS) then
-      !       dfa_for_print = dfa_for_print//trim(line)//CRLF
-      !    else
-      !       dfa_for_print = dfa_for_print//trim(line)//LF
-      !    end if
-      ! end do
-      ! close(uni)
+      rewind(uni)
+      ierr = 0
+      dfa_for_print = ''
+      do while (ierr == 0)
+         read(uni, fmta, iostat=ierr) line
+         if (ierr/=0) exit
+         if (get_os_type() == OS_WINDOWS) then
+            dfa_for_print = dfa_for_print//trim(line)//CRLF
+         else
+            dfa_for_print = dfa_for_print//trim(line)//LF
+         end if
+      end do
+      close(uni)
+
+      output: block
+         character(NUM_DIGIT_KEY) :: pattern_key, text_key
+         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, dfa_init_time, dfa_compile_time, matching_time
+         character(NUM_DIGIT_KEY) :: memory
+         character(NUM_DIGIT_KEY) :: tree_count, nfa_count, dfa_count
+         character(NUM_DIGIT_KEY) :: matching_result
+         character(NUM_DIGIT_KEY) :: cbuff(12) = ''
+         integer :: memsiz
+
+         pattern_key    = "pattern:"
+         text_key       = "text:"
+         parse_time     = "parse time:"
+         nfa_time       = "compile nfa time:"
+         dfa_init_time  = "dfa initialize time:"
+         dfa_compile_time = "compile dfa time:" 
+         matching_time  = "dfa matching time:"
+         memory         = "memory (estimated):"
+         matching_result= "matching result:"
+
+         tree_count     = "tree node count:"
+         nfa_count      = "nfa states:"
+         dfa_count      = "dfa states:"
+         
+         memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
+            + mem_dfa_graph(automaton%dfa) + 4*3
+         if (allocated(automaton%entry_set%vec)) then
+            memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
+         end if
+         if (allocated(automaton%all_segments)) then
+            memsiz = memsiz + size(automaton%all_segments, dim=1)*8
+         end if
+
+         if (flags(FLAG_VERBOSE)) then
+            cbuff = [pattern_key, text_key, parse_time, nfa_time, dfa_init_time, dfa_compile_time, matching_time,&
+                     matching_result, memory, tree_count, nfa_count, dfa_count]
+            call right_justify(cbuff)
+
+            write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
+            write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
+            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
+            write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
+            write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap4)
+            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap5)
+            write(stdout, fmt_out_logi) trim(cbuff(8)), res
+            write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
+            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
+            write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
+         else if (flags(FLAG_NO_TABLE)) then
+            continue
+         else
+            cbuff = [pattern_key, text_key, parse_time, nfa_time, dfa_init_time, dfa_compile_time, matching_time,&
+            matching_result, memory, (repeat(" ", NUM_DIGIT_KEY), i = 1, 3)]
+            call right_justify(cbuff)
+
+            write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
+            write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
+            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
+            write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
+            write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap4)
+            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap5)
+            write(stdout, fmt_out_logi) trim(cbuff(8)), res
+            write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
+         end if
+         
+         if (flags(FLAG_TABLE_ONLY))  then
+            call automaton%free()
+            return
+         end if
+
+         write(stdout, *) ""
+         write(stdout, fmta, advance='no') trim(dfa_for_print)
+         write(stdout, fmta) "==========="
+      end block output
+      
+      call automaton%free()
       
    end subroutine do_find_match_dense_dfa
-      
 
 end module forgex_cli_find_m
