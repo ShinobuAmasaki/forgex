@@ -272,7 +272,8 @@ contains
       if (is_exactly) then
          res = match_dense_dfa_exactly(automaton, text)
       else
-         ! 
+         write(stdout, *) "Search with the dense DFA engine is unavailable."
+         stop
       end if
       lap5 = time_lap() ! search time
 
@@ -281,7 +282,7 @@ contains
       call automaton%nfa%print(uni, automaton%nfa_exit)
       write(uni, fmta) "=== DFA ==="
       call automaton%print_dfa(uni)
-     
+
       rewind(uni)
       ierr = 0
       dfa_for_print = ''

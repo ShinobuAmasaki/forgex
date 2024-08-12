@@ -149,6 +149,8 @@ contains
       character(:), allocatable :: cmd
       integer :: i
 
+      if (cla%arg_info%argc < 3) return
+
       cmd = trim(cla%arg_info%arg(3)%v)
 
       do i = 1, size(cla%sub_cmd%subc)
