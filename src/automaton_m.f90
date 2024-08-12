@@ -412,7 +412,7 @@ contains
       integer(int32), intent(in) :: uni
 
       type(dfa_transition_t) :: p
-      integer(int32) :: i, j, k
+      integer(int32) :: i, j
 
       do i = 1, self%dfa%dfa_top -1
 

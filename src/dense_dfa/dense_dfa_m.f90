@@ -13,6 +13,7 @@ module forgex_dense_dfa_m
 
    public :: construct_dense_dfa
    public :: match_dense_dfa_exactly
+   public :: match_dense_dfa_including
 
 contains
 
@@ -219,10 +220,64 @@ contains
 
 
    subroutine match_dense_dfa_including(automaton, string, from, to)
+      use :: forgex_utf8_m
       implicit none
       type(automaton_t), intent(in) :: automaton
       character(*), intent(in) :: string
       integer, intent(inout) :: from, to
+
+      integer :: cur_i, dst_i ! current and destination index of DFA nodes
+      integer :: ci           ! character index
+      integer :: next_ci      ! next character index
+      integer :: max_match    ! maximum value of match attempts
+      integer :: start        ! starting character index
+
+      from = 0
+      to = 0
+
+      cur_i = automaton%initial_index
+      if (cur_i == DFA_NOT_INIT) then
+         error stop "DFA have not been initialized"
+      end if
+
+      if (string == char(10)//char(10)) then
+         if (automaton%dfa%nodes(cur_i)%accepted) then
+            from = 1
+            to = 1
+         end if
+         return
+      end if
+
+      start = 1
+      do while (start < len(string))
+         max_match = 0
+         ci = start
+         cur_i = automaton%initial_index
+
+         do while (cur_i /= DFA_INVALID_INDEX)
+
+            if (automaton%dfa%nodes(cur_i)%accepted .and. ci /= start) then
+               max_match = ci
+            end if
+
+            if (ci > len(string)) exit
+
+            next_ci = idxutf8(string, ci) + 1
+
+            dst_i = next_state_dense_dfa(automaton, cur_i, string(ci:next_ci-1))
+            cur_i = dst_i
+            ci = next_ci
+
+         end do
+
+         if (max_match > 1) then
+            from = start
+            to = max_match - 1
+            return
+         end if
+
+         start = idxutf8(string, start)
+      end do
    end subroutine match_dense_dfa_including
 
 end module forgex_dense_dfa_m

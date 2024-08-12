@@ -81,11 +81,9 @@ contains
       type(tree_node_t), allocatable :: tree(:)
       type(tape_t) :: tape
       type(automaton_t) :: automaton
-      type(nfa_state_set_t) :: initial_closure
-      integer(int32) :: new_index
       integer :: root
 
-      integer :: uni, ierr, siz, i
+      integer :: uni, ierr, i
       character(:), allocatable :: dfa_for_print
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4
@@ -235,6 +233,7 @@ contains
       use :: forgex_dense_dfa_m
       use :: forgex_nfa_state_set_m
       use :: forgex_cli_utils_m
+      use :: forgex_utility_m
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
@@ -244,11 +243,9 @@ contains
       type(tree_node_t), allocatable :: tree(:)
       type(tape_t) :: tape
       type(automaton_t) :: automaton
-      type(nfa_state_set_t) :: initial_closure
-      integer(int32) :: new_index
       integer(int32) :: root
 
-      integer :: uni, ierr, siz, i
+      integer :: uni, ierr, i
       character(:), allocatable :: dfa_for_print
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
@@ -272,8 +269,27 @@ contains
       if (is_exactly) then
          res = match_dense_dfa_exactly(automaton, text)
       else
-         write(stdout, *) "Search with the dense DFA engine is unavailable."
-         stop
+         block
+            integer :: from, to
+            call match_dense_dfa_including(automaton, text, from, to)
+            if (is_there_caret_at_the_top(pattern)) then
+               from = from
+            else
+               from = from -1
+            end if
+
+            if (is_there_dollar_at_the_end(pattern)) then
+               to = to -2
+            else
+               to = to -1
+            end if
+            
+            if (from>0 .and. to>0) then
+               res = .true.
+            else
+               res = .false.
+            end if
+         end block
       end if
       lap5 = time_lap() ! search time
 
