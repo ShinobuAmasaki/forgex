@@ -159,7 +159,7 @@ contains
    !
    !  This function determines whether the segment `a` is not equivalent to the
    !  segment `b`, meaning their `min` or `max` values are different.
-   pure function segment_not_equiv(a, b) result(res)
+   pure elemental function segment_not_equiv(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -172,7 +172,7 @@ contains
    !
    !  This function determines whether the segment is valid by ensuring that
    !  the `min` value is less than or equal to the `max` value.
-   pure function segment_is_valid(self) result(res)
+   pure elemental function segment_is_valid(self) result(res)
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
