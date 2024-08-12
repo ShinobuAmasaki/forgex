@@ -81,24 +81,25 @@ contains
       type(nfa_state_set_t), intent(inout) :: state_set
       integer, intent(in) :: idx
 
-      type(nfa_transition_t) :: p
+      type(nfa_state_node_t) :: n_node
+      type(nfa_transition_t) :: n_tra
       integer :: j, k
 
       call add_nfa_state(state_set, idx)
 
-      j = 1
-      do while(j <= self%nodes(idx)%forward_top)
+      n_node = self%nodes(idx)
 
-         if (.not. allocated(self%nodes(idx)%forward)) exit
+      if (.not. allocated(n_node%forward)) return
 
-         p = self%nodes(idx)%forward(j)
+      do j = 1, n_node%forward_top
 
-         do k = 1, p%c_top
-            if ((p%c(k) ==SEG_EPSILON) .and. .not. check_nfa_state(state_set, p%dst)) then
-               if (p%dst /= NFA_NULL_TRANSITION) call self%mark_epsilon_transition(state_set, p%dst)
-            end if
-         end do
-         j = j + 1
+         n_tra = n_node%forward(j)
+
+         if (.not. allocated(n_tra%c)) cycle
+
+         if (any(n_tra%c == SEG_EPSILON) .and. .not. check_nfa_state(state_set, n_tra%dst)) then
+            if (n_tra%dst /= NFA_NULL_TRANSITION) call self%mark_epsilon_transition(state_set, n_tra%dst)
+         end if
       end do
    end subroutine nfa_graph__mark_epsilon_transition
 
