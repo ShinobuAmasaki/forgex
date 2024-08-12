@@ -96,6 +96,7 @@ contains
 
    !> This subroutine convert NFA to DFA
    pure subroutine construct_dense_dfa(automaton, curr_i)
+      use :: forgex_segment_m
       implicit none
       type(automaton_t), intent(inout) :: automaton
       integer(int32), intent(in) :: curr_i
@@ -133,9 +134,10 @@ contains
 
                if (check_nfa_state(d_tra%nfa_set, automaton%nfa%nodes(ii)%forward(j)%dst)) then
                   core: do k = 1, automaton%nfa%nodes(ii)%forward(j)%c_top
-
-                     call automaton%dfa%add_transition(d_tra%nfa_set, i, dst_i, &
-                           automaton%nfa%nodes(ii)%forward(j)%c(k))
+                     if (automaton%nfa%nodes(ii)%forward(j)%c(k) /= SEG_EPSILON) then
+                        call automaton%dfa%add_transition(d_tra%nfa_set, i, dst_i, &
+                              automaton%nfa%nodes(ii)%forward(j)%c(k))
+                     end if
                   end do core
                end if
 
