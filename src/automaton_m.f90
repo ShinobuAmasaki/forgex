@@ -88,8 +88,9 @@ contains
       call add_nfa_state(self%entry_set, self%nfa_entry)
 
       call init_state_set(initial_closure, self%nfa%nfa_top)
+      initial_closure = self%entry_set
       ! Add an NFA node reachable by epsilon transitions to the entrance state set within DFA.
-      call self%epsilon_closure(self%entry_set, initial_closure)
+      call self%epsilon_closure(initial_closure, self%nfa_entry)
 
       ! Assign the computed initial closure into self%entry_set
       self%entry_set = initial_closure
@@ -121,35 +122,34 @@ contains
    !>
    !> The ε-closure is the set of NFA states reachable from a given set of NFA states via ε-transition.
    !> This subroutine calculates the ε-closure and stores it in the `closure` parameter.
-   pure subroutine automaton__epsilon_closure(self, state_set, closure)
+   pure recursive subroutine automaton__epsilon_closure(self, closure, n_index)
       use :: forgex_nfa_node_m
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
       type(nfa_state_set_t), intent(inout) :: closure
+      integer, intent(in) :: n_index
 
-      type(nfa_transition_t) :: transition   ! a temporary variable
-      integer(int32) :: i, j, k
+      type(nfa_state_node_t) :: n_node
+      type(nfa_transition_t) :: n_tra
+      integer :: j
 
-      ! Initialize with the input argument.
-      closure = state_set
+      call add_nfa_state(closure, n_index)
 
-      i = self%nfa_entry
-      ! すべての順方向の遷移をスキャンする
-      do j = 1, self%nfa%nodes(i)%forward_top
+      n_node = self%nfa%nodes(n_index)
 
+      if (.not. allocated(n_node%forward)) return
+
+       ! すべての順方向の遷移をスキャンする
+      do j = 1, n_node%forward_top
          ! 一時変数にコピー
-         transition = self%nfa%nodes(i)%forward(j)
+         n_tra = n_node%forward(j)
 
-         if (transition%is_registered) then
-            do k = 1, transition%c_top
+         if (.not. allocated(n_tra%c)) cycle
 
-               if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
-
-                  call add_nfa_state(closure, transition%dst)
-               end if
-            end do
+         if (any(n_tra%c == SEG_EPSILON) .and. .not. check_nfa_state(closure, n_tra%dst)) then
+            if (n_tra%dst /= NFA_NULL_TRANSITION) call self%epsilon_closure(closure, n_tra%dst)
          end if
+
       end do
 
    end subroutine automaton__epsilon_closure
