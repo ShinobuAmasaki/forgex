@@ -113,7 +113,7 @@ contains
 
       integer :: i
 
-      do i = NFA_STATE_BASE+1, self%nfa_top
+      do i = NFA_STATE_BASE, self%nfa_top
          if (check_nfa_state(state_set, i)) then
 
             call self%mark_epsilon_transition(state_set, i)

@@ -131,6 +131,7 @@ contains
 
    end subroutine make_nfa_node
 
+
    pure function is_exceeded (nfa_top, nfa_graph) result(res)
       implicit none
       integer(int32), intent(in) :: nfa_top
@@ -140,6 +141,7 @@ contains
       res = ubound(nfa_graph, dim=1) < nfa_top
 
    end function is_exceeded
+
 
    pure subroutine reallocate_nfa(nfa_graph)
       implicit none
@@ -333,8 +335,7 @@ contains
                ptr = graph(i)%forward(j)
                if (ptr%dst /= NFA_NULL_TRANSITION) then
                   do k = 1, graph(i)%forward(j)%c_top
-                     if (ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
-                     ! if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                     if (ptr%c(k) /= SEG_INIT) then
                         call queue_f%enqueue(ptr%c(k))
                      end if
                   end do
