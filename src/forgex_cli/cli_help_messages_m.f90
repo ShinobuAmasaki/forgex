@@ -191,9 +191,9 @@ contains
       usage(1) = "forgex-cli find match <engine>"
 
       cmd(1) = "dense"
-      cdesc(1) = "Search with the fully-compiled DFA regex engine"
+      cdesc(1) = "Search with the fully-compiled DFA regex engine."
       cmd(2) = "lazy-dfa"
-      cdesc(2) = "Search with the lazy DFA regex engine"
+      cdesc(2) = "Search with the lazy DFA regex engine."
 
       call generate_and_output(header, usage, "ENGINES", cmd, cdesc)
    end subroutine print_help_find_match
@@ -251,7 +251,7 @@ contains
 
       op(1)    = "--no-table"
       odesc(1) = "Suppresses the output of the property information table."
-      
+
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
    end subroutine print_help_find_match_forgex_api
 
