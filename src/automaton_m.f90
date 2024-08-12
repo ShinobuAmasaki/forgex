@@ -263,18 +263,6 @@ contains
 
                end if
 
-
-               if (n_node%forward(j)%dst /= NFA_NULL_TRANSITION) then
-
-                  if ((symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
-                        .or.(any(n_node%forward(j)%c == SEG_EPSILON))) then
-
-                     call add_nfa_state(state_set, n_node%forward(j)%dst)
-
-                  end if
-               end if
-
-
             end do middle
 
          end if

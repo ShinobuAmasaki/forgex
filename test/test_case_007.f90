@@ -27,7 +27,7 @@ program test_case_007
    call runner_match("a?b+|c*d", "cd", .true., res)
    call runner_match("a?b+|c*d", "d", .true., res)
    call runner_match("a?b+|c*d", "a", .false., res)
-   call runner_match("a?b+|c*d", "bbd", .false., res)
+   call runner_in("a?b+|c*d", "bbd", .true., res)
 
    
    if (res) then
