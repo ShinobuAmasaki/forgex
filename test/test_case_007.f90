@@ -29,7 +29,19 @@ program test_case_007
    call runner_match("a?b+|c*d", "a", .false., res)
    call runner_in("a?b+|c*d", "bbd", .true., res)
 
-   
+   call runner_match("(a|b(c|d))*", "bc", .true., res)
+   call runner_match("(a|b(c|d(e|f)))", "a", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)", "a", .true., res)
+
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "a", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "a", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "i", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcegh", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "abceghi", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "iii", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcgh", .false., res)
+
    if (res) then
       print *, "=== TEST CASE 7 END ==="
       stop
