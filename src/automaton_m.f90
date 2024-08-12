@@ -201,7 +201,7 @@ contains
    !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`,
    !> excluding ε-transitions.
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(state_set)
-      use :: forgex_segment_m, only: operator(.in.)
+      use :: forgex_segment_m, only: operator(.in.), operator(/=)
       use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
@@ -240,6 +240,7 @@ contains
                ! Copy to a temporary variable of type(nfa_transition_t)
                n_tra = n_node%forward(j)
 
+
                ! If it has a destination,
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
 
@@ -261,6 +262,18 @@ contains
                   end do inner
 
                end if
+
+
+               if (n_node%forward(j)%dst /= NFA_NULL_TRANSITION) then
+
+                  if ((symbol_to_segment(symbol) .in. n_node%forward(j)%c) &
+                        .or.(any(n_node%forward(j)%c == SEG_EPSILON))) then
+
+                     call add_nfa_state(state_set, n_node%forward(j)%dst)
+
+                  end if
+               end if
+
 
             end do middle
 
@@ -383,7 +396,7 @@ contains
              which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
-      
+
 !=====================================================================!
 
 
