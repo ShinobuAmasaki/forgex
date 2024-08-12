@@ -13,7 +13,8 @@ module forgex_dense_dfa_m
 
 contains
 
-   function compute_reachable_state(automaton, curr) result(state_set)
+
+   pure function compute_reachable_state(automaton, curr) result(state_set)
       use :: forgex_nfa_node_m
       use :: forgex_segment_m
       implicit none
@@ -45,13 +46,13 @@ contains
                      call add_nfa_state(state_set, n_node%forward(j)%dst)
                   end if
                end do
-            end do middle 
+            end do middle
          end if
-      end do outer 
+      end do outer
    end function compute_reachable_state
 
 
-   subroutine destination(automaton, curr, next, next_set)
+   pure subroutine destination(automaton, curr, next, next_set)
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr
@@ -72,7 +73,8 @@ contains
       end do
    end subroutine destination
 
-   function move(automaton, curr) result(res)
+
+   pure function move(automaton, curr) result(res)
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr
@@ -87,8 +89,9 @@ contains
       res%nfa_set = set
    end function move
 
+
    !> This subroutine convert NFA to DFA
-   subroutine construct_dense_dfa(automaton, curr_i)
+   pure subroutine construct_dense_dfa(automaton, curr_i)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       integer(int32), intent(in) :: curr_i
@@ -113,14 +116,14 @@ contains
          if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
 
          middle: do ii = 1, automaton%nfa%nfa_top
-            
+
             if (.not. allocated(automaton%nfa%nodes(ii)%forward))  cycle middle
-            
+
             inner: do j = 1, automaton%nfa%nodes(ii)%forward_top
-               
-               if (automaton%nfa%nodes(ii)%forward(j)%dst == NFA_NULL_TRANSITION) cycle middle 
- 
-               
+
+               if (automaton%nfa%nodes(ii)%forward(j)%dst == NFA_NULL_TRANSITION) cycle middle
+
+
                if (check_nfa_state(d_tra%nfa_set, automaton%nfa%nodes(ii)%forward(j)%dst)) then
                   core: do k = 1, automaton%nfa%nodes(ii)%forward(j)%c_top
 
@@ -136,26 +139,32 @@ contains
       end do outer
    end subroutine construct_dense_dfa
 
-   function next_state_dense_dfa(automaton, curr_i, symbol) result(dst_i)
+
+   pure function next_state_dense_dfa(automaton, curr_i, symbol) result(dst_i)
       use :: forgex_segment_m
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr_i
       character(*), intent(in) :: symbol
 
+      type(dfa_state_node_t) :: d_node
+      type(dfa_transition_t) :: d_tra
+
       integer(int32) :: dst_i, j, k
 
-      do j = 1, automaton%dfa%nodes(curr_i)%get_tra_top()
-         if (symbol_to_segment(symbol) .in. automaton%dfa%nodes(curr_i)%transition(j)%c) then
-            dst_i = automaton%dfa%nodes(curr_i)%transition(j)%dst
+      d_node = automaton%dfa%nodes(curr_i)
+
+      do j = 1, d_node%get_tra_top()
+         d_tra = d_node%transition(j)
+         if (symbol_to_segment(symbol) .in. d_tra%c) then
+            dst_i = d_tra%dst
             return
          end if
       end do
    end function next_state_dense_dfa
 
 
-
-   function match_dense_dfa_exactly(automaton, string) result(res)
+   pure function match_dense_dfa_exactly(automaton, string) result(res)
       use :: forgex_utf8_m
       implicit none
       type(automaton_t), intent(in) :: automaton
@@ -168,7 +177,6 @@ contains
       integer :: max_match    !
 
       cur_i = automaton%initial_index
-      
 
       if (cur_i == DFA_NOT_INIT) then
          error stop "DFA have not been initialized."
@@ -191,7 +199,7 @@ contains
          if (ci > len(string)) exit
 
 
-         next_ci = idxutf8(string, ci) + 1 
+         next_ci = idxutf8(string, ci) + 1
 
          dst_i = next_state_dense_dfa(automaton, cur_i, string(ci:next_ci-1))
 
@@ -204,7 +212,14 @@ contains
       else
          res = .false.
       end if
-
    end function match_dense_dfa_exactly
-   
-end module forgex_dense_dfa_m 
+
+
+   subroutine match_dense_dfa_including(automaton, string, from, to)
+      implicit none
+      type(automaton_t), intent(in) :: automaton
+      character(*), intent(in) :: string
+      integer, intent(inout) :: from, to
+   end subroutine match_dense_dfa_including
+
+end module forgex_dense_dfa_m
