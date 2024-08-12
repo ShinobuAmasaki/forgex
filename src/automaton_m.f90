@@ -383,7 +383,7 @@ contains
              which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
-
+      
 !=====================================================================!
 
 

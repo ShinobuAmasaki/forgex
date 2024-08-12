@@ -225,4 +225,72 @@ contains
       call automaton%free
    end subroutine do_find_match_lazy_dfa
 
+
+   subroutine do_find_match_dense_dfa(flags, pattern, text, is_exactly)
+      use :: forgex_automaton_m
+      use :: forgex_syntax_tree_m
+      use :: forgex_cli_memory_calculation_m
+      use :: forgex_cli_time_measurement_m
+      use :: forgex_dense_dfa_m
+      use :: forgex_nfa_state_set_m
+      use :: forgex_cli_utils_m
+      implicit none
+      logical, intent(in) :: flags(:)
+      character(*), intent(in) :: pattern
+      character(*), intent(in) :: text
+      logical, intent(in) :: is_exactly
+
+      type(tree_node_t), allocatable :: tree(:)
+      type(tape_t) :: tape
+      type(automaton_t) :: automaton
+      type(nfa_state_set_t) :: initial_closure
+      integer(int32) :: new_index
+      integer(int32) :: root
+
+      integer :: uni, ierr, siz, i
+      character(:), allocatable :: dfa_for_print
+      character(256) :: line
+      real(real64) :: lap1, lap2, lap3, lap4, lap5
+      logical :: res
+
+      if (flags(FLAG_HELP) .or. pattern == '' .or. text == '') call print_help_find_match_dense_dfa
+
+      call time_begin()
+      call build_syntax_tree(trim(pattern), tape, tree, root)
+      lap1 = time_lap()
+
+      call automaton%preprocess(tree, root)
+      lap2 = time_lap() ! build nfa
+
+      call automaton%init()
+      lap3 = time_lap() ! automaton initialize
+
+      call construct_dense_dfa(automaton)
+      lap4 = time_lap() ! compile nfa to dfa
+
+      res = match_dense_dfa(automaton, text)
+      lap5 = time_lap() ! search time
+
+      open(newunit=uni, status='scratch')
+      write(uni, fmta) "=== NFA ==="
+      call automaton%nfa%print(uni, automaton%nfa_exit)
+      write(uni, fmta) "=== DFA ==="
+      call automaton%print_dfa(uni)
+     
+      rewind(uni)
+      ierr = 0
+      do while (ierr == 0)
+         read(uni, fmta, iostat=ierr) line
+         if (ierr/=0) exit
+         if (get_os_type() == OS_WINDOWS) then
+            dfa_for_print = dfa_for_print//trim(line)//CRLF
+         else
+            dfa_for_print = dfa_for_print//trim(line)//LF
+         end if
+      end do
+      close(uni)
+
+   end subroutine do_find_match_dense_dfa
+      
+
 end module forgex_cli_find_m

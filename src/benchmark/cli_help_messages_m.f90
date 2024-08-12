@@ -61,9 +61,8 @@ contains
       offset = offset + size(desc)
       endif
 
-      buff(offset+1) = "USAGE:"
-
       offset = offset + 1
+      buff(offset) = "USAGE:"
       do i = 1, size(usage)
          buff(i+offset) = "   "//usage(i)
       end do
@@ -77,7 +76,7 @@ contains
       enddo
 
       do i = 1, num_line
-         write(stderr, fmta) buff(i)
+         write(stderr, fmta) trim(buff(i))
       end do
 
       stop
