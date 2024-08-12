@@ -255,7 +255,7 @@ contains
       if ( cla%sub_sub_cmd%get_name() == ENGINE_LAZY_DFA  &
            .or. cla%sub_sub_cmd%get_name() == ENGINE_DENSE_DFA &
            .or. cla%sub_sub_cmd%get_name() == ENGINE_FORGEX_API) then
-         if (size(cla%patterns) /= 3) then
+         if (size(cla%patterns) /= 3 .and. size(cla%patterns) /= 2) then
             write(stderr, "(a, i0, a)") "Three arguments are expected, but ", size(cla%patterns), " were given."
             stop
          else if (cla%patterns(2)%p /= OP_MATCH .and. cla%patterns(2)%p /= OP_IN) then
@@ -272,6 +272,10 @@ contains
          end if
       else
          call print_help_find_match
+      end if
+
+      if (size(cla%patterns) == 2) then
+         cla%patterns(3)%p = ''
       end if
 
       select case (cla%sub_sub_cmd%get_name())
@@ -317,7 +321,7 @@ contains
 
       if (j == 0) return
 
-      allocate(cla%patterns(j))
+      allocate(cla%patterns(j+1))
 
       do i = 1, j
          cla%patterns(i)%p = cla%arg_info%arg(idx(i))%v
