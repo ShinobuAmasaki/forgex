@@ -91,7 +91,7 @@ contains
 
       dfa_for_print = ''
 
-      if (flags(FLAG_HELP) .or. pattern == '' .or. text == '') call print_help_find_match_lazy_dfa
+      if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
 
       call time_begin()
       call build_syntax_tree(trim(pattern), tape, tree, root)
@@ -251,7 +251,7 @@ contains
       real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res
 
-      if (flags(FLAG_HELP) .or. pattern == '' .or. text == '') call print_help_find_match_dense_dfa
+      if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_dense_dfa
 
       call time_begin()
       call build_syntax_tree(trim(pattern), tape, tree, root)

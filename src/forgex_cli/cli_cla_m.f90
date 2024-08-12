@@ -220,6 +220,7 @@ contains
       class(cla_t), intent(inout) :: cla
       logical :: is_exactly
       integer :: i, pattern_offset
+      character(:), allocatable :: text
 
       pattern_offset = 4
 
@@ -275,16 +276,18 @@ contains
       end if
 
       if (size(cla%patterns) == 2) then
-         cla%patterns(3)%p = ''
+         text = ''
+      else
+         text = cla%patterns(3)%p
       end if
 
       select case (cla%sub_sub_cmd%get_name())
       case (ENGINE_LAZY_DFA)
-         call do_find_match_lazy_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
+         call do_find_match_lazy_dfa(cla%flags, cla%patterns(1)%p, text, is_exactly)
       case (ENGINE_DENSE_DFA)
-         call do_find_match_dense_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
+         call do_find_match_dense_dfa(cla%flags, cla%patterns(1)%p, text, is_exactly)
       case (ENGINE_FORGEX_API)
-         call do_find_match_forgex(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
+         call do_find_match_forgex(cla%flags, cla%patterns(1)%p, text, is_exactly)
       case default
          call print_help_find_match
       end select
@@ -321,7 +324,7 @@ contains
 
       if (j == 0) return
 
-      allocate(cla%patterns(j+1))
+      allocate(cla%patterns(j))
 
       do i = 1, j
          cla%patterns(i)%p = cla%arg_info%arg(idx(i))%v
