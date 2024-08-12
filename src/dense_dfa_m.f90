@@ -9,12 +9,11 @@ module forgex_dense_dfa_m
    private
 
    public :: construct_dense_dfa
-   public :: match_dense_dfa
+   public :: match_dense_dfa_exactly
 
 contains
 
    function compute_reachable_state(automaton, curr) result(state_set)
-      use :: forgex_parameters_m
       use :: forgex_nfa_node_m
       use :: forgex_segment_m
       implicit none
@@ -29,21 +28,23 @@ contains
 
       call init_state_set(state_set, automaton%nfa%nfa_top)
 
+      if (.not. allocated(automaton%dfa%nodes(curr)%nfa_set%vec)) return
+
       current_set = automaton%dfa%nodes(curr)%nfa_set
 
       outer: do i = 1, automaton%nfa%nfa_top
 
-         if (check_nfa_state(state_set, i)) then
+         if (check_nfa_state(current_set, i)) then
             n_node = automaton%nfa%nodes(i)
             if (.not. allocated(n_node%forward)) cycle
 
             middle: do j = 1, n_node%forward_top
                n_tra = n_node%forward(j)
-
-               if (n_tra%dst /= NFA_NULL_TRANSITION) then
-                  call add_nfa_state(state_set, n_node%forward(j)%dst)
-               end if
-
+               do k = 1, n_tra%c_top
+                  if (n_tra%dst /= NFA_NULL_TRANSITION) then
+                     call add_nfa_state(state_set, n_node%forward(j)%dst)
+                  end if
+               end do
             end do middle 
          end if
       end do outer 
@@ -51,7 +52,6 @@ contains
 
 
    subroutine destination(automaton, curr, next, next_set)
-      use :: forgex_parameters_m
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr
@@ -95,15 +95,116 @@ contains
 
       ! Already automaton is initialized
       type(dfa_transition_t) :: d_tra
-      integer :: prev_i, dst_i
-      
+      integer :: prev_i, dst_i, i, j, k, ii
+
+
+      i =  1
+      outer: do while (i < automaton%dfa%dfa_top)
+         d_tra = move(automaton, i)
+         call automaton%nfa%collect_epsilon_transition(d_tra%nfa_set)
+
+
+         dst_i = automaton%dfa%registered(d_tra%nfa_set)
+
+         if (dst_i == DFA_INVALID_INDEX) then
+            call automaton%register_state(d_tra%nfa_set, dst_i)
+         end if
+
+         if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
+
+         middle: do ii = 1, automaton%nfa%nfa_top
+            
+            if (.not. allocated(automaton%nfa%nodes(ii)%forward))  cycle middle
+            
+            inner: do j = 1, automaton%nfa%nodes(ii)%forward_top
+               
+               if (automaton%nfa%nodes(ii)%forward(j)%dst == NFA_NULL_TRANSITION) cycle middle 
+ 
+               
+               if (check_nfa_state(d_tra%nfa_set, automaton%nfa%nodes(ii)%forward(j)%dst)) then
+                  core: do k = 1, automaton%nfa%nodes(ii)%forward(j)%c_top
+
+                     call automaton%dfa%add_transition(d_tra%nfa_set, i, dst_i, &
+                           automaton%nfa%nodes(ii)%forward(j)%c(k))
+                  end do core
+               end if
+
+            end do inner
+         end do middle
+
+         i = i + 1
+      end do outer
    end subroutine construct_dense_dfa
 
-   function match_dense_dfa(automaton, text) result(res)
+   function next_state_dense_dfa(automaton, curr_i, symbol) result(dst_i)
+      use :: forgex_segment_m
       implicit none
       type(automaton_t), intent(in) :: automaton
-      character(*), intent(in) :: text
+      integer(int32), intent(in) :: curr_i
+      character(*), intent(in) :: symbol
+
+      integer(int32) :: dst_i, j, k
+
+      do j = 1, automaton%dfa%nodes(curr_i)%get_tra_top()
+         if (symbol_to_segment(symbol) .in. automaton%dfa%nodes(curr_i)%transition(j)%c) then
+            dst_i = automaton%dfa%nodes(curr_i)%transition(j)%dst
+            return
+         end if
+      end do
+   end function next_state_dense_dfa
+
+
+
+   function match_dense_dfa_exactly(automaton, string) result(res)
+      use :: forgex_utf8_m
+      implicit none
+      type(automaton_t), intent(in) :: automaton
+      character(*), intent(in) :: string
       logical :: res
-   end function match_dense_dfa
+
+      integer :: cur_i, dst_i ! current and destination index of DFA nodes
+      integer :: ci           ! character index
+      integer :: next_ci      ! next character index
+      integer :: max_match    !
+
+      cur_i = automaton%initial_index
+      
+
+      if (cur_i == DFA_NOT_INIT) then
+         error stop "DFA have not been initialized."
+      end if
+
+      if (len(string) == 0) then
+         res = automaton%dfa%nodes(cur_i)%accepted
+         return
+      end if
+
+      max_match = 0
+      ci = 1
+
+      do while(cur_i /= DFA_INVALID_INDEX)
+
+         if (automaton%dfa%nodes(cur_i)%accepted) then
+            max_match = ci
+         end if
+
+         if (ci > len(string)) exit
+
+
+         next_ci = idxutf8(string, ci) + 1 
+
+         dst_i = next_state_dense_dfa(automaton, cur_i, string(ci:next_ci-1))
+
+         cur_i = dst_i
+         ci = next_ci
+      end do
+
+      if (max_match == len(string)+1) then
+         res = .true.
+      else
+         res = .false.
+      end if
+
+   end function match_dense_dfa_exactly
    
 end module forgex_dense_dfa_m 

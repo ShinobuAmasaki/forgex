@@ -276,9 +276,7 @@ contains
       case (ENGINE_LAZY_DFA)
          call do_find_match_lazy_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
       case (ENGINE_DENSE_DFA)
-         ! call do_find_match_dense_dfa
-         write(stderr, *) "dense matching is currently unavailable."
-         stop
+         call do_find_match_dense_dfa(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
       case (ENGINE_FORGEX_API)
          call do_find_match_forgex(cla%flags, cla%patterns(1)%p, cla%patterns(3)%p, is_exactly)
       case default

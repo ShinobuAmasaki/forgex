@@ -18,6 +18,7 @@ module forgex_cli_find_m
 
    public :: do_find_match_forgex
    public :: do_find_match_lazy_dfa
+   public :: do_find_match_dense_dfa
 
 contains
 
@@ -265,31 +266,35 @@ contains
       call automaton%init()
       lap3 = time_lap() ! automaton initialize
 
-      call construct_dense_dfa(automaton)
+      call construct_dense_dfa(automaton, automaton%initial_index)
       lap4 = time_lap() ! compile nfa to dfa
 
-      res = match_dense_dfa(automaton, text)
+      if (is_exactly) then
+         res = match_dense_dfa_exactly(automaton, text)
+      else
+         ! 
+      end if
       lap5 = time_lap() ! search time
-
+print *, res
       open(newunit=uni, status='scratch')
-      write(uni, fmta) "=== NFA ==="
-      call automaton%nfa%print(uni, automaton%nfa_exit)
-      write(uni, fmta) "=== DFA ==="
-      call automaton%print_dfa(uni)
+      write(0, fmta) "=== NFA ==="
+      call automaton%nfa%print(0, automaton%nfa_exit)
+      write(0, fmta) "=== DFA ==="
+      call automaton%print_dfa(0)
      
-      rewind(uni)
-      ierr = 0
-      do while (ierr == 0)
-         read(uni, fmta, iostat=ierr) line
-         if (ierr/=0) exit
-         if (get_os_type() == OS_WINDOWS) then
-            dfa_for_print = dfa_for_print//trim(line)//CRLF
-         else
-            dfa_for_print = dfa_for_print//trim(line)//LF
-         end if
-      end do
-      close(uni)
-
+      ! rewind(uni)
+      ! ierr = 0
+      ! do while (ierr == 0)
+      !    read(uni, fmta, iostat=ierr) line
+      !    if (ierr/=0) exit
+      !    if (get_os_type() == OS_WINDOWS) then
+      !       dfa_for_print = dfa_for_print//trim(line)//CRLF
+      !    else
+      !       dfa_for_print = dfa_for_print//trim(line)//LF
+      !    end if
+      ! end do
+      ! close(uni)
+      
    end subroutine do_find_match_dense_dfa
       
 
