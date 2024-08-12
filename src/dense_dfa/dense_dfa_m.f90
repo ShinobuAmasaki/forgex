@@ -1,3 +1,6 @@
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_dense_dfa_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m
@@ -98,14 +101,17 @@ contains
 
       ! Already automaton is initialized
       type(dfa_transition_t) :: d_tra
-      integer :: prev_i, dst_i, i, j, k, ii
+      integer :: dst_i, i, j, k, ii
 
-
-      i =  1
+      i =  curr_i
       outer: do while (i < automaton%dfa%dfa_top)
          d_tra = move(automaton, i)
          call automaton%nfa%collect_epsilon_transition(d_tra%nfa_set)
 
+         if (.not. any(d_tra%nfa_set%vec)) then
+            i = i + 1
+            cycle
+         end if
 
          dst_i = automaton%dfa%registered(d_tra%nfa_set)
 
@@ -150,10 +156,10 @@ contains
       type(dfa_state_node_t) :: d_node
       type(dfa_transition_t) :: d_tra
 
-      integer(int32) :: dst_i, j, k
+      integer(int32) :: dst_i, j
 
       d_node = automaton%dfa%nodes(curr_i)
-
+      dst_i = DFA_INVALID_INDEX
       do j = 1, d_node%get_tra_top()
          d_tra = d_node%transition(j)
          if (symbol_to_segment(symbol) .in. d_tra%c) then
@@ -189,15 +195,12 @@ contains
 
       max_match = 0
       ci = 1
-
       do while(cur_i /= DFA_INVALID_INDEX)
-
          if (automaton%dfa%nodes(cur_i)%accepted) then
             max_match = ci
          end if
 
          if (ci > len(string)) exit
-
 
          next_ci = idxutf8(string, ci) + 1
 
