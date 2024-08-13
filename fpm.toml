@@ -1,5 +1,5 @@
 name = "forgex"
-version = "3.0.0"
+version = "3.2.0"
 license = "MIT"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
@@ -16,9 +16,6 @@ library = true
 implicit-typing = false
 implicit-external = false
 source-form = "free"
-[executable]
-name = "forgex-cli"
-main = "forgex-cli.f90"
 [preprocess]
 [preprocess.cpp]
 macros = ["RELEASE"] # This macro is not defined in the source codes, but it tells fpm to use the preprocessor.
