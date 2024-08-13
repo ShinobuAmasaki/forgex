@@ -1,16 +1,26 @@
+.bg-dark {
+   background-color: #734f96 !important;
+}
+
 pre code {
    font-family: monospace;
    font-size: 18px;
 }
+
 code {
    border-radius: 4px;
    font-family: monospace;
-   font-size: 18px;
    color: #222;
    margin: 0 4px;
    padding: 0 4px;
    background-color: #f8f8f8;
 }
+
+p code {
+   font-size: 18px;
+   background-color: #f5f5ff;
+}
+
 .codehilite code{
    margin: 0;
    padding: 0;
@@ -67,7 +77,7 @@ p .head {
 }
 p {
    line-height: 1.8;
-   font-size: 19px;
+   font-size: 16px;
 }
 ul li {
    font-size: 18px;
@@ -85,8 +95,8 @@ body {
      Meiryo,
      sans-serif;
 }
-/* 1668px is the width of iPad Pro 10.5" 2nd */
-@media (max-width: 1200px) and (min-width: {
+
+@media (max-width: 820px) {
    #text.row {
       justify-content: center;
    }
