@@ -287,9 +287,9 @@
 <a id="ln-132" name="ln-132" href="#ln-132"></a><span class="k">      </span><span class="n">lap4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_lap</span><span class="p">()</span>
 <a id="ln-133" name="ln-133" href="#ln-133"></a>
 <a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">      </span><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="s1">&#39;scratch&#39;</span><span class="p">)</span>
-<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;=== NFA ===&quot;</span>
+<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">HEADER_NFA</span>
 <a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">nfa_exit</span><span class="p">)</span>
-<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;=== DFA ===&quot;</span>
+<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">HEADER_DFA</span>
 <a id="ln-138" name="ln-138" href="#ln-138"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">print_dfa</span><span class="p">(</span><span class="n">uni</span><span class="p">)</span>
 <a id="ln-139" name="ln-139" href="#ln-139"></a>
 <a id="ln-140" name="ln-140" href="#ln-140"></a><span class="w">      </span><span class="k">rewind</span><span class="p">(</span><span class="n">uni</span><span class="p">)</span>
@@ -373,7 +373,7 @@
 <a id="ln-218" name="ln-218" href="#ln-218"></a><span class="k">         write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 <a id="ln-219" name="ln-219" href="#ln-219"></a>
 <a id="ln-220" name="ln-220" href="#ln-220"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">dfa_for_print</span><span class="p">)</span>
-<a id="ln-221" name="ln-221" href="#ln-221"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;===========&quot;</span>
+<a id="ln-221" name="ln-221" href="#ln-221"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">FOOTER</span>
 <a id="ln-222" name="ln-222" href="#ln-222"></a>
 <a id="ln-223" name="ln-223" href="#ln-223"></a><span class="w">      </span><span class="k">end block </span><span class="n">output</span>
 <a id="ln-224" name="ln-224" href="#ln-224"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">free</span>
@@ -449,9 +449,9 @@
 <a id="ln-294" name="ln-294" href="#ln-294"></a><span class="k">      </span><span class="n">lap5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">time_lap</span><span class="p">()</span><span class="w"> </span><span class="c">! search time</span>
 <a id="ln-295" name="ln-295" href="#ln-295"></a>
 <a id="ln-296" name="ln-296" href="#ln-296"></a><span class="w">      </span><span class="k">open</span><span class="p">(</span><span class="n">newunit</span><span class="o">=</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="o">=</span><span class="s1">&#39;scratch&#39;</span><span class="p">)</span>
-<a id="ln-297" name="ln-297" href="#ln-297"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;=== NFA ===&quot;</span>
+<a id="ln-297" name="ln-297" href="#ln-297"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">HEADER_NFA</span>
 <a id="ln-298" name="ln-298" href="#ln-298"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="k">print</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">nfa_exit</span><span class="p">)</span>
-<a id="ln-299" name="ln-299" href="#ln-299"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;=== DFA ===&quot;</span>
+<a id="ln-299" name="ln-299" href="#ln-299"></a><span class="w">      </span><span class="k">write</span><span class="p">(</span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">HEADER_DFA</span>
 <a id="ln-300" name="ln-300" href="#ln-300"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">print_dfa</span><span class="p">(</span><span class="n">uni</span><span class="p">)</span>
 <a id="ln-301" name="ln-301" href="#ln-301"></a>
 <a id="ln-302" name="ln-302" href="#ln-302"></a><span class="w">      </span><span class="k">rewind</span><span class="p">(</span><span class="n">uni</span><span class="p">)</span>
@@ -542,7 +542,7 @@
 <a id="ln-387" name="ln-387" href="#ln-387"></a>
 <a id="ln-388" name="ln-388" href="#ln-388"></a><span class="k">         write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 <a id="ln-389" name="ln-389" href="#ln-389"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">dfa_for_print</span><span class="p">)</span>
-<a id="ln-390" name="ln-390" href="#ln-390"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="s2">&quot;===========&quot;</span>
+<a id="ln-390" name="ln-390" href="#ln-390"></a><span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">FOOTER</span>
 <a id="ln-391" name="ln-391" href="#ln-391"></a><span class="w">      </span><span class="k">end block </span><span class="n">output</span>
 <a id="ln-392" name="ln-392" href="#ln-392"></a><span class="w">      </span>
 <a id="ln-393" name="ln-393" href="#ln-393"></a><span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
@@ -571,7 +571,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 02:49              </p>
+ on 2024-08-13 05:55              </p>
           </div>
         </div>
         <br>

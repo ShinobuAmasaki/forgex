@@ -183,12 +183,12 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li>
               </ul>
             </li>
         </ul>
@@ -298,7 +298,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa~3"></span>
+              <span class="anchor" id="variable-nfa~4"></span>
               type(<a href='../type/nfa_graph_t.html'>nfa_graph_t</a>),
             </td>
               <td>public</td>
@@ -373,7 +373,7 @@
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/automaton_t.html#boundprocedure-free~2'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__deallocate.html'>automaton__deallocate</a></td>
+  <strong><a href='../type/automaton_t.html#boundprocedure-free~3'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__deallocate.html'>automaton__deallocate</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -383,7 +383,7 @@
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/automaton_t.html#boundprocedure-init~2'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__initialize.html'>automaton__initialize</a></td>
+  <strong><a href='../type/automaton_t.html#boundprocedure-init'>init</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__initialize.html'>automaton__initialize</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -393,12 +393,12 @@
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/automaton_t.html#boundprocedure-preprocess'>preprocess</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__build_nfa.html'>automaton__build_nfa</a></td>
+  <strong><a href='../type/automaton_t.html#boundprocedure-preprocess~2'>preprocess</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__build_nfa.html'>automaton__build_nfa</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/automaton_t.html#boundprocedure-print'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__print_info.html'>automaton__print_info</a></td>
+  <strong><a href='../type/automaton_t.html#boundprocedure-print~2'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__print_info.html'>automaton__print_info</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -442,7 +442,7 @@ character <code>symbol</code>.</p><a href="../proc/automaton__compute_reachable_
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~19"></span>
+              <span class="anchor" id="variable-self~27"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -457,7 +457,7 @@ character <code>symbol</code>.</p><a href="../proc/automaton__compute_reachable_
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr_i"></span>
+              <span class="anchor" id="variable-curr_i~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -472,7 +472,7 @@ character <code>symbol</code>.</p><a href="../proc/automaton__compute_reachable_
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~2"></span>
+              <span class="anchor" id="variable-symbol~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -518,7 +518,7 @@ and the corresponding set of transitionable NFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~21"></span>
+              <span class="anchor" id="variable-self~29"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -533,7 +533,7 @@ and the corresponding set of transitionable NFA state.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~3"></span>
+              <span class="anchor" id="variable-curr~5"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -548,7 +548,7 @@ and the corresponding set of transitionable NFA state.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~4"></span>
+              <span class="anchor" id="variable-symbol~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -598,7 +598,7 @@ and the corresponding set of transitionable NFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~14"></span>
+              <span class="anchor" id="variable-self~22"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -669,7 +669,7 @@ adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.htm
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~22"></span>
+              <span class="anchor" id="variable-self~30"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -684,7 +684,7 @@ adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.htm
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr_i~2"></span>
+              <span class="anchor" id="variable-curr_i~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -699,7 +699,7 @@ adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.htm
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst_i"></span>
+              <span class="anchor" id="variable-dst_i~7"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -714,7 +714,7 @@ adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.htm
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~5"></span>
+              <span class="anchor" id="variable-symbol~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -754,7 +754,7 @@ adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.htm
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~16"></span>
+              <span class="anchor" id="variable-self~24"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -795,7 +795,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~20"></span>
+              <span class="anchor" id="variable-self~28"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -810,7 +810,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~2"></span>
+              <span class="anchor" id="variable-curr~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -825,7 +825,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~3"></span>
+              <span class="anchor" id="variable-symbol~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -840,7 +840,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next"></span>
+              <span class="anchor" id="variable-next~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -855,7 +855,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next_set"></span>
+              <span class="anchor" id="variable-next_set~2"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -895,7 +895,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~17"></span>
+              <span class="anchor" id="variable-self~25"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -966,7 +966,7 @@ and then initializes the DFA graph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~15"></span>
+              <span class="anchor" id="variable-self~23"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1006,7 +1006,7 @@ and then initializes the DFA graph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~24"></span>
+              <span class="anchor" id="variable-self~32"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1021,7 +1021,7 @@ and then initializes the DFA graph.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uni~4"></span>
+              <span class="anchor" id="variable-uni~8"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1061,7 +1061,7 @@ and then initializes the DFA graph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~23"></span>
+              <span class="anchor" id="variable-self~31"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1102,7 +1102,7 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~18"></span>
+              <span class="anchor" id="variable-self~26"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1117,7 +1117,7 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state_set~4"></span>
+              <span class="anchor" id="variable-state_set~6"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1132,7 +1132,7 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~35"></span>
+              <span class="anchor" id="variable-res~28"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -1175,7 +1175,7 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 02:49              </p>
+ on 2024-08-13 05:55              </p>
           </div>
         </div>
         <br>

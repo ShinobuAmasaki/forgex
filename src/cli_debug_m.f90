@@ -10,7 +10,7 @@ module forgex_cli_debug_m
    use, intrinsic :: iso_fortran_env, only: int32, real64, stderr => error_unit, stdout => output_unit
    use :: forgex_cli_time_measurement_m, only: time_begin, time_lap, get_lap_time_in_appropriate_unit
    use :: forgex_cli_parameters_m, only: NUM_DIGIT_KEY, fmt_out_time, fmt_out_int, fmt_out_ratio, &
-            fmt_out_logi, fmta, CRLF, LF
+            fmt_out_logi, fmta, CRLF, LF, HEADER_DFA, HEADER_NFA ,FOOTER
    use :: forgex_enums_m, only: FLAG_HELP, FLAG_NO_TABLE, FLAG_VERBOSE, FLAG_TABLE_ONLY, OS_WINDOWS
    use :: forgex_cli_utils_m, only: get_os_type, right_justify
    use :: forgex_cli_help_messages_m, only: print_help_debug_ast, print_help_debug_thompson
@@ -184,10 +184,10 @@ contains
          if (flags(FLAG_TABLE_ONLY)) return
 
          write(stdout, *) ""
-         write(stdout, fmta) "=== NFA ==="
+         write(stdout, fmta) HEADER_NFA
          write(stdout, fmta) trim(nfa)
          write(stdout, fmta) "Note: all segments of NFA were disjoined with overlapping portions."
-         write(stdout, fmta) "==========="
+         write(stdout, fmta) FOOTER
 
       end block output
    end subroutine do_debug_thompson

@@ -75,4 +75,9 @@ module forgex_cli_parameters_m
    !> Line Feed.
    character(*), parameter, public :: LF = char(10)
 
+   !> Headers
+   character(*), parameter, public :: HEADER_NFA = "========== Thompson NFA ==========="
+   character(*), parameter, public :: HEADER_DFA = "=============== DFA ==============="
+   character(*), parameter, public :: FOOTER     = "==================================="
+
 end module forgex_cli_parameters_m
