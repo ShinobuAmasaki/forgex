@@ -33,6 +33,7 @@ module forgex_automaton_m
       integer(int32)               :: nfa_entry, nfa_exit
       integer(int32)               :: initial_index = DFA_NOT_INIT
    contains
+      procedure :: preprocess      => automaton__build_nfa
       procedure :: init            => automaton__initialize
       procedure :: epsilon_closure => automaton__epsilon_closure
       procedure :: register_state  => automaton__register_state
@@ -41,33 +42,37 @@ module forgex_automaton_m
       procedure :: move            => automaton__move
       procedure :: destination     => automaton__destination
       procedure :: free            => automaton__deallocate
-#if  defined(IMPURE) && defined(DEBUG)
       procedure :: print           => automaton__print_info
       procedure :: print_dfa       => automaton__print_dfa
-#endif
    end type automaton_t
 
 contains
 
-   !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
-   !> and then initializes the DFA graph.
-   pure subroutine automaton__initialize(self, tree, tree_top)
+   pure subroutine automaton__build_nfa(self, tree, tree_top)
       use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(tree_node_t),allocatable, intent(in) :: tree(:)
+      type(tree_node_t), allocatable, intent(in) :: tree(:)
       integer(int32), intent(in) :: tree_top
+
+      !-- NFA building
+      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
+   end subroutine automaton__build_nfa
+
+   !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
+   !> and then initializes the DFA graph.
+   pure subroutine automaton__initialize(self)
+      use :: forgex_syntax_tree_m, only: tree_node_t
+      implicit none
+      class(automaton_t), intent(inout) :: self
+      ! type(tree_node_t),allocatable, intent(in) :: tree(:)
+      ! integer(int32), intent(in) :: tree_top
 
       type(nfa_state_set_t) :: initial_closure
       integer(int32) :: new_index
 
-      !-- NFA building
-      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
-
-
-#if  defined(IMPURE) && defined(DEBUG)
-      call self%nfa%print()
-#endif
+      ! !-- NFA building
+      ! call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
 
       !-- DFA initialize
       ! Invokes DFA preprocessing.
@@ -78,11 +83,14 @@ contains
          error stop "DFA graph initialization is failed."
       end if
 
+      call init_state_set(self%entry_set, self%nfa%nfa_top)
       ! Constructing a DFA initial state from the NFA initial state.
       call add_nfa_state(self%entry_set, self%nfa_entry)
 
+      call init_state_set(initial_closure, self%nfa%nfa_top)
+      initial_closure = self%entry_set
       ! Add an NFA node reachable by epsilon transitions to the entrance state set within DFA.
-      call self%epsilon_closure(self%entry_set, initial_closure)
+      call self%epsilon_closure(initial_closure, self%nfa_entry)
 
       ! Assign the computed initial closure into self%entry_set
       self%entry_set = initial_closure
@@ -114,35 +122,34 @@ contains
    !>
    !> The ε-closure is the set of NFA states reachable from a given set of NFA states via ε-transition.
    !> This subroutine calculates the ε-closure and stores it in the `closure` parameter.
-   pure subroutine automaton__epsilon_closure(self, state_set, closure)
+   pure recursive subroutine automaton__epsilon_closure(self, closure, n_index)
       use :: forgex_nfa_node_m
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(nfa_state_set_t), intent(in) :: state_set
       type(nfa_state_set_t), intent(inout) :: closure
+      integer, intent(in) :: n_index
 
-      type(nfa_transition_t) :: transition   ! a temporary variable
-      integer(int32) :: i, j, k
+      type(nfa_state_node_t) :: n_node
+      type(nfa_transition_t) :: n_tra
+      integer :: j
 
-      ! Initialize with the input argument.
-      closure = state_set
+      call add_nfa_state(closure, n_index)
 
-      i = self%nfa_entry
-      ! すべての順方向の遷移をスキャンする
-      do j = 1, self%nfa%nodes(i)%forward_top
+      n_node = self%nfa%nodes(n_index)
 
+      if (.not. allocated(n_node%forward)) return
+
+       ! すべての順方向の遷移をスキャンする
+      do j = 1, n_node%forward_top
          ! 一時変数にコピー
-         transition = self%nfa%nodes(i)%forward(j)
+         n_tra = n_node%forward(j)
 
-         if (transition%is_registered) then
-            do k = 1, transition%c_top
+         if (.not. allocated(n_tra%c)) cycle
 
-               if ((transition%c(k) .in. SEG_EPSILON) .and. transition%dst /= NFA_NULL_TRANSITION) then
-
-                  call add_nfa_state(closure, transition%dst)
-               end if
-            end do
+         if (any(n_tra%c == SEG_EPSILON) .and. .not. check_nfa_state(closure, n_tra%dst)) then
+            if (n_tra%dst /= NFA_NULL_TRANSITION) call self%epsilon_closure(closure, n_tra%dst)
          end if
+
       end do
 
    end subroutine automaton__epsilon_closure
@@ -175,6 +182,7 @@ contains
       i = self%dfa%dfa_top
       self%dfa%dfa_top = i + 1 ! increment dfa_top
 
+
       self%dfa%nodes(i)%nfa_set    = state_set
       self%dfa%nodes(i)%accepted   = check_nfa_state(state_set, self%nfa_exit)
       self%dfa%nodes(i)%registered = .true.
@@ -193,7 +201,7 @@ contains
    !> It scans through the NFA states and finds the set of reachable states by the given input `symbol`,
    !> excluding ε-transitions.
    pure function automaton__compute_reachable_state(self, curr_i, symbol) result(state_set)
-      use :: forgex_segment_m, only: operator(.in.)
+      use :: forgex_segment_m, only: operator(.in.), operator(/=)
       use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
@@ -210,6 +218,8 @@ contains
       type(segment_t), allocatable :: segs(:)
       type(nfa_transition_t)       :: n_tra
 
+
+      call init_state_set(state_set, self%nfa%nfa_top)
 
       current_set = self%dfa%nodes(curr_i)%nfa_set
 
@@ -229,6 +239,7 @@ contains
 
                ! Copy to a temporary variable of type(nfa_transition_t)
                n_tra = n_node%forward(j)
+
 
                ! If it has a destination,
                if (n_tra%dst /= NFA_NULL_TRANSITION) then
@@ -279,7 +290,7 @@ contains
       next = DFA_INVALID_INDEX
 
       ! Scan the entire DFA nodes.
-      do i = 1, self%dfa%dfa_top
+      do i = 1, self%dfa%dfa_top-1
 
          ! If there is an existing node corresponding to the NFA state set,
          ! return the index of that node.
@@ -305,6 +316,7 @@ contains
       type(nfa_state_set_t) :: set
       integer(int32)        :: next
 
+
       call self%destination(curr, symbol, next, set)
 
       ! Set the value of each component of the returned object.
@@ -323,7 +335,7 @@ contains
    !> excluding epsilon transitions, and then registers the new DFA state node if it has not already been registered.
    !> Finally, it adds the transition from the `current` node to the `destination` node in the DFA graph.
    pure subroutine automaton__construct_dfa (self, curr_i, dst_i, symbol)
-      use :: forgex_lazy_dfa_node_m
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(inout) :: self
       integer(int32),     intent(in)    :: curr_i
@@ -368,14 +380,13 @@ contains
 
       ! 遷移を追加する
       ! Add a DFA transition from `prev` to `next` for the given `symbol`.
-      call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i, which_segment_symbol_belong(self%all_segments, symbol))
+      call self%dfa%add_transition(d_tra%nfa_set, prev_i, dst_i,  &
+             which_segment_symbol_belong(self%all_segments, symbol))
    end subroutine automaton__construct_dfa
 
 
 !=====================================================================!
 
-
-#if defined(IMPURE) && defined(DEBUG)
 
    !> This subroutine provides the automata' summarized information.
    subroutine automaton__print_info(self)
@@ -394,45 +405,44 @@ contains
 
 
    !> This subroutine prints DFA states and transitions to standard error.
-   subroutine automaton__print_dfa(self)
-      use, intrinsic :: iso_fortran_env, only: stderr => error_unit
-      use :: forgex_nfa_state_set_m
-      use :: forgex_lazy_dfa_node_m
+   subroutine automaton__print_dfa(self, uni)
+      use :: forgex_nfa_state_set_m, only: print_nfa_state_set
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t), intent(in) :: self
-      type(dfa_transition_t) :: p
-      integer(int32) :: i, j, k
+      integer(int32), intent(in) :: uni
 
-      write(stderr,*) "--- PRINT DFA---"
+      type(dfa_transition_t) :: p
+      integer(int32) :: i, j
 
       do i = 1, self%dfa%dfa_top -1
 
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(i4,a, a)', advance='no') i, 'A', ": "
+            write(uni, '(i4,a, a)', advance='no') i, 'A', ": "
          else
-            write(stderr, '(i4,a, a)', advance='no') i, ' ', ": "
+            write(uni, '(i4,a, a)', advance='no') i, ' ', ": "
          end if
 
          do j = 1, self%dfa%nodes(i)%get_tra_top()
             p = self%dfa%nodes(i)%transition(j)
-            write(stderr, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
+            write(uni, '(a, a, i0, 1x)', advance='no') p%c%print(), '=>', p%dst
 
          end do
-         write(stderr, *) ""
+         write(uni, *) ""
       end do
 
       do i = 1, self%dfa%dfa_top - 1
          if (self%dfa%nodes(i)%accepted) then
-            write(stderr, '(a, i4, a)', advance='no') "state ", i, 'A = ( '
+            write(uni, '(a, i4, a)', advance='no') "state ", i, 'A = ( '
          else
-            write(stderr, '(a, i4, a)', advance='no') "state ", i, '  = ( '
+            write(uni, '(a, i4, a)', advance='no') "state ", i, '  = ( '
          end if
 
-         call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top)
+         call print_nfa_state_set(self%dfa%nodes(i)%nfa_set, self%nfa%nfa_top, uni)
 
-         write(stderr,'(a)') ")"
+         write(uni,'(a)') ")"
       end do
    end subroutine automaton__print_dfa
-#endif
+
 
 end module forgex_automaton_m

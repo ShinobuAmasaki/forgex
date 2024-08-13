@@ -37,14 +37,14 @@ module forgex_syntax_tree_m
    public :: build_syntax_tree
    public :: deallocate_tree
 
-#if defined(IMPURE) && defined(DEBUG)
+
    public :: dump_tree_table
 
    public :: print_tree
    interface print_tree
       module procedure :: print_tree_wrap
    end interface print_tree
-#endif
+
 
    !! The regular expression parsing performed by this module
    !! is done using recursive descent parsing.
@@ -100,8 +100,8 @@ contains
       integer :: i
 
       ! Initial allocation of the tree allocatable
-      allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT))
-      tree(TREE_NODE_BASE:TREE_NODE_LIMIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_LIMIT)]
+      allocate(tree(TREE_NODE_BASE:TREE_NODE_UNIT))
+      tree(TREE_NODE_BASE:TREE_NODE_UNIT)%own_i = [(i, i = TREE_NODE_BASE, TREE_NODE_UNIT)]
 
       tape%idx = 1
       tape%str = str
@@ -123,24 +123,20 @@ contains
       integer                     :: new_part_begin, new_part_end, i
 
       if (.not. allocated(tree)) then
-         allocate(tree(TREE_NODE_BASE:TREE_NODE_LIMIT))
+         allocate(tree(TREE_NODE_BASE:TREE_NODE_UNIT))
          return
       end if
 
-      new_part_begin = TREE_NODE_UNIT*(alloc_count) +1
-      new_part_end   = TREE_NODE_UNIT*(alloc_count+1)
+      new_part_begin = ubound(tree, dim=1) + 1
+      new_part_end   = ubound(tree, dim=1)*2
 
-      if (TREE_NODE_UNIT*(alloc_count+1) > TREE_NODE_HARD_LIMIT) then
+      if (new_part_end > TREE_NODE_HARD_LIMIT) then
          error stop "Exceeded the maximum number of tree nodes can be allocated."
       end if
 
       call move_alloc(tree, tmp)
 
       allocate(tree(TREE_NODE_BASE:new_part_end))
-
-#if defined(IMPURE) && defined(DEBUG)
-      write(stderr, *) "Tree reallocated count: ", alloc_count+1
-#endif
 
       ! Deep copy
       tree(TREE_NODE_BASE:new_part_begin-1) = tmp(TREE_NODE_BASE:new_part_begin-1)
@@ -833,7 +829,7 @@ contains
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer(int32),             intent(inout) :: top
 
-      type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty
+      type(tree_node_t) :: cr, lf, node_r_r, node_r, node, empty_r
 
 
       cr = make_atom(SEG_CR)
@@ -848,11 +844,11 @@ contains
       node_r = make_tree_node(op_union)
       call register_and_connector(tree, top, node_r, lf, node_r_r)
 
-      empty = make_atom(SEG_EMPTY)
-      call register_and_connector(tree, top, empty, terminal_node, terminal_node)
+      empty_r = make_atom(SEG_EMPTY)
+      call register_and_connector(tree, top, empty_r, terminal_node, terminal_node)
 
       node = make_tree_node(op_union)
-      call register_and_connector(tree, top, node, node_r, empty)
+      call register_and_connector(tree, top, node, node_r, empty_r)
 
    end subroutine make_tree_caret_dollar
 
@@ -950,8 +946,6 @@ contains
 
 
 !=====================================================================!
-#if defined(IMPURE) && defined(DEBUG)
-
    subroutine dump_tree_table(tree)
       implicit none
       class(tree_node_t), intent(in) :: tree(:)
@@ -959,7 +953,7 @@ contains
       integer :: i, k
 
       write(stderr, '(1x, a)') '  own index|  operation|     parent|       left|      right|   registered|  segments'
-      do i = TREE_NODE_BASE, TREE_NODE_LIMIT
+      do i = TREE_NODE_BASE, ubound(tree, dim=1)
          if (tree(i)%is_registered) then
             write(stderr, '(5i12, a, 10x, 1l, 3x)', advance='no') tree(i)%own_i, &
                tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
@@ -977,56 +971,58 @@ contains
       end do
    end subroutine dump_tree_table
 
-   subroutine print_tree_wrap(tree, node_i)
+   subroutine print_tree_wrap(tree, node_i, uni)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer, intent(in) :: node_i
+      integer :: uni
 
       integer :: i
 
-      call print_tree_internal(tree, node_i)
-      write(stderr, *) ''
+      call print_tree_internal(tree, node_i, uni)
+      write(uni, *) ''
 
-      i = 0
-      do while (tree(i+1)%is_registered)
-         i = i + 1
-      enddo
+      ! i = 0
+      ! do while (tree(i+1)%is_registered)
+      !    i = i + 1
+      ! enddo
 
-      write(stderr, *) "Tree node counts: ", i
+      ! write(stderr, *) "Tree node counts: ", i
    end subroutine print_tree_wrap
 
-   recursive subroutine print_tree_internal(tree, node_i)
+   recursive subroutine print_tree_internal(tree, node_i, uni)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer, intent(in) :: node_i
+      integer, intent(in) :: uni
 
       select case (tree(node_i)%op)
       case (op_char)
-         write(stderr, '(a)', advance='no') trim(print_class_simplify(tree, node_i))
+         write(uni, '(a)', advance='no') trim(print_class_simplify(tree, node_i))
       case (op_concat)
-         write(stderr, '(a)', advance='no') "(concatenate "
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ' '
-         call print_tree_internal(tree, tree(node_i)%right_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(concatenate "
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_union)
-         write(stderr, '(a)', advance='no') "(or "
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ' '
-         call print_tree_internal(tree, tree(node_i)%right_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(or "
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ' '
+         call print_tree_internal(tree, tree(node_i)%right_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_closure)
-         write(stderr, '(a)', advance='no') "(closure"
-         call print_tree_internal(tree, tree(node_i)%left_i)
-         write(stderr, '(a)', advance='no') ')'
+         write(uni, '(a)', advance='no') "(closure"
+         call print_tree_internal(tree, tree(node_i)%left_i, uni)
+         write(uni, '(a)', advance='no') ')'
 
       case (op_empty)
-         write(stderr, '(a)', advance='no') 'EMPTY'
+         write(uni, '(a)', advance='no') 'EMPTY'
 
       case default
-         write(stderr, '(a)') "This will not occur in 'print_tree'."
+         write(uni, '(a)') "This will not occur in 'print_tree'."
          error stop
       end select
    end subroutine print_tree_internal
@@ -1104,5 +1100,4 @@ contains
 
    end function print_class_simplify
 
-#endif
 end module forgex_syntax_tree_m

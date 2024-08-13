@@ -23,17 +23,29 @@ module forgex_nfa_state_set_m
    public :: check_nfa_state
    public :: equivalent_nfa_state_set
    public :: collect_epsilon_transition
+   public :: init_state_set
 
-#if defined(IMPURE) && defined(DEBUG)
    public :: print_nfa_state_set
-#endif
+
 
    !> The `nfa_state_set_t` type represents set of NFA states.
    type, public :: nfa_state_set_t
-      logical :: vec(NFA_STATE_LIMIT) = .false.
+      logical, allocatable :: vec(:)
    end type
 
 contains
+
+   pure subroutine init_state_set(state_set, ntop)
+      implicit none
+      type(nfa_state_set_t), intent(inout) :: state_set
+      integer(int32), intent(in) :: ntop
+
+      if (.not. allocated(state_set%vec)) then
+         allocate(state_set%vec(ntop))
+         state_set%vec(:) = .false.
+      end if
+
+   end subroutine init_state_set
 
 
    !> This function checks if the arguement 'state' (set of NFA state) includes state 's'.
@@ -117,7 +129,7 @@ contains
    pure subroutine collect_epsilon_transition(nfa_graph, nfa_top, nfa_set)
       use :: forgex_nfa_node_m, only: nfa_state_node_t
       implicit none
-      type(nfa_state_node_t), intent(in)    :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(in)    :: nfa_graph(:)
       integer(int32),         intent(in)    :: nfa_top
       type(nfa_state_set_t),  intent(inout) :: nfa_set
 
@@ -131,19 +143,19 @@ contains
    end subroutine collect_epsilon_transition
 
 
-#if defined(IMPURE) && defined(DEBUG)
    ! This subroutine is for debugging, print_lazy_dfa and automaton__print_dfa use this procedure.
-   subroutine print_nfa_state_set(set, top)
+   subroutine print_nfa_state_set(set, top, uni)
       use, intrinsic :: iso_fortran_env, only:stderr => error_unit
       implicit none
       type(nfa_state_set_t), intent(in) :: set
       integer(int32),        intent(in) :: top
-
+      integer(int32),        intent(in) :: uni
+ 
       integer(int32) :: i
 
       do i = 1, top
-         if (check_nfa_state(set, i)) write(stderr, '(i0, a)', advance='no') i, ' '
+         if (check_nfa_state(set, i)) write(uni, '(i0, a)', advance='no') i, ' '
       end do
    end subroutine print_nfa_state_set
-#endif
+
 end module forgex_nfa_state_set_m

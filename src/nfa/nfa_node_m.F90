@@ -16,7 +16,8 @@
 module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
-      NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_LIMIT, NFA_C_SIZE
+      NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_UNIT, NFA_STATE_LIMIT, &
+      NFA_C_SIZE
    use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
       seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
 
@@ -72,7 +73,7 @@ contains
       integer(int32) :: i, i_begin, i_end ! index for states array
 
       i_begin = NFA_STATE_BASE
-      i_end   = NFA_STATE_LIMIT
+      i_end   = NFA_STATE_UNIT
 
       ! initialize
       nfa_top = 0
@@ -113,7 +114,7 @@ contains
 
       if (.not. allocated(nfa)) return
 
-      do i = NFA_STATE_BASE, NFA_STATE_LIMIT
+      do i = NFA_STATE_BASE, ubound(nfa, dim=1)
          if (allocated(nfa(i)%forward)) deallocate(nfa(i)%forward)
          if (allocated(nfa(i)%backward)) deallocate(nfa(i)%backward)
       end do
@@ -131,11 +132,42 @@ contains
    end subroutine make_nfa_node
 
 
+   pure function is_exceeded (nfa_top, nfa_graph) result(res)
+      implicit none
+      integer(int32), intent(in) :: nfa_top
+      type(nfa_state_node_t), intent(in) :: nfa_graph(:)
+      logical :: res
+
+      res = ubound(nfa_graph, dim=1) < nfa_top
+
+   end function is_exceeded
+
+
+   pure subroutine reallocate_nfa(nfa_graph)
+      implicit none
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
+
+      type(nfa_state_node_t), allocatable :: tmp(:)
+      integer :: siz
+
+      siz = ubound(nfa_graph, dim=1)
+
+      call move_alloc(nfa_graph, tmp)
+
+      allocate(nfa_graph(NFA_STATE_BASE:siz*2))
+
+      nfa_graph(NFA_STATE_BASE:siz) = tmp(NFA_STATE_BASE:siz)
+
+      nfa_graph(siz+1:siz*2)%forward_top = 1
+      nfa_graph(siz+1:siz*2)%backward_top = 1
+
+   end subroutine
+
    pure recursive subroutine generate_nfa(tree, tree_idx, nfa_graph, nfa_top, entry, exit)
       use :: forgex_enums_m
       implicit none
       type(tree_node_t), allocatable, intent(in) :: tree(:)
-      type(nfa_state_node_t),  intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
       integer(int32), intent(in) :: tree_idx
       integer(int32), intent(inout) :: nfa_top
       integer(int32), intent(in) :: entry
@@ -167,8 +199,15 @@ contains
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node1 = nfa_top
+
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node2 = nfa_top
 
          call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
@@ -181,7 +220,11 @@ contains
       case (op_concat)
          ! Handle concatenation operations by recursively generating NFA for left and right subtrees.
          call make_nfa_node(nfa_top)
+         if (is_exceeded(nfa_top, nfa_graph)) then
+            call reallocate_nfa(nfa_graph)
+         end if
          node1 = nfa_top
+
          call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, node1)
          call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
@@ -196,7 +239,7 @@ contains
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
       class(nfa_state_node_t), intent(inout) :: self
-      type(nfa_state_node_t), intent(inout) :: nfa_graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(inout) :: nfa_graph(:)
       integer(int32), intent(in) :: src, dst
       type(segment_t) ,intent(in) :: c
 
@@ -235,7 +278,7 @@ contains
       self%forward(j)%dst = dst
       self%forward(j)%is_registered = .true.
 
-      self%forward_top = j + 1
+      if (j == self%forward_top) self%forward_top = self%forward_top + 1
 
       !== Backward transition process
       j = NFA_NULL_TRANSITION
@@ -264,7 +307,7 @@ contains
       nfa_graph(dst)%backward(j)%dst = src
       nfa_graph(dst)%backward(j)%is_registered = .true.
 
-      nfa_graph(dst)%backward_top = j + 1
+      if(j == nfa_graph(dst)%backward_top) nfa_graph(dst)%backward_top = nfa_graph(dst)%backward_top + 1
    end subroutine nfa__add_transition
 
 
@@ -273,7 +316,7 @@ contains
       use :: forgex_segment_m
       use :: forgex_segment_disjoin_m
       implicit none
-      type(nfa_state_node_t), intent(inout) :: graph(NFA_STATE_BASE:NFA_STATE_LIMIT)
+      type(nfa_state_node_t), intent(inout) :: graph(:)
       integer, intent(in) :: nfa_top
       type(segment_t), allocatable, intent(inout) :: seg_list(:)
 
@@ -292,8 +335,7 @@ contains
                ptr = graph(i)%forward(j)
                if (ptr%dst /= NFA_NULL_TRANSITION) then
                   do k = 1, graph(i)%forward(j)%c_top
-                     if (ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
-                     ! if (ptr%c(k) /= SEG_EMPTY .and. ptr%c(k) /= SEG_EPSILON .and. ptr%c(k) /= SEG_INIT) then
+                     if (ptr%c(k) /= SEG_INIT) then
                         call queue_f%enqueue(ptr%c(k))
                      end if
                   end do
@@ -304,15 +346,31 @@ contains
 
       ! Dequeue
       ! Allocate memory for the segment list and dequeue all segments for the priority queue.
-      num_f = queue_f%number
-      allocate(seg_list(num_f))
-      do j = 1, num_f
-         call queue_f%dequeue(seg_list(j))
-      end do
+      block
+         integer :: m
+         type(segment_t) :: cache
+         num_f = queue_f%number
 
-      !-- The seg_list arrays are now sorted.
+         allocate(seg_list(num_f))
+         m = 0
+         do j = 1, num_f
+            if (j == 1) then
+               m = m + 1
+               call queue_f%dequeue(seg_list(j))
+               cycle
+            end if
 
-      seg_list = seg_list(:num_f) ! reallocation implicitly
+            call queue_f%dequeue(cache)
+            if (seg_list(m) /= cache) then
+               m = m + 1
+               seg_list(m) = cache
+            end if
+         end do
+
+         !-- The seg_list arrays are now sorted.
+         seg_list = seg_list(:m) ! reallocation implicitly
+      end block
+
 
       ! Disjoin the segment lists to ensure no over laps
       call disjoin(seg_list)
@@ -445,7 +503,6 @@ contains
 
       if (allocated(self%forward)) then
          siz = size(self%forward, dim=1)
-         allocate(tmp(siz))
          call move_alloc(self%forward, tmp)
       else
          siz = 0
@@ -455,7 +512,7 @@ contains
       self%alloc_count_f = prev_count + 1
 
       new_part_begin = (siz) + 1
-      new_part_end = self%alloc_count_f * NFA_TRANSITION_UNIT
+      new_part_end = NFA_TRANSITION_UNIT * 2**self%alloc_count_f
 
       allocate(self%forward(1:new_part_end))
 
@@ -485,7 +542,6 @@ contains
 
       if (allocated(self%backward)) then
          siz = size(self%backward, dim=1)
-         allocate(tmp(siz))
          call move_alloc(self%backward, tmp)
       else
          siz = 0
@@ -495,7 +551,7 @@ contains
       self%alloc_count_b = prev_count + 1
 
       new_part_begin = (siz) + 1
-      new_part_end = self%alloc_count_b * NFA_TRANSITION_UNIT
+      new_part_end =  NFA_TRANSITION_UNIT * 2**self%alloc_count_b
 
       allocate(self%backward(1:new_part_end))
 

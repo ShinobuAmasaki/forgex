@@ -206,6 +206,7 @@ end block
 
 - Deal with invalid byte strings in UTF-8
 - Optimize by literal searching method
+- ✅️ Add a CLI tool for debugging and benchmarking
 - ✅️ Make all operators `pure elemental` attribute
 - ✅️ Publish the documentation
 - ✅️ Support UTF-8 basic feature
@@ -229,6 +230,7 @@ The idea of applying the `.in.` operator to strings was inspired by kazulagi's o
 2. 近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi), [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
+5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
 
 ## License
 Forgex is as a freely available under the MIT license. See [LICENSE](https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE).

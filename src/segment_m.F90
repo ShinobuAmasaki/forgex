@@ -31,9 +31,7 @@ module forgex_segment_m
       integer(int32) :: min = UTF8_CODE_MAX+2 ! = 2097153
       integer(int32) :: max = UTF8_CODE_MAX+2 ! = 2097153
    contains
-#if defined(IMPURE) && defined(DEBUG)
       procedure :: print => segment_for_print
-#endif
       procedure :: validate => segment_is_valid
    end type
 
@@ -161,7 +159,7 @@ contains
    !
    !  This function determines whether the segment `a` is not equivalent to the
    !  segment `b`, meaning their `min` or `max` values are different.
-   pure function segment_not_equiv(a, b) result(res)
+   pure elemental function segment_not_equiv(a, b) result(res)
       implicit none
       type(segment_t), intent(in) :: a, b
       logical :: res
@@ -174,7 +172,7 @@ contains
    !
    !  This function determines whether the segment is valid by ensuring that
    !  the `min` value is less than or equal to the `max` value.
-   pure function segment_is_valid(self) result(res)
+   pure elemental function segment_is_valid(self) result(res)
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
@@ -219,7 +217,7 @@ contains
 
       ! Fill the new list with the component segments
       count = 1
-      current_min = UTF8_CODE_EMPTY + 1
+      current_min = UTF8_CODE_MIN
 
       do i = 1, n
          if (current_min < list(i)%min) then
@@ -367,7 +365,6 @@ contains
    end subroutine merge_segments
 
 
-#if defined(IMPURE) && defined(DEBUG)
    !| Converts a segment to a printable string representation.
    !
    !  This function generates a string representation of the segment `seg` for
@@ -379,6 +376,7 @@ contains
       implicit none
       class(segment_t), intent(in) :: seg
       character(:), allocatable :: res
+      character(:), allocatable :: cache
 
       if (seg == SEG_ANY) then
          res = "<ANY>"
@@ -430,9 +428,19 @@ contains
       else if (seg%min == seg%max) then
          res = char_utf8(seg%min)
       else if (seg%max == UTF8_CODE_MAX) then
-         res = '["'//char_utf8(seg%min)//'"-'//"<U+1FFFFF>"//']'
+         if (seg%min == ichar(' ')) then
+            cache = "<SPACE>"
+         else
+            cache = '"'//char_utf8(seg%min)//'"'
+         end if
+         res = '['//cache//'-'//"<U+1FFFFF>"//']'
       else
-         res = '["'//char_utf8(seg%min)//'"-"'//char_utf8(seg%max)//'"]'
+         if (seg%min == ichar(' ')) then
+            cache = "<SPACE>"
+         else
+            cache = '"'//char_utf8(seg%min)//'"'
+         end if
+         res = '['//cache//'-"'//char_utf8(seg%max)//'"]'
       end if
 
       !!
@@ -440,5 +448,5 @@ contains
       !! to extract it to `forgex_parameter_m` module and remove the magic strings.
 
    end function segment_for_print
-#endif
+
 end module forgex_segment_m

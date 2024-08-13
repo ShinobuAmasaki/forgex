@@ -203,6 +203,7 @@ end block
 ## To Do
 - UTF-8において無効なバイトストリームへの対処
 - リテラル検索によるマッチングの最適化
+- ✅️ デバッグおよびベンチマーク用のCLIツールを追加
 - ✅️ すべてのAPI演算子に`pure elemental`属性を追加
 - ✅️ ドキュメントの公開
 - ✅️ UTF-8文字の基本的なサポート
@@ -218,12 +219,13 @@ end block
 冪集合構成法のアルゴリズムと構文解析については、Russ Cox氏の論文と近藤嘉雪氏の本を参考にしました。
 優先度付きキューの実装は、[ue1221さんのコード](https://github.com/ue1221/fortran-utilities)に基づいています。
 文字列に対して`.in.`演算子を適用するというアイデアは、soybeanさんのものにインスパイアされました。
-
+`forgex-cli`のコマンドラインインターフェイスの設計については、Rust言語の`regex-cli`を参考にしました。
 ## 参考文献
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007年
 2. 近藤嘉雪, "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998年, SB Creative.
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. [kazulagi, @soybean](https://github.com/kazulagi), [Fortranでユーザー定義演算子.in.を作る - Qiita.com](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91), 2022年
+5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
 
 ## ライセンス
 このプロジェクトはMITライセンスで提供されるフリーソフトウェアです
