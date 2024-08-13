@@ -37,10 +37,12 @@ program test_case_007
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "a", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "i", .true., res)
-   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcegh", .true., res)
-   call runner_match("(a|b(c|d(e|f)g)h|i)*", "abceghi", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcegh", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "abceghi", .false., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "iii", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcgh", .false., res)
+
+
 
    if (res) then
       print *, "=== TEST CASE 7 END ==="
