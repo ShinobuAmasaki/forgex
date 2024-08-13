@@ -184,8 +184,8 @@ contains
       implicit none
       character(LINE_SIZ) :: header
       character(LINE_SIZ) :: usage(1)
-      character(CMD_SIZ) :: cmd(2)
-      character(CMD_DESC_SIZ) :: cdesc(2)
+      character(CMD_SIZ) :: cmd(3)
+      character(CMD_DESC_SIZ) :: cdesc(3)
 
       header = "Executes a search for full matches."
       usage(1) = "forgex-cli find match <engine>"
@@ -194,6 +194,8 @@ contains
       cdesc(1) = "Search with the fully-compiled DFA regex engine."
       cmd(2) = "lazy-dfa"
       cdesc(2) = "Search with the lazy DFA regex engine."
+      cmd(3) = "forgex"
+      cdesc(3) = "Search with the top-level API regex engine."
 
       call generate_and_output(header, usage, "ENGINES", cmd, cdesc)
    end subroutine print_help_find_match
