@@ -132,9 +132,9 @@ contains
       lap4 = time_lap()
 
       open(newunit=uni, status='scratch')
-      write(uni, fmta) "=== NFA ==="
+      write(uni, fmta) HEADER_NFA
       call automaton%nfa%print(uni, automaton%nfa_exit)
-      write(uni, fmta) "=== DFA ==="
+      write(uni, fmta) HEADER_DFA
       call automaton%print_dfa(uni)
 
       rewind(uni)
@@ -218,7 +218,7 @@ contains
          write(stdout, *) ""
 
          write(stdout, fmta, advance='no') trim(dfa_for_print)
-         write(stdout, fmta) "==========="
+         write(stdout, fmta) FOOTER
 
       end block output
       call automaton%free
@@ -294,9 +294,9 @@ contains
       lap5 = time_lap() ! search time
 
       open(newunit=uni, status='scratch')
-      write(uni, fmta) "=== NFA ==="
+      write(uni, fmta) HEADER_NFA
       call automaton%nfa%print(uni, automaton%nfa_exit)
-      write(uni, fmta) "=== DFA ==="
+      write(uni, fmta) HEADER_DFA
       call automaton%print_dfa(uni)
 
       rewind(uni)
@@ -387,7 +387,7 @@ contains
 
          write(stdout, *) ""
          write(stdout, fmta, advance='no') trim(dfa_for_print)
-         write(stdout, fmta) "==========="
+         write(stdout, fmta) FOOTER
       end block output
       
       call automaton%free()
