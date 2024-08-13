@@ -187,7 +187,7 @@ contains
          write(stdout, fmta) HEADER_NFA
          write(stdout, fmta) trim(nfa)
          write(stdout, fmta) "Note: all segments of NFA were disjoined with overlapping portions."
-         write(stdout, fmta) "==========="
+         write(stdout, fmta) FOOTER
 
       end block output
    end subroutine do_debug_thompson
