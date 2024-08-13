@@ -1,12 +1,23 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_dense_dfa_m module is a part of Forgex.
+!
+!! This file contains procedures for building a fully compiled DFA for debugging and benchmarking.
 #ifdef IMPURE
 #define pure
 #endif
+!> This module defines procedures for building a fully compiled DFA for debugging and benchmarking.
 module forgex_dense_dfa_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_parameters_m
-   use :: forgex_automaton_m
-   use :: forgex_nfa_state_set_m
-   use :: forgex_lazy_dfa_node_m
+   use :: forgex_parameters_m, only:NFA_NULL_TRANSITION, DFA_INVALID_INDEX, DFA_NOT_INIT
+   use :: forgex_automaton_m, only: automaton_t
+   use :: forgex_nfa_state_set_m, only: nfa_state_set_t, check_nfa_state, init_state_set, &
+            add_nfa_state, equivalent_nfa_state_set
+   use :: forgex_lazy_dfa_node_m, only: dfa_transition_t, dfa_state_node_t
 
    implicit none
    private
@@ -18,9 +29,11 @@ module forgex_dense_dfa_m
 contains
 
 
+   !> This function calculates a set of possible NFA states from the current DFA state.
+   !>
+   !> It scans through the NFA states and finds the set of reachable states excluding ε-transitions.
    pure function compute_reachable_state(automaton, curr) result(state_set)
-      use :: forgex_nfa_node_m
-      use :: forgex_segment_m
+      use :: forgex_nfa_node_m, only: nfa_state_node_t, nfa_transition_t
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer, intent(in) :: curr
@@ -56,6 +69,8 @@ contains
    end function compute_reachable_state
 
 
+   !> This subroutine gets the next DFA nodes index from current index,
+   !> and stores the result in `next` and `next_set`.
    pure subroutine destination(automaton, curr, next, next_set)
       implicit none
       type(automaton_t), intent(in) :: automaton
@@ -67,8 +82,10 @@ contains
 
       next_set = compute_reachable_state(automaton, curr)
 
+      ! すでに登録されたDFAがある場合はその添字を返し、ない場合は`DFA_INVALID_INDEX`を返す。
+      !! If the DFA state is already registered, it returns the index,
+      !! otherwise it returns `DFA_INVALID_INDEX`.
       next = DFA_INVALID_INDEX
-
       do i = 1, automaton%dfa%dfa_top-1
          if (equivalent_nfa_state_set(next_set, automaton%dfa%nodes(i)%nfa_set)) then
             next = i
@@ -78,6 +95,9 @@ contains
    end subroutine destination
 
 
+
+   !> This function returns the dfa transition object, that contains the destination index
+   !> and the corresponding set of transitionable NFA state.
    pure function move(automaton, curr) result(res)
       implicit none
       type(automaton_t), intent(in) :: automaton
@@ -94,9 +114,9 @@ contains
    end function move
 
 
-   !> This subroutine convert NFA to DFA
+   !> This subroutine convert an NFA into a fully compiled DFA.
    pure subroutine construct_dense_dfa(automaton, curr_i)
-      use :: forgex_segment_m
+      use :: forgex_segment_m, only: SEG_EPSILON, operator(/=)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       integer(int32), intent(in) :: curr_i
@@ -149,8 +169,10 @@ contains
    end subroutine construct_dense_dfa
 
 
+   !> This function returns the index of the destination DFA state from the
+   !> index of the current automaton DFA state array and the input symbol.
    pure function next_state_dense_dfa(automaton, curr_i, symbol) result(dst_i)
-      use :: forgex_segment_m
+      use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr_i
@@ -173,8 +195,10 @@ contains
    end function next_state_dense_dfa
 
 
+   !> This procedure reads a text, performs regular expression matching using compiled DFA,
+   !> and returns `.true.` if it matches exactly.
    pure function match_dense_dfa_exactly(automaton, string) result(res)
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only: idxutf8
       implicit none
       type(automaton_t), intent(in) :: automaton
       character(*), intent(in) :: string
@@ -220,9 +244,10 @@ contains
       end if
    end function match_dense_dfa_exactly
 
-
+   !> This procedure reads a text, performs regular expression matching using an automaton,
+   !> and stores the string index in the argument if it contains a match.
    subroutine match_dense_dfa_including(automaton, string, from, to)
-      use :: forgex_utf8_m
+      use :: forgex_utf8_m, only: idxutf8
       implicit none
       type(automaton_t), intent(in) :: automaton
       character(*), intent(in) :: string
