@@ -31,17 +31,30 @@ program test_case_007
 
    call runner_match("(a|b(c|d))*", "bc", .true., res)
    call runner_match("(a|b(c|d(e|f)))", "a", .true., res)
+
+   call runner_match("(c|d(e|f)g)*", "cdfgcc", .true., res)
+   call runner_match("(c|d(e|f)g)*", "cdfgcdeg", .true., res)
+
    call runner_match("(a|b(c|d(e|f)g)h|i)", "a", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)", "bdegh", .true., res)
 
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "a", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "a", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "i", .true., res)
-   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcegh", .false., res)
-   call runner_match("(a|b(c|d(e|f)g)h|i)*", "abceghi", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bdegh", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bdeghiii", .true., res)
    call runner_match("(a|b(c|d(e|f)g)h|i)*", "iii", .true., res)
-   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcgh", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bdegh", .true., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "ai", .true., res)
 
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "abb", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bcfg", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "j", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bddghi", .false., res)
+   call runner_match("(a|b(c|d(e|f)g)h|i)*", "bdfhi", .false., res)
+
+   call runner_match("(a|b(c|dg)h|i)*", "bch", .true., res)
 
 
    if (res) then
