@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.1% of total for procedures.">25 statements</a>
+                 title=" 0.6% of total for procedures.">25 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -180,7 +180,7 @@ In this implementation with array approach, array reduction is done in the reach
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~27"></span>
+              <span class="anchor" id="variable-self~22"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -210,7 +210,7 @@ In this implementation with array approach, array reduction is done in the reach
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst_i~3"></span>
+              <span class="anchor" id="variable-dst_i"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -225,7 +225,7 @@ In this implementation with array approach, array reduction is done in the reach
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~7"></span>
+              <span class="anchor" id="variable-symbol~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -256,7 +256,7 @@ In this implementation with array approach, array reduction is done in the reach
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">automaton__construct_dfa</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">curr_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_lazy_dfa_node_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_lazy_dfa_node_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">dfa_transition_t</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">     </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">curr_i</span>
@@ -301,7 +301,8 @@ In this implementation with array approach, array reduction is done in the reach
 
 <span class="w">      </span><span class="c">! 遷移を追加する</span>
 <span class="w">      </span><span class="c">! Add a DFA transition from `prev` to `next` for the given `symbol`.</span>
-<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">dfa</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">d_tra</span><span class="p">%</span><span class="n">nfa_set</span><span class="p">,</span><span class="w"> </span><span class="n">prev_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">which_segment_symbol_belong</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">))</span>
+<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">dfa</span><span class="p">%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">d_tra</span><span class="p">%</span><span class="n">nfa_set</span><span class="p">,</span><span class="w"> </span><span class="n">prev_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w">  </span><span class="p">&amp;</span>
+<span class="w">             </span><span class="n">which_segment_symbol_belong</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">))</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">automaton__construct_dfa</span>
 </pre></div>
 
@@ -326,7 +327,7 @@ In this implementation with array approach, array reduction is done in the reach
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

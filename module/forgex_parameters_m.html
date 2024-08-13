@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.1% of total for modules and submodules.">58 statements</a>
+                 title=" 1.3% of total for modules and submodules.">59 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -142,6 +142,7 @@
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_null_transition">NFA_NULL_TRANSITION</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_state_base">NFA_STATE_BASE</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_state_limit">NFA_STATE_LIMIT</a>
+            <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_state_unit">NFA_STATE_UNIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_transition_unit">NFA_TRANSITION_UNIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-symbol_bslh">SYMBOL_BSLH</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-symbol_cret">SYMBOL_CRET</a>
@@ -381,7 +382,7 @@ parameter
             <td>::</td>
             <td><strong>DFA_STATE_HARD_LIMIT</strong></td>
 <td> =</td>
-                <td>DFA_STATE_LIMIT*16+1</td>
+                <td>DFA_STATE_LIMIT</td>
             <td>
                 <p>If this limit is exceeded, program will do ERROR STOP.
 This hard limit is approximately on the order of gigabytes.</p>
@@ -399,7 +400,7 @@ parameter
             <td>::</td>
             <td><strong>DFA_STATE_LIMIT</strong></td>
 <td> =</td>
-                <td>1024</td>
+                <td>1024*16+1</td>
             <td>
                 <p>This constant is provided to define the upper limit of DFA nodes,
 but is currently only used to define DFA_STATE_HARD_LIMIT.</p>
@@ -417,7 +418,7 @@ parameter
             <td>::</td>
             <td><strong>DFA_STATE_UNIT</strong></td>
 <td> =</td>
-                <td>128</td>
+                <td>16</td>
             <td>
                 <p>This constant defines the unit of reallocation for the array representing
 a DFA graph.</p>
@@ -641,7 +642,7 @@ parameter
             <td>::</td>
             <td><strong>NFA_C_SIZE</strong></td>
 <td> =</td>
-                <td>32</td>
+                <td>16</td>
             <td>
                 <p>Upper limit of segments size of NFA transition instance</p>
             </td>
@@ -676,7 +677,7 @@ parameter
             <td>::</td>
             <td><strong>NFA_STATE_BASE</strong></td>
 <td> =</td>
-                <td>0</td>
+                <td>1</td>
             <td>
                 <p>Lower end of NFA state instance</p>
             </td>
@@ -693,9 +694,26 @@ parameter
             <td>::</td>
             <td><strong>NFA_STATE_LIMIT</strong></td>
 <td> =</td>
-                <td>1024</td>
+                <td>1024+1</td>
             <td>
                 <p>Upper limit of NFA state nodes</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_state_unit"></span>
+              integer(kind=int32),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NFA_STATE_UNIT</strong></td>
+<td> =</td>
+                <td>16</td>
+            <td>
+                <p>This constant defines the unit of  reallocation for the array representing a NFA graph.</p>
             </td>
         </tr>
         <tr>
@@ -710,7 +728,7 @@ parameter
             <td>::</td>
             <td><strong>NFA_TRANSITION_UNIT</strong></td>
 <td> =</td>
-                <td>32</td>
+                <td>16</td>
             <td>
                 <p>Upper limit of NFA transition instance</p>
             </td>
@@ -1017,7 +1035,7 @@ parameter
             <td>::</td>
             <td><strong>TREE_NODE_HARD_LIMIT</strong></td>
 <td> =</td>
-                <td>TREE_NODE_UNIT*16</td>
+                <td>TREE_NODE_LIMIT</td>
             <td>
                 <p>The maximum value that can be allocated to a syntax tree graph;
 exceeding this will cause ERROR STOP.</p>
@@ -1035,7 +1053,7 @@ parameter
             <td>::</td>
             <td><strong>TREE_NODE_LIMIT</strong></td>
 <td> =</td>
-                <td>TREE_NODE_UNIT</td>
+                <td>TREE_NODE_UNIT*64</td>
             <td>
                 <p>The initial maximum size of nodes for building AST.</p>
             </td>
@@ -1052,7 +1070,7 @@ parameter
             <td>::</td>
             <td><strong>TREE_NODE_UNIT</strong></td>
 <td> =</td>
-                <td>128</td>
+                <td>32</td>
             <td>
                 <p>This constant defines the unit for adding nodes in the abstract syntax tree (AST).
 If it's too large it will cause a stack overflow.</p>
@@ -1138,7 +1156,7 @@ parameter
             <td>::</td>
             <td><strong>UTF8_CODE_MIN</strong></td>
 <td> =</td>
-                <td>33</td>
+                <td>32</td>
             <td>
                 
             </td>
@@ -1192,7 +1210,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

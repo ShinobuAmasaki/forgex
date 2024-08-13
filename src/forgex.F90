@@ -12,14 +12,10 @@
 #define pure
 #endif
 module forgex
-   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree
-
-#if defined(IMPURE) && defined(DEBUG)
-   use :: forgex_syntax_tree_m, only: print_tree, dump_tree_table
-#endif
-
+   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree, print_tree, dump_tree_table
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
+   use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
    implicit none
    private
 
@@ -69,22 +65,14 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
-#endif
+      call automaton%preprocess(tree, root)
 
       ! Initialize automaton with tree and root.
-      call automaton%init(tree, root)
+      call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, char(0)//str//char(0), from, to)
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
-
-#if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
-#endif
-
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from
@@ -136,20 +124,13 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
-#endif
-
       ! Initialize automaton with tree and root.
-      call automaton%init(tree, root)
+      call automaton%preprocess(tree, root)
+
+      call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_exactly(automaton, str, res)
-
-#if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
-#endif
 
       call automaton%free()
 
@@ -173,18 +154,10 @@ contains
 
       call build_syntax_tree(buff, tape, tree, root)
 
-#if defined(IMPURE) && defined(DEBUG)
-      call dump_tree_table(tree)
-      call print_tree(tree, root)
-#endif
-
-      call automaton%init(tree, root)
+      call automaton%preprocess(tree, root)
+      call automaton%init()
 
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
-
-#if defined(IMPURE) && defined(DEBUG)
-      call automaton%print_dfa()
-#endif
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
@@ -225,45 +198,5 @@ contains
       call subroutine__regex(pattern, text, res)
 
    end function function__regex
-
-
-!---------------------------------------------------------------------!
-! Private procedures
-!
-
-   !> This function returns .true. if the pattern contains the caret character
-   !> at the top that matches the beginning of a line.
-   pure function is_there_caret_at_the_top(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-      logical :: res
-
-      res = .false.
-
-      buff = adjustl(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(1:1) == '^'
-   end function is_there_caret_at_the_top
-
-
-   !> This funciton returns .true. if the pattern contains the doller character
-   !> at the end that matches the ending of a line.
-   pure function is_there_dollar_at_the_end(pattern) result(res)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(:), allocatable :: buff
-
-      logical :: res
-
-      res = .false.
-      
-      buff = trim(pattern)
-      if (len(buff) == 0) return
-
-      res = buff(len_trim(buff):len_trim(buff)) == '$'
-   end function is_there_dollar_at_the_end
-
 
 end module forgex

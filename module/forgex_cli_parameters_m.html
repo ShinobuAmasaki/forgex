@@ -1,0 +1,730 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../favicon.png">
+
+    <title>forgex_cli_parameters_m &ndash; Forgex—Fortran Regular Expression</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../css/pygments.css" rel="stylesheet">
+    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/local.css" rel="stylesheet">
+      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../page/index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>forgex_cli_parameters_m
+      <small>Module</small>
+      
+    </h1>
+      <div class="container p-2 mb-4 bg-light border rounded-3">
+    <div class="row align-items-center justify-content-between" id="info-bar">
+      <div class="col">
+        <ul class="list-inline" style="margin-bottom:0px;display:inline">
+            <li class="list-inline-item" id="meta-license"><i class="fa fa-legal"></i> <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a></li>
+
+            <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
+              <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+                 title=" 0.7% of total for modules and submodules.">32 statements</a>
+            </li>
+
+            <li class="list-inline-item" id="source-file">
+              <i class="fa fa-code"></i>
+              <a href="../src/cli_parameter_m.f90"> Source File</a>
+            </li>
+        </ul>
+      </div>
+      <div class="col">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../sourcefile/cli_parameter_m.f90.html'>cli_parameter_m.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">forgex_cli_parameters_m</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(function () {
+    $('[data-bs-toggle="tooltip"]').tooltip()
+    })
+  </script>
+
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+        <div id="sidebar">
+      <h3>Contents</h3>
+  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#vars-0"
+         aria-expanded="false" aria-controls="vars-0">
+         <h4 class="card-header bg-primary text-white">Variables</h4>
+      </a>
+      <div id="vars-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-cmd_debug">CMD_DEBUG</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-cmd_find">CMD_FIND</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-crlf">CRLF</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-engine_dense_dfa">ENGINE_DENSE_DFA</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-engine_forgex_api">ENGINE_FORGEX_API</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-engine_lazy_dfa">ENGINE_LAZY_DFA</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-invalid_flag">INVALID_FLAG</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-len_cmd">LEN_CMD</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-len_env_var">LEN_ENV_VAR</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-lf">LF</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_cmd">NUM_CMD</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_digit_key">NUM_DIGIT_KEY</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_digit_time">NUM_DIGIT_TIME</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_flags">NUM_FLAGS</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_subc_debug">NUM_SUBC_DEBUG</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_subc_find">NUM_SUBC_FIND</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-num_subsubc_match">NUM_SUBSUBC_MATCH</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-op_in">OP_IN</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-op_match">OP_MATCH</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-subc_ast">SUBC_AST</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-subc_match">SUBC_MATCH</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-subc_thompson">SUBC_THOMPSON</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-tree_buff_len">TREE_BUFF_LEN</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-fmt_out_int">fmt_out_int</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-fmt_out_logi">fmt_out_logi</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-fmt_out_ratio">fmt_out_ratio</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-fmt_out_time">fmt_out_time</a>
+            <a class="list-group-item" href="../module/forgex_cli_parameters_m.html#variable-fmta">fmta</a>
+        </div>
+      </div>
+    </div>
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+  </div>
+
+    </div>
+
+    <div class="col-md-9" id='text'>
+      
+      
+      
+      <br>
+
+
+        <section>
+          <h2>Variables</h2>
+            <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd_debug"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>CMD_DEBUG</strong></td>
+<td> =</td>
+                <td>&#34;debug&#34;</td>
+            <td>
+                <p>Name of the subcommand debug.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd_find"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>CMD_FIND</strong></td>
+<td> =</td>
+                <td>&#34;find&#34;</td>
+            <td>
+                <p>Name of the subcommand find.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-crlf"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>CRLF</strong></td>
+<td> =</td>
+                <td>char(13)//char(10)</td>
+            <td>
+                <p>Line ending characters for Windows OS</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-engine_dense_dfa"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>ENGINE_DENSE_DFA</strong></td>
+<td> =</td>
+                <td>&#34;dense&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-engine_forgex_api"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>ENGINE_FORGEX_API</strong></td>
+<td> =</td>
+                <td>&#34;forgex&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-engine_lazy_dfa"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>ENGINE_LAZY_DFA</strong></td>
+<td> =</td>
+                <td>&#34;lazy-dfa&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-invalid_flag"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>INVALID_FLAG</strong></td>
+<td> =</td>
+                <td>&#34;INVALID&#34;</td>
+            <td>
+                <p>String to indicate invalidity if no short flag is present.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-len_cmd"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>LEN_CMD</strong></td>
+<td> =</td>
+                <td>16</td>
+            <td>
+                <p>Length</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-len_env_var"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>LEN_ENV_VAR</strong></td>
+<td> =</td>
+                <td>255</td>
+            <td>
+                <p>Maximum length of an environment variable's value.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-lf"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>LF</strong></td>
+<td> =</td>
+                <td>char(10)</td>
+            <td>
+                <p>Line Feed.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_cmd"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_CMD</strong></td>
+<td> =</td>
+                <td>2</td>
+            <td>
+                <p>Number of sub-command that forgec-cli accepts.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_digit_key"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_DIGIT_KEY</strong></td>
+<td> =</td>
+                <td>32</td>
+            <td>
+                <p>Maximum langth of table field name.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_digit_time"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_DIGIT_TIME</strong></td>
+<td> =</td>
+                <td>13</td>
+            <td>
+                <p>Number of digits for time display.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_flags"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_FLAGS</strong></td>
+<td> =</td>
+                <td>4</td>
+            <td>
+                <p>Number of flags (without value) that forgex-cli accepts.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_subc_debug"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_SUBC_DEBUG</strong></td>
+<td> =</td>
+                <td>2</td>
+            <td>
+                <p>The number of sub-subcommands that debug accepts.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_subc_find"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_SUBC_FIND</strong></td>
+<td> =</td>
+                <td>1</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num_subsubc_match"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>NUM_SUBSUBC_MATCH</strong></td>
+<td> =</td>
+                <td>3</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-op_in"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>OP_IN</strong></td>
+<td> =</td>
+                <td>&#34;.in.&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-op_match"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>OP_MATCH</strong></td>
+<td> =</td>
+                <td>&#34;.match.&#34;</td>
+            <td>
+                <p>Name of the sub-subcommand lazy dfa</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-subc_ast"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>SUBC_AST</strong></td>
+<td> =</td>
+                <td>&#34;ast&#34;</td>
+            <td>
+                <p>Name of the sub-subcommand ast.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-subc_match"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>SUBC_MATCH</strong></td>
+<td> =</td>
+                <td>&#34;match&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-subc_thompson"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>SUBC_THOMPSON</strong></td>
+<td> =</td>
+                <td>&#34;thompson&#34;</td>
+            <td>
+                <p>Name of the sub-subcommand thompson.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tree_buff_len"></span>
+              integer,
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>TREE_BUFF_LEN</strong></td>
+<td> =</td>
+                <td>2**16</td>
+            <td>
+                <p>The buffer length of displaying the AST.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt_out_int"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>fmt_out_int</strong></td>
+<td> =</td>
+                <td>&#34;(a, i10)&#34;</td>
+            <td>
+                <p>Output format for displaying an integer in tables.</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt_out_logi"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>fmt_out_logi</strong></td>
+<td> =</td>
+                <td>&#34;(a, l10)&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt_out_ratio"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>fmt_out_ratio</strong></td>
+<td> =</td>
+                <td>&#34;(a, i10, &#39;/&#39;, i0)&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmt_out_time"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>fmt_out_time</strong></td>
+<td> =</td>
+                <td>&#34;(a, a15)&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-fmta"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>fmta</strong></td>
+<td> =</td>
+                <td>&#34;(a)&#34;</td>
+            <td>
+                <p>Format for outputting text only.</p>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+        </section>
+        <br>
+
+
+
+
+
+
+
+
+
+    </div>
+  </div>
+
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-08-13 02:49              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>

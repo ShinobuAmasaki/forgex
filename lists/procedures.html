@@ -90,6 +90,12 @@ by setting the corresponding element in <code>state%vec</code> to true.</p></td>
                  <td><p>Check if the ginve integer is within any of specified segments in a list.</p><a href="../proc/arg_in_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/automaton__build_nfa.html'>automaton__build_nfa</a></td>
+                 <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a></td>
                  <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
                  <td>Function</td>
@@ -193,10 +199,89 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
                  <td><p>This function checks if the arguement 'state' (set of NFA state) includes state 's'.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/cla__collect_flags.html'>cla__collect_flags</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__do_debug_subc.html'>cla__do_debug_subc</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Processes the <code>debug</code> command, reads a subcommand, and calls the corresponding procedure.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__do_find_subc.html'>cla__do_find_subc</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Processes the <code>debug</code> command, reads a subcommand and a sub-subcommand,
+and calls the corresponding procedure.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__get_patterns.html'>cla__get_patterns</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__init_debug_subc.html'>cla__init_debug_subc</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Prepare subcommands for the <code>debug</code> command.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__init_find_match_subsubc.html'>cla__init_find_match_subsubc</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Prepare sub-subcommands for the <code>match</code> subcommand.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__init_find_subc.html'>cla__init_find_subc</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Prepare subcommands for the <code>find</code> command.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__initialize.html'>cla__initialize</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__read_command.html'>cla__read_command</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Read the first argument and match it with registered commands.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__read_sub_subcommand.html'>cla__read_sub_subcommand</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Read the third argument and match it with registered sub-subcommands.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cla__read_subcommand.html'>cla__read_subcommand</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>Read the second argument and match it with registered subcommands.</p></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/clear.html'>clear</a></td>
                  <td><a href='../module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></td>
                  <td>Subroutine</td>
                  <td><p>The <code>clear</code> subroutine deallocates the queue.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cmd__get_name.html'>cmd__get_name</a></td>
+                 <td><a href='../module/forgex_cli_type_m.html'>forgex_cli_type_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cmd__set_name.html'>cmd__set_name</a></td>
+                 <td><a href='../module/forgex_cli_type_m.html'>forgex_cli_type_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/collect_epsilon_transition.html'>collect_epsilon_transition</a></td>
@@ -204,6 +289,12 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
                  <td>Subroutine</td>
                  <td><p>This subroutine collects all states reachable by empty transition starting from a given
 state set in an NFA.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/compute_reachable_state.html'>compute_reachable_state</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/connect_left.html'>connect_left</a></td>
@@ -216,6 +307,12 @@ state set in an NFA.</p></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/construct_dense_dfa.html'>construct_dense_dfa</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This subroutine convert NFA to DFA</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/copy_dfa_transition.html'>copy_dfa_transition</a></td>
@@ -241,6 +338,12 @@ variables of another dfa_transition_t.</p></td>
                  <td><a href='../module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></td>
                  <td>Subroutine</td>
                  <td><p>The <code>dequeue</code> function takes out and returns the prior segment from the queue.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/destination.html'>destination</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/dfa_state_node__add_transition.html'>dfa_state_node__add_transition</a></td>
@@ -310,6 +413,36 @@ node with the value of the given argument.</p></td>
                  <td><p>This subroutine updates the NFA state transitions by disjoining the segments.</p><a href="../proc/disjoin_nfa_each_transition.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/do_debug_ast.html'>do_debug_ast</a></td>
+                 <td><a href='../module/forgex_cli_debug_m.html'>forgex_cli_debug_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_debug_thompson.html'>do_debug_thompson</a></td>
+                 <td><a href='../module/forgex_cli_debug_m.html'>forgex_cli_debug_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_find_match_dense_dfa.html'>do_find_match_dense_dfa</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_find_match_forgex.html'>do_find_match_forgex</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_find_match_lazy_dfa.html'>do_find_match_lazy_dfa</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/do_matching_exactly.html'>do_matching_exactly</a></td>
                  <td><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></td>
                  <td>Subroutine</td>
@@ -318,6 +451,36 @@ node with the value of the given argument.</p></td>
 			   <tr>
                  <td><a href='../proc/do_matching_including.html'>do_matching_including</a></td>
                  <td><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/does_command_exist.html'>does_command_exist</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/does_command_exist_type_cmd.html'>does_command_exist_type_cmd</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/does_flag_exist.html'>does_flag_exist</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dump_segment_array.html'>dump_segment_array</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dump_tree_table.html'>dump_tree_table</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -341,10 +504,41 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><p>The function implemented for the <code>regex_f</code> function.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/generate_and_output.html'>generate_and_output</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/generate_nfa.html'>generate_nfa</a></td>
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_arg_command_line.html'>get_arg_command_line</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_flag_index.html'>get_flag_index</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_lap_time_in_appropriate_unit.html'>get_lap_time_in_appropriate_unit</a></td>
+                 <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
+                 <td>Function</td>
+                 <td><p>This function takes a real number of seconds, converts it to the appropriate
+units, and returns a string with the unit for output.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_os_type.html'>get_os_type</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td><a href="../proc/get_os_type.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_token.html'>get_token</a></td>
@@ -377,6 +571,24 @@ given the string str and the current index curr.</p></td>
                  <td><p>Extracts a sorted list of unique indices from a list of segments.</p><a href="../proc/index_list_from_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/init_commands.html'>init_commands</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/init_flags.html'>init_flags</a></td>
+                 <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/init_state_set.html'>init_state_set</a></td>
+                 <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/insertion_sort.html'>insertion_sort</a></td>
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
                  <td>Subroutine</td>
@@ -388,6 +600,18 @@ given the string str and the current index curr.</p></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine inverts a list of segment ranges representing Unicode characters.
 It compute the complement of the given ranges and modifies the list accordingly.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_arg_contained_in_flags.html'>is_arg_contained_in_flags</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_exceeded.html'>is_exceeded</a></td>
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_first_byte_of_character.html'>is_first_byte_of_character</a></td>
@@ -419,14 +643,14 @@ It takes a UTF-8 string and return a logical array indicating for each position 
                </tr>
 			   <tr>
                  <td><a href='../proc/is_there_caret_at_the_top.html'>is_there_caret_at_the_top</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></td>
                  <td>Function</td>
                  <td><p>This function returns .true. if the pattern contains the caret character
 at the top that matches the beginning of a line.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_there_dollar_at_the_end.html'>is_there_dollar_at_the_end</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></td>
                  <td>Function</td>
                  <td><p>This funciton returns .true. if the pattern contains the doller character
 at the end that matches the ending of a line.</p></td>
@@ -535,9 +759,57 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td><p>This subroutine recursively marks empty transitions from a given NFA state index.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/match_dense_dfa_exactly.html'>match_dense_dfa_exactly</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/match_dense_dfa_including.html'>match_dense_dfa_including</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/mem_dfa_graph.html'>mem_dfa_graph</a></td>
+                 <td><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/mem_nfa_graph.html'>mem_nfa_graph</a></td>
+                 <td><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/mem_tape.html'>mem_tape</a></td>
+                 <td><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/mem_tree.html'>mem_tree</a></td>
+                 <td><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/merge_segments.html'>merge_segments</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/move.html'>move</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/next_state_dense_dfa.html'>next_state_dense_dfa</a></td>
+                 <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
+                 <td>Function</td>
                  <td></td>
                </tr>
 			   <tr>
@@ -601,18 +873,30 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/nfa_graph__print.html'>nfa_graph__print</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Interface</td>
-                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
-an integer and a segment, an integer and a list of segments, or a segment
-and a segment, is contained in the latter, respectively.</p></td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td>Interface</td>
+                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
+an integer and a segment, an integer and a list of segments, or a segment
+and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -657,14 +941,110 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/print_class_simplify.html'>print_class_simplify</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help.html'>print_help</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_debug.html'>print_help_debug</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_debug_ast.html'>print_help_debug_ast</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_debug_thompson.html'>print_help_debug_thompson</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_find.html'>print_help_find</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_find_match.html'>print_help_find_match</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_find_match_dense_dfa.html'>print_help_find_match_dense_dfa</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_find_match_forgex_api.html'>print_help_find_match_forgex_api</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_help_find_match_lazy_dfa.html'>print_help_find_match_lazy_dfa</a></td>
+                 <td><a href='../module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/print_nfa_state_set.html'>print_nfa_state_set</a></td>
                  <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../interface/print_tree.html'>print_tree</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_tree_internal.html'>print_tree_internal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/print_tree_wrap.html'>print_tree_wrap</a></td>
+                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/queryperformancecounter.html'>QueryPerformanceCounter</a></td>
+                 <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
+                 <td>Interface</td>
+                 <td><p>For Windows, use high-resolution system call for timing.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/queryperformancefrequency.html'>QueryPerformanceFrequency</a></td>
+                 <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
+                 <td>Interface</td>
+                 <td><p>For Windows, use high-resolution system call for timing.</p></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/range_min_max.html'>range_min_max</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/reallocate_nfa.html'>reallocate_nfa</a></td>
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -675,16 +1055,16 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../interface/regex.html'>regex</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
-                 <td>Interface</td>
-                 <td><p>The generic name for the <code>regex</code> subroutine implemented as <code>procedure__regex</code>.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/regex.html'>regex</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/regex.html'>regex</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td>Interface</td>
+                 <td><p>The generic name for the <code>regex</code> subroutine implemented as <code>procedure__regex</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/regex_f.html'>regex_f</a></td>
@@ -699,6 +1079,18 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/register_cmd.html'>register_cmd</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/register_flag.html'>register_flag</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/register_node.html'>register_node</a></td>
                  <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
@@ -709,6 +1101,12 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Registers a new segment into a list if it is valid.</p><a href="../proc/register_seg_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/right_justify.html'>right_justify</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_in.html'>runner_in</a></td>
@@ -745,6 +1143,12 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Function</td>
                  <td><p>Check if the one segment is exactly equal to another segment.</p><a href="../proc/segment_equivalent.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/segment_for_print.html'>segment_for_print</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td>Function</td>
+                 <td><p>Converts a segment to a printable string representation.</p><a href="../proc/segment_for_print.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/segment_is_valid.html'>segment_is_valid</a></td>
@@ -798,21 +1202,16 @@ returns one byte of the continuation part.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/time_begin.html'>time_begin</a></td>
-                 <td><a href='../module/forgex_time_measurement_m.html'>forgex_time_measurement_m</a></td>
+                 <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/time_end.html'>time_end</a></td>
-                 <td><a href='../module/forgex_time_measurement_m.html'>forgex_time_measurement_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine is for timing purpose and starts a stopwatch.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/time_lap.html'>time_lap</a></td>
-                 <td><a href='../module/forgex_time_measurement_m.html'>forgex_time_measurement_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
+                 <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
+                 <td>Function</td>
+                 <td><p>This function is for timing purposes and returns the lap time
+since the last call of <code>time_begin</code> or <code>time_lap</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/update_c_top.html'>update_c_top</a></td>
@@ -847,7 +1246,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

@@ -150,7 +150,6 @@ contains
       if (self%initialized) then
          ! If already initialized, copy the transitions to a temporary array `tmp`.
          siz = size(self%transition, dim=1)
-         allocate(tmp(siz))
          call move_alloc(self%transition, tmp)
       else
          ! If not yet initialized, call init_tra_top procedure.
@@ -161,7 +160,7 @@ contains
       self%alloc_count_f = self%alloc_count_f + 1 ! Increment
 
       new_part_begin = siz + 1
-      new_part_end = self%alloc_count_f * DFA_TRANSITION_UNIT
+      new_part_end = DFA_TRANSITION_UNIT * 2**self%alloc_count_f
 
       allocate(self%transition(DFA_TRANSITION_BASE:new_part_end))
 

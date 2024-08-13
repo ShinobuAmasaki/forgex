@@ -11,21 +11,21 @@ module forgex_parameters_m
 
    !> This constant defines the unit for adding nodes in the abstract syntax tree (AST).
    !> If it's too large it will cause a stack overflow.
-   integer(int32), parameter :: TREE_NODE_UNIT = 128
+   integer(int32), parameter :: TREE_NODE_UNIT = 32
 
    !> This constant defines the lower bound of the array that represents AST.
    integer(int32), parameter :: TREE_NODE_BASE = 1
 
    !> The initial maximum size of nodes for building AST.
-   integer(int32), parameter :: TREE_NODE_LIMIT = TREE_NODE_UNIT
+   integer(int32), parameter :: TREE_NODE_LIMIT = TREE_NODE_UNIT*64 ! 32x64 = 2048 elements
 
    !> The maximum value that can be allocated to a syntax tree graph;
    !> exceeding this will cause ERROR STOP.
-   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_UNIT*16   ! 128x16 = 2048 elements
+   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_LIMIT
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
-   integer(int32), parameter, public :: UTF8_CODE_MIN     = 33 ! = 0x21: '!'
+   integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x20: white space
    integer(int32), parameter, public :: UTF8_CODE_EMPTY   = 0
    integer(int32), parameter, public :: UTF8_CODE_INVALID = -1
    integer(int32), parameter, public :: UTF8_CHAR_SIZE    = 4
@@ -74,16 +74,19 @@ module forgex_parameters_m
    integer(int32), parameter, public :: NFA_NULL_TRANSITION = -1
 
    !> Lower end of NFA state instance
-   integer(int32), parameter, public :: NFA_STATE_BASE = 0
+   integer(int32), parameter, public :: NFA_STATE_BASE = 1
+
+   !> This constant defines the unit of  reallocation for the array representing a NFA graph.
+   integer(int32), parameter, public :: NFA_STATE_UNIT = 16
 
    !> Upper limit of NFA state nodes
-   integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024
+   integer(int32), parameter, public :: NFA_STATE_LIMIT = 1024+1
 
    !> Upper limit of NFA transition instance
-   integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 32
+   integer(int32), parameter, public :: NFA_TRANSITION_UNIT = 16
 
    !> Upper limit of segments size of NFA transition instance
-   integer(int32), parameter, public :: NFA_C_SIZE = 32
+   integer(int32), parameter, public :: NFA_C_SIZE = 16
 
    integer(int32), parameter, public :: ZERO_C_TOP = 0
 
@@ -99,15 +102,15 @@ module forgex_parameters_m
 
    !> This constant defines the unit of reallocation for the array representing
    !> a DFA graph.
-   integer(int32), parameter, public :: DFA_STATE_UNIT = 128
+   integer(int32), parameter, public :: DFA_STATE_UNIT = 16
 
    !> This constant is provided to define the upper limit of DFA nodes,
    !> but is currently only used to define DFA_STATE_HARD_LIMIT.
-   integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024
+   integer(int32), parameter, public :: DFA_STATE_LIMIT = 1024*16 +1
 
    !> If this limit is exceeded, program will do ERROR STOP.
    !> This hard limit is approximately on the order of gigabytes.
-   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT*16 + 1
+   integer(int32), parameter, public :: DFA_STATE_HARD_LIMIT = DFA_STATE_LIMIT
 
    !> This constant is used for the purpose of determining invalid DFA index.
    integer(int32), parameter, public :: DFA_INVALID_INDEX = 0

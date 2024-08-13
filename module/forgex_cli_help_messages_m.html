@@ -10,7 +10,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>forgex_time_measurement_m &ndash; Forgex—Fortran Regular Expression</title>
+    <title>forgex_cli_help_messages_m &ndash; Forgex—Fortran Regular Expression</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -64,7 +64,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>forgex_time_measurement_m
+    <h1>forgex_cli_help_messages_m
       <small>Module</small>
       
     </h1>
@@ -76,20 +76,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.6% of total for modules and submodules.">45 statements</a>
+                 title=" 4.2% of total for modules and submodules.">193 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/time_measurement_m.f90"> Source File</a>
+              <a href="../src/cli_help_messages_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/time_measurement_m.f90.html'>time_measurement_m.f90</a></li>
-            <li class="breadcrumb-item active" aria-current="page">forgex_time_measurement_m</li>
+                <li class="breadcrumb-item"><a href='../sourcefile/cli_help_messages_m.f90.html'>cli_help_messages_m.f90</a></li>
+            <li class="breadcrumb-item active" aria-current="page">forgex_cli_help_messages_m</li>
           </ol>
         </nav>
       </div>
@@ -115,13 +115,9 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-begin_s">begin_s</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-end_s">end_s</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-i~28">i</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-ii~2">ii</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-last_s">last_s</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-record_siz">record_siz</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#variable-records">records</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#variable-cmd_desc_siz">CMD_DESC_SIZ</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#variable-cmd_siz">CMD_SIZ</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#variable-line_siz">LINE_SIZ</a>
         </div>
       </div>
     </div>
@@ -134,18 +130,7 @@
   
   
   
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#types-0"
-         aria-expanded="false" aria-controls="types-0">
-         <h4 class="card-header bg-primary text-white">Derived Types</h4>
-      </a>
-      <div id="types-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#type-record">record</a>
-        </div>
-      </div>
-    </div>
-
+  
   
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#subs-0"
@@ -154,9 +139,16 @@
       </a>
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#proc-time_begin">time_begin</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#proc-time_end">time_end</a>
-            <a class="list-group-item" href="../module/forgex_time_measurement_m.html#proc-time_lap">time_lap</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help">print_help</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_debug">print_help_debug</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_debug_ast">print_help_debug_ast</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_debug_thompson">print_help_debug_thompson</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_find">print_help_find</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_find_match">print_help_find_match</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_find_match_dense_dfa">print_help_find_match_dense_dfa</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_find_match_forgex_api">print_help_find_match_forgex_api</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-print_help_find_match_lazy_dfa">print_help_find_match_lazy_dfa</a>
+            <a class="list-group-item" href="../module/forgex_cli_help_messages_m.html#proc-generate_and_output">generate_and_output</a>
         </div>
       </div>
     </div>
@@ -175,13 +167,14 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      <p>This module provides procedures to measure the time it takes to execute.</p>
+      
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
       <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='forgex_cli_parameters_m.html'>forgex_cli_parameters_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
@@ -207,119 +200,51 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-begin_s"></span>
-              real(kind=real64),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>begin_s</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-end_s"></span>
-              real(kind=real64),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>end_s</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-i~28"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>i</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-ii~2"></span>
-              integer,
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ii</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-last_s"></span>
-              real(kind=real64),
-            </td>
-              <td>private</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>last_s</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-record_siz"></span>
-              integer,
+              <span class="anchor" id="variable-cmd_desc_siz"></span>
+              integer(kind=int32),
             </td>
               <td>private,</td>
             <td>
 parameter               
             </td>
             <td>::</td>
-            <td><strong>record_siz</strong></td>
+            <td><strong>CMD_DESC_SIZ</strong></td>
 <td> =</td>
-                <td>200</td>
+                <td>113</td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-records"></span>
-              type(<a href='../type/record.html'>record</a>),
+              <span class="anchor" id="variable-cmd_siz"></span>
+              integer(kind=int32),
             </td>
-              <td>private</td>
+              <td>private,</td>
             <td>
-              
+parameter               
             </td>
             <td>::</td>
-            <td><strong>records</strong>(record_siz)</td>
-                <td></td>
-                <td></td>
+            <td><strong>CMD_SIZ</strong></td>
+<td> =</td>
+                <td>13</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-line_siz"></span>
+              integer(kind=int32),
+            </td>
+              <td>private,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>LINE_SIZ</strong></td>
+<td> =</td>
+                <td>128</td>
             <td>
                 
             </td>
@@ -333,82 +258,12 @@ parameter
 
 
 
-        <section>
-          <h2>Derived Types</h2>
-              <div class="card">
-    <div class="card-header codesum">
-      <span class="anchor" id="type-record"></span>
-      <h3>
-        type, private&nbsp;::&nbsp;
-        <a href='../type/record.html'>record</a>
-        
-      </h3>
-    </div>
-    <div class="card-body">
-      
-
-        <h4>Components</h4>
-          <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-<th></th><th scope="col">Initial</th>        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-description"></span>
-              character(len=:),
-            </td>
-              <td>public,</td>
-            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>description</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-lap_time"></span>
-              real(kind=real64),
-            </td>
-              <td>public</td>
-            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>lap_time</strong></td>
-                <td></td>
-                <td></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-
-
-    </div>
-  </div>
-
-        </section>
-        <br>
 
 
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-time_begin"></span> <h3>public  subroutine <a href='../proc/time_begin.html'>time_begin</a>()  
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help"></span> <h3>public  subroutine <a href='../proc/print_help.html'>print_help</a>()  
 </h3></div>
     <div class="card-body">
           
@@ -421,47 +276,111 @@ parameter
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-time_end"></span> <h3>public  subroutine <a href='../proc/time_end.html'>time_end</a>(description)  
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_debug"></span> <h3>public  subroutine <a href='../proc/print_help_debug.html'>print_help_debug</a>()  
 </h3></div>
     <div class="card-body">
           
   
 
   <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-description~3"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>description</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
+    <em>None</em>
 
     </div>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-time_lap"></span> <h3>public  subroutine <a href='../proc/time_lap.html'>time_lap</a>(description)  
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_debug_ast"></span> <h3>public  subroutine <a href='../proc/print_help_debug_ast.html'>print_help_debug_ast</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_debug_thompson"></span> <h3>public  subroutine <a href='../proc/print_help_debug_thompson.html'>print_help_debug_thompson</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_find"></span> <h3>public  subroutine <a href='../proc/print_help_find.html'>print_help_find</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_find_match"></span> <h3>public  subroutine <a href='../proc/print_help_find_match.html'>print_help_find_match</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_find_match_dense_dfa"></span> <h3>public  subroutine <a href='../proc/print_help_find_match_dense_dfa.html'>print_help_find_match_dense_dfa</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_find_match_forgex_api"></span> <h3>public  subroutine <a href='../proc/print_help_find_match_forgex_api.html'>print_help_find_match_forgex_api</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-print_help_find_match_lazy_dfa"></span> <h3>public  subroutine <a href='../proc/print_help_find_match_lazy_dfa.html'>print_help_find_match_lazy_dfa</a>()  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+    <em>None</em>
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-generate_and_output"></span> <h3>private  subroutine <a href='../proc/generate_and_output.html'>generate_and_output</a>(header, usage, choice, cmd, cmd_desc, desc)  
 </h3></div>
     <div class="card-body">
           
@@ -480,7 +399,37 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-description~2"></span>
+              <span class="anchor" id="variable-header"></span>
+              character(len=LINE_SIZ),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>header</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-usage"></span>
+              character(len=LINE_SIZ),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>usage</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-choice"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -488,7 +437,52 @@ parameter
               
             </td>
             <td>::</td>
-            <td><strong>description</strong></td>
+            <td><strong>choice</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd~2"></span>
+              character(len=CMD_SIZ),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cmd</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd_desc"></span>
+              character(len=CMD_DESC_SIZ),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cmd_desc</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-desc"></span>
+              character(len=LINE_SIZ),
+            </td>
+<td>intent(in),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>desc</strong>(:)</td>
             <td>
 
             </td>
@@ -523,7 +517,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

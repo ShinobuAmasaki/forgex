@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.9% of total for procedures.">22 statements</a>
+                 title=" 0.5% of total for procedures.">21 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -175,7 +175,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~12"></span>
+              <span class="anchor" id="variable-self~28"></span>
               class(<a href='../type/nfa_graph_t.html'>nfa_graph_t</a>),
             </td>
 <td>intent(in)</td>
@@ -190,7 +190,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state_set"></span>
+              <span class="anchor" id="variable-state_set~7"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -205,7 +205,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-idx"></span>
+              <span class="anchor" id="variable-idx~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -243,25 +243,26 @@
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span>
 
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_transition_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">p</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_node_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n_node</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_transition_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">n_tra</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">k</span>
+
 <span class="w">      </span><span class="k">call </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">)</span>
 
-<span class="w">      </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">      </span><span class="k">do while</span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">idx</span><span class="p">)%</span><span class="n">forward_top</span><span class="p">)</span>
+<span class="w">      </span><span class="n">n_node</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">idx</span><span class="p">)%</span><span class="n">forward</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">n_node</span><span class="p">%</span><span class="n">forward</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
 
-<span class="k">         </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">idx</span><span class="p">)%</span><span class="n">forward</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+<span class="k">      do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n_node</span><span class="p">%</span><span class="n">forward_top</span>
 
-<span class="w">         </span><span class="k">do </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">c_top</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">p</span><span class="p">%</span><span class="n">c</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="n">SEG_EPSILON</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">check_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">dst</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               if</span><span class="w"> </span><span class="p">(</span><span class="n">p</span><span class="p">%</span><span class="n">dst</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">NFA_NULL_TRANSITION</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">mark_epsilon_transition</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">%</span><span class="n">dst</span><span class="p">)</span>
-<span class="w">            </span><span class="k">end if</span>
-<span class="k">         end do</span>
-<span class="k">         </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">      </span><span class="k">end do</span>
+<span class="w">         </span><span class="n">n_tra</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n_node</span><span class="p">%</span><span class="n">forward</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">n_tra</span><span class="p">%</span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="k">cycle</span>
+
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">n_tra</span><span class="p">%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SEG_EPSILON</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">check_nfa_state</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">n_tra</span><span class="p">%</span><span class="n">dst</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">n_tra</span><span class="p">%</span><span class="n">dst</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">NFA_NULL_TRANSITION</span><span class="p">)</span><span class="w"> </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">mark_epsilon_transition</span><span class="p">(</span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">n_tra</span><span class="p">%</span><span class="n">dst</span><span class="p">)</span>
+<span class="w">         </span><span class="k">end if</span>
+<span class="k">      end do</span>
 <span class="k">   end subroutine </span><span class="n">nfa_graph__mark_epsilon_transition</span>
 </pre></div>
 
@@ -286,7 +287,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

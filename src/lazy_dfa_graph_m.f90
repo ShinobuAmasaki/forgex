@@ -16,9 +16,7 @@ module forgex_lazy_dfa_graph_m
    use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_UNIT, DFA_STATE_HARD_LIMIT, &
                                      DFA_INITIAL_INDEX, DFA_INVALID_INDEX
    use :: forgex_lazy_dfa_node_m, only: dfa_state_node_t, dfa_transition_t
-#if defined(IMPURE) && defined(DEBUG)
-   use :: iso_fortran_env, only: stderr => error_unit
-#endif
+
    implicit none
    private
 
@@ -87,7 +85,7 @@ contains
       self%alloc_count_node = prev_count + 1
 
       new_part_begin = siz + 1
-      new_part_end = self%alloc_count_node * DFA_STATE_UNIT
+      new_part_end = siz*2
 
       if (new_part_end > DFA_STATE_HARD_LIMIT) then
          error stop "Too many DFA state nodes requested."
@@ -96,7 +94,7 @@ contains
       allocate(self%nodes(0:new_part_end))
 
 #if defined(IMPURE) && defined(DEBUG)
-write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
+! write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
 #endif
 
       self%nodes(1:siz) = tmp(1:siz)
@@ -138,6 +136,7 @@ write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
       res = DFA_INVALID_INDEX
 
       do i = DFA_INITIAL_INDEX, self%dfa_top
+         if (.not. allocated(self%nodes(i)%nfa_set%vec)) cycle
          is_registered = equivalent_nfa_state_set(self%nodes(i)%nfa_set, set)
          if (is_registered) then
             res = i
@@ -162,6 +161,7 @@ write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
 
       tra%c = seg
       tra%dst = dst
+
       tra%nfa_set = state_set
 
       call self%nodes(src)%add_transition(tra)

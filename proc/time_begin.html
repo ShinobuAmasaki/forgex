@@ -76,20 +76,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.4% of total for procedures.">9 statements</a>
+                 title=" 0.5% of total for procedures.">22 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/time_measurement_m.f90"> Source File</a>
+              <a href="../src/cli_time_measurement_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/time_measurement_m.f90.html'>time_measurement_m.f90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_time_measurement_m.html'>forgex_time_measurement_m</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/cli_time_measurement_m.f90.html'>cli_time_measurement_m.F90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">time_begin</li>
           </ol>
         </nav>
@@ -145,6 +145,7 @@
 </h2>
     
 
+    <p>This subroutine is for timing purpose and starts a stopwatch.</p>
 
 
     <h3>Arguments</h3>
@@ -167,14 +168,27 @@
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">time_begin</span><span class="p">()</span>
 <span class="w">      </span><span class="k">implicit none</span>
 
-<span class="k">      </span><span class="n">begin_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
-<span class="w">      </span><span class="n">last_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
-<span class="w">      </span><span class="n">end_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
-<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">get_os_type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">OS_WINDOWS</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">is_supported</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryPerformanceFrequency</span><span class="p">(</span><span class="n">frequency</span><span class="p">)</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_supported</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">is_succeeded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="n">time_begin_qhc</span><span class="p">)</span>
+<span class="w">         </span><span class="k">else</span>
+<span class="k">            call </span><span class="n">use_cpu_time_begin</span>
+<span class="w">         </span><span class="k">end if</span>
+<span class="k">      else</span>
+<span class="k">         call </span><span class="n">use_cpu_time_begin</span>
+<span class="w">      </span><span class="k">end if</span>
 
-<span class="w">      </span><span class="k">call </span><span class="nb">cpu_time</span><span class="p">(</span><span class="n">begin_s</span><span class="p">)</span>
-<span class="w">      </span><span class="c">!$ begin_s = omp_get_wtime()</span>
-<span class="w">      </span><span class="n">last_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">begin_s</span>
+<span class="k">   contains</span>
+
+<span class="k">      subroutine </span><span class="n">use_cpu_time_begin</span>
+<span class="w">         </span><span class="k">implicit none</span>
+<span class="k">         </span><span class="n">begin_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
+<span class="w">         </span><span class="n">last_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
+<span class="w">         </span><span class="n">end_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">d0</span>
+<span class="w">         </span><span class="k">call </span><span class="nb">cpu_time</span><span class="p">(</span><span class="n">begin_s</span><span class="p">)</span>
+<span class="w">         </span><span class="n">last_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">begin_s</span>
+<span class="w">      </span><span class="k">end subroutine </span><span class="n">use_cpu_time_begin</span>
 
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">time_begin</span>
 </pre></div>
@@ -200,7 +214,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

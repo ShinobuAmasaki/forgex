@@ -262,6 +262,7 @@ In this example, the <code>length</code> variable stores the byte length, and in
 <ul>
 <li>Deal with invalid byte strings in UTF-8</li>
 <li>Optimize by literal searching method</li>
+<li>✅️ Add a CLI tool for debugging and benchmarking</li>
 <li>✅️ Make all operators <code>pure elemental</code> attribute</li>
 <li>✅️ Publish the documentation</li>
 <li>✅️ Support UTF-8 basic feature</li>
@@ -281,6 +282,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
 <li>近藤嘉雪 (Yoshiyuki Kondo), "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998, SB Creative.</li>
 <li><a href="https://github.com/ue1221/fortran-utilities">ue1221/fortran-utilities</a></li>
 <li>Haruka Tomobe (kazulagi), <a href="https://github.com/kazulagi">https://github.com/kazulagi</a>, <a href="https://qiita.com/soybean/items/7cdd2156a9d8843c0d91">his article in Japanese</a></li>
+<li><a href="https://github.com/rust-lang/regex/tree/master/regex-cli">rust-lang/regex/regex-cli</a></li>
 </ol>
 <h2>License</h2>
 <p>Forgex is as a freely available under the MIT license. See <a href="https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE">LICENSE</a>.</p>
@@ -309,7 +311,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Source Files</h3>
-              <ul><li><a href='sourcefile/api_internal_m.f90.html'>api_internal_m.f90</a></li><li><a href='sourcefile/automaton_m.f90.html'>automaton_m.f90</a></li><li><a href='sourcefile/enums_m.f90.html'>enums_m.f90</a></li><li><a href='sourcefile/forgex.f90.html'>forgex.F90</a></li><li><a href='sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.f90</a></li><li><a href='sourcefile/lazy_dfa_node_m.f90.html'>lazy_dfa_node_m.f90</a></li><li><a href='sourcefile/nfa_graph_m.f90.html'>nfa_graph_m.F90</a></li><li><a href='sourcefile/nfa_node_m.f90.html'>nfa_node_m.F90</a></li><li><a href='sourcefile/nfa_state_set_m.f90.html'>nfa_state_set_m.f90</a></li><li><a href='sourcefile/parameters_m.f90.html'>parameters_m.f90</a></li></ul>
+              <ul><li><a href='sourcefile/api_internal_m.f90.html'>api_internal_m.f90</a></li><li><a href='sourcefile/automaton_m.f90.html'>automaton_m.f90</a></li><li><a href='sourcefile/cli_cla_m.f90.html'>cli_cla_m.f90</a></li><li><a href='sourcefile/cli_debug_m.f90.html'>cli_debug_m.f90</a></li><li><a href='sourcefile/cli_find_m.f90.html'>cli_find_m.f90</a></li><li><a href='sourcefile/cli_help_messages_m.f90.html'>cli_help_messages_m.f90</a></li><li><a href='sourcefile/cli_memory_calculation_m.f90.html'>cli_memory_calculation_m.f90</a></li><li><a href='sourcefile/cli_parameter_m.f90.html'>cli_parameter_m.f90</a></li><li><a href='sourcefile/cli_time_measurement_m.f90.html'>cli_time_measurement_m.F90</a></li><li><a href='sourcefile/cli_type_m.f90.html'>cli_type_m.f90</a></li></ul>
             </div>
             <div>
               <ul>
@@ -320,7 +322,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Modules</h3>
-              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li><li><a href='module/forgex_automaton_m.html'>forgex_automaton_m</a></li><li><a href='module/forgex_enums_m.html'>forgex_enums_m</a></li><li><a href='module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li><li><a href='module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li><li><a href='module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li><li><a href='module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></li><li><a href='module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li><li><a href='module/forgex_parameters_m.html'>forgex_parameters_m</a></li></ul>
+              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li><li><a href='module/forgex_automaton_m.html'>forgex_automaton_m</a></li><li><a href='module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></li><li><a href='module/forgex_cli_debug_m.html'>forgex_cli_debug_m</a></li><li><a href='module/forgex_cli_find_m.html'>forgex_cli_find_m</a></li><li><a href='module/forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></li><li><a href='module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li><li><a href='module/forgex_cli_parameters_m.html'>forgex_cli_parameters_m</a></li><li><a href='module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li></ul>
             </div>
             <div>
               <ul>
@@ -331,7 +333,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Procedures</h3>
-              <ul><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a></li><li><a href='proc/automaton__construct_dfa.html'>automaton__construct_dfa</a></li><li><a href='proc/automaton__deallocate.html'>automaton__deallocate</a></li><li><a href='proc/automaton__destination.html'>automaton__destination</a></li><li><a href='proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a></li><li><a href='proc/automaton__initialize.html'>automaton__initialize</a></li><li><a href='proc/automaton__move.html'>automaton__move</a></li></ul>
+              <ul><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/automaton__build_nfa.html'>automaton__build_nfa</a></li><li><a href='proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a></li><li><a href='proc/automaton__construct_dfa.html'>automaton__construct_dfa</a></li><li><a href='proc/automaton__deallocate.html'>automaton__deallocate</a></li><li><a href='proc/automaton__destination.html'>automaton__destination</a></li><li><a href='proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a></li><li><a href='proc/automaton__initialize.html'>automaton__initialize</a></li></ul>
             </div>
             <div>
               <ul>
@@ -342,7 +344,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Derived Types</h3>
-              <ul><li><a href='type/automaton_t.html'>automaton_t</a></li><li><a href='type/dfa_graph_t.html'>dfa_graph_t</a></li><li><a href='type/dfa_state_node_t.html'>dfa_state_node_t</a></li><li><a href='type/dfa_transition_t.html'>dfa_transition_t</a></li><li><a href='type/nfa_graph_t.html'>nfa_graph_t</a></li><li><a href='type/nfa_state_node_t.html'>nfa_state_node_t</a></li><li><a href='type/nfa_state_set_t.html'>nfa_state_set_t</a></li><li><a href='type/nfa_transition_t.html'>nfa_transition_t</a></li><li><a href='type/priority_queue_t.html'>priority_queue_t</a></li><li><a href='type/record.html'>record</a></li></ul>
+              <ul><li><a href='type/arg_element_t.html'>arg_element_t</a></li><li><a href='type/arg_t.html'>arg_t</a></li><li><a href='type/automaton_t.html'>automaton_t</a></li><li><a href='type/cla_t.html'>cla_t</a></li><li><a href='type/cmd_t.html'>cmd_t</a></li><li><a href='type/dfa_graph_t.html'>dfa_graph_t</a></li><li><a href='type/dfa_state_node_t.html'>dfa_state_node_t</a></li><li><a href='type/dfa_transition_t.html'>dfa_transition_t</a></li><li><a href='type/flag_t.html'>flag_t</a></li><li><a href='type/nfa_graph_t.html'>nfa_graph_t</a></li></ul>
             </div>
             <div>
               <ul>
@@ -366,7 +368,7 @@ The idea of applying the <code>.in.</code> operator to strings was inspired by k
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>

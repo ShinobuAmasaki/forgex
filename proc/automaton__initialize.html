@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.8% of total for procedures.">20 statements</a>
+                 title=" 0.5% of total for procedures.">19 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private pure subroutine automaton__initialize(self, tree, tree_top)  
+    <h2>private pure subroutine automaton__initialize(self)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -176,7 +176,7 @@ and then initializes the DFA graph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~20"></span>
+              <span class="anchor" id="variable-self~15"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -185,36 +185,6 @@ and then initializes the DFA graph.</p>
             </td>
             <td>::</td>
             <td><strong>self</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tree~24"></span>
-              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>tree</strong>(:)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tree_top"></span>
-              integer(kind=int32),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>tree_top</strong></td>
             <td>
                 
             </td>
@@ -236,23 +206,18 @@ and then initializes the DFA graph.</p>
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">automaton__initialize</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_top</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">automaton__initialize</span><span class="p">(</span><span class="n">self</span><span class="p">)</span>
 <span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">tree_node_t</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_node_t</span><span class="p">),</span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="p">(:)</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree_top</span>
+<span class="w">      </span><span class="c">! type(tree_node_t),allocatable, intent(in) :: tree(:)</span>
+<span class="w">      </span><span class="c">! integer(int32), intent(in) :: tree_top</span>
 
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">initial_closure</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">new_index</span>
 
-<span class="w">      </span><span class="c">!-- NFA building</span>
-<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_top</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_exit</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="p">)</span>
-
-
-<span class="cp">#if  defined(IMPURE) &amp;&amp; defined(DEBUG)</span>
-<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="k">print</span><span class="p">()</span>
-<span class="cp">#endif</span>
+<span class="w">      </span><span class="c">! !-- NFA building</span>
+<span class="w">      </span><span class="c">! call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)</span>
 
 <span class="w">      </span><span class="c">!-- DFA initialize</span>
 <span class="w">      </span><span class="c">! Invokes DFA preprocessing.</span>
@@ -263,11 +228,14 @@ and then initializes the DFA graph.</p>
 <span class="k">         error stop</span><span class="w"> </span><span class="s2">&quot;DFA graph initialization is failed.&quot;</span>
 <span class="w">      </span><span class="k">end if</span>
 
+<span class="k">      call </span><span class="n">init_state_set</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">entry_set</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="n">nfa_top</span><span class="p">)</span>
 <span class="w">      </span><span class="c">! Constructing a DFA initial state from the NFA initial state.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">add_nfa_state</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">entry_set</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_entry</span><span class="p">)</span>
 
+<span class="w">      </span><span class="k">call </span><span class="n">init_state_set</span><span class="p">(</span><span class="n">initial_closure</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="n">nfa_top</span><span class="p">)</span>
+<span class="w">      </span><span class="n">initial_closure</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">entry_set</span>
 <span class="w">      </span><span class="c">! Add an NFA node reachable by epsilon transitions to the entrance state set within DFA.</span>
-<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">epsilon_closure</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">entry_set</span><span class="p">,</span><span class="w"> </span><span class="n">initial_closure</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">epsilon_closure</span><span class="p">(</span><span class="n">initial_closure</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_entry</span><span class="p">)</span>
 
 <span class="w">      </span><span class="c">! Assign the computed initial closure into self%entry_set</span>
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">entry_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initial_closure</span>
@@ -302,7 +270,7 @@ and then initializes the DFA graph.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-09 04:54              </p>
+ on 2024-08-13 02:49              </p>
           </div>
         </div>
         <br>
