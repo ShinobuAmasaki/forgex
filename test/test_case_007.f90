@@ -56,6 +56,17 @@ program test_case_007
 
    call runner_match("(a|b(c|dg)h|i)*", "bch", .true., res)
 
+   call runner_match("((ab|bc)*|(de|ef)+)+", "ab", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "bc", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "abab", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "de", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "ef", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "deef", .true., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "abdebc", .true., res)
+
+   call runner_match("((ab|bc)*|(de|ef)+)+", "a", .false., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "b", .false., res)
+   call runner_match("((ab|bc)*|(de|ef)+)+", "abed", .false., res)
 
    if (res) then
       print *, "=== TEST CASE 7 END ==="

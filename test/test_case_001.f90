@@ -142,6 +142,8 @@ program test_001
    call runner_match("[a-z]+\.(co|ne)\.jp", "hoge.co.jp", .true., res)
    call runner_match("[a-z]+\.(co|ne)\.jp", "hoge.ne.jp", .true., res)
 
+   call runner_match("(a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z)*", "abc", .true., res)
+
 
    if (res) then
       print *, "=== TEST CASE 1 END ==="
