@@ -278,7 +278,7 @@ contains
       self%forward(j)%dst = dst
       self%forward(j)%is_registered = .true.
 
-      self%forward_top = self%forward_top + 1
+      if (j == self%forward_top) self%forward_top = self%forward_top + 1
 
       !== Backward transition process
       j = NFA_NULL_TRANSITION
@@ -307,7 +307,7 @@ contains
       nfa_graph(dst)%backward(j)%dst = src
       nfa_graph(dst)%backward(j)%is_registered = .true.
 
-      nfa_graph(dst)%backward_top = nfa_graph(dst)%backward_top + 1
+      if(j == nfa_graph(dst)%backward_top) nfa_graph(dst)%backward_top = nfa_graph(dst)%backward_top + 1
    end subroutine nfa__add_transition
 
 
