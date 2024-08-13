@@ -36,6 +36,11 @@ p code {
 .codesum {
    font-family: monospace;
 }
+/* 以下はnone-highlight-userクラスのすべての孫要素について、pygmentsのデフォルトのシンタックスハイライトを無効化する */
+.none-highlight-user .codehilite * {
+   color: black;
+   font-style: normal;
+}
 tbody {
    font-family: monospace;
 }

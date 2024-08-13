@@ -117,86 +117,110 @@
 <p>正規表現のテストケースのいくつかの例は<code>test/</code>ディレクトリに配置されており、<code>fpm test</code>コマンドで簡単に実行することができます。</p>
 <p>これらに含まれるものの他に、正規表現のマッチングを確認したい場合には、バージョン3.2から導入されたコマンドライン・インターフェースのツール<code>forgex-cli</code>が利用可能です。
 例えば、<code>((a|b)*)*</code>と<code>ababab</code>のマッチングをテストしたい場合には、次のコマンドを実行すると以下のような出力が得られます。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>lazy-dfa<span class="w"> </span><span class="s1">&#39;((a|b)*)*&#39;</span><span class="w"> </span>.match.<span class="w"> </span><span class="s1">&#39;ababab&#39;</span>
-<span class="w">            </span>pattern:<span class="w"> </span><span class="o">((</span>a<span class="p">|</span>b<span class="o">)</span>*<span class="o">)</span>*
-<span class="w">               </span>text:<span class="w"> </span>ababab
-<span class="w">         </span>parse<span class="w"> </span>time:<span class="w">        </span><span class="m">32</span>.6μs
-<span class="w">   </span>compile<span class="w"> </span>nfa<span class="w"> </span>time:<span class="w">        </span><span class="m">49</span>.5μs
-dfa<span class="w"> </span>initialize<span class="w"> </span>time:<span class="w">        </span><span class="m">55</span>.7μs
-<span class="w">  </span>dfa<span class="w"> </span>matching<span class="w"> </span>time:<span class="w">       </span><span class="m">643</span>.7μs
-<span class="w">    </span>matching<span class="w"> </span>result:<span class="w">         </span>T
-<span class="w"> </span>memory<span class="w"> </span><span class="o">(</span>estimated<span class="o">)</span>:<span class="w">      </span><span class="nv">6781</span>
+<div class="none-highlight-user">
 
-<span class="o">==========</span><span class="w"> </span>Thompson<span class="w"> </span><span class="nv">NFA</span><span class="w"> </span><span class="o">===========</span>
-state<span class="w">    </span><span class="m">1</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">3</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">2</span>:<span class="w"> </span>&lt;Accepted&gt;
-state<span class="w">    </span><span class="m">3</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">5</span><span class="o">)(</span>?,<span class="w"> </span><span class="m">2</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">4</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">3</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">5</span>:<span class="w"> </span><span class="o">([</span><span class="s2">&quot;a&quot;</span>-<span class="s2">&quot;b&quot;</span><span class="o">]</span>,<span class="w"> </span><span class="m">6</span><span class="o">)(</span>?,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">6</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">5</span><span class="o">)</span>
-<span class="o">===============</span><span class="w"> </span><span class="nv">DFA</span><span class="w"> </span><span class="o">===============</span>
-<span class="w">   </span>1A:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;a&quot;</span>-<span class="s2">&quot;b&quot;</span><span class="o">]=</span>&gt;2
-<span class="w">   </span>2A:<span class="w"> </span><span class="o">[</span><span class="s2">&quot;a&quot;</span>-<span class="s2">&quot;b&quot;</span><span class="o">]=</span>&gt;2
-state<span class="w">    </span><span class="nv">1A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="o">)</span>
-state<span class="w">    </span><span class="nv">2A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="m">6</span><span class="w"> </span><span class="o">)</span>
-<span class="o">===================================</span>
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="o">|</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="p">)</span><span class="o">*</span>
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="n">ababab</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">32</span><span class="p">.</span>6μ<span class="n">s</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">49</span><span class="p">.</span>5μ<span class="n">s</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">        </span><span class="s">55.7μs</span>
+<span class="w">  </span><span class="n">dfa</span><span class="w"> </span><span class="n">matching</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">643</span><span class="p">.</span>7μ<span class="n">s</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">      </span><span class="mi">6781</span>
+
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">==========</span><span class="p">=</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">5)(?,</span><span class="w"> </span><span class="s">2)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">4:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">5:</span><span class="w"> </span><span class="s">([&quot;a&quot;-&quot;b&quot;],</span><span class="w"> </span><span class="s">6)(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">6:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">5)</span>
+<span class="o">==============</span><span class="p">=</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="o">==============</span><span class="p">=</span>
+<span class="w">   </span>1<span class="n">A</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;b&quot;</span><span class="p">]=</span><span class="o">&gt;</span><span class="mi">2</span>
+<span class="w">   </span>2<span class="n">A</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;b&quot;</span><span class="p">]=</span><span class="o">&gt;</span><span class="mi">2</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">)</span>
+<span class="o">==================================</span><span class="p">=</span>
 </code></pre></div>
+
+
+</div>
 
 <p>コマンドラインの出力は、上部の実行時間などを示す表と、下部のオートマトンの状態と遷移を表す行から構成されます。
 このツールを使用して、正規表現マッチングのベンチマークや、デバッグおよびテストを行うことができます。</p>
 <p>現在のところ、<code>find</code>と<code>debug</code>のコマンドが利用可能です。また、<code>forgex-cil</code>のコマンドは<code>fpm run</code>から実行することも可能です。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>fpm<span class="w"> </span>run<span class="w"> </span>forgex-cli<span class="w"> </span>--profile<span class="w"> </span>release<span class="w"> </span>--<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>forgex<span class="w"> </span><span class="s1">&#39;((a|b)*)*&#39;</span><span class="w"> </span>.match.<span class="w"> </span><span class="s1">&#39;ababab&#39;</span>
-...
-libforgex.a<span class="w">                            </span><span class="k">done</span>.
-forgex-cli.f90<span class="w">                         </span><span class="k">done</span>.
-forgex-cli<span class="w">                             </span><span class="k">done</span>.
-<span class="o">[</span><span class="m">100</span>%<span class="o">]</span><span class="w"> </span>Project<span class="w"> </span>compiled<span class="w"> </span>successfully.
-pattern:<span class="w"> </span><span class="o">((</span>a<span class="p">|</span>b<span class="o">)</span>*<span class="o">)</span>*
-<span class="w">   </span>text:<span class="w"> </span>ababab
-<span class="w">   </span>time:<span class="w">       </span><span class="m">487</span>.1us
-<span class="w"> </span>result:<span class="w">         </span>T
+<div class="none-highlight-user">
+
+<div class="codehilite"><pre><span></span><code><span class="c">% fpm run forgex-cli --profile release -- find match forgex &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
+<span class="k">...</span>
+<span class="n">libforgex</span><span class="p">.</span><span class="n">a</span><span class="w">                            </span><span class="n">done</span><span class="p">.</span>
+<span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="p">.</span><span class="n">f90</span><span class="w">                         </span><span class="n">done</span><span class="p">.</span>
+<span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w">                             </span><span class="n">done</span><span class="p">.</span>
+<span class="p">[</span><span class="mi">100</span><span class="c">%] Project compiled successfully.</span>
+<span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">((</span><span class="n">a</span><span class="o">|</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="p">)</span><span class="o">*</span>
+<span class="w">   </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="n">ababab</span>
+<span class="w">   </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">487</span><span class="p">.</span>1<span class="n">us</span>
+<span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
 </code></pre></div>
+
+
+</div>
 
 <h2><code>forgex-cli debug</code>コマンド</h2>
 <p>以下に、<code>forgex-cli debug</code>コマンドのヘルプメッセージを示します。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>--help
-Prints<span class="w"> </span>the<span class="w"> </span>debug<span class="w"> </span>representation<span class="w"> </span>provided<span class="w"> </span>by<span class="w"> </span>Forgex.
+<div class="none-highlight-user">
 
-USAGE:
-<span class="w">   </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>&lt;command&gt;<span class="w"> </span>...
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug --help</span>
+<span class="n">Prints</span><span class="w"> </span><span class="s">the</span><span class="w"> </span><span class="s">debug</span><span class="w"> </span><span class="s">representation</span><span class="w"> </span><span class="s">provided</span><span class="w"> </span><span class="s">by</span><span class="w"> </span><span class="s">Forgex.</span>
 
-COMMANDS:
-<span class="w">   </span>ast<span class="w">           </span>Print<span class="w"> </span>the<span class="w"> </span>debug<span class="w"> </span>representation<span class="w"> </span>of<span class="w"> </span>an<span class="w"> </span>AST.
-<span class="w">   </span>thompson<span class="w">      </span>Print<span class="w"> </span>the<span class="w"> </span>debug<span class="w"> </span>representation<span class="w"> </span>of<span class="w"> </span>a<span class="w"> </span>Thompson<span class="w"> </span>NFA.
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="o">&lt;</span><span class="n">command</span><span class="o">&gt;</span><span class="w"> </span><span class="k">...</span>
+
+<span class="n">COMMANDS</span><span class="p">:</span>
+<span class="w">   </span><span class="n">ast</span><span class="w">           </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">AST</span><span class="p">.</span>
+<span class="w">   </span><span class="n">thompson</span><span class="w">      </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="p">.</span>
 </code></pre></div>
 
+
+</div>
 <p><code>debug</code>コマンドでは、与えられたパターンについて、抽象構文木（AST）または非決定性有限オートマトン （NFA）を出力します。</p>
 <p>以下は<code>ast</code>サブコマンドを使用して正規表現パターンから構築されたASTを出力する例です。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>ast<span class="w"> </span><span class="s2">&quot;((a|b)*)*&quot;</span>
-Project<span class="w"> </span>is<span class="w"> </span>up<span class="w"> </span>to<span class="w"> </span>date
-<span class="w">        </span>parse<span class="w"> </span>time:<span class="w">        </span><span class="m">29</span>.5us<span class="w"> </span>
-memory<span class="w"> </span><span class="o">(</span>estimated<span class="o">)</span>:<span class="w">       </span><span class="m">829</span>
-<span class="o">(</span>closure<span class="o">(</span>closure<span class="o">(</span>or<span class="w"> </span><span class="s2">&quot;a&quot;</span><span class="w"> </span><span class="s2">&quot;b&quot;</span><span class="o">)))</span>
+<div class="none-highlight-user">
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug ast &quot;((a|b)*)*&quot;</span>
+<span class="n">Project</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">up</span><span class="w"> </span><span class="s">to</span><span class="w"> </span><span class="s">date</span>
+<span class="w">        </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">29</span><span class="p">.</span>5<span class="n">us</span><span class="w"> </span>
+<span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">       </span><span class="mi">829</span>
+<span class="p">(</span><span class="n">closure</span><span class="p">(</span><span class="n">closure</span><span class="p">(</span><span class="n">or</span><span class="w"> </span><span class="s">&quot;a&quot;</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">)))</span>
 </code></pre></div>
+
+
+</div>
 
 <p>一方、ASTから変換されたNFAの構造を知りたい場合には、次のように<code>thompson</code>サブコマンドを実行します。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>thompson<span class="w"> </span><span class="s2">&quot;((a|b)*)*&quot;</span>
-Project<span class="w"> </span>is<span class="w"> </span>up<span class="w"> </span>to<span class="w"> </span>date
-<span class="w">        </span>parse<span class="w"> </span>time:<span class="w">        </span><span class="m">26</span>.5us<span class="w"> </span>
-<span class="w">  </span>compile<span class="w"> </span>nfa<span class="w"> </span>time:<span class="w">        </span><span class="m">42</span>.4us<span class="w"> </span>
-memory<span class="w"> </span><span class="o">(</span>estimated<span class="o">)</span>:<span class="w">      </span><span class="nv">6271</span>
+<div class="none-highlight-user">
 
-<span class="o">==========</span><span class="w"> </span>Thompson<span class="w"> </span><span class="nv">NFA</span><span class="w"> </span><span class="o">===========</span>
-state<span class="w">    </span><span class="m">1</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">3</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">2</span>:<span class="w"> </span>&lt;Accepted&gt;
-state<span class="w">    </span><span class="m">3</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">5</span><span class="o">)(</span>?,<span class="w"> </span><span class="m">2</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">4</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">3</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">5</span>:<span class="w"> </span><span class="o">([</span><span class="s2">&quot;a&quot;</span>-<span class="s2">&quot;b&quot;</span><span class="o">]</span>,<span class="w"> </span><span class="m">6</span><span class="o">)(</span>?,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">6</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">5</span><span class="o">)</span>
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug thompson &quot;((a|b)*)*&quot;</span>
+<span class="n">Project</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">up</span><span class="w"> </span><span class="s">to</span><span class="w"> </span><span class="s">date</span>
+<span class="w">        </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">26</span><span class="p">.</span>5<span class="n">us</span><span class="w"> </span>
+<span class="w">  </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">42</span><span class="p">.</span>4<span class="n">us</span><span class="w"> </span>
+<span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">      </span><span class="mi">6271</span>
 
-Note:<span class="w"> </span>all<span class="w"> </span>segments<span class="w"> </span>of<span class="w"> </span>NFA<span class="w"> </span>were<span class="w"> </span>disjoined<span class="w"> </span>with<span class="w"> </span>overlapping<span class="w"> </span>portions.
-<span class="o">===================================</span>
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">==========</span><span class="p">=</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">5)(?,</span><span class="w"> </span><span class="s">2)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">4:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">5:</span><span class="w"> </span><span class="s">([&quot;a&quot;-&quot;b&quot;],</span><span class="w"> </span><span class="s">6)(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">6:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">5)</span>
+
+<span class="n">Note</span><span class="p">:</span><span class="w"> </span><span class="nb">all</span><span class="w"> </span><span class="n">segments</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="n">were</span><span class="w"> </span><span class="n">disjoined</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">overlapping</span><span class="w"> </span><span class="n">portions</span><span class="p">.</span>
+<span class="o">==================================</span><span class="p">=</span>
 </code></pre></div>
+
+
+</div>
 
 <p>このコマンドラインの出力では、それぞれのNFA状態について、左辺に状態番号と右辺にNFA遷移がセットで記述されています。</p>
 <ul>
@@ -205,27 +229,37 @@ Note:<span class="w"> </span>all<span class="w"> </span>segments<span class="w">
 </ul>
 <h2><code>forgex-cli find</code>コマンド</h2>
 <p>以下に<code>find</code>コマンドと<code>match</code>サブコマンドのヘルプメッセージの出力を示します。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>--help
-Executes<span class="w"> </span>a<span class="w"> </span>search.
+<div class="none-highlight-user">
 
-USAGE:
-<span class="w">   </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>&lt;command&gt;<span class="w"> </span>...
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search.</span>
 
-COMMANDS:
-<span class="w">   </span>match<span class="w">         </span>Search<span class="w"> </span><span class="k">for</span><span class="w"> </span>full<span class="w"> </span>matches.
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="o">&lt;</span><span class="n">command</span><span class="o">&gt;</span><span class="w"> </span><span class="k">...</span>
+
+<span class="n">COMMANDS</span><span class="p">:</span>
+<span class="w">   </span><span class="n">match</span><span class="w">         </span><span class="n">Search</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">full</span><span class="w"> </span><span class="nb">matches</span><span class="p">.</span>
 </code></pre></div>
 
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>--help
-Executes<span class="w"> </span>a<span class="w"> </span>search<span class="w"> </span><span class="k">for</span><span class="w"> </span>full<span class="w"> </span>matches.
 
-USAGE:
-<span class="w">   </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>&lt;engine&gt;
+</div>
 
-ENGINES:
-<span class="w">   </span>dense<span class="w">         </span>Search<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>fully-compiled<span class="w"> </span>DFA<span class="w"> </span>regex<span class="w"> </span>engine.
-<span class="w">   </span>lazy-dfa<span class="w">      </span>Search<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>lazy<span class="w"> </span>DFA<span class="w"> </span>regex<span class="w"> </span>engine.
-<span class="w">   </span>forgex<span class="w">        </span>Search<span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>top-level<span class="w"> </span>API<span class="w"> </span>regex<span class="w"> </span>engine.
+<div class="none-highlight-user">
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search</span><span class="w"> </span><span class="s">for</span><span class="w"> </span><span class="s">full</span><span class="w"> </span><span class="s">matches.</span>
+
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="o">&lt;</span><span class="n">engine</span><span class="o">&gt;</span>
+
+<span class="n">ENGINES</span><span class="p">:</span>
+<span class="w">   </span><span class="n">dense</span><span class="w">         </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">fully</span><span class="o">-</span><span class="n">compiled</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
+<span class="w">   </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w">      </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lazy</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
+<span class="w">   </span><span class="n">forgex</span><span class="w">        </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">top</span><span class="o">-</span><span class="n">level</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
 </code></pre></div>
+
+
+</div>
 
 <p><code>find</code>コマンドでは<code>match</code>サブコマンドを指定し、その後ろにマッチングに使用する正規表現エンジンを指定します。
 エンジンは現在のところ、<code>lazy-dfa</code>, <code>dense</code>, <code>forgex</code>を選択することができます。　　</p>
@@ -236,49 +270,59 @@ ENGINES:
 </ul>
 <p><code>dense</code>、<code>lazy-dfa</code>、<code>forgex</code>の3個いずれかからエンジンを決めたら、通常のFortranコードでForgexのAPIを使って書くのと同様に、<code>.in.</code>演算子または<code>.match.</code>演算子を使用してパターンと文字列を指定してマッチングを行います。
 なお、演算子の右引数を省略した場合には、空文字とのマッチングを試みて結果を表示します。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>lazy-dfa<span class="w"> </span><span class="s2">&quot;a*b&quot;</span><span class="w"> </span>.match.<span class="w"> </span><span class="s2">&quot;ab&quot;</span>
-<span class="w">            </span>pattern:<span class="w"> </span>a*b
-<span class="w">               </span>text:<span class="w"> </span>ab
-<span class="w">         </span>parse<span class="w"> </span>time:<span class="w">        </span><span class="m">24</span>.6us
-<span class="w">   </span>compile<span class="w"> </span>nfa<span class="w"> </span>time:<span class="w">        </span><span class="m">39</span>.5us
-dfa<span class="w"> </span>initialize<span class="w"> </span>time:<span class="w">        </span><span class="m">47</span>.2us
-<span class="w">  </span>dfa<span class="w"> </span>matching<span class="w"> </span>time:<span class="w">       </span><span class="m">170</span>.5us
-<span class="w">    </span>matching<span class="w"> </span>result:<span class="w">         </span>T
-<span class="w"> </span>memory<span class="w"> </span><span class="o">(</span>estimated<span class="o">)</span>:<span class="w">      </span><span class="nv">5707</span>
+<div class="none-highlight-user">
 
-<span class="o">==========</span><span class="w"> </span>Thompson<span class="w"> </span><span class="nv">NFA</span><span class="w"> </span><span class="o">===========</span>
-state<span class="w">    </span><span class="m">1</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">2</span>:<span class="w"> </span>&lt;Accepted&gt;
-state<span class="w">    </span><span class="m">3</span>:<span class="w"> </span><span class="o">(</span>b,<span class="w"> </span><span class="m">2</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">4</span>:<span class="w"> </span><span class="o">(</span>a,<span class="w"> </span><span class="m">5</span><span class="o">)(</span>?,<span class="w"> </span><span class="m">3</span><span class="o">)</span>
-state<span class="w">    </span><span class="m">5</span>:<span class="w"> </span><span class="o">(</span>?,<span class="w"> </span><span class="m">4</span><span class="o">)</span>
-<span class="o">===============</span><span class="w"> </span><span class="nv">DFA</span><span class="w"> </span><span class="o">===============</span>
-<span class="w">   </span><span class="m">1</span><span class="w"> </span>:<span class="w"> </span><span class="nv">a</span><span class="o">=</span>&gt;2
-<span class="w">   </span><span class="m">2</span><span class="w"> </span>:<span class="w"> </span><span class="nv">b</span><span class="o">=</span>&gt;3
-<span class="w">   </span>3A:
-state<span class="w">    </span><span class="nv">1</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="o">)</span>
-state<span class="w">    </span><span class="nv">2</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">5</span><span class="w"> </span><span class="o">)</span>
-state<span class="w">    </span><span class="nv">3A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">)</span>
-<span class="o">===================================</span>
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &quot;a*b&quot; .match. &quot;ab&quot;</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="n">a</span><span class="o">*</span><span class="n">b</span>
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="n">ab</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">24</span><span class="p">.</span>6<span class="n">us</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">39</span><span class="p">.</span>5<span class="n">us</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">        </span><span class="s">47.2us</span>
+<span class="w">  </span><span class="n">dfa</span><span class="w"> </span><span class="n">matching</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">170</span><span class="p">.</span>5<span class="n">us</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">      </span><span class="mi">5707</span>
+
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">==========</span><span class="p">=</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3:</span><span class="w"> </span><span class="s">(b,</span><span class="w"> </span><span class="s">2)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">4:</span><span class="w"> </span><span class="s">(a,</span><span class="w"> </span><span class="s">5)(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">5:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="o">==============</span><span class="p">=</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="o">==============</span><span class="p">=</span>
+<span class="w">   </span><span class="mi">1</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">a</span><span class="p">=</span><span class="o">&gt;</span><span class="mi">2</span>
+<span class="w">   </span><span class="mi">2</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">b</span><span class="p">=</span><span class="o">&gt;</span><span class="mi">3</span>
+<span class="w">   </span>3<span class="n">A</span><span class="p">:</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2</span><span class="w">  </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="p">)</span>
+<span class="o">==================================</span><span class="p">=</span>
 </code></pre></div>
+
+
+</div>
 
 <p>DFAの出力には、上部と下部に分けられます。
 上部では、DFA状態番号と、遅延評価により入力文字列から構成されたDFA遷移を記述しています。
 下部では、各DFA状態を冪集合構成法で構成されたNFA状態番号のセットを示しています。
 ここで、DFA状態番号の後ろに<code>A</code>と書かれている場合、そのDFA状態が受理状態であることを意味しています。</p>
 <p>なお、このコマンドを実行する際には、いくつかのオプションフラグを指定することができます。</p>
-<div class="codehilite"><pre><span></span><code>%<span class="w"> </span>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>lazy-dfa<span class="w"> </span>--help
-Executes<span class="w"> </span>a<span class="w"> </span>search<span class="w"> </span><span class="k">for</span><span class="w"> </span>matches<span class="w"> </span>using<span class="w"> </span>a<span class="w"> </span>lazy<span class="w"> </span>DFA<span class="w"> </span>regex<span class="w"> </span>engine.
+<div class="none-highlight-user">
 
-USAGE:
-<span class="w">   </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>lazy-dfa<span class="w"> </span>&lt;pattern&gt;<span class="w"> </span>.match.<span class="w"> </span>&lt;text&gt;
-<span class="w">   </span>forgex-cli<span class="w"> </span>debug<span class="w"> </span>lazy-dfa<span class="w"> </span>&lt;pattern&gt;<span class="w"> </span>.in.<span class="w"> </span>&lt;text&gt;
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search</span><span class="w"> </span><span class="s">for</span><span class="w"> </span><span class="s">matches</span><span class="w"> </span><span class="s">using</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">lazy</span><span class="w"> </span><span class="s">DFA</span><span class="w"> </span><span class="s">regex</span><span class="w"> </span><span class="s">engine.</span>
 
-OPTIONS:
-<span class="w">   </span>--verbose<span class="w">     </span>Print<span class="w"> </span>more<span class="w"> </span>information.
-<span class="w">   </span>--no-table<span class="w">    </span>Suppresses<span class="w"> </span>the<span class="w"> </span>output<span class="w"> </span>of<span class="w"> </span>the<span class="w"> </span>property<span class="w"> </span>information<span class="w"> </span>table.
-<span class="w">   </span>--table-only<span class="w">  </span>Print<span class="w"> </span>the<span class="w"> </span>property<span class="w"> </span>information<span class="w"> </span>table<span class="w"> </span>only.
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">pattern</span><span class="o">&gt;</span><span class="w"> </span><span class="p">.</span><span class="n">match</span><span class="p">.</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">text</span><span class="o">&gt;</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">pattern</span><span class="o">&gt;</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">text</span><span class="o">&gt;</span>
+
+<span class="n">OPTIONS</span><span class="p">:</span>
+<span class="w">   </span><span class="o">--</span><span class="n">verbose</span><span class="w">     </span><span class="n">Print</span><span class="w"> </span><span class="nb">more</span><span class="w"> </span><span class="n">information</span><span class="p">.</span>
+<span class="w">   </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="nb">table</span><span class="w">    </span><span class="n">Suppresses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="p">.</span>
+<span class="w">   </span><span class="o">--</span><span class="nb">table</span><span class="o">-</span><span class="n">only</span><span class="w">  </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="w"> </span><span class="n">only</span><span class="p">.</span>
 </code></pre></div>
+
+
+</div>
     </div>
   </div>
       <hr>
@@ -296,7 +340,7 @@ OPTIONS:
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 08:04              </p>
+ on 2024-08-13 08:30              </p>
           </div>
         </div>
         <br>
