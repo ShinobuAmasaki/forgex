@@ -303,7 +303,7 @@ contains
             return
          end if
 
-         start = idxutf8(string, start)
+         start = idxutf8(string, start) +1
       end do
    end subroutine match_dense_dfa_including
 
