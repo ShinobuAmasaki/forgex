@@ -164,7 +164,7 @@ contains
          parse_time     = "parse time:"
          nfa_time       = "compile nfa time:"
          dfa_init_time  = "dfa initialize time:"
-         matching_time  = "dfa matching time:"
+         matching_time  = "search time:"
          memory         = "memory (estimated):"
          matching_result= "matching result:"
 
@@ -271,7 +271,7 @@ contains
       else
          block
             integer :: from, to
-            call match_dense_dfa_including(automaton, text, from, to)
+            call match_dense_dfa_including(automaton, char(0)//text//char(0), from, to)
             if (is_there_caret_at_the_top(pattern)) then
                from = from
             else
@@ -283,7 +283,7 @@ contains
             else
                to = to -1
             end if
-            
+
             if (from>0 .and. to>0) then
                res = .true.
             else
@@ -328,7 +328,7 @@ contains
          nfa_time       = "compile nfa time:"
          dfa_init_time  = "dfa initialize time:"
          dfa_compile_time = "compile dfa time:" 
-         matching_time  = "dfa matching time:"
+         matching_time  = "search time:"
          memory         = "memory (estimated):"
          matching_result= "matching result:"
 
