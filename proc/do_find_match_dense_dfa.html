@@ -149,14 +149,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
               </ul>
             </li>
         </ul>
@@ -179,7 +179,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~5"></span>
+              <span class="anchor" id="variable-flags~6"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -194,7 +194,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~5"></span>
+              <span class="anchor" id="variable-pattern~13"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -209,7 +209,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~3"></span>
+              <span class="anchor" id="variable-text~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -224,7 +224,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_exactly~3"></span>
+              <span class="anchor" id="variable-is_exactly~5"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -380,7 +380,7 @@
 <span class="w">            </span><span class="k">call </span><span class="n">right_justify</span><span class="p">(</span><span class="n">cbuff</span><span class="p">)</span>
 
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
-<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span><span class="w"> </span><span class="s2">&quot;&#39;&quot;</span><span class="o">//</span><span class="n">text</span><span class="o">//</span><span class="s2">&quot;&#39;&quot;</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap1</span><span class="p">)</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap2</span><span class="p">)</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">5</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap3</span><span class="p">)</span>
@@ -399,7 +399,7 @@
 <span class="w">            </span><span class="k">call </span><span class="n">right_justify</span><span class="p">(</span><span class="n">cbuff</span><span class="p">)</span>
 
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">pattern</span><span class="p">))</span>
-<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+<span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a, 1x, a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span><span class="w"> </span><span class="s2">&quot;&#39;&quot;</span><span class="o">//</span><span class="n">text</span><span class="o">//</span><span class="s2">&quot;&#39;&quot;</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">3</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap1</span><span class="p">)</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">4</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap2</span><span class="p">)</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_time</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">5</span><span class="p">)),</span><span class="w"> </span><span class="n">get_lap_time_in_appropriate_unit</span><span class="p">(</span><span class="n">lap3</span><span class="p">)</span>
@@ -445,7 +445,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 08:30              </p>
+ on 2024-08-14 05:45              </p>
           </div>
         </div>
         <br>

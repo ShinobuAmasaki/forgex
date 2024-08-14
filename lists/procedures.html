@@ -294,7 +294,7 @@ state set in an NFA.</p></td>
                  <td><a href='../proc/compute_reachable_state.html'>compute_reachable_state</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function calculates a set of possible NFA states from the current DFA state.</p><a href="../proc/compute_reachable_state.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/connect_left.html'>connect_left</a></td>
@@ -312,7 +312,7 @@ state set in an NFA.</p></td>
                  <td><a href='../proc/construct_dense_dfa.html'>construct_dense_dfa</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td><p>This subroutine convert NFA to DFA</p></td>
+                 <td><p>This subroutine convert an NFA into a fully compiled DFA.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/copy_dfa_transition.html'>copy_dfa_transition</a></td>
@@ -343,7 +343,10 @@ variables of another dfa_transition_t.</p></td>
                  <td><a href='../proc/destination.html'>destination</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine gets the next DFA nodes index from current index,
+and stores the result in <code>next</code> and <code>next_set</code>.
+If the DFA state is already registered, it returns the index,
+otherwise it returns <code>DFA_INVALID_INDEX</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/dfa_state_node__add_transition.html'>dfa_state_node__add_transition</a></td>
@@ -452,7 +455,8 @@ node with the value of the given argument.</p></td>
                  <td><a href='../proc/do_matching_including.html'>do_matching_including</a></td>
                  <td><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This procedure reads a text, performs regular expression matching using an automaton,
+and stores the string index in the argument if it contains a match.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/does_command_exist.html'>does_command_exist</a></td>
@@ -470,12 +474,6 @@ node with the value of the given argument.</p></td>
                  <td><a href='../proc/does_flag_exist.html'>does_flag_exist</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/dump_segment_array.html'>dump_segment_array</a></td>
-                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
-                 <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
@@ -762,13 +760,15 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td><a href='../proc/match_dense_dfa_exactly.html'>match_dense_dfa_exactly</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This procedure reads a text, performs regular expression matching using compiled DFA,
+and returns <code>.true.</code> if it matches exactly.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/match_dense_dfa_including.html'>match_dense_dfa_including</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This procedure reads a text, performs regular expression matching using an automaton,
+and stores the string index in the argument if it contains a match.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/mem_dfa_graph.html'>mem_dfa_graph</a></td>
@@ -804,13 +804,15 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td><a href='../proc/move.html'>move</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function returns the dfa transition object, that contains the destination index
+and the corresponding set of transitionable NFA state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/next_state_dense_dfa.html'>next_state_dense_dfa</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Function</td>
-                 <td></td>
+                 <td><p>This function returns the index of the destination DFA state from the
+index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/nfa__add_transition.html'>nfa__add_transition</a></td>
@@ -888,15 +890,15 @@ and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
-                 <td>Interface</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -1246,7 +1248,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 08:30              </p>
+ on 2024-08-14 05:45              </p>
           </div>
         </div>
         <br>

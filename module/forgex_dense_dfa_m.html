@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 4.5% of total for modules and submodules.">207 statements</a>
+                 title=" 4.5% of total for modules and submodules.">206 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -161,18 +161,18 @@
     </div>
 
     <div class="col-md-9" id='text'>
-      
+      <p>This module defines procedures for building a fully compiled DFA for debugging and benchmarking.</p>
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
       <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
               </ul>
             </li>
         </ul>
@@ -195,7 +195,8 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This procedure reads a text, performs regular expression matching using compiled DFA,
+and returns <code>.true.</code> if it matches exactly.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -210,7 +211,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~6"></span>
+              <span class="anchor" id="variable-automaton~8"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -225,7 +226,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string"></span>
+              <span class="anchor" id="variable-string~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -255,67 +256,7 @@
 </h3></div>
     <div class="card-body">
           
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-automaton"></span>
-              type(<a href='../type/automaton_t.html'>automaton_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>automaton</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-curr"></span>
-              integer,
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>curr</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-move"></span> <h3>private pure function <a href='../proc/move.html'>move</a>(automaton, curr) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  
+  <p>This function calculates a set of possible NFA states from the current DFA state.</p><a href="../proc/compute_reachable_state.html" class="pull-right"><emph>Read more&hellip;</emph></a>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -346,7 +287,7 @@
         <tr>
             <td>
               <span class="anchor" id="variable-curr~3"></span>
-              integer(kind=int32),
+              integer,
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
@@ -363,7 +304,7 @@
 
     <h4>
     Return Value
-    <small>type(<a href='../type/dfa_transition_t.html'>dfa_transition_t</a>)</small>
+    <small>type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>)</small>
     </h4>
     
 
@@ -371,11 +312,12 @@
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-next_state_dense_dfa"></span> <h3>private pure function <a href='../proc/next_state_dense_dfa.html'>next_state_dense_dfa</a>(automaton, curr_i, symbol) result(dst_i)  
+    <div class="card-header codesum"><span class="anchor" id="proc-move"></span> <h3>private pure function <a href='../proc/move.html'>move</a>(automaton, curr) result(res)  
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This function returns the dfa transition object, that contains the destination index
+and the corresponding set of transitionable NFA state.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -405,7 +347,68 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr_i~2"></span>
+              <span class="anchor" id="variable-curr~5"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>type(<a href='../type/dfa_transition_t.html'>dfa_transition_t</a>)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-next_state_dense_dfa"></span> <h3>private pure function <a href='../proc/next_state_dense_dfa.html'>next_state_dense_dfa</a>(automaton, curr_i, symbol) result(dst_i)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This function returns the index of the destination DFA state from the
+index of the current automaton DFA state array and the input symbol.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-automaton~7"></span>
+              type(<a href='../type/automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>automaton</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-curr_i~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -420,7 +423,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~3"></span>
+              <span class="anchor" id="variable-symbol~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -455,7 +458,7 @@
 </h3></div>
     <div class="card-body">
           
-  <p>This subroutine convert NFA to DFA</p>
+  <p>This subroutine convert an NFA into a fully compiled DFA.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -470,7 +473,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~4"></span>
+              <span class="anchor" id="variable-automaton~6"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -485,7 +488,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr_i"></span>
+              <span class="anchor" id="variable-curr_i~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -510,7 +513,8 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This procedure reads a text, performs regular expression matching using an automaton,
+and stores the string index in the argument if it contains a match.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -525,7 +529,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~7"></span>
+              <span class="anchor" id="variable-automaton~9"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -540,7 +544,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~2"></span>
+              <span class="anchor" id="variable-string~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -555,7 +559,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from"></span>
+              <span class="anchor" id="variable-from~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -570,7 +574,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to"></span>
+              <span class="anchor" id="variable-to~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -595,7 +599,10 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This subroutine gets the next DFA nodes index from current index,
+and stores the result in <code>next</code> and <code>next_set</code>.
+If the DFA state is already registered, it returns the index,
+otherwise it returns <code>DFA_INVALID_INDEX</code>.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -610,7 +617,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~2"></span>
+              <span class="anchor" id="variable-automaton~4"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -625,7 +632,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~2"></span>
+              <span class="anchor" id="variable-curr~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -640,7 +647,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next"></span>
+              <span class="anchor" id="variable-next~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(inout)</td>
@@ -655,7 +662,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next_set"></span>
+              <span class="anchor" id="variable-next_set~2"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -698,7 +705,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-13 08:30              </p>
+ on 2024-08-14 05:45              </p>
           </div>
         </div>
         <br>
