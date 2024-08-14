@@ -62,11 +62,13 @@ contains
             is_succeeded = QueryPerformanceCounter(time_begin_qhc)
          else
             !$ begin_s = omp_get_wtime()
+            !$ last_s = begin_s
             !$ return
             call use_cpu_time_begin
          end if
       else
          !$ begin_s = omp_get_wtime()
+         !$ last_s = begin_s
          !$ return
          call use_cpu_time_begin
       end if
@@ -97,13 +99,15 @@ contains
             res = dble(time_end_qhc - time_begin_qhc)/dble(frequency)
          else
             !$ end_s = omp_get_wtime()
-            !$ res = end_s - begin_s
+            !$ res = end_s - last_s
+            !$ last_s = end_s
             !$ return
             call use_cpu_time_end
          end if
       else
          !$ end_s = omp_get_wtime()
-         !$ res = end_s - begin_s
+         !$ res = end_s - last_s
+         !$ last_s = end_s
          !$ return
          call use_cpu_time_end
       end if
