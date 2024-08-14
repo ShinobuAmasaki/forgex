@@ -112,15 +112,12 @@
       </div>
 
     <div class="col-9" id='text'>
-      <div class="none-highlight-user">
-# コマンドラインインターフェース
-
-## 概要
-
-正規表現のテストケースのいくつかの例は`test/`ディレクトリに配置されており、`fpm test`コマンドで簡単に実行することができます。
-
-これらに含まれるものの他に、正規表現のマッチングを確認したい場合には、バージョン3.2から導入されたコマンドライン・インターフェースのツール`forgex-cli`が利用可能です。
-例えば、`((a|b)*)*`と`ababab`のマッチングをテストしたい場合には、次のコマンドを実行すると以下のような出力が得られます。
+      <h1>コマンドラインインターフェース</h1>
+<h2>概要</h2>
+<p>正規表現のテストケースのいくつかの例は<code>test/</code>ディレクトリに配置されており、<code>fpm test</code>コマンドで簡単に実行することができます。</p>
+<p>これらに含まれるものの他に、正規表現のマッチングを確認したい場合には、バージョン3.2から導入されたコマンドライン・インターフェースのツール<code>forgex-cli</code>が利用可能です。
+例えば、<code>((a|b)*)*</code>と<code>ababab</code>のマッチングをテストしたい場合には、次のコマンドを実行すると以下のような出力が得られます。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
@@ -149,11 +146,12 @@
 </code></pre></div>
 
 
+</div>
 
-コマンドラインの出力は、上部の実行時間などを示す表と、下部のオートマトンの状態と遷移を表す行から構成されます。
-このツールを使用して、正規表現マッチングのベンチマークや、デバッグおよびテストを行うことができます。
-
-現在のところ、`find`と`debug`のコマンドが利用可能です。また、`forgex-cil`のコマンドは`fpm run`から実行することも可能です。
+<p>コマンドラインの出力は、上部の実行時間などを示す表と、下部のオートマトンの状態と遷移を表す行から構成されます。
+このツールを使用して、正規表現マッチングのベンチマークや、デバッグおよびテストを行うことができます。</p>
+<p>現在のところ、<code>find</code>と<code>debug</code>のコマンドが利用可能です。また、<code>forgex-cil</code>のコマンドは<code>fpm run</code>から実行することも可能です。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% fpm run forgex-cli --profile release -- find match forgex &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
@@ -170,9 +168,11 @@
 
 
 
-## `forgex-cli debug`コマンド
+</div>
 
-以下に、`forgex-cli debug`コマンドのヘルプメッセージを示します。
+<h2><code>forgex-cli debug</code>コマンド</h2>
+<p>以下に、<code>forgex-cli debug</code>コマンドのヘルプメッセージを示します。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug --help</span>
@@ -187,9 +187,12 @@
 </code></pre></div>
 
 
-`debug`コマンドでは、与えられたパターンについて、抽象構文木（AST）または非決定性有限オートマトン （NFA）を出力します。
 
-以下は`ast`サブコマンドを使用して正規表現パターンから構築されたASTを出力する例です。
+</div>
+
+<p><code>debug</code>コマンドでは、与えられたパターンについて、抽象構文木（AST）または非決定性有限オートマトン （NFA）を出力します。</p>
+<p>以下は<code>ast</code>サブコマンドを使用して正規表現パターンから構築されたASTを出力する例です。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug ast &quot;((a|b)*)*&quot;</span>
@@ -201,7 +204,10 @@
 
 
 
-一方、ASTから変換されたNFAの構造を知りたい場合には、次のように`thompson`サブコマンドを実行します。
+</div>
+
+<p>一方、ASTから変換されたNFAの構造を知りたい場合には、次のように<code>thompson</code>サブコマンドを実行します。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug thompson &quot;((a|b)*)*&quot;</span>
@@ -224,14 +230,16 @@
 
 
 
-このコマンドラインの出力では、それぞれのNFA状態について、左辺に状態番号と右辺にNFA遷移がセットで記述されています。
+</div>
 
-- (["a"-"b"], 6)`という遷移は「文字コード表でaからbの範囲の文字が入力された場合に第6状態へ遷移する」という意味になります。
-- `(?, 3)`のような、入力文字が`?`となっているものは、ε（イプシロン）遷移と呼ばれるもので、入力文字列を消費せずに遷移可能であることを示しています。この例では受理状態を除いてε遷移が各NFA状態に含まれています。
-
-## `forgex-cli find`コマンド
-
-以下に`find`コマンドと`match`サブコマンドのヘルプメッセージの出力を示します。
+<p>このコマンドラインの出力では、それぞれのNFA状態について、左辺に状態番号と右辺にNFA遷移がセットで記述されています。</p>
+<ul>
+<li>(["a"-"b"], 6)`という遷移は「文字コード表でaからbの範囲の文字が入力された場合に第6状態へ遷移する」という意味になります。</li>
+<li><code>(?, 3)</code>のような、入力文字が<code>?</code>となっているものは、ε（イプシロン）遷移と呼ばれるもので、入力文字列を消費せずに遷移可能であることを示しています。この例では受理状態を除いてε遷移が各NFA状態に含まれています。</li>
+</ul>
+<h2><code>forgex-cli find</code>コマンド</h2>
+<p>以下に<code>find</code>コマンドと<code>match</code>サブコマンドのヘルプメッセージの出力を示します。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find --help</span>
@@ -245,6 +253,9 @@
 </code></pre></div>
 
 
+
+</div>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match --help</span>
@@ -261,15 +272,18 @@
 
 
 
-`find`コマンドでは`match`サブコマンドを指定し、その後ろにマッチングに使用する正規表現エンジンを指定します。
-エンジンは現在のところ、`lazy-dfa`, `dense`, `forgex`を選択することができます。　　
+</div>
 
-- `dense`エンジンは、完全にコンパイルされたDFAを使用してマッチングを行います。
-- `lazy-dfa`エンジンは、DFAをon-the-flyで構築してマッチングを行います。
-- `forgex`を指定すると、Forgexの上位APIを使用してマッチングを行います。これの内部実装は`lazy-dfa`ですが、APIを使用した時間のみが計測されます。
-
-`dense`、`lazy-dfa`、`forgex`の3個いずれかからエンジンを決めたら、通常のFortranコードでForgexのAPIを使って書くのと同様に、`.in.`演算子または`.match.`演算子を使用してパターンと文字列を指定してマッチングを行います。
-なお、演算子の右引数を省略した場合には、空文字とのマッチングを試みて結果を表示します。
+<p><code>find</code>コマンドでは<code>match</code>サブコマンドを指定し、その後ろにマッチングに使用する正規表現エンジンを指定します。
+エンジンは現在のところ、<code>lazy-dfa</code>, <code>dense</code>, <code>forgex</code>を選択することができます。　　</p>
+<ul>
+<li><code>dense</code>エンジンは、完全にコンパイルされたDFAを使用してマッチングを行います。</li>
+<li><code>lazy-dfa</code>エンジンは、DFAをon-the-flyで構築してマッチングを行います。</li>
+<li><code>forgex</code>を指定すると、Forgexの上位APIを使用してマッチングを行います。これの内部実装は<code>lazy-dfa</code>ですが、APIを使用した時間のみが計測されます。</li>
+</ul>
+<p><code>dense</code>、<code>lazy-dfa</code>、<code>forgex</code>の3個いずれかからエンジンを決めたら、通常のFortranコードでForgexのAPIを使って書くのと同様に、<code>.in.</code>演算子または<code>.match.</code>演算子を使用してパターンと文字列を指定してマッチングを行います。
+なお、演算子の右引数を省略した場合には、空文字とのマッチングを試みて結果を表示します。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &quot;a*b&quot; .match. &quot;ab&quot;</span>
@@ -300,12 +314,14 @@
 
 
 
-DFAの出力には、上部と下部に分けられます。
+</div>
+
+<p>DFAの出力には、上部と下部に分けられます。
 上部では、DFA状態番号と、遅延評価により入力文字列から構成されたDFA遷移を記述しています。
 下部では、各DFA状態を冪集合構成法で構成されたNFA状態番号のセットを示しています。
-ここで、DFA状態番号の後ろに`A`と書かれている場合、そのDFA状態が受理状態であることを意味しています。
-
-なお、このコマンドを実行する際には、いくつかのオプションフラグを指定することができます。
+ここで、DFA状態番号の後ろに<code>A</code>と書かれている場合、そのDFA状態が受理状態であることを意味しています。</p>
+<p>なお、このコマンドを実行する際には、いくつかのオプションフラグを指定することができます。</p>
+<div class="none-highlight-user">
 
 
 <div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa --help</span>
@@ -320,6 +336,7 @@ DFAの出力には、上部と下部に分けられます。
 <span class="w">   </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="nb">table</span><span class="w">    </span><span class="n">Suppresses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="p">.</span>
 <span class="w">   </span><span class="o">--</span><span class="nb">table</span><span class="o">-</span><span class="n">only</span><span class="w">  </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="w"> </span><span class="n">only</span><span class="p">.</span>
 </code></pre></div>
+
 
 
 </div>
@@ -340,7 +357,7 @@ DFAの出力には、上部と下部に分けられます。
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-14 09:30              </p>
+ on 2024-08-14 09:40              </p>
           </div>
         </div>
         <br>
