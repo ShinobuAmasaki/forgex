@@ -1,4 +1,4 @@
-Forgex is a regular expression engine written entirely in Fortran.
+Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
 This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license.
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.
@@ -204,6 +204,7 @@ end block
 
 ## To do
 
+- Add Unicode escape sequence `\p{...}`
 - Deal with invalid byte strings in UTF-8
 - Optimize by literal searching method
 - ✅️ Add a CLI tool for debugging and benchmarking
@@ -223,6 +224,7 @@ All code contained herein shall be written with a three-space indentation.
 For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
+The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
 
 ## References
 

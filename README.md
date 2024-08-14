@@ -179,8 +179,6 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
-
 ### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
@@ -208,6 +206,7 @@ end block
 
 The following features are planned to be implemented in the future:
 
+- [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
 - [ ] Optimize by literal searching method
 - [x] Add a CLI tool for debugging and benchmarking
