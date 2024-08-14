@@ -176,9 +176,6 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-## Examples
-
-Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
 
 ### UTF-8 String matching
 
@@ -201,6 +198,11 @@ block
 
 end block
 ```
+
+### Notes
+
+- `gfortran` on Windows and macOC may crash if an allocatable character is used in an OpenMP parallel block.
+- If you are using the command line tools in PowerShell on Windows, the system locale shall be UTF-8.
 
 ## To do
 
