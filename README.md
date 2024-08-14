@@ -204,8 +204,8 @@ end block
 
 ### Notes
 
-- `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
-- If you are using the command line tools in PowerShell on Windows, the system locale shall be UTF-8.
+- A program build by `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
+- If you use the command line tool in PowerShell on Windows, the system locale shall be UTF-8.
 
 ## To do
 
