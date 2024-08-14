@@ -3,7 +3,7 @@ title: CLIツール
 author: 雨崎しのぶ
 date: 2024-08-13
 ---
-
+<div class="none-highlight-user">
 # コマンドラインインターフェース
 
 ## 概要
@@ -13,7 +13,6 @@ date: 2024-08-13
 これらに含まれるものの他に、正規表現のマッチングを確認したい場合には、バージョン3.2から導入されたコマンドライン・インターフェースのツール`forgex-cli`が利用可能です。
 例えば、`((a|b)*)*`と`ababab`のマッチングをテストしたい場合には、次のコマンドを実行すると以下のような出力が得られます。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli find match lazy-dfa '((a|b)*)*' .match. 'ababab'
             pattern: ((a|b)*)*
@@ -39,14 +38,12 @@ state    1A = ( 1 2 3 4 5 )
 state    2A = ( 2 3 4 5 6 )
 ===================================
 ```
-</div>
 
 コマンドラインの出力は、上部の実行時間などを示す表と、下部のオートマトンの状態と遷移を表す行から構成されます。
 このツールを使用して、正規表現マッチングのベンチマークや、デバッグおよびテストを行うことができます。
 
 現在のところ、`find`と`debug`のコマンドが利用可能です。また、`forgex-cil`のコマンドは`fpm run`から実行することも可能です。
 
-<div class="none-highlight-user">
 ```
 % fpm run forgex-cli --profile release -- find match forgex '((a|b)*)*' .match. 'ababab'
 ...
@@ -59,13 +56,11 @@ pattern: ((a|b)*)*
    time:       487.1us
  result:         T
 ```
-</div>
 
 ## `forgex-cli debug`コマンド
 
 以下に、`forgex-cli debug`コマンドのヘルプメッセージを示します。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli debug --help
 Prints the debug representation provided by Forgex.
@@ -77,12 +72,10 @@ COMMANDS:
    ast           Print the debug representation of an AST.
    thompson      Print the debug representation of a Thompson NFA.
 ```
-</div>
 `debug`コマンドでは、与えられたパターンについて、抽象構文木（AST）または非決定性有限オートマトン （NFA）を出力します。
 
 以下は`ast`サブコマンドを使用して正規表現パターンから構築されたASTを出力する例です。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli debug ast "((a|b)*)*"
 Project is up to date
@@ -90,11 +83,9 @@ Project is up to date
 memory (estimated):       829
 (closure(closure(or "a" "b")))
 ```
-</div>
 
 一方、ASTから変換されたNFAの構造を知りたい場合には、次のように`thompson`サブコマンドを実行します。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli debug thompson "((a|b)*)*"
 Project is up to date
@@ -113,7 +104,6 @@ state    6: (?, 5)
 Note: all segments of NFA were disjoined with overlapping portions.
 ===================================
 ```
-</div>
 
 このコマンドラインの出力では、それぞれのNFA状態について、左辺に状態番号と右辺にNFA遷移がセットで記述されています。
 
@@ -124,7 +114,6 @@ Note: all segments of NFA were disjoined with overlapping portions.
 
 以下に`find`コマンドと`match`サブコマンドのヘルプメッセージの出力を示します。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli find --help
 Executes a search.
@@ -135,9 +124,7 @@ USAGE:
 COMMANDS:
    match         Search for full matches.
 ```
-</div>
 
-<div class="none-highlight-user">
 ```
 % forgex-cli find match --help
 Executes a search for full matches.
@@ -150,7 +137,6 @@ ENGINES:
    lazy-dfa      Search with the lazy DFA regex engine.
    forgex        Search with the top-level API regex engine.
 ```
-</div>
 
 `find`コマンドでは`match`サブコマンドを指定し、その後ろにマッチングに使用する正規表現エンジンを指定します。
 エンジンは現在のところ、`lazy-dfa`, `dense`, `forgex`を選択することができます。　　
@@ -162,7 +148,6 @@ ENGINES:
 `dense`、`lazy-dfa`、`forgex`の3個いずれかからエンジンを決めたら、通常のFortranコードでForgexのAPIを使って書くのと同様に、`.in.`演算子または`.match.`演算子を使用してパターンと文字列を指定してマッチングを行います。
 なお、演算子の右引数を省略した場合には、空文字とのマッチングを試みて結果を表示します。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli find match lazy-dfa "a*b" .match. "ab"
             pattern: a*b
@@ -189,7 +174,6 @@ state    2  = ( 3 4 5 )
 state    3A = ( 2 )
 ===================================
 ```
-</div>
 
 DFAの出力には、上部と下部に分けられます。
 上部では、DFA状態番号と、遅延評価により入力文字列から構成されたDFA遷移を記述しています。
@@ -198,14 +182,13 @@ DFAの出力には、上部と下部に分けられます。
 
 なお、このコマンドを実行する際には、いくつかのオプションフラグを指定することができます。
 
-<div class="none-highlight-user">
 ```
 % forgex-cli find match lazy-dfa --help
 Executes a search for matches using a lazy DFA regex engine.
 
 USAGE:
-   forgex-cli debug lazy-dfa <pattern> .match. <text>
-   forgex-cli debug lazy-dfa <pattern> .in. <text>
+   forgex-cli find match lazy-dfa <pattern> .match. <text>
+   forgex-cli find match lazy-dfa <pattern> .in. <text>
 
 OPTIONS:
    --verbose     Print more information.
