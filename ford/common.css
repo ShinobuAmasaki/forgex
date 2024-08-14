@@ -85,8 +85,8 @@ body {
      Meiryo,
      sans-serif;
 }
-/* 1668px is the width of iPad Pro 10.5" 2nd */
-@media (max-width: 1200px) and (min-width: {
+
+@media (max-width: 820px) {
    #text.row {
       justify-content: center;
    }
