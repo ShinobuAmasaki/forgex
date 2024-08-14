@@ -26,6 +26,8 @@ module forgex_api_internal_m
 
 contains
 
+   !> This procedure reads a text, performs regular expression matching using an automaton,
+   !> and stores the string index in the argument if it contains a match.
    pure subroutine do_matching_including (automaton, string, from, to)
       implicit none
       type(automaton_t), intent(inout) :: automaton
@@ -94,7 +96,6 @@ contains
 
    !> This subroutine is intended to be called from the `forgex` API module.
    pure subroutine do_matching_exactly(automaton, string, res)
-   ! pure subroutine do_matching_exactly(automaton, string, res)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*), intent(in) :: string

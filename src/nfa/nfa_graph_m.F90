@@ -6,9 +6,11 @@
 !     A regular expression engine for Fortran.
 !     forgex_nfa_graph_m module is a part of Forgex.
 !
+!! This file contains a derived-type which represents the NFA graph using an array. 
 #ifdef IMPURE
 #define pure
 #endif
+!> This module defines the `nfa_graph_t` derived-type which represents the NFA graph.
 module forgex_nfa_graph_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, &
@@ -83,7 +85,7 @@ contains
 
       type(nfa_state_node_t) :: n_node
       type(nfa_transition_t) :: n_tra
-      integer :: j, k
+      integer :: j
 
       call add_nfa_state(state_set, idx)
 
@@ -165,19 +167,5 @@ contains
          write(uni, '(a)') ""
       end do
    end subroutine nfa_graph__print
-
-
-   subroutine dump_segment_array (list)
-      use, intrinsic :: iso_fortran_env, only: stderr=>error_unit
-      use :: forgex_segment_m
-      implicit none
-      type(segment_t), intent(in) :: list(:)
-
-      integer :: k
-      write(stderr, *) "============================="
-      do k = 1, size(list, dim=1)
-         if (list(k)/= SEG_INIT) write(stderr, *) list(k)
-      end do
-   end subroutine dump_segment_array
 
 end module forgex_nfa_graph_m

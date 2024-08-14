@@ -55,7 +55,7 @@ contains
             buf = [pattern_key, text_key, total_time, matching_result]
             call right_justify(buf)
             write(stdout, '(a, 1x, a)') trim(buf(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(buf(2)), trim(adjustl(text))
+            write(stdout, '(a, 1x, a)') trim(buf(2)), '"'//text//'"'
             write(stdout, fmt_out_time) trim(buf(3)), get_lap_time_in_appropriate_unit(lap)
             write(stdout, fmt_out_logi) trim(buf(4)), res
          end if
@@ -187,7 +187,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text//'"'
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
@@ -204,7 +204,7 @@ contains
                         (repeat(" ", NUM_DIGIT_KEY), i = 1, 3)]
             call right_justify(cbuff)
             write(stdout, '(a,1x,a)') trim(cbuff(1)), pattern
-            write(stdout, '(a,1x,a)') trim(cbuff(2)), text
+            write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
@@ -351,7 +351,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
@@ -370,7 +370,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), trim(adjustl(text))
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)

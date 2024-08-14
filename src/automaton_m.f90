@@ -71,9 +71,6 @@ contains
       type(nfa_state_set_t) :: initial_closure
       integer(int32) :: new_index
 
-      ! !-- NFA building
-      ! call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
-
       !-- DFA initialize
       ! Invokes DFA preprocessing.
       call self%dfa%preprocess()
