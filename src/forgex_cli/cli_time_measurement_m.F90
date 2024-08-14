@@ -12,6 +12,7 @@
 module forgex_cli_time_measurement_m
    use, intrinsic :: iso_fortran_env, only: real64, stderr => error_unit
    use, intrinsic :: iso_c_binding, only: c_long_long, c_bool
+   !$ use :: omp_lib
    use :: forgex_cli_parameters_m, only: NUM_DIGIT_TIME
    use :: forgex_cli_utils_m, only: get_os_type
    use :: forgex_enums_m, only: OS_WINDOWS
@@ -60,9 +61,13 @@ contains
          if (is_supported) then
             is_succeeded = QueryPerformanceCounter(time_begin_qhc)
          else
+            !$ begin_s = omp_get_wtime()
+            !$ return
             call use_cpu_time_begin
          end if
       else
+         !$ begin_s = omp_get_wtime()
+         !$ return
          call use_cpu_time_begin
       end if
 
@@ -91,9 +96,15 @@ contains
             is_succeeded = QueryPerformanceCounter(time_end_qhc)
             res = dble(time_end_qhc - time_begin_qhc)/dble(frequency)
          else
+            !$ end_s = omp_get_wtime()
+            !$ res = end_s - begin_s
+            !$ return
             call use_cpu_time_end
          end if
       else
+         !$ end_s = omp_get_wtime()
+         !$ res = end_s - begin_s
+         !$ return
          call use_cpu_time_end
       end if
    contains
