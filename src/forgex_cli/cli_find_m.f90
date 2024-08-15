@@ -84,19 +84,31 @@ contains
       integer :: root
 
       integer :: uni, ierr, i
-      character(:), allocatable :: dfa_for_print
+      character(:), allocatable :: dfa_for_print, literal
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4
       logical :: res
 
       dfa_for_print = ''
+      lap1 = 0d0
+      lap2 = 0d0
+      lap3 = 0d0
+      lap4 = 0d0
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
+      
 
       call time_begin()
       call build_syntax_tree(trim(pattern), tape, tree, root)
       lap1 = time_lap()
 
+      if (do_try_literal_match(tree, root, pattern, text)) then
+         stop
+      else
+         continue
+      end if
+
+      call time_begin()
       call automaton%preprocess(tree, root)
       lap2 = time_lap()
 
@@ -393,5 +405,42 @@ contains
       call automaton%free()
       
    end subroutine do_find_match_dense_dfa
+
+
+   function do_try_literal_match(tree, root, pattern, text) result(res)
+      use :: forgex_cli_time_measurement_m
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_literal_match_m
+      implicit none
+      type(tree_node_t), intent(in) :: tree(:)
+      integer(int32), intent(in) :: root
+      character(*), intent(in) :: pattern, text
+      
+      logical :: res
+      integer :: from, to
+      character(:), allocatable :: patt_l, text_l, literal
+      real(real64) :: lap
+
+      res = .false.
+      patt_l = pattern
+      text_l = text
+
+      literal = ''
+      call all_literals(tree, root, literal)
+      if (literal == '') return
+      
+      call time_begin()
+      call literal_index_matching(literal, text, from, to)
+      lap = time_lap()
+
+      if (from > 0 .and. to > 0) then
+         res = .true.
+      else
+         res = .false.
+      end if
+
+      print *, res, get_lap_time_in_appropriate_unit(lap)      
+
+   end function do_try_literal_match
 
 end module forgex_cli_find_m
