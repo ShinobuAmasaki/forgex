@@ -15,8 +15,11 @@ In this project, some test cases to check behavior of the regular expression eng
 ```
 % forgex-cli find match lazy-dfa '((a|b)*)*' .match. 'ababab'
 ```
+</div>
 
 and you will get the following output on your terminal:
+
+<div class="none-highlight-user">
 
 ```
             pattern: ((a|b)*)*
@@ -332,7 +335,7 @@ The `forgec-cli` tool provides a command line interface for testing, debugging, 
 **3. Performance Metrics:**
 
 - Users can access detailed breakdonws of execution times, memory usage, and internal state counts for different engines.
-- For the `lazy-dfa` engine, additional into NFA nad DFA object usage can be obtained, highlighting the efficency and trade-offs of the engine's on-the-fly DFA construction.
+- For the `lazy-dfa` engine, additional into NFA nad DFA objects' memory usage can be obtained, highlighting the efficency and trade-offs of the engine's on-the-fly DFA construction.
 
 Overall, `forgex-cli` aims to be a versatile tool for evaluating regular expression performance, providing engine choices and detailed diagnostics that help understand the regular expression matching process. However, it is important to note that for certain types of regular expressions, especially complex ones, building a DFA in a `dense` engine can be very time and memory consuming. This is why the internal implementation of the Forgex API uses Lazy DFA.
 
