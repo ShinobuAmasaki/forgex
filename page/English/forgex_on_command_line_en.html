@@ -1,0 +1,498 @@
+<!-- -*- mode: jinja2 -*- -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="A Fortran regular expresion engine.">
+    <meta name="author" content="Amasaki Shinobu" >
+    <link rel="icon" href="../../favicon.png">
+
+    <title>CLI Tool &ndash; Forgex—Fortran Regular Expression</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="../../css/pygments.css" rel="stylesheet">
+    <link href="../../css/font-awesome.min.css" rel="stylesheet">
+    <link href="../../css/local.css" rel="stylesheet">
+      <link  href="../../tipuesearch/tipuesearch.css" rel="stylesheet">
+      <link href="../../css/user.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="../../js/svg-pan-zoom.min.js"></script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <div class="container-fluid mb-sm-4 mb-xl-2">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="../../index.html">Forgex—Fortran Regular Expression </a>
+          <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon">
+          </button>
+
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="../index.html">Documentation</a></li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="../../lists/files.html">Source Files</a>
+                  </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/modules.html">Modules</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/procedures.html">Procedures</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="../../lists/types.html">Derived Types</a>
+                </li>
+            </ul>
+              <div class="d-flex align-items-end flex-grow-1">
+                <form action="../../search.html" role="search" class="ms-auto">
+                  <input type="text" class="form-control" aria-label="Search" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+                </form>
+              </div>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+    </div>
+
+    <div class="container">
+  <div class="row">
+    <h1>CLI Tool</h1>
+    <div class="container p-2 mb-4 bg-light border rounded-3">
+      <div class="row align-items-center justify-content-between">
+        <div class="col">
+          <ul class="list-inline" style="margin-bottom:0px; display:inline">
+              <li class="list-inline-item" id="author"><i class="fa fa-pencil"></i> 雨崎しのぶ</li>
+              <li class="list-inline-item" id="date"><i class="fa fa-calendar-o"></i> 2024-08-15</li>
+          </ul>
+        </div>
+        <div class="col">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-end mb-0">
+                <li class="breadcrumb-item"><a href='../index.html'>Documentation</a></li>
+                <li class="breadcrumb-item"><a href='index.html'>English</a></li>
+              <li class="breadcrumb-item active" aria-current="page">CLI Tool</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+      <div class="col-3">
+        <div class="card card-body bg-light" id="sidebar-toc">
+          <ul class="nav flex-column align-items">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html">Documentation</a>
+            </li>
+          </ul>
+          <hr>
+          <nav class="nav nav-pills flex-column">
+              <a class="nav-link" href="index.html">English</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link active disabled" href="forgex_on_command_line_en.html">CLI Tool</a>
+              <a class="nav-link" href="terms_related_to_forgex_en.html">Terms related to Forgex</a>
+
+                </nav>
+              <a class="nav-link" href="../Japanese/index.html">Japanese/日本語</a>
+                <nav class="nav nav-pills flex-column">
+                                <a class="nav-link" href="../Japanese/forgex_on_command_line_ja.html">CLIツール</a>
+              <a class="nav-link" href="../Japanese/terms_of_forgex_ja.html">Forgexの用語</a>
+
+                </nav>
+          </nav>
+        </div>
+      </div>
+
+    <div class="col-9" id='text'>
+      <h1>Forgex on Command Line</h1>
+<h2>Summary</h2>
+<p>In this project, some test cases to check behavior of the regular expression engine are located in the <code>test/</code> directory. We can  promptly run the tests with the command <code>fpm test</code>.  In addition, for testing and benchmarking regular expression matches, Forgex provides a command line tool <code>forgex-cli</code>, available from version 3.2. For instance, if you want to see whether the pattern <code>((a|b)*)*</code> matches the text <code>ababab</code>, execute the following command:</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
+</code></pre></div>
+
+
+
+and you will get the following output on your terminal:
+
+
+<div class="codehilite"><pre><span></span><code>            pattern: ((a|b)*)*
+               text: &#39;ababab&#39;
+         parse time:        32.6μs
+   compile nfa time:        49.5μs
+dfa initialize time:        55.7μs
+        search time:       643.7μs
+    matching result:         T
+ memory (estimated):      6781
+
+========== Thompson NFA ===========
+state    1: (?, 3)
+state    2: &lt;Accepted&gt;
+state    3: (?, 5)(?, 2)
+state    4: (?, 3)
+state    5: ([&quot;a&quot;-&quot;b&quot;], 6)(?, 4)
+state    6: (?, 5)
+=============== DFA ===============
+   1A: [&quot;a&quot;-&quot;b&quot;]=&gt;2
+   2A: [&quot;a&quot;-&quot;b&quot;]=&gt;2
+state    1A = ( 1 2 3 4 5 )
+state    2A = ( 2 3 4 5 6 )
+===================================
+</code></pre></div>
+
+
+
+</div>
+
+<p>In this case, the output consists of a table showing the engine's performance, including execution time and memory usage, along with information about the automata (an NFA and a DFA compiled from it) that was built by Forgex. This command can also be run using  <code>fpm run</code> as follows:</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% fpm run forgex-cli --proflie release -- find match lazy-dfa &#39;((a|b)*)*&#39; .match. &#39;ababab&#39;</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>You can use this tool to debug, test, and benchmark regular expression matching. The following sections provide detailed instructions on how to use this command and what its output is.</p>
+<h2>Usage</h2>
+<p>Currently, the commands <code>debug</code> and <code>find</code> are available.</p>
+<h3><code>forgex-cli debug</code></h3>
+<p>This command provides information on the process of parsing regular expressions into an abstract syntax tree (AST) and compiling the AST into an NFA. Below is the help message for the <code>debug</code> command.</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug --help</span>
+<span class="n">Prints</span><span class="w"> </span><span class="s">the</span><span class="w"> </span><span class="s">debug</span><span class="w"> </span><span class="s">representation</span><span class="w"> </span><span class="s">provided</span><span class="w"> </span><span class="s">by</span><span class="w"> </span><span class="s">Forgex.</span>
+
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="o">&lt;</span><span class="n">command</span><span class="o">&gt;</span><span class="w"> </span><span class="k">...</span>
+
+<span class="n">COMMANDS</span><span class="p">:</span>
+<span class="w">   </span><span class="n">ast</span><span class="w">           </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">AST</span><span class="p">.</span>
+<span class="w">   </span><span class="n">thompson</span><span class="w">      </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">debug</span><span class="w"> </span><span class="n">representation</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="p">.</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>If you specify the <code>ast</code> subcommand with any regex pattern Forgex accepts, you can get a representation of a nested syntax tree using parentheses.</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug ast &quot;(a|b)+c?&quot;</span>
+<span class="w">        </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">38</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">       </span><span class="mi">860</span>
+<span class="p">(</span><span class="n">concatenate</span><span class="w"> </span><span class="p">(</span><span class="n">concatenate</span><span class="w"> </span><span class="p">(</span><span class="n">or</span><span class="w"> </span><span class="s">&quot;a&quot;</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">closure</span><span class="p">(</span><span class="n">or</span><span class="w"> </span><span class="s">&quot;a&quot;</span><span class="w"> </span><span class="s">&quot;b&quot;</span><span class="p">)))</span><span class="w"> </span><span class="p">(</span><span class="n">or</span><span class="w"> </span><span class="s">&quot;c&quot;</span><span class="w"> </span><span class="n">EMPTY</span><span class="p">))</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>Alternatively, if you use the <code>thompson</code> subcommand, the NFA compiled from the AST is displayed.</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli debug thompson &quot;([a-z]*d)+e?&quot;</span>
+<span class="w">        </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">36</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">  </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">29</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">     </span><span class="mi">12796</span>
+
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">==========</span><span class="p">=</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">6)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3:</span><span class="w"> </span><span class="s">(e,</span><span class="w"> </span><span class="s">2)(?,</span><span class="w"> </span><span class="s">2)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">4:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">8)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">5:</span><span class="w"> </span><span class="s">(d,</span><span class="w"> </span><span class="s">4)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">6:</span><span class="w"> </span><span class="s">([&quot;a&quot;-&quot;c&quot;],</span><span class="w"> </span><span class="s">7)(d,</span><span class="w"> </span><span class="s">7)(e,</span><span class="w"> </span><span class="s">7)([&quot;f&quot;-&quot;z&quot;],</span><span class="w"> </span><span class="s">7)(?,</span><span class="w"> </span><span class="s">5)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">7:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">6)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">8:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">11)(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">9:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">8)</span>
+<span class="n">state</span><span class="w">   </span><span class="s">10:</span><span class="w"> </span><span class="s">(d,</span><span class="w"> </span><span class="s">9)</span>
+<span class="n">state</span><span class="w">   </span><span class="s">11:</span><span class="w"> </span><span class="s">([&quot;a&quot;-&quot;c&quot;],</span><span class="w"> </span><span class="s">12)(d,</span><span class="w"> </span><span class="s">12)(e,</span><span class="w"> </span><span class="s">12)([&quot;f&quot;-&quot;z&quot;],</span><span class="w"> </span><span class="s">12)(?,</span><span class="w"> </span><span class="s">10)</span>
+<span class="n">state</span><span class="w">   </span><span class="s">12:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">11)</span>
+
+<span class="n">Note</span><span class="p">:</span><span class="w"> </span><span class="nb">all</span><span class="w"> </span><span class="n">segments</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="n">were</span><span class="w"> </span><span class="n">disjoined</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">overlapping</span><span class="w"> </span><span class="n">portions</span><span class="p">.</span>
+<span class="o">==================================</span><span class="p">=</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>In the section labeled "Thompson NFA", the NFA is written with one state and its transitions, whether single or multiple, each on a single line. State 2, with <code>&lt;Accepted&gt;</code> marked on the right, is special and represents an accepted state of the NFA. Each transition is represented by a character and the destination state number in parentheses, such as <code>(e, 2)</code> on state 3. When multiple consecutive characters in the character code table have the same transition destination, they are aggregated and expressed in square brackets like <code>["a"-"c"]</code> on states 6 and 11. This is called a segment in the Forgex internal implementation, and is mainly used to improve memory usage efficiency. A transition indicated by  <code>?</code> in the character part is a special transition called an ε-transition, which does not consume an input character.</p>
+<div class="alert alert-info">
+<p class="alert-title h4">Note</p>
+<p>As mentioned in the penultimate line of the output, the character segments used for the transitions in the input pattern are split into overlapping parts, e.g. <code>(["a"-"c"], 7)(d, 7)(e, 7)(["f"-"z"], 7)</code> in the state 6 . This is called "disjoining" in Forgex development, and is necessary for appropriately assigning transitions to states when constructing a DFA from an NFA using the power set construction method.</p>
+</div>
+<h3><code>forgex-cli find</code></h3>
+<p>This command performs matching on the input pattern and string. Below is the help message for the <code>find</code> command and the<code>match</code> subcommand.</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search.</span>
+
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="o">&lt;</span><span class="n">command</span><span class="o">&gt;</span><span class="w"> </span><span class="k">...</span>
+
+<span class="n">COMMANDS</span><span class="p">:</span>
+<span class="w">   </span><span class="n">match</span><span class="w">         </span><span class="n">Search</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="nb">full</span><span class="w"> </span><span class="nb">matches</span><span class="p">.</span>
+</code></pre></div>
+
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search</span><span class="w"> </span><span class="s">for</span><span class="w"> </span><span class="s">full</span><span class="w"> </span><span class="s">matches.</span>
+
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="o">&lt;</span><span class="n">engine</span><span class="o">&gt;</span>
+
+<span class="n">ENGINES</span><span class="p">:</span>
+<span class="w">   </span><span class="n">dense</span><span class="w">         </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">fully</span><span class="o">-</span><span class="n">compiled</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
+<span class="w">   </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w">      </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">lazy</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
+<span class="w">   </span><span class="n">forgex</span><span class="w">        </span><span class="n">Search</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">top</span><span class="o">-</span><span class="n">level</span><span class="w"> </span><span class="n">API</span><span class="w"> </span><span class="n">regex</span><span class="w"> </span><span class="n">engine</span><span class="p">.</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>Specify the <code>match</code> subcommand after the <code>find</code> command, followed by the regular expression engine to use for matching. Currently, the engine can be selected from <code>dense</code>, <code>lazy-dfa</code>, or <code>forgex</code>.</p>
+<ul>
+<li>The <code>dense</code> engine pre-builds and uses a fully compiled DFA from the NFA for matching.</li>
+<li>The <code>lazy-dfa</code> engine builds a DFA on-the-fly from the NFA for matching.</li>
+<li>If you specify <code>forgex</code>, matching will be performed using the Forgex API module. The internal implementation is lazy DFA, but only the overall time spent using the API is measured.</li>
+</ul>
+<p>Once you have selected one of the three engines, you can execute the command by specifying a pattern and string using the <code>.in.</code> or <code>.match.</code> operator, just like you would write normal Fortran code using the Forgex API. If you omit the right operand, it will output the result of matching against an empty string.</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match dense &#39;(a|b)*c?&#39; .match. &#39;ababac&#39;</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="o">|</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">c</span>?
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ababac&#39;</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">24</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">19</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">         </span><span class="s">9.0μs</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">dfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">37</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">        </span><span class="n">search</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">56</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">      </span><span class="mi">5812</span>
+
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">==========</span><span class="p">=</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="s">3:</span><span class="w"> </span><span class="s">(c,</span><span class="w"> </span><span class="s">2)(?,</span><span class="w"> </span><span class="s">2)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">4:</span><span class="w"> </span><span class="s">([&quot;a&quot;-&quot;b&quot;],</span><span class="w"> </span><span class="s">5)(?,</span><span class="w"> </span><span class="s">3)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">5:</span><span class="w"> </span><span class="s">(?,</span><span class="w"> </span><span class="s">4)</span>
+<span class="o">==============</span><span class="p">=</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="o">==============</span><span class="p">=</span>
+<span class="w">   </span>1<span class="n">A</span><span class="p">:</span><span class="w"> </span><span class="n">c</span><span class="p">=</span><span class="o">&gt;</span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;b&quot;</span><span class="p">]=</span><span class="o">&gt;</span><span class="mi">2</span>
+<span class="w">   </span>2<span class="n">A</span><span class="p">:</span><span class="w"> </span><span class="n">c</span><span class="p">=</span><span class="o">&gt;</span><span class="mi">2</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;b&quot;</span><span class="p">]=</span><span class="o">&gt;</span><span class="mi">2</span>
+<span class="n">state</span><span class="w">    </span><span class="s">1A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="s">2A</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="p">)</span>
+<span class="o">==================================</span><span class="p">=</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>The NFA display is the same as that of the <code>forgex-cli debug</code> command. The output of the DFA is divided into upper and lower parts. The upper part lists the DFA state numbers and DFA transitions. The lower part shows a set of NFA states constructed for each DFA state using the power set construction method. Here if <code>A</code> is written after the DFA state number, it means that the DFA state is an accepting state.</p>
+<h3>Performance Information Table</h3>
+<p>Forgex performance table, including execution time, memory usage, and results, is shown with every <code>forgex-cli</code> command example in the previous section. In this section, we'll explain what each table entry means, but first a quick rundown of the option flags available with forgex-cli. When you run the <code>forgex-cli</code> command, you can specify several option flags. For example, running <code>find match lazy-dfa --help</code> will display the following help message:</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa --help</span>
+<span class="n">Executes</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">search</span><span class="w"> </span><span class="s">for</span><span class="w"> </span><span class="s">matches</span><span class="w"> </span><span class="s">using</span><span class="w"> </span><span class="s">a</span><span class="w"> </span><span class="s">lazy</span><span class="w"> </span><span class="s">DFA</span><span class="w"> </span><span class="s">regex</span><span class="w"> </span><span class="s">engine.</span>
+
+<span class="n">USAGE</span><span class="p">:</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">pattern</span><span class="o">&gt;</span><span class="w"> </span><span class="p">.</span><span class="n">match</span><span class="p">.</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">text</span><span class="o">&gt;</span>
+<span class="w">   </span><span class="n">forgex</span><span class="o">-</span><span class="n">cli</span><span class="w"> </span><span class="nb">find</span><span class="w"> </span><span class="n">match</span><span class="w"> </span><span class="n">lazy</span><span class="o">-</span><span class="n">dfa</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">pattern</span><span class="o">&gt;</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="o">&lt;</span><span class="nb">text</span><span class="o">&gt;</span>
+
+<span class="n">OPTIONS</span><span class="p">:</span>
+<span class="w">   </span><span class="o">--</span><span class="n">verbose</span><span class="w">     </span><span class="n">Print</span><span class="w"> </span><span class="nb">more</span><span class="w"> </span><span class="n">information</span><span class="p">.</span>
+<span class="w">   </span><span class="o">--</span><span class="n">no</span><span class="o">-</span><span class="nb">table</span><span class="w">    </span><span class="n">Suppresses</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="p">.</span>
+<span class="w">   </span><span class="o">--</span><span class="nb">table</span><span class="o">-</span><span class="n">only</span><span class="w">  </span><span class="n">Print</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">property</span><span class="w"> </span><span class="n">information</span><span class="w"> </span><span class="nb">table</span><span class="w"> </span><span class="n">only</span><span class="p">.</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>Each item listed in the <code>OPTIONS</code> section mean:</p>
+<ul>
+<li><code>--verbose</code>: This option provides more detailed information in the properties table, offering deeper insights into matching process.</li>
+<li><code>--no-table</code>: This option suppresses the properties table, allowing the output to focus exclusively on the structure of the NFA and DFA automata generated during the matching process.</li>
+<li><code>--table-only</code>: This option limits the output to just properties table, omitting details about the NFA nad DFA, which may be useful when you need a quick overview of performance metrics.</li>
+</ul>
+<p>Here we will look at an example using the <code>--table-only</code> option flag to output only property information. First, below is a example of the command <code>forgex-cli find match lazy-dfa</code>:</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &quot;([a-z]*g)+n?&quot; .match. &quot;assign&quot;</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">)</span><span class="o">+</span><span class="n">n</span>?
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;assign&#39;</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">29</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">28</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">         </span><span class="s">3.0μs</span>
+<span class="w">        </span><span class="n">search</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">144</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">     </span><span class="mi">13736</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p><code>pattern</code> and <code>text</code> show the pattern and string that were specified when the command was executed. Below that, the measured times are shown: <code>parse time</code> shows the time to build an AST from the specified regular expression,  <code>compile nfa time</code> shows the time to compile an NFA from it, <code>dfa initialize time</code> shows the time to initialize the DFA to prepare before characters are entered, and <code>search time</code> is the time it takes for the DFA engine to execute after receiving an input character, i.e., the time it takes to make a match. The <code>lazy-dfa</code> engine waits for character input and builds the DFA, so <code>initialize time</code> and <code>search time</code> are measured. <code>matching result</code> is a logical value indicating the result of the actual matching. <code>memory (estimated)</code> shows the static size of memory in bytes calculated from memory allocation information of AST, NFA, and DFA objects at the end of matching execution.</p>
+<p>On the other hand, <code>dense</code> engine outputs a table which is different to above. For example:</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match dense &quot;([a-z]*g)+n?&quot; .match. &quot;assign&quot; --table-only</span>
+<span class="n">Project</span><span class="w"> </span><span class="s">is</span><span class="w"> </span><span class="s">up</span><span class="w"> </span><span class="s">to</span><span class="w"> </span><span class="s">date</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">)</span><span class="o">+</span><span class="n">n</span>?
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;assign&#39;</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">16</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">29</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">         </span><span class="s">4.0μs</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">dfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">35</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">        </span><span class="n">search</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">47</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">     </span><span class="mi">15480</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p><code>compile dfa time</code>  is measured on the <code>dense</code> engine. Note that the memory usage of the <code>dense</code> engine is equal to or more than that of the <code>lazy-dfa</code> engine.</p>
+<p>What will be displayed if you specify <code>forgex</code> as the engine of the command?</p>
+<div class="none-highlight-user">
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match forgex &quot;([a-z]*g)+n?&quot; .match. &quot;assign&quot;</span>
+<span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">)</span><span class="o">+</span><span class="n">n</span>?
+<span class="w">   </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;assign&quot;</span>
+<span class="w">   </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">229</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>In this case, the only performance information provided is the <code>time</code> measured before and after the API call. This is because in Forgex version 3 and later, all procedures that compose the API (<code>.in.</code> and <code>.match.</code> operators) have the <code>pure</code> attribute, which means that operations with side effects, such as internal time measurement, cannot be performed.</p>
+<p>If you use the <code>--verbose</code> flag with any engine other than <code>forgex</code>, you can get detailed information about how many AST, NFA and DFA objects were used.</p>
+<div class="none-highlight-user">
+
+
+
+<div class="codehilite"><pre><span></span><code><span class="c">% forgex-cli find match lazy-dfa &quot;([a-z]*g)+n?&quot; .match. &quot;assign&quot; --verbose --table-only</span>
+<span class="w">            </span><span class="nb">pattern</span><span class="p">:</span><span class="w"> </span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="p">)</span><span class="o">+</span><span class="n">n</span>?
+<span class="w">               </span><span class="nb">text</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;assign&quot;</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">21</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">        </span><span class="mi">32</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="n">dfa</span><span class="w"> </span><span class="s">initialize</span><span class="w"> </span><span class="s">time:</span><span class="w">         </span><span class="s">3.0μs</span>
+<span class="w">  </span><span class="n">dfa</span><span class="w"> </span><span class="n">matching</span><span class="w"> </span><span class="nb">time</span><span class="p">:</span><span class="w">       </span><span class="mi">149</span><span class="p">.</span>0μ<span class="n">s</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="n">result</span><span class="p">:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="nb">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">):</span><span class="w">     </span><span class="mi">13736</span>
+<span class="w">    </span><span class="n">tree</span><span class="w"> </span><span class="n">node</span><span class="w"> </span><span class="nb">count</span><span class="p">:</span><span class="w">        </span><span class="mi">10</span><span class="o">/</span><span class="mi">32</span>
+<span class="w">         </span><span class="n">nfa</span><span class="w"> </span><span class="n">states</span><span class="p">:</span><span class="w">        </span><span class="mi">12</span><span class="o">/</span><span class="mi">16</span>
+<span class="w">         </span><span class="n">dfa</span><span class="w"> </span><span class="n">states</span><span class="p">:</span><span class="w">         </span><span class="mi">5</span><span class="o">/</span><span class="mi">16</span>
+</code></pre></div>
+
+
+
+</div>
+
+<p>For each of <code>tree node count</code>, <code>nfa states</code>, and <code>dfa states</code>, the denominator represents the allocated memory, while the numerator shows the amount actually used. </p>
+<div class="alert alert-info">
+<p class="alert-title h4">Note</p>
+<p>The counts of <code>tree node count</code> and <code>nfa states</code> are the same for the <code>dense</code> engine and the <code>lazy-dfa</code> engine, but the count of <code>dfa states</code> may be larger for <code>lazy-dfa</code> than for <code>dense</code>.</p>
+</div>
+<h2>Conclusion</h2>
+<p>The <code>forgec-cli</code> tool provides a command line interface for testing, debugging, and benchmarking regular expression engines. With features that support engines like <code>dense</code>, <code>lazy-dfa</code>, and <code>forgex</code>, users can analyze regex matching in different contexts and performance scenarios.</p>
+<h3>Key Points:</h3>
+<h4>1. Engine Options and Performance Insights:</h4>
+<ul>
+<li>The <code>dense</code> engine utilizes a fully compiled DFA for fast matching, but it may cosume more memory. Additionally, for certain complex regular expressions, the DFA construction can be quite time-comsuming, which might affect overall performance.</li>
+<li>The <code>lazy-dfa</code> engine constructs the DFA on-the-fly, offering a more memory-efficient approach at the cost of potentially longer search times.</li>
+<li>The <code>forgex</code> engine provides a top-level API for regex operations, but its performance metrics are limited to overall execution time due to its <code>pure</code> attribute.</li>
+</ul>
+<h4>2. Command Usage:</h4>
+<ul>
+<li><code>forgex-cli debug</code> helps visualize the parsing and compilation process with <code>ast</code> and <code>thompson</code> subcommands.</li>
+<li><code>forgex-cli find</code> performs regex matching and provides detailed performance and memory usage statistics. The <code>--verbose</code> flag offers additional information about the matching process, while the <code>--table-only</code> flag allows you to focus specifically on performance metrics by filtering out other details.</li>
+</ul>
+<h4>3. Performance Metrics:</h4>
+<ul>
+<li>Users can access detailed breakdonws of execution times, memory usage, and internal state counts for different engines.</li>
+<li>For the <code>lazy-dfa</code> engine, additional into NFA nad DFA object usage can be obtained, highlighting the efficency and trade-offs of the engine's on-the-fly DFA construction.</li>
+</ul>
+<p>Overall, <code>forgex-cli</code> aims to be a versatile tool for evaluating regular expression performance, providing engine choices and detailed diagnostics that help understand the regular expression matching process. However, it is important to note that for certain types of regular expressions, especially complex ones, building a DFA in a <code>dense</code> engine can be very time and memory consuming. This is why the internal implementation of the Forgex API uses Lazy DFA.</p>
+<h2>Acknowledgements</h2>
+<p>The command line interface design for this application was inspired by <a href="https://github.com/rust-lang/regex/tree/master/regex-cli">the Rust language's <code>regex-cli</code></a>.</p>
+    </div>
+  </div>
+      <hr>
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+        <div class="row justify-content-between">
+          <div class="col">
+            <p>
+              Forgex—Fortran Regular Expression
+ was developed by Amasaki Shinobu<br>              &copy; 2023-2024 <a rel="license" href="https://opensource.org/licenses/MIT">MIT</a>
+</p>
+          </div>
+          <div class="col">
+            <p class="text-end">
+              Documentation generated by
+              <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
+ on 2024-08-15 02:59              </p>
+          </div>
+        </div>
+        <br>
+      </div> <!-- /container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
+
+    <!-- MathJax JavaScript
+             ================================================== -->
+             <!-- Placed at the end of the document so the pages load faster -->
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({
+          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+          });
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+          <script src="../../tipuesearch/tipuesearch_content.js"></script>
+          <script src="../../tipuesearch/tipuesearch_set.js"></script>
+          <script src="../../tipuesearch/tipuesearch.js"></script>
+
+  </body>
+</html>
