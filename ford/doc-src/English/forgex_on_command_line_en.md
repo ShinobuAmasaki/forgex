@@ -316,20 +316,20 @@ For each of `tree node count`, `nfa states`, and `dfa states`, the denominator r
 
 The `forgec-cli` tool provides a command line interface for testing, debugging, and benchmarking regular expression engines. With features that support engines like `dense`, `lazy-dfa`, and `forgex`, users can analyze regex matching in different contexts and performance scenarios.
 
-### Key Points:
+#### Key Points:
 
-#### 1. Engine Options and Performance Insights:
+**1. Engine Options and Performance Insights:** 
 
 - The `dense` engine utilizes a fully compiled DFA for fast matching, but it may cosume more memory. Additionally, for certain complex regular expressions, the DFA construction can be quite time-comsuming, which might affect overall performance.
 - The `lazy-dfa` engine constructs the DFA on-the-fly, offering a more memory-efficient approach at the cost of potentially longer search times.
 - The `forgex` engine provides a top-level API for regex operations, but its performance metrics are limited to overall execution time due to its `pure` attribute.
 
-#### 2. Command Usage:
+**2. Command Usage:**
 
 - `forgex-cli debug` helps visualize the parsing and compilation process with `ast` and `thompson` subcommands.
 - `forgex-cli find` performs regex matching and provides detailed performance and memory usage statistics. The `--verbose` flag offers additional information about the matching process, while the `--table-only` flag allows you to focus specifically on performance metrics by filtering out other details.
 
-#### 3. Performance Metrics:
+**3. Performance Metrics:**
 
 - Users can access detailed breakdonws of execution times, memory usage, and internal state counts for different engines.
 - For the `lazy-dfa` engine, additional into NFA nad DFA object usage can be obtained, highlighting the efficency and trade-offs of the engine's on-the-fly DFA construction.
