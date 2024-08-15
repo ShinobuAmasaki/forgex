@@ -211,7 +211,7 @@ end block
 forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 
 # fpm run を通して実行する場合
-fpm run forgex-cli --profile release -- find match  '([a-z]*g+)n?' .match. 'assign'
+fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 ```
 
 出力:

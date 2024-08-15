@@ -212,7 +212,7 @@ Command:
 forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 
 # If you run it through fpm run
-fpm run forgex-cli --profile release -- find match '([a-z]*g+)n?' .match. 'assign'
+fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 ```
 
 Output:
