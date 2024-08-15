@@ -7,7 +7,7 @@ module forgex_syntax_tree_optimize_m
    private
 
    public :: get_prefix_literal
-   public :: get_suffix_literal
+   ! public :: get_suffix_literal
    public :: all_literals
 contains
 
@@ -25,18 +25,18 @@ contains
    end function get_prefix_literal
 
    
-   pure function get_suffix_literal(tree, root) result(chara)
-      implicit none
-      type(tree_node_t), intent(in) :: tree(:)
-      integer(int32), intent(in) :: root
-      character(:), allocatable :: chara
-      logical :: terminal_flag
+   ! pure function get_suffix_literal(tree, root) result(chara)
+   !    implicit none
+   !    type(tree_node_t), intent(in) :: tree(:)
+   !    integer(int32), intent(in) :: root
+   !    character(:), allocatable :: chara
+   !    logical :: terminal_flag
 
-      chara = ''
+   !    chara = ''
 
-      call get_suffix_literal_internal(tree, root, chara, terminal_flag)
+   !    call get_suffix_literal_internal(tree, root, chara, terminal_flag)
 
-   end function get_suffix_literal
+   ! end function get_suffix_literal
       
 
    pure function is_literal_tree_node(node) result(res)
@@ -113,7 +113,7 @@ contains
       ! print *,"L133", idx, parent, node%op, res, "|", res_left, res_right, "| ", prefix
 
    end subroutine get_prefix_literal_internal
-   
+
 
    ! pure recursive subroutine get_suffix_literal_internal(tree, idx, suffix, res)
    !    implicit none
