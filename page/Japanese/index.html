@@ -275,7 +275,7 @@
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 </code></pre></div>
 
-<h3>UTF-8文字列のマッチング</h3>
+<h4>UTF-8文字列のマッチング</h4>
 <p>UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。
 以下の例は、漢文の一節に対してマッチングを試みています。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
@@ -294,10 +294,53 @@
 </code></pre></div>
 
 <p>この例では<code>length</code>変数にバイト長が格納され、この場合は10個の3バイト文字に一致したので、その長さは30となります。</p>
+<h3>Command Line Interface Tool</h3>
+<p>バージョン3.2以降では、Forgexエンジンを使用したコマンドラインツール<code>forgex-cli</code>が提供されてり、Forgexエンジン自体のデバッグ、正規表現マッチングのテストやベンチマークのために使用することができます。
+以下のようにコマンドを実行することで、標準出力に結果を得ることができます。
+<a href="https://shinobuamasaki.github.io/forgex/page/Japanese/forgex_on_command_line_ja.html">使い方の詳細についてはドキュメンテーションを参照してください。</a></p>
+<p>コマンド:</p>
+<div class="codehilite"><pre><span></span><code>forgex-cli<span class="w"> </span>find<span class="w"> </span>match<span class="w"> </span>lazy-dfa<span class="w"> </span><span class="s1">&#39;([a-z]*g+)n?&#39;</span><span class="w"> </span>.match.<span class="w"> </span><span class="s1">&#39;assign&#39;</span>
+
+<span class="c1"># fpm run を通して実行する場合</span>
+fpm<span class="w"> </span>run<span class="w"> </span>forgex-cli<span class="w"> </span>--profile<span class="w"> </span>release<span class="w"> </span>--<span class="w"> </span>find<span class="w"> </span>match<span class="w">  </span><span class="s1">&#39;([a-z]*g+)n?&#39;</span><span class="w"> </span>.match.<span class="w"> </span><span class="s1">&#39;assign&#39;</span>
+</code></pre></div>
+
+<p>出力:</p>
+<div class="codehilite"><pre><span></span><code><span class="w">            </span><span class="nl">pattern:</span><span class="w"> </span><span class="p">([</span><span class="n">a</span><span class="o">-</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="n">g</span><span class="o">+</span><span class="p">)</span><span class="n">n</span><span class="o">?</span>
+<span class="w">               </span><span class="nl">text:</span><span class="w"> </span><span class="p">&#39;</span><span class="k">assign</span><span class="p">&#39;</span>
+<span class="w">         </span><span class="n">parse</span><span class="w"> </span><span class="kt">time</span><span class="o">:</span><span class="w">        </span><span class="mf">46.5</span><span class="n">us</span>
+<span class="w">   </span><span class="n">compile</span><span class="w"> </span><span class="n">nfa</span><span class="w"> </span><span class="kt">time</span><span class="o">:</span><span class="w">        </span><span class="mf">74.9</span><span class="n">us</span>
+<span class="n">dfa</span><span class="w"> </span><span class="n">initialize</span><span class="w"> </span><span class="kt">time</span><span class="o">:</span><span class="w">        </span><span class="mf">78.4</span><span class="n">us</span>
+<span class="w">        </span><span class="n">search</span><span class="w"> </span><span class="kt">time</span><span class="o">:</span><span class="w">       </span><span class="mf">661.7</span><span class="n">us</span>
+<span class="w">    </span><span class="n">matching</span><span class="w"> </span><span class="nl">result:</span><span class="w">         </span><span class="n">T</span>
+<span class="w"> </span><span class="n">memory</span><span class="w"> </span><span class="p">(</span><span class="n">estimated</span><span class="p">)</span><span class="o">:</span><span class="w">     </span><span class="mh">10380</span>
+
+<span class="o">==========</span><span class="w"> </span><span class="n">Thompson</span><span class="w"> </span><span class="n">NFA</span><span class="w"> </span><span class="o">===========</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">1</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">5</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">2</span><span class="o">:</span><span class="w"> </span><span class="o">&lt;</span><span class="n">Accepted</span><span class="o">&gt;</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">3</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mh">2</span><span class="p">)(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">2</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">4</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="mh">7</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">5</span><span class="o">:</span><span class="w"> </span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;f&quot;</span><span class="p">],</span><span class="w"> </span><span class="mh">6</span><span class="p">)(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="mh">6</span><span class="p">)([</span><span class="s">&quot;h&quot;</span><span class="o">-</span><span class="s">&quot;m&quot;</span><span class="p">],</span><span class="w"> </span><span class="mh">6</span><span class="p">)(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="mh">6</span><span class="p">)([</span><span class="s">&quot;o&quot;</span><span class="o">-</span><span class="s">&quot;z&quot;</span><span class="p">],</span><span class="w"> </span><span class="mh">6</span><span class="p">)(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">4</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">6</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">5</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">7</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">8</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">8</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="w"> </span><span class="mh">9</span><span class="p">)(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">3</span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">9</span><span class="o">:</span><span class="w"> </span><span class="p">(</span><span class="o">?</span><span class="p">,</span><span class="w"> </span><span class="mh">8</span><span class="p">)</span>
+<span class="o">===============</span><span class="w"> </span><span class="n">DFA</span><span class="w"> </span><span class="o">===============</span>
+<span class="w">   </span><span class="mh">1</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="o">-</span><span class="s">&quot;f&quot;</span><span class="p">]</span><span class="o">=&gt;</span><span class="mh">2</span>
+<span class="w">   </span><span class="mh">2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;o&quot;</span><span class="o">-</span><span class="s">&quot;z&quot;</span><span class="p">]</span><span class="o">=&gt;</span><span class="mh">2</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;h&quot;</span><span class="o">-</span><span class="s">&quot;m&quot;</span><span class="p">]</span><span class="o">=&gt;</span><span class="mh">2</span><span class="w"> </span><span class="n">g</span><span class="o">=&gt;</span><span class="mh">3</span>
+<span class="w">   </span><span class="mh">3</span><span class="nl">A:</span><span class="w"> </span><span class="n">n</span><span class="o">=&gt;</span><span class="mh">4</span>
+<span class="w">   </span><span class="mh">4</span><span class="nl">A:</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">1</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mh">1</span><span class="w"> </span><span class="mh">4</span><span class="w"> </span><span class="mh">5</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">2</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mh">4</span><span class="w"> </span><span class="mh">5</span><span class="w"> </span><span class="mh">6</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">3</span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="mh">3</span><span class="w"> </span><span class="mh">4</span><span class="w"> </span><span class="mh">5</span><span class="w"> </span><span class="mh">6</span><span class="w"> </span><span class="mh">7</span><span class="w"> </span><span class="mh">8</span><span class="w"> </span><span class="p">)</span>
+<span class="n">state</span><span class="w">    </span><span class="mh">4</span><span class="n">A</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="mh">2</span><span class="w"> </span><span class="mh">4</span><span class="w"> </span><span class="mh">5</span><span class="w"> </span><span class="mh">6</span><span class="w"> </span><span class="p">)</span>
+<span class="o">===================================</span>
+</code></pre></div>
+
 <h3>注意</h3>
 <ul>
 <li>WindowおよびmacOS環境の<code>gfortran</code>でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。</li>
-<li>コマンドラインツール<code>forgex-cli</code>をWindows上のPowerShellで利用する場合、システムのロケールをUTF-8に変更する必要があります。</li>
+<li>コマンドラインツール<code>forgex-cli</code>をWindows上のPowerShellで利用する場合、Unicode文字を正しく入出力するには、システムのロケールをUTF-8に変更する必要があります。</li>
 </ul>
 <h2>To Do</h2>
 <ul>
@@ -348,7 +391,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 03:06              </p>
+ on 2024-08-15 05:04              </p>
           </div>
         </div>
         <br>
