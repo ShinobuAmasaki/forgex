@@ -179,7 +179,7 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-### UTF-8 String matching
+#### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters.
@@ -202,10 +202,57 @@ block
 end block
 ```
 
+### Command Line Interface Tool
+
+Version 3.2 introduces a command line tool that is called `forgex-cli` and uses the Forgex engine for debugging, testing, and benchmarking regex matches. It performs matching with commands such as the one shown in below, and outputs the results directly to standard output. [For detailed information, please refer to the documentation.](https://shinobuamasaki.github.io/forgex/page/English/forgex_on_command_line_en.html)
+
+Command:
+
+```shell
+forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+
+# If you run it through fpm run
+fpm run forgex-cli --profile release -- find match '([a-z]*g+)n?' .match. 'assign'
+```
+
+Output:
+
+```
+            pattern: ([a-z]*g+)n?
+               text: 'assign'
+         parse time:        46.5us
+   compile nfa time:        74.9us
+dfa initialize time:        78.4us
+        search time:       661.7us
+    matching result:         T
+ memory (estimated):     10380
+
+========== Thompson NFA ===========
+state    1: (?, 5)
+state    2: <Accepted>
+state    3: (n, 2)(?, 2)
+state    4: (g, 7)
+state    5: (["a"-"f"], 6)(g, 6)(["h"-"m"], 6)(n, 6)(["o"-"z"], 6)(?, 4)
+state    6: (?, 5)
+state    7: (?, 8)
+state    8: (g, 9)(?, 3)
+state    9: (?, 8)
+=============== DFA ===============
+   1 : ["a"-"f"]=>2
+   2 : ["o"-"z"]=>2 ["h"-"m"]=>2 g=>3
+   3A: n=>4
+   4A:
+state    1  = ( 1 4 5 )
+state    2  = ( 4 5 6 )
+state    3A = ( 2 3 4 5 6 7 8 )
+state    4A = ( 2 4 5 6 )
+===================================
+```
+
 ### Notes
 
 - A program built by `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
-- If you use the command line tool in PowerShell on Windows, the system locale shall be UTF-8.
+- If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.
 
 ## To do
 

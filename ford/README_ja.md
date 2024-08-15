@@ -175,7 +175,7 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-### UTF-8文字列のマッチング
+#### UTF-8文字列のマッチング
 
 UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。
 以下の例は、漢文の一節に対してマッチングを試みています。
@@ -198,10 +198,60 @@ end block
 
 この例では`length`変数にバイト長が格納され、この場合は10個の3バイト文字に一致したので、その長さは30となります。
 
+
+### Command Line Interface Tool
+
+バージョン3.2以降では、Forgexエンジンを使用したコマンドラインツール`forgex-cli`が提供されてり、Forgexエンジン自体のデバッグ、正規表現マッチングのテストやベンチマークのために使用することができます。
+以下のようにコマンドを実行することで、標準出力に結果を得ることができます。
+[使い方の詳細についてはドキュメンテーションを参照してください。](https://shinobuamasaki.github.io/forgex/page/Japanese/forgex_on_command_line_ja.html)
+
+コマンド:
+
+```shell
+forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+
+# fpm run を通して実行する場合
+fpm run forgex-cli --profile release -- find match  '([a-z]*g+)n?' .match. 'assign'
+```
+
+出力:
+
+```
+            pattern: ([a-z]*g+)n?
+               text: 'assign'
+         parse time:        46.5us
+   compile nfa time:        74.9us
+dfa initialize time:        78.4us
+        search time:       661.7us
+    matching result:         T
+ memory (estimated):     10380
+
+========== Thompson NFA ===========
+state    1: (?, 5)
+state    2: <Accepted>
+state    3: (n, 2)(?, 2)
+state    4: (g, 7)
+state    5: (["a"-"f"], 6)(g, 6)(["h"-"m"], 6)(n, 6)(["o"-"z"], 6)(?, 4)
+state    6: (?, 5)
+state    7: (?, 8)
+state    8: (g, 9)(?, 3)
+state    9: (?, 8)
+=============== DFA ===============
+   1 : ["a"-"f"]=>2
+   2 : ["o"-"z"]=>2 ["h"-"m"]=>2 g=>3
+   3A: n=>4
+   4A:
+state    1  = ( 1 4 5 )
+state    2  = ( 4 5 6 )
+state    3A = ( 2 3 4 5 6 7 8 )
+state    4A = ( 2 4 5 6 )
+===================================
+```
+
 ### 注意
 
 - WindowおよびmacOS環境の`gfortran`でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。
-- コマンドラインツール`forgex-cli`をWindows上のPowerShellで利用する場合、システムのロケールをUTF-8に変更する必要があります。
+- コマンドラインツール`forgex-cli`をWindows上のPowerShellで利用する場合、Unicode文字を正しく入出力するには、システムのロケールをUTF-8に変更する必要があります。
 
 ## To Do
 - Unicodeエスケープシーケンス`\p{...}`の追加
