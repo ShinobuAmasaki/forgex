@@ -409,6 +409,7 @@ contains
 
    function do_try_literal_match(tree, root, pattern, text) result(res)
       use :: forgex_cli_time_measurement_m
+      use :: forgex_syntax_tree_m
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_literal_match_m
       implicit none
