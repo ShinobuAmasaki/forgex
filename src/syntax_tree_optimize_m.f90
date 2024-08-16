@@ -109,24 +109,14 @@ contains
          if (res_left) then
             if (.not. contains_union) then
                 call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx, contains_union)
-         
-            else if (next_r%op == op_char) then
-                call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx, contains_union)
             end if
          end if
 
          res = res_left .and. res_right
 
       else if (node%op == op_union) then
-         if (tree(parent)%right_i == idx) then
-            contains_union = .true.
-            res = .true.
-            return
-         end if
          contains_union = .true.
-         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx, contains_union)
          res = .true.
-
       else if (is_literal_tree_node(node)) then
          prefix = prefix//char_utf8(node%c(1)%min)
          res = .true.
