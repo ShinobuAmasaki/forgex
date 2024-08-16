@@ -84,30 +84,37 @@ contains
       logical, intent(inout) :: res
 
       logical :: res_left, res_right
-      type(tree_node_t) :: node
-      
+      type(tree_node_t) :: node, next_l, next_r
+      character(:), allocatable :: cache_l, cache_r
+
+      integer :: ci
       
       node = tree(idx)
       res_left = .false.
       res_right = .false.
 
-
+ 
       ! print *,"L 97", idx, node%op, res, "|", res_left, res_right, "| ", prefix
 
       if (node%op == op_concat) then
 
+
          call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx)
-        
+
          if (res_left) call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx)
 
          res = res_left .and. res_right
- 
+
+      else if (node%op == op_union) then
+         res = .true.
+
       else if (is_literal_tree_node(node)) then
          prefix = prefix//char_utf8(node%c(1)%min)
          res = .true.
 
       else
          res = .false.
+         
       end if
 
       ! print *,"L133", idx, parent, node%op, res, "|", res_left, res_right, "| ", prefix
@@ -138,6 +145,24 @@ contains
    !    end if
    ! end subroutine get_suffix_literal_internal
 
+   pure function extract_same_part_prefix (a, b) result(res)
+      implicit none
+      character(*), intent(in) :: a, b
+      character(:), allocatable :: res
+
+      integer :: i, n
+      res = ''
+
+      n = min(len(a), len(b))
+      do i = 1, n
+         if (a(i:i) == b(i:i)) then
+            res = res//a(i:i)
+         else
+            return
+         end if
+      end do
+
+   end function extract_same_part_prefix
 
 
 end module forgex_syntax_tree_optimize_m
