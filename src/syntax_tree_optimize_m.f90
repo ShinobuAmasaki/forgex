@@ -17,10 +17,12 @@ contains
       integer(int32), intent(in) :: root
       character(:), allocatable :: chara
       logical :: each_res
+      logical :: is_left_contains_union
 
       chara = ''
+      is_left_contains_union = .false.
 
-      call get_prefix_literal_internal(tree, root, chara, each_res, 0)
+      call get_prefix_literal_internal(tree, root, chara, each_res, 0, is_left_contains_union)
 
    end function get_prefix_literal
 
@@ -76,12 +78,13 @@ contains
    end subroutine all_literals
    
 
-   recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent)
+   recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent, contains_union)
+      use :: forgex_parameters_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx, parent
       character(:), allocatable, intent(inout) :: prefix
-      logical, intent(inout) :: res
+      logical, intent(inout) :: res, contains_union
 
       logical :: res_left, res_right
       type(tree_node_t) :: node, next_l, next_r
@@ -89,6 +92,7 @@ contains
 
       integer :: ci
       
+      if (idx < 1) return
       node = tree(idx)
       res_left = .false.
       res_right = .false.
@@ -98,14 +102,29 @@ contains
 
       if (node%op == op_concat) then
 
+         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx, contains_union)
 
-         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx)
+         next_r = tree(node%right_i)
 
-         if (res_left) call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx)
+         if (res_left) then
+            if (.not. contains_union) then
+                call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx, contains_union)
+         
+            else if (next_r%op == op_char) then
+                call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx, contains_union)
+            end if
+         end if
 
          res = res_left .and. res_right
 
       else if (node%op == op_union) then
+         if (tree(parent)%right_i == idx) then
+            contains_union = .true.
+            res = .true.
+            return
+         end if
+         contains_union = .true.
+         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx, contains_union)
          res = .true.
 
       else if (is_literal_tree_node(node)) then
