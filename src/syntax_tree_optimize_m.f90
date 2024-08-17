@@ -98,10 +98,10 @@ contains
       res_left = .false.
       res_right = .false.
 
- 
       ! print *,"L 97", idx, node%op, res, "|", res_left, res_right, "| ", prefix
 
-      if (node%op == op_concat) then
+      select case (node%op)
+      case (op_concat)
 
          call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx, contains_union)
 
@@ -115,20 +115,37 @@ contains
 
          res = res_left .and. res_right
 
-      else if (node%op == op_union) then
+      case(op_union)
+         block
+            character(:), allocatable :: candidate1, candidate2
+            candidate1 = ''
+            candidate2 = ''
+            call get_prefix_literal_internal(tree, node%left_i, candidate1, res_left, idx, contains_union)
+            call get_prefix_literal_internal(tree, node%right_i, candidate2, res_right, idx, contains_union)
+            prefix = extract_same_part_prefix(candidate1, candidate2)
+         end block
          contains_union = .true.
          res = .true.
-      else if (is_literal_tree_node(node)) then
-         prefix = prefix//char_utf8(node%c(1)%min)
-         res = .true.
 
-      else
-         res = .false.
-         
-      end if
+      case(op_repeat)
+         block
+            integer :: j, n
+            n = node%min_repeat
+            do j = 1, n
+               call get_prefix_literal_internal(tree, node%left_i, prefix, res_right, idx, contains_union)
+            end do
+         end block
 
-      ! print *,"L133", idx, parent, node%op, res, "|", res_left, res_right, "| ", prefix
+      case default
+         if (is_literal_tree_node(node)) then
+            prefix = prefix//char_utf8(node%c(1)%min)
+            res = .true.
+         else
+            res = .false.
+         end if
+      end select
 
+      ! print *,"L133", idx, node%op, res, "|", res_left, res_right, "| ", prefix
    end subroutine get_prefix_literal_internal
 
 

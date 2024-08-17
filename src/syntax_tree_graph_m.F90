@@ -18,6 +18,7 @@ module forgex_syntax_tree_graph_m
    contains
       procedure :: build => tree_graph__build_syntax_tree
       procedure :: reallocate => tree_graph__reallocate
+      procedure :: deallocate => tree_graph__deallocate
       procedure :: register => tree_graph__register_node
       procedure :: register_connector => tree_graph__register_connector
       procedure :: connect_left => tree_graph__connect_left
@@ -44,15 +45,16 @@ contains
       class(tree_t), intent(inout) :: self
       character(*), intent(in) :: pattern
 
-      integer :: i
+      integer :: i, status
 
-      allocate(self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT))
+      ! if (allocated(self%nodes)) deallocate(self%nodes)
+      allocate(self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT), stat=status)
+      
       self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT)%own_i = [(i, i=TREE_NODE_BASE, TREE_NODE_UNIT)]
       self%num_alloc = 1
       self%tape%idx = 1
       self%tape%str = pattern
       self%top = 0
-   
       call self%tape%get_token()
 
       call self%regex()
@@ -89,6 +91,14 @@ contains
       deallocate(tmp)
 
    end subroutine tree_graph__reallocate
+
+
+   pure subroutine tree_graph__deallocate(self)
+      implicit none
+      class(tree_t), intent(inout) :: self
+
+      deallocate(self%nodes)
+   end subroutine tree_graph__deallocate
 
    
    pure subroutine tree_graph__register_node(self, node)
