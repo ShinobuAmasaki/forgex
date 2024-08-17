@@ -12,7 +12,7 @@
 #define pure
 #endif
 module forgex
-   use :: forgex_syntax_tree_m, only: tree_node_t, tape_t, build_syntax_tree, print_tree, dump_tree_table
+   use :: forgex_syntax_tree_graph_m, only: tree_t
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
@@ -53,8 +53,7 @@ contains
       logical                        :: res
 
       character(:),      allocatable :: buff
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t)                   :: tape
+      type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
       integer                        :: root
       integer                        :: from, to
@@ -63,9 +62,10 @@ contains
 
 
       ! Build a syntax tree from buff, and store the result in tree and root.
-      call build_syntax_tree(buff, tape, tree, root)
+      ! call build_syntax_tree(buff, tape, tree, root)
+      call tree%build(buff)
 
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%init()
@@ -103,8 +103,7 @@ contains
       logical                        :: res
 
       character(:),      allocatable :: buff
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t)                   :: tape
+      type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
       integer                        :: root
 
@@ -122,10 +121,11 @@ contains
       end if
 
       ! Build a syntax tree from buff, and store the result in tree and root.
-      call build_syntax_tree(buff, tape, tree, root)
+      ! call build_syntax_tree(buff, tape, tree, root)
+      call tree%build(buff)
 
       ! Initialize automaton with tree and root.
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
 
       call automaton%init()
 
@@ -144,17 +144,17 @@ contains
       integer, optional,         intent(inout) :: length, from, to
 
       character(:),      allocatable :: buff
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t)                   :: tape
+      type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
       integer                        :: root
       integer                        :: from_l, to_l
 
       buff = trim(pattern)
 
-      call build_syntax_tree(buff, tape, tree, root)
+      ! call build_syntax_tree(buff, tape, tree, root)
+      call tree%build(buff)
 
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
       call automaton%init()
 
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)

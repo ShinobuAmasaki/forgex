@@ -19,7 +19,7 @@ module forgex_cli_memory_calculation_m
 contains
 
    function mem_tape(tape) result(res)
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_node_m
       implicit none
       type(tape_t), intent(in) :: tape
       integer :: res
@@ -30,7 +30,7 @@ contains
 
 
    function mem_tree(tree) result(res)
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_node_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer :: res, sum_c, i

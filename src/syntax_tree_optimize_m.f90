@@ -56,6 +56,7 @@ contains
 
 
    pure recursive subroutine all_literals(tree, idx, literal)
+      use :: forgex_syntax_tree_node_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx

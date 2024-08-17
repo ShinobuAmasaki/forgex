@@ -23,14 +23,13 @@ module forgex_cli_debug_m
 contains
 
    subroutine do_debug_ast(flags, pattern)
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       use :: forgex_cli_memory_calculation_m
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       integer :: root
       integer :: uni, ierr, siz
       character(:), allocatable :: buff
@@ -40,11 +39,12 @@ contains
       if (flags(FLAG_HELP)) call print_help_debug_ast
 
       call time_begin
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      ! call build_syntax_tree(trim(pattern), tree%tape, tree, root)
+      call tree%build(trim(pattern))
       time = time_lap()
 
       open(newunit=uni, status='scratch')
-      call print_tree(tree, root, uni)
+      call tree%print(uni)
 
       inquire(unit=uni, size=siz)
       allocate(character(siz+2) :: buff)
@@ -69,9 +69,9 @@ contains
             call right_justify(cbuff)
 
             write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
-            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tape) + mem_tree(tree)
+            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tree%tape) + mem_tree(tree%nodes)
             write(stdout, fmt_out_int) trim(cbuff(3)), root
-            write(stdout, fmt_out_int) trim(cbuff(4)), size(tree, dim=1)
+            write(stdout, fmt_out_int) trim(cbuff(4)), size(tree%nodes, dim=1)
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
@@ -79,7 +79,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, fmt_out_time) trim(cbuff(1)), get_lap_time_in_appropriate_unit(time)
-            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tape)+mem_tree(tree)
+            write(stdout, fmt_out_int) trim(cbuff(2)), mem_tape(tree%tape)+mem_tree(tree%nodes)
          end if
       end block output
 
@@ -92,13 +92,12 @@ contains
    subroutine do_debug_thompson(flags, pattern)
       use :: forgex_cli_memory_calculation_m
       use :: forgex_automaton_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer :: root
       integer :: uni, ierr, siz, i
@@ -112,7 +111,8 @@ contains
       if (pattern == '') call print_help_debug_thompson
 
       call time_begin()
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      ! call build_syntax_tree(trim(pattern), tree%tape, tree, root)
+      call tree%build(trim(pattern))
       lap1 = time_lap()
 
       call automaton%nfa%build(tree, root, automaton%nfa_entry, automaton%nfa_exit, automaton%all_segments)
@@ -150,7 +150,7 @@ contains
          tree_count     = "tree node count:"
          tree_allocated = "tree node allocated:"
 
-         memsiz = mem_tape(tape) + mem_tree(tree) &
+         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) &
                   + mem_nfa_graph(automaton%nfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
@@ -167,7 +167,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_int)  trim(cbuff(3)), memsiz
             write(stdout, fmt_out_int) trim(cbuff(4)), root
-            write(stdout, fmt_out_int) trim(cbuff(5)), size(tree, dim=1)
+            write(stdout, fmt_out_int) trim(cbuff(5)), size(tree%nodes, dim=1)
             write(stdout, fmt_out_int) trim(cbuff(6)), automaton%nfa%nfa_top
             write(stdout, fmt_out_int) trim(cbuff(7)), automaton%nfa%nfa_limit
          else if (flags(FLAG_NO_TABLE)) then

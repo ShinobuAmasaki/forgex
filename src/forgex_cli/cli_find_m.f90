@@ -66,7 +66,7 @@ contains
 
    subroutine do_find_match_lazy_dfa(flags, pattern, text, is_exactly)
       use :: forgex_automaton_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       use :: forgex_cli_memory_calculation_m
       use :: forgex_api_internal_m
       use :: forgex_nfa_state_set_m
@@ -78,8 +78,7 @@ contains
       character(*), intent(in) :: text
       logical, intent(in) :: is_exactly
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer :: root
 
@@ -99,7 +98,8 @@ contains
       
 
       call time_begin()
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      call tree%build(trim(pattern))
+      ! call build_syntax_tree(trim(pattern), tape, tree, root)
       lap1 = time_lap()
 
       if (do_try_literal_match(tree, root, pattern, text)) then
@@ -109,7 +109,7 @@ contains
       end if
 
       call time_begin()
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
       lap2 = time_lap()
 
       call automaton%init()
@@ -184,7 +184,7 @@ contains
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
 
-         memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
+         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
                    + mem_dfa_graph(automaton%dfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
@@ -206,7 +206,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap4)
             write(stdout, fmt_out_logi)  trim(cbuff(7)), res
             write(stdout, fmt_out_int) trim(cbuff(8)), memsiz
-            write(stdout, fmt_out_ratio) trim(cbuff(9)), root, size(tree, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(9)), root, size(tree%nodes, dim=1)
             write(stdout, fmt_out_ratio) trim(cbuff(10)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
             write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
@@ -239,7 +239,7 @@ contains
 
    subroutine do_find_match_dense_dfa(flags, pattern, text, is_exactly)
       use :: forgex_automaton_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       use :: forgex_cli_memory_calculation_m
       use :: forgex_cli_time_measurement_m
       use :: forgex_dense_dfa_m
@@ -252,8 +252,7 @@ contains
       character(*), intent(in) :: text
       logical, intent(in) :: is_exactly
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer(int32) :: root
 
@@ -266,10 +265,11 @@ contains
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_dense_dfa
 
       call time_begin()
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      ! call build_syntax_tree(trim(pattern), tape, tree, root)
+      call tree%build(trim(pattern))
       lap1 = time_lap()
 
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
       lap2 = time_lap() ! build nfa
 
       call automaton%init()
@@ -348,7 +348,7 @@ contains
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
          
-         memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
+         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
             + mem_dfa_graph(automaton%dfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
@@ -371,7 +371,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap5)
             write(stdout, fmt_out_logi) trim(cbuff(8)), res
             write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
-            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
             write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
             write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
@@ -409,11 +409,11 @@ contains
 
    function do_try_literal_match(tree, root, pattern, text) result(res)
       use :: forgex_cli_time_measurement_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_literal_match_m
       implicit none
-      type(tree_node_t), intent(in) :: tree(:)
+      type(tree_t), intent(in) :: tree
       integer(int32), intent(in) :: root
       character(*), intent(in) :: pattern, text
       
@@ -427,7 +427,7 @@ contains
       text_l = text
 
       literal = ''
-      call all_literals(tree, root, literal)
+      call all_literals(tree%nodes, root, literal)
       if (literal == '') return
       
       call time_begin()

@@ -21,7 +21,7 @@ module forgex_nfa_node_m
    use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
       seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
 
-   use :: forgex_syntax_tree_m
+   use :: forgex_syntax_tree_graph_m, only: tree_t
 
    implicit none
    private
@@ -61,7 +61,7 @@ contains
    pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
-      type(tree_node_t),      intent(in),    allocatable :: tree(:)
+      type(tree_t),         intent(in)                :: tree
       integer(int32),         intent(in)                 :: root_i
       type(nfa_state_node_t), intent(inout), allocatable :: nfa(:)
       integer(int32),         intent(inout)              :: nfa_entry
@@ -96,7 +96,7 @@ contains
       call make_nfa_node(nfa_top)
       nfa_exit = nfa_top
 
-      call generate_nfa(tree, root_i, nfa, nfa_top, nfa_entry, nfa_exit)
+      call generate_nfa(tree, tree%top, nfa, nfa_top, nfa_entry, nfa_exit)
 
       do i = 1, nfa_top
          call nfa(i)%merge_segments()
@@ -163,12 +163,12 @@ contains
 
    end subroutine
 
-   pure recursive subroutine generate_nfa(tree, tree_idx, nfa_graph, nfa_top, entry, exit)
+   pure recursive subroutine generate_nfa(tree, idx, nfa_graph, nfa_top, entry, exit)
       use :: forgex_enums_m
       implicit none
-      type(tree_node_t), allocatable, intent(in) :: tree(:)
+      type(tree_t),  intent(in) :: tree
       type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
-      integer(int32), intent(in) :: tree_idx
+      integer(int32), intent(in) :: idx
       integer(int32), intent(inout) :: nfa_top
       integer(int32), intent(in) :: entry
       integer(int32), intent(in) :: exit
@@ -178,13 +178,13 @@ contains
       integer :: node1
       integer :: node2
 
-      i = tree_idx
+      i = tree%top
 
-      select case(tree(i)%op)
+      select case(tree%nodes(i)%op)
       case (op_char)
          ! Handle character operations by adding transition for each character.
-         do k = 1, size(tree(i)%c, dim=1)
-            call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, tree(i)%c(k))
+         do k = 1, size(tree%nodes(i)%c, dim=1)
+            call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, tree%nodes(i)%c(k))
          end do
 
       case (op_empty)
@@ -193,8 +193,8 @@ contains
 
       case (op_union)
          ! Handle union operation by recursively generating NFA for left and right subtrees.
-         call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, exit)
-         call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, entry, exit)
+         call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry, exit)
+         call generate_nfa(tree, tree%nodes(i)%right_i, nfa_graph, nfa_top, entry, exit)
 
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
@@ -212,7 +212,7 @@ contains
 
          call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
 
-         call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, node1, node2)
+         call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, node1, node2)
 
          call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
          call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
@@ -225,8 +225,8 @@ contains
          end if
          node1 = nfa_top
 
-         call generate_nfa(tree, tree(i)%left_i, nfa_graph, nfa_top, entry, node1)
-         call generate_nfa(tree, tree(i)%right_i, nfa_graph, nfa_top, node1, exit)
+         call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry, node1)
+         call generate_nfa(tree, tree%nodes(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
       case default ! for case (op_not_init)
          ! Handle unexpected cases.
