@@ -17,7 +17,7 @@ module forgex_nfa_node_m
    use, intrinsic :: iso_fortran_env, only: stderr=>error_unit, int32
    use :: forgex_parameters_m, only: TREE_NODE_BASE, TREE_NODE_LIMIT, ALLOC_COUNT_INITTIAL, &
       NFA_NULL_TRANSITION, NFA_STATE_BASE, NFA_TRANSITION_UNIT, NFA_STATE_UNIT, NFA_STATE_LIMIT, &
-      NFA_C_SIZE
+      NFA_C_SIZE, INFINITE
    use :: forgex_segment_m, only: segment_t, SEG_INIT, SEG_EPSILON, operator(/=), operator(==), &
       seg__merge_segments=>merge_segments, seg__sort_segments=>sort_segment_by_min
 
@@ -150,6 +150,7 @@ contains
       type(nfa_state_node_t), allocatable :: tmp(:)
       integer :: siz
 
+
       siz = ubound(nfa_graph, dim=1)
 
       call move_alloc(nfa_graph, tmp)
@@ -165,6 +166,7 @@ contains
 
    pure recursive subroutine generate_nfa(tree, idx, nfa_graph, nfa_top, entry, exit)
       use :: forgex_enums_m
+      use :: forgex_parameters_m
       implicit none
       type(tree_t),  intent(in) :: tree
       type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
@@ -177,8 +179,11 @@ contains
       integer :: k
       integer :: node1
       integer :: node2
+      integer :: entry_local
 
-      i = tree%top
+      if (idx == INVALID_INDEX) return
+      i = idx
+      entry_local = entry
 
       select case(tree%nodes(i)%op)
       case (op_char)
@@ -198,42 +203,133 @@ contains
 
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
-         call make_nfa_node(nfa_top)
-         if (is_exceeded(nfa_top, nfa_graph)) then
-            call reallocate_nfa(nfa_graph)
-         end if
-         node1 = nfa_top
+         call generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry, exit)
+         ! call make_nfa_node(nfa_top)
+         ! if (is_exceeded(nfa_top, nfa_graph)) then
+         !    call reallocate_nfa(nfa_graph)
+         ! end if
+         ! node1 = nfa_top
 
-         call make_nfa_node(nfa_top)
-         if (is_exceeded(nfa_top, nfa_graph)) then
-            call reallocate_nfa(nfa_graph)
-         end if
-         node2 = nfa_top
+         ! call make_nfa_node(nfa_top)
+         ! if (is_exceeded(nfa_top, nfa_graph)) then
+         !    call reallocate_nfa(nfa_graph)
+         ! end if
+         ! node2 = nfa_top
 
-         call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
+         ! call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
 
-         call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, node1, node2)
+         ! call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, node1, node2)
 
-         call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
-         call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
+         ! call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
+         ! call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
 
       case (op_concat)
          ! Handle concatenation operations by recursively generating NFA for left and right subtrees.
-         call make_nfa_node(nfa_top)
-         if (is_exceeded(nfa_top, nfa_graph)) then
-            call reallocate_nfa(nfa_graph)
-         end if
-         node1 = nfa_top
+         call generate_nfa_concatenate(tree, idx, nfa_graph, nfa_top, entry, exit)
+         ! call make_nfa_node(nfa_top)
+         ! if (is_exceeded(nfa_top, nfa_graph)) then
+         !    call reallocate_nfa(nfa_graph)
+         ! end if
+         ! node1 = nfa_top
 
-         call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry, node1)
-         call generate_nfa(tree, tree%nodes(i)%right_i, nfa_graph, nfa_top, node1, exit)
+         ! call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry, node1)
+         ! call generate_nfa(tree, tree%nodes(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
+      case (op_repeat)
+         block
+            integer(int32) :: min_repeat, max_repeat, j, entry_node, node3
+            min_repeat = tree%nodes(i)%min_repeat
+            max_repeat = tree%nodes(i)%max_repeat
+
+            do j = 1, min_repeat-1
+               call make_nfa_node(nfa_top)
+               if (is_exceeded(nfa_top, nfa_graph)) call reallocate_nfa(nfa_graph)
+               node1 = nfa_top
+               call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry_local, node1)
+               entry_local = node1
+            end do
+
+            do j = min_repeat, max_repeat-1
+               call make_nfa_node(nfa_top)
+               if (is_exceeded(nfa_top, nfa_graph)) call reallocate_nfa(nfa_graph)
+               node2 = nfa_top
+
+               call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry_local, node2)
+               call nfa_graph(node2)%add_transition(nfa_graph, node2, exit, SEG_EPSILON)
+               entry_local = node2
+            end do
+
+            if (min_repeat == 0) then
+               call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, SEG_EPSILON)
+            end if
+
+            if (max_repeat == INFINITE) then
+               call generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry_local, exit)
+            else
+               call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry_local, exit)
+            end if
+
+         end block
       case default ! for case (op_not_init)
          ! Handle unexpected cases.
          error stop "This will not heppen in 'generate_nfa'."
       end select
    end subroutine generate_nfa
 
+
+   pure subroutine generate_nfa_concatenate(tree, idx, nfa_graph, nfa_top, entry, exit)
+      implicit none
+      type(tree_t),  intent(in) :: tree
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
+      integer(int32), intent(in) :: idx
+      integer(int32), intent(inout) :: nfa_top
+      integer(int32), intent(in) :: entry
+      integer(int32), intent(in) :: exit
+
+      integer(int32) :: node1
+
+      call make_nfa_node(nfa_top)
+      if (is_exceeded(nfa_top, nfa_graph)) then
+         call reallocate_nfa(nfa_graph)
+      end if
+      node1 = nfa_top
+
+      call generate_nfa(tree, tree%nodes(idx)%left_i, nfa_graph, nfa_top, entry, node1)
+      call generate_nfa(tree, tree%nodes(idx)%right_i, nfa_graph, nfa_top, node1, exit)
+
+   end subroutine generate_nfa_concatenate
+
+   pure subroutine generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry, exit)
+      implicit none
+      type(tree_t),  intent(in) :: tree
+      type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
+      integer(int32), intent(in) :: idx
+      integer(int32), intent(inout) :: nfa_top
+      integer(int32), intent(in) :: entry
+      integer(int32), intent(in) :: exit
+
+      integer(int32) :: node1, node2
+
+      call make_nfa_node(nfa_top)
+      if (is_exceeded(nfa_top, nfa_graph)) then
+         call reallocate_nfa(nfa_graph)
+      end if
+      node1 = nfa_top
+
+      call make_nfa_node(nfa_top)
+      if (is_exceeded(nfa_top, nfa_graph)) then
+         call reallocate_nfa(nfa_graph)
+      end if
+      node2 = nfa_top
+
+      call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
+
+      call generate_nfa(tree, tree%nodes(idx)%left_i, nfa_graph, nfa_top, node1, node2)
+
+      call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
+      call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
+
+   end subroutine generate_nfa_closure
 
    pure subroutine nfa__add_transition(self,nfa_graph, src, dst, c)
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT

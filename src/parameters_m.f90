@@ -24,6 +24,7 @@ module forgex_parameters_m
    integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_LIMIT
 
    integer(int32), parameter :: INVALID_REPEAT_VAL = -1
+   integer(int32), parameter :: INFINITE = -2
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !

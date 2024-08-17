@@ -33,6 +33,7 @@ module forgex_syntax_tree_graph_m
       procedure :: print => print_tree_wrap
    end type
 
+   public :: dump_tree_table
       
 contains
 
@@ -93,6 +94,7 @@ contains
 
       if (parent /= INVALID_INDEX) self%nodes(parent)%left_i = child
       if (child /= INVALID_INDEX) self%nodes(child)%parent_i = parent
+
    end subroutine tree_graph__connect_left
 
    pure subroutine tree_graph__connect_right(self, parent, child)
@@ -165,8 +167,8 @@ contains
             node = make_tree_node(op_concat)
             call self%register_connector(node, left, right)
 
-            left = node
-         end do 
+            left = self%get_top()
+         end do
       end if
    end subroutine
 
@@ -509,6 +511,7 @@ contains
       type(tree_node_t) :: left, node
 
       buf = ''
+      arg(:) = INVALID_REPEAT_VAL
 
       call self%tape%get_token()
 
@@ -521,16 +524,26 @@ contains
          end if
       end do
 
-      read(buf, *, iostat=ios) arg(2)
+      if (buf(1:1) == ',') then
+         buf = "0"//buf
+      end if
+
+      read(buf, fmt=*, iostat=ios) arg(:)
       buf = adjustl(buf)
 
       if (arg(1) == 0) then   ! {,max}, {0,max}
-         min = 0
-         max = arg(2)
+
+         if (buf(len_trim(buf):len_trim(buf)) == ',') then
+            min = arg(1)
+            max = INFINITE
+         else
+            min = 0
+            max = arg(2)
+         end if
       else if (arg(2) == 0) then ! {min,}, {num}
          if (buf(len_trim(buf):len_trim(buf)) == ',') then
             min = arg(1)
-            max = -1
+            max = INFINITE
          else
             min = arg(1)
             max = arg(1)
