@@ -102,11 +102,11 @@ contains
       ! call build_syntax_tree(trim(pattern), tape, tree, root)
       lap1 = time_lap()
 
-      if (do_try_literal_match(tree, root, pattern, text)) then
-         stop
-      else
-         continue
-      end if
+      ! if (do_try_literal_match(tree, root, pattern, text)) then
+      !    stop
+      ! else
+      !    continue
+      ! end if
 
       call time_begin()
       call automaton%preprocess(tree)

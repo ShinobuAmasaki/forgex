@@ -13,9 +13,11 @@ module forgex_syntax_tree_graph_m
    type, public :: tree_t
       type(tree_node_t), allocatable :: nodes(:)
       integer :: top = INVALID_INDEX
+      integer :: num_alloc = 0
       type(tape_t) :: tape
    contains
       procedure :: build => tree_graph__build_syntax_tree
+      procedure :: reallocate => tree_graph__reallocate
       procedure :: register => tree_graph__register_node
       procedure :: register_connector => tree_graph__register_connector
       procedure :: connect_left => tree_graph__connect_left
@@ -46,7 +48,7 @@ contains
 
       allocate(self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT))
       self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT)%own_i = [(i, i=TREE_NODE_BASE, TREE_NODE_UNIT)]
-
+      self%num_alloc = 1
       self%tape%idx = 1
       self%tape%str = pattern
       self%top = 0
@@ -57,17 +59,52 @@ contains
       self%nodes(self%top)%parent_i = TERMINAL_INDEX
    end subroutine tree_graph__build_syntax_tree
 
+
+   pure subroutine tree_graph__reallocate(self)
+      implicit none
+      class(tree_t), intent(inout) :: self
+      integer :: new_part_begin, new_part_end, i
+      type(tree_node_t), allocatable :: tmp(:)
+
+      if (.not. allocated(self%nodes)) then
+         allocate(self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT))
+         self%num_alloc = 1
+      end if
+
+      new_part_begin = ubound(self%nodes, dim=1) + 1
+      new_part_end   = ubound(self%nodes, dim=1) * 2
+
+      if (new_part_end > TREE_NODE_HARD_LIMIT) then
+         error stop "Exceeded the maximum number of tree nodes can be allocated."
+      end if
+
+      call move_alloc(self%nodes, tmp)
+
+      allocate(self%nodes(TREE_NODE_BASE:new_part_end))
+
+      self%nodes(TREE_NODE_BASE:new_part_begin-1) = tmp(TREE_NODE_BASE:new_part_begin-1)
+
+      self%nodes(new_part_begin:new_part_end)%own_i = [(i, i = new_part_begin, new_part_end)]
+
+      deallocate(tmp)
+
+   end subroutine tree_graph__reallocate
+
    
    pure subroutine tree_graph__register_node(self, node)
       implicit none
       class(tree_t), intent(inout) :: self
-      type(tree_node_t), intent(in) :: node
+      type(tree_node_t), intent(inout) :: node
 
       integer :: top
 
       top = self%top + 1
+      if (top > ubound(self%nodes, dim=1)) then
+         call self%reallocate()
+      end if
+      node%own_i = top
+
       self%nodes(top) = node
-      self%nodes(top)%own_i = top
       self%nodes(top)%is_registered = .true.
       self%top = top
 
@@ -77,7 +114,7 @@ contains
    pure subroutine tree_graph__register_connector(self, node, left, right)
       implicit none
       class(tree_t), intent(inout) :: self
-      type(tree_node_t), intent(in) :: node
+      type(tree_node_t), intent(inout) :: node
       type(tree_node_t), intent(in) :: left, right
 
       call self%register(node)
