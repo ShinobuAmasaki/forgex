@@ -1,6 +1,7 @@
 module forgex_syntax_tree_optimize_m
    use, intrinsic :: iso_fortran_env, only: int32
-   use :: forgex_syntax_tree_m
+   use :: forgex_syntax_tree_node_m, only: tree_node_t
+   use :: forgex_syntax_tree_graph_m, only: tree_t
    use :: forgex_utf8_m
    use :: forgex_enums_m
    implicit none
@@ -11,10 +12,9 @@ module forgex_syntax_tree_optimize_m
    public :: all_literals
 contains
 
-   function get_prefix_literal(tree, root) result(chara)
+   function get_prefix_literal(tree) result(chara)
       implicit none
-      type(tree_node_t), intent(in) :: tree(:)
-      integer(int32), intent(in) :: root
+      type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
       logical :: each_res
       logical :: is_left_contains_union
@@ -22,7 +22,7 @@ contains
       chara = ''
       is_left_contains_union = .false.
 
-      call get_prefix_literal_internal(tree, root, chara, each_res, 0, is_left_contains_union)
+      call get_prefix_literal_internal(tree%nodes, tree%top, chara, each_res, 0, is_left_contains_union)
 
    end function get_prefix_literal
 

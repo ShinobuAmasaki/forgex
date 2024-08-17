@@ -23,6 +23,8 @@ module forgex_parameters_m
    !> exceeding this will cause ERROR STOP.
    integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_LIMIT
 
+   integer(int32), parameter :: INVALID_REPEAT_VAL = -1
+
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
    integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x20: white space

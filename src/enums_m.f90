@@ -39,7 +39,8 @@ module forgex_enums_m
       enumerator :: op_concat       ! 2
       enumerator :: op_union        ! 3
       enumerator :: op_closure      ! 4
-      enumerator :: op_empty        ! 5  for epsilon transition
+      enumerator :: op_repeat       ! 5
+      enumerator :: op_empty        ! 6  for epsilon transition
    end enum
 
    enum, bind(c)
