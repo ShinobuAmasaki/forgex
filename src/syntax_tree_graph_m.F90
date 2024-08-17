@@ -311,7 +311,7 @@ contains
       j = 1
       buf = buf//char(0)
 
-      do while (i < i_terminal)
+      do while (i <= i_terminal)
          ie = idxutf8(buf, i)
          i_next = ie + 1
 
@@ -540,7 +540,7 @@ contains
             min = 0
             max = arg(2)
          end if
-      else if (arg(2) == 0) then ! {min,}, {num}
+      else if (arg(2) == INVALID_REPEAT_VAL) then ! {min,}, {num}
          if (buf(len_trim(buf):len_trim(buf)) == ',') then
             min = arg(1)
             max = INFINITE

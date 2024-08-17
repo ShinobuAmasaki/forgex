@@ -15,6 +15,26 @@ program test_001
 
    call runner_match(".*a(a|b)", "kkkab", .true., res)
 
+   call runner_match("a{1,7}", "aaaaaaaaa", .false., res)
+   call runner_match("a{1,7}", "aaaaaaaa", .false., res)
+   call runner_match("a{1,7}", "aaaaaaa", .true., res)
+   call runner_match("a{1,7}", "aaaaaa", .true., res)
+   call runner_match("a{1,7}", "aaaaa", .true., res)
+   call runner_match("a{1,7}", "aaaa", .true., res)
+   call runner_match("a{1,7}", "aaa", .true., res)
+   call runner_match("a{1,7}", "aa", .true., res)
+   call runner_match("a{1,7}", "a", .true., res)
+   call runner_match("a{1,7}", "", .false., res)
+
+   call runner_match('[a-z]{,7}', 'aaaaaaa', .true., res)
+   call runner_match('[a-z]{,6}', 'aaaaaa',.true., res)
+   call runner_match('[a-z]{,5}', 'aaaaa', .true.,res)
+   call runner_match('[a-z]{,4}', 'aaaa', .true.,res)
+   call runner_match('[a-z]{,3}', 'aaa', .true.,res)
+   call runner_match('[a-z]{,2}', 'aa', .true.,res)
+   call runner_match('[a-z]{,1}', 'a', .true.,res)
+
+
    call runner_regex('[a-z]{,7}', 'aaaaaaab', 'aaaaaaa', res)
    call runner_regex('[a-z]{,6}', 'aaaaaaab', 'aaaaaa', res)
    call runner_regex('[a-z]{,5}', 'aaaaaaab', 'aaaaa', res)

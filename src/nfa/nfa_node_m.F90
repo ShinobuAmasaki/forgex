@@ -204,44 +204,25 @@ contains
       case (op_closure)
          ! Handle closure (Kleene star) operations by creating new node and adding appropriate transition
          call generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry, exit)
-         ! call make_nfa_node(nfa_top)
-         ! if (is_exceeded(nfa_top, nfa_graph)) then
-         !    call reallocate_nfa(nfa_graph)
-         ! end if
-         ! node1 = nfa_top
 
-         ! call make_nfa_node(nfa_top)
-         ! if (is_exceeded(nfa_top, nfa_graph)) then
-         !    call reallocate_nfa(nfa_graph)
-         ! end if
-         ! node2 = nfa_top
-
-         ! call nfa_graph(entry)%add_transition(nfa_graph, entry, node1, SEG_EPSILON)
-
-         ! call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, node1, node2)
-
-         ! call nfa_graph(node2)%add_transition(nfa_graph, node2, node1, SEG_EPSILON)
-         ! call nfa_graph(node1)%add_transition(nfa_graph, node1, exit, SEG_EPSILON)
 
       case (op_concat)
          ! Handle concatenation operations by recursively generating NFA for left and right subtrees.
          call generate_nfa_concatenate(tree, idx, nfa_graph, nfa_top, entry, exit)
-         ! call make_nfa_node(nfa_top)
-         ! if (is_exceeded(nfa_top, nfa_graph)) then
-         !    call reallocate_nfa(nfa_graph)
-         ! end if
-         ! node1 = nfa_top
-
-         ! call generate_nfa(tree, tree%nodes(i)%left_i, nfa_graph, nfa_top, entry, node1)
-         ! call generate_nfa(tree, tree%nodes(i)%right_i, nfa_graph, nfa_top, node1, exit)
 
       case (op_repeat)
          block
             integer(int32) :: min_repeat, max_repeat, j, entry_node, node3
+            integer(int32) :: num_1st_repeat, num_2nd_repeat
             min_repeat = tree%nodes(i)%min_repeat
             max_repeat = tree%nodes(i)%max_repeat
 
-            do j = 1, min_repeat-1
+            num_1st_repeat = min_repeat-1
+            if (max_repeat == INFINITE) then
+               num_1st_repeat = num_1st_repeat +1
+            end if
+
+            do j = 1, num_1st_repeat
                call make_nfa_node(nfa_top)
                if (is_exceeded(nfa_top, nfa_graph)) call reallocate_nfa(nfa_graph)
                node1 = nfa_top
@@ -249,7 +230,13 @@ contains
                entry_local = node1
             end do
 
-            do j = min_repeat, max_repeat-1
+            if (min_repeat == 0) then
+               num_2nd_repeat = max_repeat - 1
+            else
+               num_2nd_repeat = max_repeat - min_repeat
+            end if
+
+            do j = 1, num_2nd_repeat
                call make_nfa_node(nfa_top)
                if (is_exceeded(nfa_top, nfa_graph)) call reallocate_nfa(nfa_graph)
                node2 = nfa_top
@@ -258,6 +245,7 @@ contains
                call nfa_graph(node2)%add_transition(nfa_graph, node2, exit, SEG_EPSILON)
                entry_local = node2
             end do
+            
 
             if (min_repeat == 0) then
                call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, SEG_EPSILON)
