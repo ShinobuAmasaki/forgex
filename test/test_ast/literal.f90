@@ -21,7 +21,7 @@ program main
    ! pattern = "abc{2,3}def"    ! PASS
 
    ! pattern = "abc{2,3}def"     
-   pattern = "c{2,3}"
+   pattern = "(ああ|あい|あう)"
    prefix = ''
 
    call tree%build(pattern)
@@ -31,80 +31,5 @@ program main
    print *, pattern, ": postfix: ", postfix
    call tree%print(0)
    call tree%deallocate()
-
-
-   pattern = "c{4,7}" 
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-
-   pattern = "c{4,10}" 
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
    
-
-   pattern = "c{5,10}" 
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-   
-   pattern = "(ab){3,4}"
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-
-   pattern = "(ab|ac){3,4}"
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-   
-   pattern = "(ab|ac|a+){3,4}"
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-
-   pattern = "(b+)a*(ab){3,4}"
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-   
-   
-   pattern = "[a]{3,4}"
-   call tree%build(pattern)
-   prefix = get_prefix_literal(tree)
-   postfix = get_postfix_literal(tree)
-   print *, pattern, ": prefix:  ", prefix
-   print *, pattern, ": postfix: ", postfix
-   call tree%print(0)
-   call tree%deallocate()
-
 end program main
