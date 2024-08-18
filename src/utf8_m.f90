@@ -186,7 +186,7 @@ contains
             byte(4) = set_continuation_byte(byte(4))
 
          else if (2**11 - 1 < code) then  ! 3-byte character
-            byte(1) = 0
+            byte(1) = 32
             byte(2) = ibset(byte(2), 7)
             byte(2) = ibset(byte(2), 6)
             byte(2) = ibset(byte(2), 5)
@@ -195,8 +195,8 @@ contains
             byte(4) = set_continuation_byte(byte(4))
 
          else if (2**7 -1 < code) then    ! 2-byte character
-            byte(1) = 0
-            byte(2) = 0
+            byte(1) = 32
+            byte(2) = 32
             byte(3) = ibset(byte(3), 7)
             byte(3) = ibset(byte(3), 6)
             byte(3) = ibclr(byte(3), 5)
