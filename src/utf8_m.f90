@@ -19,6 +19,9 @@ module forgex_utf8_m
    public :: is_first_byte_of_character
    public :: is_first_byte_of_character_array
    public :: len_trim_utf8, len_utf8
+   public :: is_valid_multiple_byte_character
+   public :: adjustl_multi_byte
+   public :: trim_invalid_utf8_byte
 
 contains
 
@@ -27,6 +30,7 @@ contains
    !> given the string str and the current index curr.
    pure function idxutf8 (str, curr) result(tail)
       use, intrinsic :: iso_fortran_env
+      use :: forgex_parameters_m
       implicit none
       character(*),   intent(in) :: str      ! Input string, a multibyte character is expected.
       integer(int32), intent(in) :: curr     ! Current index.
@@ -35,6 +39,7 @@ contains
       integer(int8)              :: byte     ! Variable to hold the byte value of the 1-byte part of the character
       integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7
          ! Shifted byte values.
+
 
       tail = curr    ! Initialize tail to the current index.
 
@@ -58,7 +63,7 @@ contains
                return
             end if
 
-            if (shift_4 == 14) then ! If the byte start witth 1110_2 (3-byte character).
+            if (shift_4 == 14) then ! If the byte starts witth 1110_2 (3-byte character).
                tail = curr + 3 - 1
                return
             end if
@@ -81,9 +86,61 @@ contains
             end if
 
          end if
-
       end do
+
    end function idxutf8
+
+
+   pure function is_valid_multiple_byte_character(chara) result(res)
+      use, intrinsic :: iso_fortran_env, only: int32, int8
+      implicit none
+      character(*), intent(in) :: chara
+      logical :: res
+
+      integer :: siz, i, expected_siz
+      integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7
+      integer(int8) :: byte
+      
+      res = .true.
+      siz = len(chara)
+
+      byte = ichar(chara(1:1))
+      shift_3 = ishft(byte, -3)  ! Right shift the byte by 3 bits
+      shift_4 = ishft(byte, -4)  ! Right shift the byte by 4 bits
+      shift_5 = ishft(byte, -5)  ! Right shift the byte by 5 bits
+      shift_6 = ishft(byte, -6)  ! Right shift the byte by 6 bits
+      shift_7 = ishft(byte, -7)  ! Right shift the byte by 7 bits
+
+      ! 1st byte
+      if (shift_3 == 30) then
+         expected_siz = 4
+      else if (shift_4 == 14)then
+         expected_siz = 3 
+      else if (shift_5 == 6) then
+         expected_siz = 2
+      else if (shift_7 == 0) then ! for 1-byte character
+         expected_siz = 1         
+      else
+         res = .false.
+         return
+      end if
+
+      if (expected_siz /= siz) then
+         res = .false.
+         return
+      end if
+
+      do i = 2, expected_siz
+         byte = ichar(chara(i:i))
+         shift_6 = ishft(byte, -6)  ! Right shift the byte by 6 bits
+         if (shift_6 /= 2) then
+            res = .false.
+            return
+         end if
+      end do
+
+   end function is_valid_multiple_byte_character
+      
 
    !> The `char_utf8` function takes a code point as integer in Unicode character set,
    !> and returns the corresponding character as UTF-8 binary string.
@@ -358,7 +415,8 @@ contains
       allocate(array(length), source=.false.)
 
       ! Loop through each character in the string concurrently.
-      do concurrent (i = 1:length)
+      ! do concurrent (i = 1:length)
+      do i = 1, length
          ! Call the `is_first_byte_of_character` function for each character and store the result in the `array`.
          array(i) = is_first_byte_of_character(str(i:i))
       end do
@@ -388,5 +446,41 @@ contains
       end do
    end function count_token
 
+
+   pure function adjustl_multi_byte(chara) result(res)
+      implicit none
+      character(*), intent(in) :: chara
+      character(:), allocatable :: res
+
+      integer :: i
+      res = ''
+      i = 1
+      do while (i <= len(chara))
+         if (chara(i:i) == char(0)) then
+            i = i + 1
+            cycle
+         else
+            exit
+         end if
+      end do
+
+      res = chara(i:len(chara))
+
+   end function adjustl_multi_byte
+
+   pure function trim_invalid_utf8_byte(chara) result(res)
+      implicit none
+      character(*), intent(in) :: chara
+      character(:), allocatable :: res
+      
+      integer :: i
+      
+      if (is_valid_multiple_byte_character(chara)) then
+         res = chara
+      else
+         res = ''
+      end if
+   
+   end function trim_invalid_utf8_byte
 
 end module forgex_utf8_m

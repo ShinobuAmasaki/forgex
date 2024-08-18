@@ -1,3 +1,6 @@
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_syntax_tree_optimize_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_syntax_tree_node_m, only: tree_node_t
@@ -131,7 +134,7 @@ contains
             end do
       case default
          if (is_literal_tree_node(node)) then
-            prefix = prefix//char_utf8(node%c(1)%min)
+            prefix = prefix//adjustl_multi_byte(char_utf8(node%c(1)%min))
             res = .true.
          else
             res = .false.
@@ -181,7 +184,7 @@ contains
          end do
       case default
          if (is_literal_tree_node(node)) then
-            postfix = char_utf8(node%c(1)%min)//postfix
+            postfix = char_utf8(node%c(1)%min)//adjustl_multi_byte(postfix)
             res = .true.
          else if (is_char_class_tree_node(node)) then
             continue
@@ -193,20 +196,35 @@ contains
 
 
    pure function extract_same_part_prefix (a, b) result(res)
+      use :: forgex_utf8_m
       implicit none
       character(*), intent(in) :: a, b
       character(:), allocatable :: res
 
-      integer :: i, n
+      character(:), allocatable :: buf
+      integer :: i, ie, n
       res = ''
-
+      buf = ''
       n = min(len(a), len(b))
       do i = 1, n
          if (a(i:i) == b(i:i)) then
-            res = res//a(i:i)
+            buf = buf//a(i:i)
          else
-            return
+            exit
          end if
+      end do
+
+      ! Handling UTF8 fragment bytes
+      n = len(buf)
+      i = 1
+      do while (i <= n)
+         ie = idxutf8(buf, i)
+         if (n < ie) exit
+
+         if (is_valid_multiple_byte_character(buf(i:ie))) then
+            res = res//adjustl_multi_byte(buf(i:ie))
+         end if
+         i = ie + 1
       end do
 
    end function extract_same_part_prefix
