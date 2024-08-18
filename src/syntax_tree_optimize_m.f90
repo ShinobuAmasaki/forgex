@@ -111,7 +111,6 @@ contains
 
       select case (node%op)
       case (op_concat)
-
          call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx)
 
          next_r = tree(node%right_i)
@@ -165,7 +164,6 @@ contains
       select case (node%op)
       case (op_concat)
          call get_postfix_literal_internal(tree, node%right_i, postfix, res_right, idx)
-         next_l = tree(node%left_i)
 
          if (res_right) then
             call get_postfix_literal_internal(tree, node%left_i, postfix, res_left, idx)
@@ -173,8 +171,8 @@ contains
 
          res = res_left .and. res_right
       case (op_union)
-         call get_postfix_literal_internal(tree, node%left_i, candidate2, unused, idx)
-         call get_postfix_literal_internal(tree, node%right_i, candidate1, unused, idx)
+         call get_postfix_literal_internal(tree, node%left_i, candidate1, unused, idx)
+         call get_postfix_literal_internal(tree, node%right_i, candidate2, unused, idx)
          postfix = extract_same_part_postfix(candidate1, candidate2)
          res = .true.
       case(op_repeat)
@@ -184,7 +182,7 @@ contains
          end do
       case default
          if (is_literal_tree_node(node)) then
-            postfix = char_utf8(node%c(1)%min)//adjustl_multi_byte(postfix)
+            postfix = char_utf8(node%c(1)%min)//postfix
             res = .true.
          else if (is_char_class_tree_node(node)) then
             continue
@@ -231,24 +229,48 @@ contains
 
 
    pure function extract_same_part_postfix (a, b) result(res)
+      use :: forgex_utf8_m
       implicit none
       character(*), intent(in) :: a, b
       character(:), allocatable :: res
       
-      integer :: i, ii, m, diff
+      character(:), allocatable :: buf
+      integer :: i, ii, n, diff, ie
+      character(:), allocatable :: short_s, long_s
       
       res = ''
+      buf = ''
 
-      m = min(len(a), len(b))
-      diff = max(len(a), len(b)) - m
+      if (len(a) < len(b)) then
+         short_s = a 
+         long_s = b
+      else
+         short_s = b
+         long_s = a
+      end if
+ 
+      n = min(len(a), len(b))
+      diff = max(len(a), len(b)) - n
 
-      do i = m, 1, -1
+      do i = n, 1, -1
          ii = i + diff
-         if (a(i:i) == b(ii:ii)) then
-            res = a(i:i)//res
+         if (short_s(i:i) == long_s(ii:ii)) then
+            buf = a(i:i)//buf
          else
-            return
+            exit
          end if
+      end do
+
+      n = len(buf)
+      i= 1
+      do while (i <= n)
+         ie = idxutf8(buf, i)
+         if (n < ie) exit
+         
+         if (is_valid_multiple_byte_character(buf(i:ie))) then
+            res = res//adjustl_multi_byte(buf(i:ie))
+         end if
+         i = ie + 1
       end do
    end function extract_same_part_postfix
 
