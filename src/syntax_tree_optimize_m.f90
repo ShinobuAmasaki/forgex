@@ -8,7 +8,7 @@ module forgex_syntax_tree_optimize_m
    private
 
    public :: get_prefix_literal
-   ! public :: get_suffix_literal
+   public :: get_postfix_literal
    public :: all_literals
 contains
 
@@ -17,29 +17,26 @@ contains
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
       logical :: each_res
-      logical :: is_left_contains_union
 
       chara = ''
-      is_left_contains_union = .false.
 
-      call get_prefix_literal_internal(tree%nodes, tree%top, chara, each_res, 0, is_left_contains_union)
+      call get_prefix_literal_internal(tree%nodes, tree%top, chara, each_res, 0)
 
    end function get_prefix_literal
 
    
-   ! pure function get_suffix_literal(tree, root) result(chara)
-   !    implicit none
-   !    type(tree_node_t), intent(in) :: tree(:)
-   !    integer(int32), intent(in) :: root
-   !    character(:), allocatable :: chara
-   !    logical :: terminal_flag
+   pure function get_postfix_literal(tree) result(chara)
+      implicit none
+      type(tree_t), intent(in) :: tree
+      character(:), allocatable :: chara
+      logical :: each_res, does_right_contain_union
 
-   !    chara = ''
+      chara = ''
 
-   !    call get_suffix_literal_internal(tree, root, chara, terminal_flag)
+      call get_postfix_literal_internal(tree%nodes, tree%top, chara, each_res, 0)
 
-   ! end function get_suffix_literal
-      
+   end function get_postfix_literal
+
 
    pure function is_literal_tree_node(node) result(res)
       implicit none
@@ -53,6 +50,17 @@ contains
          end if
       end if
    end function is_literal_tree_node
+
+
+   pure function is_char_class_tree_node(node) result(res)
+      implicit none
+      type(tree_node_t), intent(in) :: node
+      logical :: res
+
+      res = .false.
+      if (node%op == op_char) res = .true.
+
+   end function is_char_class_tree_node
 
 
    pure recursive subroutine all_literals(tree, idx, literal)
@@ -79,59 +87,48 @@ contains
    end subroutine all_literals
    
 
-   recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent, contains_union)
+   recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent)
       use :: forgex_parameters_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx, parent
       character(:), allocatable, intent(inout) :: prefix
-      logical, intent(inout) :: res, contains_union
+      logical, intent(inout) :: res
 
       logical :: res_left, res_right
       type(tree_node_t) :: node, next_l, next_r
-
-      integer :: ci
+      character(:), allocatable :: candidate1, candidate2
+      integer :: j, n
       
       node = tree(idx)
       res_left = .false.
       res_right = .false.
+      candidate1 = ''
+      candidate2 = ''
 
       select case (node%op)
       case (op_concat)
 
-         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx, contains_union)
+         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx)
 
          next_r = tree(node%right_i)
 
          if (res_left) then
-            if (.not. contains_union) then
-                call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx, contains_union)
-            end if
+            call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx)
          end if
 
          res = res_left .and. res_right
 
       case(op_union)
-         block
-            character(:), allocatable :: candidate1, candidate2
-            candidate1 = ''
-            candidate2 = ''
-            call get_prefix_literal_internal(tree, node%left_i, candidate1, res_left, idx, contains_union)
-            call get_prefix_literal_internal(tree, node%right_i, candidate2, res_right, idx, contains_union)
-            prefix = extract_same_part_prefix(candidate1, candidate2)
-         end block
-         contains_union = .true.
+         call get_prefix_literal_internal(tree, node%left_i, candidate1, res_left, idx)
+         call get_prefix_literal_internal(tree, node%right_i, candidate2, res_right, idx)
+         prefix = extract_same_part_prefix(candidate1, candidate2)
          res = .true.
-
       case(op_repeat)
-         block
-            integer :: j, n
             n = node%min_repeat
             do j = 1, n
-               call get_prefix_literal_internal(tree, node%left_i, prefix, res_right, idx, contains_union)
+               call get_prefix_literal_internal(tree, node%left_i, prefix, res_right, idx)
             end do
-         end block
-
       case default
          if (is_literal_tree_node(node)) then
             prefix = prefix//char_utf8(node%c(1)%min)
@@ -143,17 +140,18 @@ contains
    end subroutine get_prefix_literal_internal
 
 
-   pure recursive subroutine get_postfix_literal_internal(tree, idx, postfix, res, parent, contains_union)
+   pure recursive subroutine get_postfix_literal_internal(tree, idx, postfix, res, parent)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: postfix
       integer(int32), intent(in) :: parent
-      logical, intent(inout) :: res, contains_union
+      logical, intent(inout) :: res
       
       logical :: res_left, res_right, unused
       type(tree_node_t) :: node, next_l, next_r
       character(:), allocatable :: candidate1, candidate2
+      integer :: n, j
 
       node = tree(idx)
       res_left = .false.
@@ -163,32 +161,36 @@ contains
 
       select case (node%op)
       case (op_concat)
-         call get_postfix_literal_internal(tree, node%right_i, postfix, res, idx, contains_union)
+         call get_postfix_literal_internal(tree, node%right_i, postfix, res_right, idx)
          next_l = tree(node%left_i)
 
          if (res_right) then
-            if (.not. contains_union) then
-               call get_postfix_literal_internal(tree, node%left_i, postfix, res, idx, contains_union)
-            end if
+            call get_postfix_literal_internal(tree, node%left_i, postfix, res_left, idx)
          end if 
 
          res = res_left .and. res_right
       case (op_union)
-         call get_postfix_literal_internal(tree, node%right_i, candidate1, unused, idx, contains_union)
-         call get_postfix_literal_internal(tree, node%left_i, candidate2, unused, idx, contains_union)
+         call get_postfix_literal_internal(tree, node%left_i, candidate2, unused, idx)
+         call get_postfix_literal_internal(tree, node%right_i, candidate1, unused, idx)
          postfix = extract_same_part_postfix(candidate1, candidate2)
-         contains_union = .true.
          res = .true.
+      case(op_repeat)
+         n = node%min_repeat
+         do j = 1, n
+            call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, idx)
+         end do
       case default
          if (is_literal_tree_node(node)) then
             postfix = char_utf8(node%c(1)%min)//postfix
             res = .true.
+         else if (is_char_class_tree_node(node)) then
+            continue
          else
             res = .false.
          end if
       end select
-
    end subroutine get_postfix_literal_internal
+
 
    pure function extract_same_part_prefix (a, b) result(res)
       implicit none
@@ -209,9 +211,27 @@ contains
 
    end function extract_same_part_prefix
 
+
    pure function extract_same_part_postfix (a, b) result(res)
       implicit none
       character(*), intent(in) :: a, b
       character(:), allocatable :: res
+      
+      integer :: i, ii, m, diff
+      
+      res = ''
+
+      m = min(len(a), len(b))
+      diff = max(len(a), len(b)) - m
+
+      do i = m, 1, -1
+         ii = i + diff
+         if (a(i:i) == b(ii:ii)) then
+            res = a(i:i)//res
+         else
+            return
+         end if
+      end do
    end function extract_same_part_postfix
+
 end module forgex_syntax_tree_optimize_m
