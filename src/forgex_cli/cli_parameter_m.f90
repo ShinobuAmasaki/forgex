@@ -11,7 +11,7 @@ module forgex_cli_parameters_m
    private
 
    !> Number of flags (without value) that forgex-cli accepts.
-   integer, parameter, public :: NUM_FLAGS = 4
+   integer, parameter, public :: NUM_FLAGS = 5
 
    !> Number of sub-command that forgec-cli accepts.
    integer, parameter, public :: NUM_CMD = 2
@@ -62,7 +62,7 @@ module forgex_cli_parameters_m
    !> Output format for displaying an integer in tables.
    character(*), parameter, public :: fmt_out_int = "(a, i10)"
    character(*), parameter, public :: fmt_out_ratio = "(a, i10, '/', i0)"
-
+   character(*), parameter, public :: fmt_out_char = "(a, 1x, a)"
    character(*), parameter, public :: fmt_out_time = "(a, a15)"
    character(*), parameter, public :: fmt_out_logi = "(a, l10)"
 
