@@ -66,6 +66,8 @@ module forgex_cli_parameters_m
    character(*), parameter, public :: fmt_out_time = "(a, a15)"
    character(*), parameter, public :: fmt_out_logi = "(a, l10)"
 
+   character(*), parameter, public :: not_running = "not running"
+
    !> Format for outputting text only.
    character(*), parameter, public :: fmta = "(a)"
 
