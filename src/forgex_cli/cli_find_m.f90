@@ -449,7 +449,7 @@ contains
 
       if (flag_no_literal_optimize) then
          call do_matching_exactly_no_literal_opts(automaton, text, res)
-         runs_engine = .false.
+         runs_engine = .true.
       else
          call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
       end if
