@@ -31,6 +31,8 @@ module forgex_cli_parameters_m
    !> The buffer length of displaying the AST.
    integer, parameter, public :: TREE_BUFF_LEN = 2**16
 
+   integer, parameter, public :: INVALID_CHAR_INDEX = -1
+
 !---------------------------------------------------------------------!
    !> Name of the subcommand debug.
    character(*), parameter, public :: CMD_DEBUG = "debug"

@@ -121,7 +121,10 @@ contains
       else
          block
             integer :: from, to
-            call do_matching_including(automaton, char(0)//text//char(0), from, to)
+
+            call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
+                     prefix, postfix, .not. flags(FLAG_NO_LITERAL), runs_engine)
+
             if (is_there_caret_at_the_top(pattern)) then
                from = from
             else
@@ -483,6 +486,64 @@ contains
 
    end subroutine runner_do_matching_exactly
 
+
+   subroutine runner_do_matching_including(automaton, text, from, to, prefix, postfix, flag_literal_optimize, runs_engine)
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_automaton_m
+      use :: forgex_api_internal_m
+      implicit none
+      type(automaton_t), intent(inout) :: automaton
+      character(*), intent(in) :: text
+      integer(int32), intent(inout) :: from, to
+      character(*), intent(in) :: prefix, postfix
+      logical,intent(in) :: flag_literal_optimize
+      logical, intent(inout) :: runs_engine
+
+      logical :: empty_pre_post, empty_pre, empty_post
+      integer(int32) :: idx_pre, idx_post, begin_ci, end_ci, offset_ci
+      runs_engine = .false.
+      offset_ci = 0
+
+
+      if (flag_literal_optimize) then
+
+         if (len(text) == len(prefix)+2 .and. char(0)//prefix//char(0) == text) then
+            from = 2
+            to = 2 + len(prefix)
+            return
+         end if
+
+         idx_pre = INVALID_CHAR_INDEX
+         idx_post = INVALID_CHAR_INDEX
+         empty_pre = prefix == ''
+         empty_post = postfix == ''
+
+         if (.not. empty_pre) idx_pre = index(text, prefix)
+         if (.not. empty_post) idx_post = index(text, postfix, back=.true.)
+
+         if (idx_pre /= INVALID_CHAR_INDEX .and. idx_pre /= 0) then
+            begin_ci = idx_pre
+            offset_ci = begin_ci -1
+         else
+            begin_ci = 1
+         end if
+
+         if (idx_post /= INVALID_CHAR_INDEX .and. idx_post /= 0) then
+            end_ci = idx_post + len(postfix) -1
+         else
+            end_ci = len(text)
+         end if
+
+         call do_matching_including(automaton, text(begin_ci:end_ci), from, to)
+         
+         from = from + offset_ci
+         to = to + offset_ci
+         runs_engine = .true.
+      else
+         call do_matching_including(automaton, text, from, to)
+         runs_engine = .true.
+      end if
+   end subroutine runner_do_matching_including
 
 
    function do_try_literal_match(tree, root, pattern, text) result(res)
