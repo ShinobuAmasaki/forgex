@@ -448,38 +448,13 @@ contains
 
       runs_engine = .false.
 
+
       if (flag_literal_optimize) then
-
-         if (prefix == text) then
-            res = .true.
-            return
-         end if
-
-         len_pre = len(prefix)
-         len_post = len(postfix)
-         n = len(text)
-         matches_pre = .true.
-         matches_post = .true.
-
-         empty_pre   = prefix == ''
-         empty_post  = postfix == ''
-         empty_pre_post = empty_pre .and. empty_post
-         if (.not. empty_pre) matches_pre = text(1:len_pre) == prefix
-         if (.not. empty_post) matches_post = text(n-len_post+1:n) == postfix
-
-         runs_engine = all([matches_pre, matches_post])  &
-                        .or. (empty_pre .and. matches_post) .or. (empty_post .and. matches_pre) &
-                        .or. empty_pre_post
-
-         if (runs_engine) then
-            call do_matching_exactly(automaton, text, res)
-         else
-            res = .false.
-            return
-         end if
+         call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
+         runs_engine = .true.
 
       else
-         call do_matching_exactly(automaton, text, res)
+         call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
          runs_engine = .true.
 
       end if

@@ -13,6 +13,7 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_graph_m, only: tree_t
+   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_postfix_literal
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
@@ -106,7 +107,12 @@ contains
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
       integer                        :: root
+      character(:), allocatable  :: prefix, postfix
 
+      logical :: runs_engine
+
+      prefix = ''
+      postfix = ''
 
       ! If the pattern begins with a caret character and ends with
       ! a doller character, they are removed and assigned to the string buffer.
@@ -130,7 +136,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_exactly(automaton, str, res)
+      call do_matching_exactly(automaton, str, res, prefix, postfix, runs_engine)
 
       call automaton%free()
 
