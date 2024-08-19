@@ -237,7 +237,7 @@ contains
       implicit none
       character(*), intent(in) :: str
 
-      write(stderr) "[info]: "//str
+      write(stderr, '(a)') "[info]: "//str
    end subroutine info
 
 end module forgex_cli_utils_m
