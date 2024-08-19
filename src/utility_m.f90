@@ -53,10 +53,11 @@ contains
 
    pure subroutine get_index_list_forward(text, prefix, index_array)
       use, intrinsic :: iso_fortran_env, only: int32
+      use :: forgex_parameters_m
       implicit none
       character(*), intent(in) :: text, prefix
       integer(int32), allocatable, intent(inout) :: index_array(:)
-      
+
       integer :: offset, idx, len_pre
 
       len_pre = len(prefix)
@@ -67,7 +68,7 @@ contains
       if (allocated(index_array)) deallocate(index_array)
       idx = index(text, prefix)
       if (idx <= 0) then
-         index_array = [0]
+         index_array = [INVALID_CHAR_INDEX]
          return
       else
          index_array = [idx]

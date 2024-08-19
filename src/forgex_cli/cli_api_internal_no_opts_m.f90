@@ -22,7 +22,7 @@ contains
       integer :: start        ! starting character index
       integer :: i
       character(:), allocatable :: str
-write(0, *) "L25 hoge"
+
       str = string
       from = 0
       to = 0 
