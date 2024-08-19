@@ -497,25 +497,33 @@ contains
          if (.not. empty_post) idx_post = index(text, postfix, back=.true.)
 
          if (idx_pre /= INVALID_CHAR_INDEX .and. idx_pre /= 0) then
-            begin_ci = idx_pre
+            if (idx_pre == 2) then
+               begin_ci = 1
+            else
+               begin_ci = idx_pre
+            end if
             offset_ci = begin_ci -1
          else
             begin_ci = 1
          end if
 
          if (idx_post /= INVALID_CHAR_INDEX .and. idx_post /= 0) then
-            end_ci = idx_post + len(postfix) -1
+            if (idx_post == len(text)-1) then
+               end_ci = len(text)
+            else 
+               end_ci = idx_post + len(postfix) -1
+            end if
          else
             end_ci = len(text)
          end if
 
-         call do_matching_including(automaton, text(begin_ci:end_ci), from, to)
+         call do_matching_including(automaton, text(begin_ci:end_ci), from, to, prefix, postfix)
          
          from = from + offset_ci
          to = to + offset_ci
          runs_engine = .true.
       else
-         call do_matching_including(automaton, text, from, to)
+         call do_matching_including(automaton, text, from, to, prefix, postfix)
          runs_engine = .true.
       end if
    end subroutine runner_do_matching_including

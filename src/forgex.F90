@@ -59,12 +59,19 @@ contains
       integer                        :: root
       integer                        :: from, to
 
-      buff = trim(pattern)
+      character(:), allocatable :: prefix, postfix
 
+      prefix = ''
+      postfix = ''
+
+      buff = trim(pattern)
 
       ! Build a syntax tree from buff, and store the result in tree and root.
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
+
+      prefix = get_prefix_literal(tree)
+      postfix = get_postfix_literal(tree)
 
       call automaton%preprocess(tree)
 
@@ -72,7 +79,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_including(automaton, char(0)//str//char(0), from, to)
+      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, postfix)
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
 
       if (is_there_caret_at_the_top(pattern)) then
@@ -109,7 +116,6 @@ contains
       integer                        :: root
       character(:), allocatable  :: prefix, postfix
 
-      logical :: runs_engine
 
       prefix = ''
       postfix = ''
@@ -130,13 +136,16 @@ contains
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      prefix = get_prefix_literal(tree)
+      ! postfix = get_postfix_literal(tree)
+
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
 
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_exactly(automaton, str, res, prefix, postfix, runs_engine)
+      call do_matching_exactly(automaton, str, res, prefix, postfix)
 
       call automaton%free()
 
@@ -155,6 +164,11 @@ contains
       integer                        :: root
       integer                        :: from_l, to_l
 
+      character(:), allocatable :: prefix, postfix
+
+      prefix = ''
+      postfix = ''
+
       buff = trim(pattern)
 
       ! call build_syntax_tree(buff, tape, tree, root)
@@ -163,7 +177,7 @@ contains
       call automaton%preprocess(tree)
       call automaton%init()
 
-      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l)
+      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, postfix)
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l

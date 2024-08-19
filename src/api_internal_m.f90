@@ -28,25 +28,28 @@ contains
 
    !> This procedure reads a text, performs regular expression matching using an automaton,
    !> and stores the string index in the argument if it contains a match.
-   pure subroutine do_matching_including (automaton, string, from, to) !, prefix , postfix, runs_engine)
+   pure subroutine do_matching_including (automaton, string, from, to, prefix , postfix, runs_engine)
+      use :: forgex_utility_m
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
       integer,           intent(inout) :: from, to
-      ! character(*),      intent(in)    :: prefix, postfix
-      ! logical, optional, intent(inout) :: runs_engine
+      character(*),      intent(in)    :: prefix, postfix
+      logical, optional, intent(inout) :: runs_engine
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
       integer :: max_match    ! maximum value of match attempts
       integer :: start        ! starting character index
+      integer :: i
       character(:), allocatable :: str
+      integer, allocatable :: index_list(:)
 
-     ! runs_engine = .false.
+      if (present(runs_engine)) runs_engine = .false.
       str = string
       from = 0
-      to = 0
+      to = 0      
 
       cur_i = automaton%initial_index
 
@@ -62,7 +65,16 @@ contains
          return
       end if
 
-      start = 1
+      call get_index_list_forward(string, prefix, index_list)
+
+      if (.not. allocated(index_list)) return
+      if (size(index_list)== 1 .and. index_list(1) == 0) return
+      if (index_list(1) == 2) index_list = [1, index_list]
+
+
+      i = 1
+      start = index_list(i)
+      if (present(runs_engine)) runs_engine = .true.
       do while (start < len(str))
          max_match = 0
          ci = start
@@ -92,19 +104,25 @@ contains
             return
          end if
 
-         start = idxutf8(str, start) + 1
+         ! start = idxutf8(str, start) + 1 ! Bruteforce searching
+         i = i + 1
+         if (i <= size(index_list)) then
+            start = index_list(i)
+         else
+            return
+         end if
       end do
    end subroutine do_matching_including
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
       logical,           intent(inout) :: res
       character(*),      intent(in)    :: prefix, postfix
-      logical, optional, intent(inout) :: runs_engine
+      logical, optional, intent(inout) :: runs
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
@@ -112,9 +130,10 @@ contains
       integer :: max_match    !
       
       integer :: len_pre, len_post, n
-      logical :: empty_pre_post, empty_pre, empty_post, matches_pre, matches_post
+      logical :: empty_pre_post, empty_pre, empty_post, matches_pre, matches_post, runs_engine
 
       runs_engine = .false.
+      if (present(runs)) runs = runs_engine
 
       ! Returns true immediately if the given prefix exactly matches the string.
       if (len(string) > 0 .and. len(prefix) >0 ) then
@@ -139,7 +158,9 @@ contains
       runs_engine = (matches_pre .and. matches_post)  &
                      .or. (empty_pre .and. matches_post) &
                      .or. (empty_post .and. matches_pre) &
-                     .or. empty_pre_post
+                     .or. empty_pre_post .or. matches_pre
+
+      if(present(runs)) runs = runs_engine
 
       if (.not. runs_engine) then
          res = .false.
