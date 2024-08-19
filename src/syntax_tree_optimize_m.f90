@@ -15,7 +15,7 @@ module forgex_syntax_tree_optimize_m
    public :: all_literals
 contains
 
-   function get_prefix_literal(tree) result(chara)
+   pure function get_prefix_literal(tree) result(chara)
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
@@ -90,7 +90,7 @@ contains
    end subroutine all_literals
    
 
-   recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent)
+   pure recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res, parent)
       use :: forgex_parameters_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
@@ -129,14 +129,18 @@ contains
             do j = 1, n
                call get_prefix_literal_internal(tree, node%left_i, prefix, res_right, idx)
             end do
-            res = .true.
-      case default
+            res = res_right
+      case (op_char)
          if (is_literal_tree_node(node)) then
-            prefix = prefix//adjustl_multi_byte(char_utf8(node%c(1)%min))
-            res = .true.
-         else
-            res = .false.
+            if (node%c(1)%min == node%c(1)%max) then
+               prefix = prefix//adjustl_multi_byte(char_utf8(node%c(1)%min))
+               res = .true.
+               return
+            end if
          end if
+         res = .false.
+      case default
+         res = .false.
       end select
    end subroutine get_prefix_literal_internal
 
@@ -179,7 +183,7 @@ contains
          do j = 1, n
             call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, idx)
          end do
-         res = .true.
+         res = res_right
       case default
          if (is_literal_tree_node(node)) then
             postfix = char_utf8(node%c(1)%min)//postfix

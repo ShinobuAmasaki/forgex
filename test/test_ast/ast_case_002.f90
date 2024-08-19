@@ -22,7 +22,8 @@ program main
    call runner_postfix("(ああう|あいう|あうう)", "う", res)
    call runner_postfix("(あああ|いああ|うああ)", "ああ", res)
    call runner_postfix("あ", "あ", res)
-
+   call runner_postfix("a.{1,5}g", "g", res)
+   
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
