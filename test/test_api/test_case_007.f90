@@ -67,6 +67,7 @@ program test_case_007
    call runner_match("((ab|bc)*|(de|ef)+)+", "a", .false., res)
    call runner_match("((ab|bc)*|(de|ef)+)+", "b", .false., res)
    call runner_match("((ab|bc)*|(de|ef)+)+", "abed", .false., res)
+   call runner_match("(ab){3}b", "abababb", .true., res)
 
    if (res) then
       print *, "=== TEST CASE 7 END ==="

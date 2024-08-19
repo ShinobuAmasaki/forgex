@@ -23,6 +23,8 @@ program main
    call runner_postfix("(あああ|いああ|うああ)", "ああ", res)
    call runner_postfix("あ", "あ", res)
    call runner_postfix("a.{1,5}g", "g", res)
+   call runner_postfix("(ab|aa){3}b", "b", res)
+   call runner_postfix("a(ac|bc|cc){3}", "c", res)
    
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
