@@ -104,7 +104,7 @@ contains
       res = .true.
       siz = len(chara)
 
-      byte = ichar(chara(1:1))
+      byte = ichar(chara(1:1), kind=int8)
       shift_3 = ishft(byte, -3)  ! Right shift the byte by 3 bits
       shift_4 = ishft(byte, -4)  ! Right shift the byte by 4 bits
       shift_5 = ishft(byte, -5)  ! Right shift the byte by 5 bits
@@ -131,7 +131,7 @@ contains
       end if
 
       do i = 2, expected_siz
-         byte = ichar(chara(i:i))
+         byte = ichar(chara(i:i), kind=int8)
          shift_6 = ishft(byte, -6)  ! Right shift the byte by 6 bits
          if (shift_6 /= 2) then
             res = .false.
@@ -472,8 +472,6 @@ contains
       implicit none
       character(*), intent(in) :: chara
       character(:), allocatable :: res
-      
-      integer :: i
       
       if (is_valid_multiple_byte_character(chara)) then
          res = chara
