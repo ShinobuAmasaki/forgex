@@ -173,6 +173,7 @@ contains
                      .or. (empty_post .and. matches_pre) &
                      .or. empty_pre_post .or. matches_pre
 
+      
       ! Returns true immediately if the given prefix exactly matches the string.
       if (len(string) > 0 .and. len(prefix) >0 ) then
          if (prefix == string .and. len_pre == n) then
@@ -182,7 +183,6 @@ contains
       end if
 
       if(present(runs)) runs = runs_engine
-
       if (.not. runs_engine) then
          res = .false.
          return

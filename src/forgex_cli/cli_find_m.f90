@@ -117,13 +117,15 @@ contains
       lap3 = time_lap()
 
       if (is_exactly) then
-         call runner_do_matching_exactly(automaton, text, res, postfix, prefix, .not. flags(FLAG_NO_LITERAL), runs_engine)
+         call time_begin
+         call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
+         lap4 = time_lap()
       else
          block
             integer :: from, to
-
+            call time_begin
             call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
-                     prefix, postfix, .not. flags(FLAG_NO_LITERAL), runs_engine)
+                     prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
 
             if (is_there_caret_at_the_top(pattern)) then
                from = from
@@ -142,10 +144,9 @@ contains
             else
                res = .false.
             end if
-
+            lap4 = time_lap()
          end block
       end if
-      lap4 = time_lap()
 
       open(newunit=uni, status='scratch')
       write(uni, fmta) HEADER_NFA
@@ -219,8 +220,8 @@ contains
             end if
 
             write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap4)            
-            write(stdout, fmt_out_logi)  trim(cbuff(8)), res
-            write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
+            write(stdout, fmt_out_logi) trim(cbuff(8)), res
+            write(stdout, fmt_out_int)  trim(cbuff(9)), memsiz
 
             write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
             write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
@@ -288,7 +289,7 @@ contains
       logical :: res
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_dense_dfa
-
+      if (flags(FLAG_NO_LITERAL)) call info("No literal search optimization is implemented in dense DFA.")
       call time_begin()
       ! call build_syntax_tree(trim(pattern), tape, tree, root)
       call tree%build(trim(pattern))
@@ -431,100 +432,49 @@ contains
       
    end subroutine do_find_match_dense_dfa
 
-   subroutine runner_do_matching_exactly(automaton, text, res, prefix, postfix, flag_literal_optimize, runs_engine)
+   subroutine runner_do_matching_exactly(automaton, text, res, prefix, postfix, flag_no_literal_optimize, runs_engine)
       use :: forgex_automaton_m
       use :: forgex_syntax_tree_optimize_m
+      use :: forgex_cli_api_internal_no_opts_m
       use :: forgex_api_internal_m
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*), intent(in) :: text
       logical, intent(inout) :: res
       logical, intent(inout) :: runs_engine
-      logical, intent(in) :: flag_literal_optimize
+      logical, intent(in) :: flag_no_literal_optimize
       character(*), intent(in) :: prefix, postfix
 
-      integer :: len_pre, len_post, n
-      logical :: empty_pre_post, empty_pre, empty_post, matches_pre, matches_post
-
-      runs_engine = .false.
 
 
-      if (flag_literal_optimize) then
-         call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
-         runs_engine = .true.
-
+      if (flag_no_literal_optimize) then
+         call do_matching_exactly_no_literal_opts(automaton, text, res)
+         runs_engine = .false.
       else
          call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
-         runs_engine = .true.
-
       end if
 
    end subroutine runner_do_matching_exactly
 
 
-   subroutine runner_do_matching_including(automaton, text, from, to, prefix, postfix, flag_literal_optimize, runs_engine)
+   subroutine runner_do_matching_including(automaton, text, from, to, prefix, postfix, flag_no_literal_optimize, runs_engine)
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_automaton_m
       use :: forgex_api_internal_m
+      use :: forgex_cli_api_internal_no_opts_m
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*), intent(in) :: text
       integer(int32), intent(inout) :: from, to
       character(*), intent(in) :: prefix, postfix
-      logical,intent(in) :: flag_literal_optimize
+      logical,intent(in) :: flag_no_literal_optimize
       logical, intent(inout) :: runs_engine
 
-      logical :: empty_pre_post, empty_pre, empty_post
-      integer(int32) :: idx_pre, idx_post, begin_ci, end_ci, offset_ci
-      runs_engine = .false.
-      offset_ci = 0
-
-
-      if (flag_literal_optimize) then
-
-         if (len(text) == len(prefix)+2 .and. char(0)//prefix//char(0) == text) then
-            from = 2
-            to = 2 + len(prefix)
-            return
-         end if
-
-         idx_pre = INVALID_CHAR_INDEX
-         idx_post = INVALID_CHAR_INDEX
-         empty_pre = prefix == ''
-         empty_post = postfix == ''
-
-         if (.not. empty_pre) idx_pre = index(text, prefix)
-         if (.not. empty_post) idx_post = index(text, postfix, back=.true.)
-
-         if (idx_pre /= INVALID_CHAR_INDEX .and. idx_pre /= 0) then
-            if (idx_pre == 2) then
-               begin_ci = 1
-            else
-               begin_ci = idx_pre
-            end if
-            offset_ci = begin_ci -1
-         else
-            begin_ci = 1
-         end if
-
-         if (idx_post /= INVALID_CHAR_INDEX .and. idx_post /= 0) then
-            if (idx_post == len(text)-1) then
-               end_ci = len(text)
-            else 
-               end_ci = idx_post + len(postfix) -1
-            end if
-         else
-            end_ci = len(text)
-         end if
-
-         call do_matching_including(automaton, text(begin_ci:end_ci), from, to, prefix, postfix)
-         
-         from = from + offset_ci
-         to = to + offset_ci
+      if (flag_no_literal_optimize) then
+         call do_matching_including_no_literal_opts(automaton, text, from, to)
          runs_engine = .true.
       else
-         call do_matching_including(automaton, text, from, to, prefix, postfix)
-         runs_engine = .true.
+         call do_matching_including(automaton, text, from, to, prefix, postfix, runs_engine)
       end if
    end subroutine runner_do_matching_including
 
