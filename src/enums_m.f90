@@ -49,6 +49,7 @@ module forgex_enums_m
       enumerator :: FLAG_VERBOSE
       enumerator :: FLAG_NO_TABLE
       enumerator :: FLAG_TABLE_ONLY
+      enumerator :: FLAG_NO_LITERAL
    end enum
 
    enum, bind(c)
