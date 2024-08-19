@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private pure subroutine automaton__build_nfa(self, tree, tree_top)  
+    <h2>private pure subroutine automaton__build_nfa(self, tree)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -149,7 +149,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
               </ul>
             </li>
         </ul>
@@ -174,7 +174,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~11"></span>
+              <span class="anchor" id="variable-self"></span>
               class(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -189,30 +189,15 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~27"></span>
-              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
-            </td>
-<td>intent(in),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>tree</strong>(:)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-tree_top"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-tree~8"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>tree_top</strong></td>
+            <td><strong>tree</strong></td>
             <td>
                 
             </td>
@@ -234,15 +219,15 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">automaton__build_nfa</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_top</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">tree_node_t</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">automaton__build_nfa</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_graph_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">tree_t</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_node_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="p">(:)</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree_top</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
 
+<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">tree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span>
 <span class="w">      </span><span class="c">!-- NFA building</span>
-<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_top</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_exit</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">nfa</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_exit</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">all_segments</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">automaton__build_nfa</span>
 </pre></div>
 
@@ -267,7 +252,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>

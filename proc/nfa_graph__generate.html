@@ -149,7 +149,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
               </ul>
             </li>
         </ul>
@@ -174,7 +174,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~5"></span>
+              <span class="anchor" id="variable-self~15"></span>
               class(<a href='../type/nfa_graph_t.html'>nfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -189,15 +189,15 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~25"></span>
-              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
+              <span class="anchor" id="variable-tree~15"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>tree</strong>(:)</td>
+            <td><strong>tree</strong></td>
             <td>
                 
             </td>
@@ -265,14 +265,14 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">nfa_graph__generate</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_root</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_graph_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">nfa_graph_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_node_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="p">(:)</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w">   </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree_root</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span>
 
-<span class="k">      call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree_root</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
+<span class="k">      call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">nfa_graph__generate</span>
 </pre></div>
 
@@ -297,7 +297,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>

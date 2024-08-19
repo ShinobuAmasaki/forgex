@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.2% of total for procedures.">48 statements</a>
+                 title=" 1.9% of total for procedures.">88 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,9 +141,22 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public pure subroutine do_matching_including(automaton, string, from, to)  
+    <h2>public pure subroutine do_matching_including(automaton, string, from, to, prefix, postfix, runs_engine)  
 </h2>
-    
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
 
     <p>This procedure reads a text, performs regular expression matching using an automaton,
 and stores the string index in the argument if it contains a match.</p>
@@ -162,7 +175,7 @@ and stores the string index in the argument if it contains a match.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~6"></span>
+              <span class="anchor" id="variable-automaton~11"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -177,7 +190,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string"></span>
+              <span class="anchor" id="variable-string~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -192,7 +205,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~3"></span>
+              <span class="anchor" id="variable-from~6"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -207,7 +220,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
+              <span class="anchor" id="variable-to~6"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -216,6 +229,51 @@ and stores the string index in the argument if it contains a match.</p>
             </td>
             <td>::</td>
             <td><strong>to</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-prefix~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>prefix</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-postfix~6"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>postfix</strong></td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-runs_engine"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>runs_engine</strong></td>
             <td>
                 
             </td>
@@ -237,22 +295,31 @@ and stores the string index in the argument if it contains a match.</p>
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">do_matching_including</span><span class="w"> </span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">do_matching_including</span><span class="w"> </span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span><span class="p">,</span><span class="w"> </span><span class="n">runs_engine</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utility_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">get_index_list_forward</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_parameters_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">string</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="w">           </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span>
+<span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w">           </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runs_engine</span>
 
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="w"> </span><span class="c">! current and destination index of DFA nodes</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ci</span><span class="w">           </span><span class="c">! character index</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">next_ci</span><span class="w">      </span><span class="c">! next character index</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">max_match</span><span class="w">    </span><span class="c">! maximum value of match attempts</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">start</span><span class="w">        </span><span class="c">! starting character index</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">index_list</span><span class="p">(:)</span>
+<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">do_brute_force</span>
 
+<span class="w">      </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span>
 <span class="w">      </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">      </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
 
 <span class="w">      </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">initial_index</span>
 
@@ -268,11 +335,35 @@ and stores the string index in the argument if it contains a match.</p>
 <span class="k">         return</span>
 <span class="k">      end if</span>
 
-<span class="k">      </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">      if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">do_brute_force</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         call </span><span class="n">get_index_list_forward</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">index_list</span><span class="p">)</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">index_list</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
+<span class="w">         </span><span class="k">end if</span>
+<span class="k">      end if</span>
+
+<span class="k">      </span><span class="n">loop_init</span><span class="p">:</span><span class="w"> </span><span class="k">block</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">do_brute_force</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span>
+<span class="w">         </span><span class="k">else</span>
+<span class="w">            </span><span class="c">! indexリストの先頭が2の場合、NULL文字を考慮してstart=1, i=0にする。</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">index_list</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">               </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">               </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="k">               </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">               </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index_list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="w">            </span><span class="k">end if</span>
+<span class="k">         end if</span>
+<span class="k">      end block </span><span class="n">loop_init</span>
+
 <span class="w">      </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span>
 <span class="w">         </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">         </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span>
 <span class="w">         </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">initial_index</span>
+<span class="w">         </span><span class="n">runs_engine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 
 <span class="w">         </span><span class="c">! Traverse the DFA with the input string from the current starting position of ``cur_i`.</span>
 <span class="w">         </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">cur_i</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">DFA_INVALID_INDEX</span><span class="p">)</span>
@@ -298,8 +389,21 @@ and stores the string index in the argument if it contains a match.</p>
 <span class="w">            </span><span class="k">return</span>
 <span class="k">         end if</span>
 
-<span class="k">         </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">      </span><span class="k">end do</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">do_brute_force</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! Bruteforce searching</span>
+<span class="w">            </span><span class="k">cycle</span>
+<span class="k">         endif</span>
+
+<span class="k">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">index_list</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+<span class="k">         else</span>
+<span class="k">            return</span>
+<span class="k">         end if</span>
+<span class="k">      end do</span>
+
+
 <span class="k">   end subroutine </span><span class="n">do_matching_including</span>
 </pre></div>
 
@@ -324,7 +428,7 @@ and stores the string index in the argument if it contains a match.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>

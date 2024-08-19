@@ -57,6 +57,7 @@ contains
       call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
       call register_flag(all_flags(3), 'no-table', '--no-table')
       call register_flag(all_flags(4), 'table-only', '--table-only')
+      call register_flag(all_flags(5), 'no-literal-optimize', '--disable-literal-optimize')
    end subroutine init_flags
 
 

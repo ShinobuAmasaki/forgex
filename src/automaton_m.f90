@@ -21,11 +21,13 @@ module forgex_automaton_m
    use :: forgex_nfa_state_set_m
    use :: forgex_nfa_graph_m
    use :: forgex_lazy_dfa_graph_m
+   use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
    private
 
    type, public :: automaton_t
       !! This type contains an NFA graph, and the DFA graph that are derived from it.
+      type(tree_t)                 :: tree
       type(nfa_graph_t)            :: nfa
       type(dfa_graph_t)            :: dfa
       type(nfa_state_set_t)        :: entry_set
@@ -48,25 +50,22 @@ module forgex_automaton_m
 
 contains
 
-   pure subroutine automaton__build_nfa(self, tree, tree_top)
-      use :: forgex_syntax_tree_m, only: tree_node_t
+   pure subroutine automaton__build_nfa(self, tree)
+      use :: forgex_syntax_tree_graph_m, only: tree_t
       implicit none
       class(automaton_t), intent(inout) :: self
-      type(tree_node_t), allocatable, intent(in) :: tree(:)
-      integer(int32), intent(in) :: tree_top
+      type(tree_t), intent(in) :: tree
 
+      self%tree = tree
       !-- NFA building
-      call self%nfa%build(tree, tree_top, self%nfa_entry, self%nfa_exit, self%all_segments)
+      call self%nfa%build(tree, tree%top, self%nfa_entry, self%nfa_exit, self%all_segments)
    end subroutine automaton__build_nfa
 
    !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,
    !> and then initializes the DFA graph.
    pure subroutine automaton__initialize(self)
-      use :: forgex_syntax_tree_m, only: tree_node_t
       implicit none
       class(automaton_t), intent(inout) :: self
-      ! type(tree_node_t),allocatable, intent(in) :: tree(:)
-      ! integer(int32), intent(in) :: tree_top
 
       type(nfa_state_set_t) :: initial_closure
       integer(int32) :: new_index

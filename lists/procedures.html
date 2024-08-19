@@ -78,6 +78,18 @@
 by setting the corresponding element in <code>state%vec</code> to true.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/adjustl_multi_byte.html'>adjustl_multi_byte</a></td>
+                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/all_literals.html'>all_literals</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/arg_in_segment.html'>arg_in_segment</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Function</td>
@@ -172,18 +184,6 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/build_syntax_tree.html'>build_syntax_tree</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/char_class.html'>char_class</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This procedure handles character classes.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/char_utf8.html'>char_utf8</a></td>
@@ -297,18 +297,6 @@ state set in an NFA.</p></td>
                  <td><p>This function calculates a set of possible NFA states from the current DFA state.</p><a href="../proc/compute_reachable_state.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/connect_left.html'>connect_left</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/connect_right.html'>connect_right</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/construct_dense_dfa.html'>construct_dense_dfa</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Subroutine</td>
@@ -329,7 +317,7 @@ variables of another dfa_transition_t.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/deallocate_tree.html'>deallocate_tree</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine deallocate the syntax tree.</p></td>
                </tr>
@@ -452,11 +440,30 @@ node with the value of the given argument.</p></td>
                  <td><p>This subroutine is intended to be called from the <code>forgex</code> API module.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/do_matching_exactly_no_literal_opts.html'>do_matching_exactly_no_literal_opts</a></td>
+                 <td><a href='../module/forgex_cli_api_internal_no_opts_m.html'>forgex_cli_api_internal_no_opts_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This subroutine is intended to be called from the <code>forgex_cli_find_m</code> module.</p></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/do_matching_including.html'>do_matching_including</a></td>
                  <td><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This procedure reads a text, performs regular expression matching using an automaton,
 and stores the string index in the argument if it contains a match.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_matching_including_no_literal_opts.html'>do_matching_including_no_literal_opts</a></td>
+                 <td><a href='../module/forgex_cli_api_internal_no_opts_m.html'>forgex_cli_api_internal_no_opts_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This procedure reads a text, performs regular expression matching using an automaton,
+and stores the string index in the argument if it contains a match.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/do_try_literal_match.html'>do_try_literal_match</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/does_command_exist.html'>does_command_exist</a></td>
@@ -478,7 +485,7 @@ and stores the string index in the argument if it contains a match.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/dump_tree_table.html'>dump_tree_table</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -494,6 +501,18 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
                  <td>Function</td>
                  <td><p>This function determines if two NFA state sets (logical vectors) are equivalent.</p><a href="../proc/equivalent_nfa_state_set.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/extract_same_part_postfix.html'>extract_same_part_postfix</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/extract_same_part_prefix.html'>extract_same_part_prefix</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/function__regex.html'>function__regex</a></td>
@@ -514,6 +533,18 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/generate_nfa_closure.html'>generate_nfa_closure</a></td>
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/generate_nfa_concatenate.html'>generate_nfa_concatenate</a></td>
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/get_arg_command_line.html'>get_arg_command_line</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Subroutine</td>
@@ -523,6 +554,12 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../proc/get_flag_index.html'>get_flag_index</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_index_list_forward.html'>get_index_list_forward</a></td>
+                 <td><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></td>
+                 <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
@@ -539,8 +576,32 @@ units, and returns a string with the unit for output.</p></td>
                  <td><a href="../proc/get_os_type.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/get_postfix_literal.html'>get_postfix_literal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_postfix_literal_internal.html'>get_postfix_literal_internal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_prefix_literal.html'>get_prefix_literal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_prefix_literal_internal.html'>get_prefix_literal_internal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/get_token.html'>get_token</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Get the currently focused character (1 to 4 bytes) from the entire string inside
  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
@@ -567,6 +628,12 @@ given the string str and the current index curr.</p></td>
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Extracts a sorted list of unique indices from a list of segments.</p><a href="../proc/index_list_from_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/info.html'>info</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/init_commands.html'>init_commands</a></td>
@@ -606,6 +673,12 @@ It compute the complement of the given ranges and modifies the list accordingly.
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/is_char_class_tree_node.html'>is_char_class_tree_node</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/is_exceeded.html'>is_exceeded</a></td>
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Function</td>
@@ -626,6 +699,12 @@ an UTF-8 binary string.</p></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine determines if each character in a given string is the first byte of a UTF-8 multibyte character.
 It takes a UTF-8 string and return a logical array indicating for each position if it is the first byte.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_literal_tree_node.html'>is_literal_tree_node</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_overlap_to_seg_list.html'>is_overlap_to_seg_list</a></td>
@@ -668,11 +747,29 @@ compares the result to the <code>correct_answer</code>.</p></td>
 compares the result to the correct answer.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/is_valid__postfix.html'>is_valid__postfix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_valid__prefix.html'>is_valid__prefix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/is_valid__regex.html'>is_valid__regex</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
                  <td><p>This function checks if a pattern matches a string using the <code>regex</code>
 function and compares the result to the expected answer.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_valid_multiple_byte_character.html'>is_valid_multiple_byte_character</a></td>
+                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a></td>
@@ -721,10 +818,22 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td><p>This function calculates the length of a UTF-8 string.</p><a href="../proc/len_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/literal_index_matching.html'>literal_index_matching</a></td>
+                 <td><a href='../module/forgex_literal_match_m.html'>forgex_literal_match_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/literal_kmp_search.html'>literal_kmp_search</a></td>
+                 <td><a href='../module/forgex_literal_match_m.html'>forgex_literal_match_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/make_atom.html'>make_atom</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Function</td>
-                 <td><p>This function creates an atom node in a tree structure using a segment.</p></td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/make_nfa_node.html'>make_nfa_node</a></td>
@@ -733,22 +842,16 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/make_tree_caret_dollar.html'>make_tree_caret_dollar</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This function constructs a tree node for carriage return (CR) and line feed (LF) characters.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/make_tree_crlf.html'>make_tree_crlf</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This function constructs a tree node for carriage return (CR) and line feed (LF) characters.</p></td>
+                 <td><a href='../proc/make_repeat_node.html'>make_repeat_node</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/make_tree_node.html'>make_tree_node</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Function</td>
-                 <td><p>This function creates a new tree node with the specified operation and child node.</p></td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/mark_epsilon_transition.html'>mark_epsilon_transition</a></td>
@@ -888,17 +991,17 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
-                 <td>Interface</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
 an integer and a segment, an integer and a list of segments, or a segment
 and a segment, is contained in the latter, respectively.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -931,20 +1034,8 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><p>The function implemented for the <code>.match.</code> operator.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/postfix_op.html'>postfix_op</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/primary.html'>primary</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/print_class_simplify.html'>print_class_simplify</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Function</td>
                  <td></td>
                </tr>
@@ -1009,20 +1100,14 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../interface/print_tree.html'>print_tree</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Interface</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/print_tree_internal.html'>print_tree_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/print_tree_wrap.html'>print_tree_wrap</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -1039,12 +1124,6 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><p>For Windows, use high-resolution system call for timing.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/range_min_max.html'>range_min_max</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/reallocate_nfa.html'>reallocate_nfa</a></td>
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
@@ -1052,13 +1131,7 @@ and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/reallocate_tree.html'>reallocate_tree</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/regex.html'>regex</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
+                 <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -1075,12 +1148,6 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><p>The generic name for the <code>regex_f</code> function implemented as <code>function__regex</code>.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/register_and_connector.html'>register_and_connector</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/register_cmd.html'>register_cmd</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Subroutine</td>
@@ -1089,12 +1156,6 @@ and a segment, is contained in the latter, respectively.</p></td>
 			   <tr>
                  <td><a href='../proc/register_flag.html'>register_flag</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/register_node.html'>register_node</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -1111,6 +1172,18 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/runner_do_matching_exactly.html'>runner_do_matching_exactly</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/runner_do_matching_including.html'>runner_do_matching_including</a></td>
+                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/runner_in.html'>runner_in</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
@@ -1121,6 +1194,18 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine runs the <code>is_valid__match</code> function and prints the result.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/runner_postfix.html'>runner_postfix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/runner_prefix.html'>runner_prefix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_regex.html'>runner_regex</a></td>
@@ -1172,13 +1257,6 @@ and a segment, is contained in the latter, respectively.</p></td>
 returns one byte of the continuation part.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/shorthand.html'>shorthand</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
-<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/sort_segment_by_min.html'>sort_segment_by_min</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Subroutine</td>
@@ -1197,12 +1275,6 @@ returns one byte of the continuation part.</p></td>
                  <td><p>This function convert an input symbol into the segment corresponding it.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/term.html'>term</a></td>
-                 <td><a href='../module/forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/time_begin.html'>time_begin</a></td>
                  <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
                  <td>Subroutine</td>
@@ -1214,6 +1286,115 @@ returns one byte of the continuation part.</p></td>
                  <td>Function</td>
                  <td><p>This function is for timing purposes and returns the lap time
 since the last call of <code>time_begin</code> or <code>time_lap</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__build_syntax_tree.html'>tree_graph__build_syntax_tree</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__char_class.html'>tree_graph__char_class</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__connect_left.html'>tree_graph__connect_left</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__connect_right.html'>tree_graph__connect_right</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__deallocate.html'>tree_graph__deallocate</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__get_top.html'>tree_graph__get_top</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__make_tree_caret_dollar.html'>tree_graph__make_tree_caret_dollar</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This function constructs a tree node for carriage return (CR) and line feed (LF) characters.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__make_tree_crlf.html'>tree_graph__make_tree_crlf</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__postfix_op.html'>tree_graph__postfix_op</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__primary.html'>tree_graph__primary</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__range.html'>tree_graph__range</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__regex.html'>tree_graph__regex</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__register_connector.html'>tree_graph__register_connector</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__register_node.html'>tree_graph__register_node</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__shorthand.html'>tree_graph__shorthand</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
+<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__term.html'>tree_graph__term</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/trim_invalid_utf8_byte.html'>trim_invalid_utf8_byte</a></td>
+                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/update_c_top.html'>update_c_top</a></td>
@@ -1248,7 +1429,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>

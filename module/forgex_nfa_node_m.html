@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 8.3% of total for modules and submodules.">382 statements</a>
+                 title=" 8.4% of total for modules and submodules.">447 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -155,6 +155,8 @@
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-make_nfa_node">make_nfa_node</a>
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-nfa_deallocate">nfa_deallocate</a>
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-disjoin_nfa_each_transition">disjoin_nfa_each_transition</a>
+            <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-generate_nfa_closure">generate_nfa_closure</a>
+            <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-generate_nfa_concatenate">generate_nfa_concatenate</a>
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-nfa__add_transition">nfa__add_transition</a>
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-nfa__merge_segments_of_transition">nfa__merge_segments_of_transition</a>
             <a class="list-group-item" href="../module/forgex_nfa_node_m.html#proc-nfa__reallocate_transition_backward">nfa__reallocate_transition_backward</a>
@@ -187,10 +189,10 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_syntax_tree_m.html'>forgex_syntax_tree_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
               </ul>
             </li>
         </ul>
@@ -360,7 +362,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
           <tbody>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/nfa_state_node_t.html#boundprocedure-add_transition~2'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__add_transition.html'>nfa__add_transition</a></td>
+  <strong><a href='../type/nfa_state_node_t.html#boundprocedure-add_transition~3'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/nfa__add_transition.html'>nfa__add_transition</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -442,7 +444,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst~5"></span>
+              <span class="anchor" id="variable-dst~6"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -459,7 +461,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_registered~2"></span>
+              <span class="anchor" id="variable-is_registered~3"></span>
               logical,
             </td>
               <td>public</td>
@@ -590,22 +592,22 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~30"></span>
-              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
+              <span class="anchor" id="variable-tree~20"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>tree</strong>(:)</td>
+            <td><strong>tree</strong></td>
             <td>
 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-root_i~3"></span>
+              <span class="anchor" id="variable-root_i~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -620,7 +622,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa~2"></span>
+              <span class="anchor" id="variable-nfa~3"></span>
               type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -735,7 +737,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa_top~8"></span>
+              <span class="anchor" id="variable-nfa_top~10"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -771,7 +773,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-generate_nfa"></span> <h3>public pure recursive subroutine <a href='../proc/generate_nfa.html'>generate_nfa</a>(tree, tree_idx, nfa_graph, nfa_top, entry, exit)  
+    <div class="card-header codesum"><span class="anchor" id="proc-generate_nfa"></span> <h3>public pure recursive subroutine <a href='../proc/generate_nfa.html'>generate_nfa</a>(tree, idx, nfa_graph, nfa_top, entry, exit)  
 </h3></div>
     <div class="card-body">
           
@@ -790,22 +792,22 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~31"></span>
-              type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
+              <span class="anchor" id="variable-tree~21"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
-<td>intent(in),</td>
+<td>intent(in)</td>
               <td></td>            <td>
-              allocatable
+              
             </td>
             <td>::</td>
-            <td><strong>tree</strong>(:)</td>
+            <td><strong>tree</strong></td>
             <td>
 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree_idx"></span>
+              <span class="anchor" id="variable-idx~9"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -813,7 +815,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
               
             </td>
             <td>::</td>
-            <td><strong>tree_idx</strong></td>
+            <td><strong>idx</strong></td>
             <td>
 
             </td>
@@ -945,7 +947,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa~3"></span>
+              <span class="anchor" id="variable-nfa~4"></span>
               type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -1021,6 +1023,236 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
   </div>
 
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-generate_nfa_closure"></span> <h3>private pure subroutine <a href='../proc/generate_nfa_closure.html'>generate_nfa_closure</a>(tree, idx, nfa_graph, nfa_top, entry, exit)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tree~23"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tree</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-idx~11"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>idx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_graph~7"></span>
+              type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>nfa_graph</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_top~9"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nfa_top</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-entry~4"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>entry</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-exit~4"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exit</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-generate_nfa_concatenate"></span> <h3>private pure subroutine <a href='../proc/generate_nfa_concatenate.html'>generate_nfa_concatenate</a>(tree, idx, nfa_graph, nfa_top, entry, exit)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tree~22"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tree</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-idx~10"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>idx</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_graph~6"></span>
+              type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>nfa_graph</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nfa_top~8"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>nfa_top</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-entry~3"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>entry</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-exit~3"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>exit</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-nfa__add_transition"></span> <h3>private pure subroutine <a href='../proc/nfa__add_transition.html'>nfa__add_transition</a>(self, nfa_graph, src, dst, c)  
 </h3></div>
     <div class="card-body">
@@ -1040,7 +1272,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~30"></span>
+              <span class="anchor" id="variable-self~32"></span>
               class(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1055,7 +1287,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa_graph~6"></span>
+              <span class="anchor" id="variable-nfa_graph~8"></span>
               type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1070,7 +1302,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-src~2"></span>
+              <span class="anchor" id="variable-src~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1085,7 +1317,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst~6"></span>
+              <span class="anchor" id="variable-dst~7"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1140,7 +1372,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~33"></span>
+              <span class="anchor" id="variable-self~35"></span>
               class(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1180,7 +1412,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~32"></span>
+              <span class="anchor" id="variable-self~34"></span>
               class(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1220,7 +1452,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~31"></span>
+              <span class="anchor" id="variable-self~33"></span>
               class(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1343,7 +1575,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>

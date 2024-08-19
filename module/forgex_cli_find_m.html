@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 7.1% of total for modules and submodules.">325 statements</a>
+                 title=" 7.9% of total for modules and submodules.">423 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -118,7 +118,18 @@
   
   
   
-  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#funcs-0"
+         aria-expanded="false" aria-controls="funcs-0">
+         <h4 class="card-header bg-primary text-white">Functions</h4>
+      </a>
+      <div id="funcs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-do_try_literal_match">do_try_literal_match</a>
+        </div>
+      </div>
+    </div>
+
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#subs-0"
          aria-expanded="false" aria-controls="subs-0">
@@ -129,6 +140,8 @@
             <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-do_find_match_dense_dfa">do_find_match_dense_dfa</a>
             <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-do_find_match_forgex">do_find_match_forgex</a>
             <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-do_find_match_lazy_dfa">do_find_match_lazy_dfa</a>
+            <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-runner_do_matching_exactly">runner_do_matching_exactly</a>
+            <a class="list-group-item" href="../module/forgex_cli_find_m.html#proc-runner_do_matching_including">runner_do_matching_including</a>
         </div>
       </div>
     </div>
@@ -155,11 +168,11 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='forgex_cli_parameters_m.html'>forgex_cli_parameters_m</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
                   <li class="list-inline-item"><a href='forgex_cli_help_messages_m.html'>forgex_cli_help_messages_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
               </ul>
             </li>
         </ul>
@@ -175,6 +188,100 @@
 
 
 
+        <section>
+          <h2>Functions</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-do_try_literal_match"></span> <h3>private  function <a href='../proc/do_try_literal_match.html'>do_try_literal_match</a>(tree, root, pattern, text) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-tree~29"></span>
+              type(<a href='../type/tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>tree</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-root~8"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>root</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~25"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-text~12"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+        </section>
+        <br>
 
         <section>
           <h2>Subroutines</h2>
@@ -198,7 +305,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~5"></span>
+              <span class="anchor" id="variable-flags~8"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -213,7 +320,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~15"></span>
+              <span class="anchor" id="variable-pattern~24"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -228,7 +335,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~5"></span>
+              <span class="anchor" id="variable-text~9"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -243,7 +350,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_exactly~3"></span>
+              <span class="anchor" id="variable-is_exactly~5"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -283,7 +390,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~3"></span>
+              <span class="anchor" id="variable-flags~6"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -298,7 +405,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~13"></span>
+              <span class="anchor" id="variable-pattern~22"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -313,7 +420,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~3"></span>
+              <span class="anchor" id="variable-text~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -328,7 +435,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_exactly"></span>
+              <span class="anchor" id="variable-is_exactly~3"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -368,7 +475,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~4"></span>
+              <span class="anchor" id="variable-flags~7"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -383,7 +490,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~14"></span>
+              <span class="anchor" id="variable-pattern~23"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -398,7 +505,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~4"></span>
+              <span class="anchor" id="variable-text~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -413,7 +520,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_exactly~2"></span>
+              <span class="anchor" id="variable-is_exactly~4"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -422,6 +529,281 @@
             </td>
             <td>::</td>
             <td><strong>is_exactly</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-runner_do_matching_exactly"></span> <h3>private  subroutine <a href='../proc/runner_do_matching_exactly.html'>runner_do_matching_exactly</a>(automaton, text, res, prefix, postfix, flag_no_literal_optimize, runs_engine)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-automaton~18"></span>
+              type(<a href='../type/automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>automaton</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-text~10"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-res~66"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-prefix~11"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>prefix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-postfix~10"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>postfix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-flag_no_literal_optimize"></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flag_no_literal_optimize</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-runs_engine~4"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>runs_engine</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-runner_do_matching_including"></span> <h3>private  subroutine <a href='../proc/runner_do_matching_including.html'>runner_do_matching_including</a>(automaton, text, from, to, prefix, postfix, flag_no_literal_optimize, runs_engine)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-automaton~19"></span>
+              type(<a href='../type/automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>automaton</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-text~11"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>text</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-from~8"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>from</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-to~8"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>to</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-prefix~12"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>prefix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-postfix~11"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>postfix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-flag_no_literal_optimize~2"></span>
+              logical,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flag_no_literal_optimize</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-runs_engine~5"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>runs_engine</strong></td>
             <td>
 
             </td>
@@ -456,7 +838,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-15 05:21              </p>
+ on 2024-08-19 13:15              </p>
           </div>
         </div>
         <br>
