@@ -29,13 +29,14 @@ contains
    !> This procedure reads a text, performs regular expression matching using an automaton,
    !> and stores the string index in the argument if it contains a match.
    pure subroutine do_matching_including (automaton, string, from, to, prefix , postfix, runs_engine)
-      use :: forgex_utility_m
+      use :: forgex_utility_m, only: get_index_list_forward
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
       integer,           intent(inout) :: from, to
       character(*),      intent(in)    :: prefix, postfix
-      logical, optional, intent(inout) :: runs_engine
+      logical,           intent(inout) :: runs_engine
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
@@ -48,15 +49,10 @@ contains
       logical :: do_brute_force
 
       do_brute_force = .false.
-
-      if (present(runs_engine)) runs_engine = .false.
       str = string
       from = 0
-      to = 0      
-
-      if (prefix == '') then
-         do_brute_force = .true.
-      end if
+      to = 0
+      do_brute_force = prefix == ''
 
       cur_i = automaton%initial_index
 
@@ -75,26 +71,32 @@ contains
       if (.not. do_brute_force) then
          call get_index_list_forward(string, prefix, index_list)
          if (.not. allocated(index_list)) return
-         if (size(index_list)== 1 .or. index_list(1) == 0) then
+         if (index_list(1) == INVALID_CHAR_INDEX) then
             do_brute_force = .true.
          end if
       end if
 
       loop_init: block
-         i = 1
-         if (.not. do_brute_force) then
-            if (index_list(1) == 2) index_list = [1, index_list]
-            start = index_list(i)
-         else
+         if (do_brute_force) then
+            i = 1
             start = i
+         else
+            ! indexリストの先頭が2の場合、NULL文字を考慮してstart=1, i=0にする。
+            if (index_list(1) == 2) then
+               start = 1
+               i = 0
+            else
+               i = 1
+               start = index_list(i)
+            end if
          end if
       end block loop_init
 
-      if (present(runs_engine)) runs_engine = .true.
       do while (start < len(str))
          max_match = 0
          ci = start
          cur_i = automaton%initial_index
+         runs_engine = .true.
 
          ! Traverse the DFA with the input string from the current starting position of ``cur_i`.
          do while (cur_i /= DFA_INVALID_INDEX)
@@ -128,33 +130,34 @@ contains
          i = i + 1
          if (i <= size(index_list)) then
             start = index_list(i)
+            if (start == INVALID_CHAR_INDEX) return
          else
             return
          end if
       end do
+
+
    end subroutine do_matching_including
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine)
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
       logical,           intent(inout) :: res
       character(*),      intent(in)    :: prefix, postfix
-      logical, optional, intent(inout) :: runs
+      logical,           intent(inout) :: runs_engine
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
       integer :: max_match    !
-      
+
       integer :: len_pre, len_post, n
-      logical :: empty_pre_post, empty_pre, empty_post, matches_pre, matches_post, runs_engine
+      logical :: empty_pre, empty_post, matches_pre, matches_post
 
       runs_engine = .false.
-      if (present(runs)) runs = runs_engine
-
 
       len_pre = len(prefix)
       len_post = len(postfix)
@@ -164,16 +167,15 @@ contains
 
       empty_pre   = prefix == ''
       empty_post  = postfix == ''
-      empty_pre_post = empty_pre .and. empty_post
       if (.not. empty_pre)  matches_pre = string(1:len_pre) == prefix
       if (.not. empty_post) matches_post = string(n-len_post+1:n) == postfix
 
-      runs_engine = (matches_pre .and. matches_post)  &
-                     .or. (empty_pre .and. matches_post) &
-                     .or. (empty_post .and. matches_pre) &
-                     .or. empty_pre_post .or. matches_pre
+      runs_engine = any([(matches_pre .and. matches_post), &
+                         (empty_pre .and. matches_post), &
+                         (empty_post .and. matches_pre), &
+                         (empty_pre .and. empty_post), matches_pre])
 
-      
+
       ! Returns true immediately if the given prefix exactly matches the string.
       if (len(string) > 0 .and. len(prefix) >0 ) then
          if (prefix == string .and. len_pre == n) then
@@ -182,7 +184,6 @@ contains
          end if
       end if
 
-      if(present(runs)) runs = runs_engine
       if (.not. runs_engine) then
          res = .false.
          return

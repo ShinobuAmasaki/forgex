@@ -60,6 +60,7 @@ contains
       integer                        :: from, to
 
       character(:), allocatable :: prefix, postfix
+      logical :: unused
 
       prefix = ''
       postfix = ''
@@ -79,7 +80,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, postfix)
+      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, postfix, unused)
          ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
 
       if (is_there_caret_at_the_top(pattern)) then
@@ -115,6 +116,7 @@ contains
       type(automaton_t)              :: automaton
       integer                        :: root
       character(:), allocatable  :: prefix, postfix
+      logical :: unused
 
 
       prefix = ''
@@ -145,7 +147,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_exactly(automaton, str, res, prefix, postfix)
+      call do_matching_exactly(automaton, str, res, prefix, postfix, unused)
 
       call automaton%free()
 
@@ -165,6 +167,7 @@ contains
       integer                        :: from_l, to_l
 
       character(:), allocatable :: prefix, postfix
+      logical :: unused
 
       prefix = ''
       postfix = ''
@@ -180,7 +183,7 @@ contains
       call automaton%preprocess(tree)
       call automaton%init()
 
-      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, postfix)
+      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, postfix, unused)
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
