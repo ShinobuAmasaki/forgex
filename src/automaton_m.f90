@@ -21,11 +21,13 @@ module forgex_automaton_m
    use :: forgex_nfa_state_set_m
    use :: forgex_nfa_graph_m
    use :: forgex_lazy_dfa_graph_m
+   use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
    private
 
    type, public :: automaton_t
       !! This type contains an NFA graph, and the DFA graph that are derived from it.
+      type(tree_t)                 :: tree
       type(nfa_graph_t)            :: nfa
       type(dfa_graph_t)            :: dfa
       type(nfa_state_set_t)        :: entry_set
@@ -54,6 +56,7 @@ contains
       class(automaton_t), intent(inout) :: self
       type(tree_t), intent(in) :: tree
 
+      self%tree = tree
       !-- NFA building
       call self%nfa%build(tree, tree%top, self%nfa_entry, self%nfa_exit, self%all_segments)
    end subroutine automaton__build_nfa
