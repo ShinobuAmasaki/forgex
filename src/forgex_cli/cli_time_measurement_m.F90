@@ -23,7 +23,6 @@ module forgex_cli_time_measurement_m
    public :: get_lap_time_in_appropriate_unit
 
    real(real64) :: begin_s, last_s, end_s
-   integer :: i, ii
 
    integer(c_long_long) :: time_begin_qhc, time_end_qhc, frequency
    logical(c_bool) :: is_supported = .false.
@@ -144,13 +143,16 @@ contains
       else if (lap_time >= 1d-3) then
          unit = 'ms'
          multiplied = lap_time * 1d3
-      else
+      else if (lap_time >= 1d-6) then
          if (get_os_type() == OS_WINDOWS) then
             unit = 'us'
          else
             unit = 'μs'
          end if
          multiplied = lap_time * 1d6
+      else
+         unit = 'ns'
+         multiplied = lap_time * 1d9
       end if
 
       write(res, '(f10.1, a)') multiplied, unit

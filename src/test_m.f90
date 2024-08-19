@@ -12,15 +12,21 @@
 module forgex_test_m
    use, intrinsic :: iso_fortran_env
    use :: forgex
+   use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
    private
 
    public :: is_valid__in
    public :: is_valid__match
    public :: is_valid__regex
+   public :: is_valid__prefix
+   public :: is_valid__postfix
    public :: runner_in
    public :: runner_match
    public :: runner_regex
+   public :: runner_prefix
+   public :: runner_postfix
+
 
 contains
 
@@ -69,6 +75,50 @@ contains
 
    end function is_valid__regex
 
+   function is_valid__prefix(pattern, expected_prefix) result(res)
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_utf8_m
+      implicit none
+      character(*), intent(in) :: pattern, expected_prefix
+      logical :: res      
+      character(:), allocatable :: resulting
+      integer :: i
+
+      type(tree_t) :: tree
+      call tree%build(pattern)
+      resulting = get_prefix_literal(tree)
+
+      if (len_utf8(expected_prefix) == len_utf8(resulting)) then
+         res = expected_prefix == resulting
+         return
+      end if
+      res = .false. 
+
+   end function is_valid__prefix
+
+   
+   function is_valid__postfix(pattern, expected_postfix) result(res)
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_utf8_m
+      implicit none
+      character(*), intent(in) :: pattern, expected_postfix
+      logical :: res
+      character(:), allocatable :: resulting
+
+      type(tree_t) :: tree
+      call tree%build(pattern)
+      resulting = get_postfix_literal(tree)
+
+      if (len_utf8(expected_postfix) == len_utf8(resulting)) then
+         res = expected_postfix == resulting
+         return
+      end if
+      res = .false.
+
+   end function is_valid__postfix
+
+
+!=====================================================================!
 
    !> This subroutine runs the `is_valid__in` function and prints the result.
    subroutine runner_in(pattern, str, answer, result)
@@ -141,5 +191,35 @@ contains
       result = result .and. res
    end subroutine runner_regex
 
+
+   subroutine runner_prefix(pattern, prefix, result)
+      implicit none
+      character(*), intent(in) :: pattern, prefix
+      logical, intent(inout) :: result
+      logical :: res
+
+      res = is_valid__prefix(pattern, prefix)
+
+      if (res) then
+         write(error_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+      else
+         write(error_unit, '(a,a,a)') 'result(prefix): FAILED', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+      end if
+   end subroutine runner_prefix
+
+   subroutine runner_postfix(pattern, postfix, result)
+      implicit none
+      character(*), intent(in) :: pattern, postfix
+      logical, intent(inout) :: result
+      logical :: res
+
+      res = is_valid__postfix(pattern, postfix)
+
+      if (res) then
+         write(error_unit, '(a,a,a)') 'result(postfix): Success', ' '//trim(pattern), ' "'//trim(postfix)//'"'
+      else
+         write(error_unit, '(a,a,a)') 'result(postfix): FAILED', ' '//trim(pattern), ' "'//trim(postfix)//'"'
+      end if
+   end subroutine runner_postfix
 
 end module forgex_test_m
