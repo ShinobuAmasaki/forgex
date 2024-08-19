@@ -174,6 +174,9 @@ contains
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      prefix = get_prefix_literal(tree)
+      postfix = get_postfix_literal(tree)
+
       call automaton%preprocess(tree)
       call automaton%init()
 

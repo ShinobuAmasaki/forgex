@@ -45,11 +45,18 @@ contains
       integer :: i
       character(:), allocatable :: str
       integer, allocatable :: index_list(:)
+      logical :: do_brute_force
+
+      do_brute_force = .false.
 
       if (present(runs_engine)) runs_engine = .false.
       str = string
       from = 0
       to = 0      
+
+      if (prefix == '') then
+         do_brute_force = .true.
+      end if
 
       cur_i = automaton%initial_index
 
@@ -65,15 +72,24 @@ contains
          return
       end if
 
-      call get_index_list_forward(string, prefix, index_list)
+      if (.not. do_brute_force) then
+         call get_index_list_forward(string, prefix, index_list)
+         if (.not. allocated(index_list)) return
+         if (size(index_list)== 1 .or. index_list(1) == 0) then
+            do_brute_force = .true.
+         end if
+      end if
 
-      if (.not. allocated(index_list)) return
-      if (size(index_list)== 1 .and. index_list(1) == 0) return
-      if (index_list(1) == 2) index_list = [1, index_list]
+      loop_init: block
+         i = 1
+         if (.not. do_brute_force) then
+            if (index_list(1) == 2) index_list = [1, index_list]
+            start = index_list(i)
+         else
+            start = i
+         end if
+      end block loop_init
 
-
-      i = 1
-      start = index_list(i)
       if (present(runs_engine)) runs_engine = .true.
       do while (start < len(str))
          max_match = 0
@@ -104,7 +120,11 @@ contains
             return
          end if
 
-         ! start = idxutf8(str, start) + 1 ! Bruteforce searching
+         if (do_brute_force) then
+            start = idxutf8(str, start) + 1 ! Bruteforce searching
+            cycle
+         endif
+
          i = i + 1
          if (i <= size(index_list)) then
             start = index_list(i)
@@ -135,13 +155,6 @@ contains
       runs_engine = .false.
       if (present(runs)) runs = runs_engine
 
-      ! Returns true immediately if the given prefix exactly matches the string.
-      if (len(string) > 0 .and. len(prefix) >0 ) then
-         if (prefix == string) then
-            res = .true.
-            return
-         end if
-      end if
 
       len_pre = len(prefix)
       len_post = len(postfix)
@@ -159,6 +172,14 @@ contains
                      .or. (empty_pre .and. matches_post) &
                      .or. (empty_post .and. matches_pre) &
                      .or. empty_pre_post .or. matches_pre
+
+      ! Returns true immediately if the given prefix exactly matches the string.
+      if (len(string) > 0 .and. len(prefix) >0 ) then
+         if (prefix == string  .and. len_pre == n) then
+            res = .true.
+            return
+         end if
+      end if
 
       if(present(runs)) runs = runs_engine
 
