@@ -99,7 +99,7 @@ contains
       logical, intent(inout) :: res
 
       logical :: res_left, res_right
-      type(tree_node_t) :: node, next_l, next_r
+      type(tree_node_t) :: node
       character(:), allocatable :: candidate1, candidate2
       integer :: j, n
       
@@ -112,8 +112,6 @@ contains
       select case (node%op)
       case (op_concat)
          call get_prefix_literal_internal(tree, node%left_i, prefix, res_left, idx)
-
-         next_r = tree(node%right_i)
 
          if (res_left) then
             call get_prefix_literal_internal(tree, node%right_i, prefix, res_right, idx)
@@ -131,6 +129,7 @@ contains
             do j = 1, n
                call get_prefix_literal_internal(tree, node%left_i, prefix, res_right, idx)
             end do
+            res = .true.
       case default
          if (is_literal_tree_node(node)) then
             prefix = prefix//adjustl_multi_byte(char_utf8(node%c(1)%min))
@@ -180,6 +179,7 @@ contains
          do j = 1, n
             call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, idx)
          end do
+         res = .true.
       case default
          if (is_literal_tree_node(node)) then
             postfix = char_utf8(node%c(1)%min)//postfix

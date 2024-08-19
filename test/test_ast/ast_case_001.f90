@@ -22,6 +22,7 @@ program main
    call runner_prefix("(ああ|あい|あう)", "あ", res)
    call runner_prefix("(あああ|ああい|ああう)", "ああ", res)
    call runner_prefix("あ", "あ", res)
+   call runner_prefix("a{2}b", "aab", res)
 
    ! call runner_prefix(, , res)
    ! call runner_prefix(, , res)
