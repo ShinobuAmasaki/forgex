@@ -24,6 +24,7 @@ program main
    call runner_postfix("あ", "あ", res)
    call runner_postfix("a.{1,5}g", "g", res)
    call runner_postfix("(ab|aa){3}b", "b", res)
+   call runner_postfix("(aa|ba){3}b", "ab", res)
    call runner_postfix("a(ac|bc|cc){3}", "c", res)
    call runner_postfix("a(bbc|aac|abc)*", "", res)
    call runner_postfix("a(bbc|aac|abc)*b{3}", "bbb", res)
@@ -37,6 +38,7 @@ program main
    call runner_postfix("(ab|bb|cb)+", "b", res)
    call runner_postfix("((ab)+){2}", "ab", res)
    call runner_postfix("a?b+|c*d", "", res)
+   call runner_postfix("([a-z]*g+)n?", "", res)
 
    
    ! call runner_postfix(, , res)
