@@ -7,6 +7,7 @@ program main
    print *, "=== AST CASE 2 BEGIN ==="
 
    call runner_postfix("[a]{3,4}", "aaa", res)
+   call runner_postfix("(a|b)+", "", res)
    call runner_postfix("(b+)a*(ab){3,4}", "ababab", res)
    call runner_postfix("(ab|ac|a+){3,4}", "", res)
    call runner_postfix("(ab|ac){3,4}", "", res)
@@ -39,6 +40,11 @@ program main
    call runner_postfix("((ab)+){2}", "ab", res)
    call runner_postfix("a?b+|c*d", "", res)
    call runner_postfix("([a-z]*g+)n?", "", res)
+   call runner_postfix("[a-z]+\.(co|ne)\.jp", ".jp", res)
+   call runner_postfix("(a|b(c|d(e|f)))", "", res)
+   call runner_postfix("((ab|bc)*|(de|ef)+)+", "", res)
+   call runner_postfix("((ac|bc)*|(dc|ec)+)+", "", res)
+   call runner_postfix("((ac|bc)+|(dc|ec)+)+", "c", res)
 
    
    ! call runner_postfix(, , res)
