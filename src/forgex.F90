@@ -164,8 +164,10 @@ contains
 
       entirely_fixed_string = get_entire_literal(tree)
       if (entirely_fixed_string /= '') then
-         res = str == entirely_fixed_string
-         return
+         if (len(str) == len(entirely_fixed_string)) then
+            res = str == entirely_fixed_string
+            return
+         end if
       end if
 
       prefix = get_prefix_literal(tree)

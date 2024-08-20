@@ -44,9 +44,10 @@ contains
       implicit none
       type(tree_t), intent(in) :: tree 
       character(:),allocatable :: chara
+      logical :: each_res
       chara = ''
 
-      call get_entire_literal_internal(tree%nodes, tree%top, chara)
+      call get_entire_literal_internal(tree%nodes, tree%top, chara, each_res)
    end function get_entire_literal
 
 
@@ -75,35 +76,53 @@ contains
    end function is_char_class_tree_node
 
 
-   pure recursive subroutine get_entire_literal_internal(tree, idx, literal)
+   pure recursive subroutine get_entire_literal_internal(tree, idx, literal, res)
       use :: forgex_syntax_tree_node_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: literal
+      logical, intent(inout) :: res
+
       type(tree_node_t) :: node
       integer :: i
       node = tree(idx)
 
       if (node%op == op_concat) then
-         call get_entire_literal_internal(tree, node%left_i, literal) 
+         call get_entire_literal_internal(tree, node%left_i, literal, res)
          if (literal == '') return
-         call get_entire_literal_internal(tree, node%right_i, literal)
+         if (res) then
+            call get_entire_literal_internal(tree, node%right_i, literal, res)
+         else
+            literal = ''
+         end if
          if (literal == '') return
+
       else if (node%op == op_repeat) then
          if (node%max_repeat == node%min_repeat) then
             do i = 1, node%min_repeat
-               call get_entire_literal_internal(tree, node%left_i, literal)
+               call get_entire_literal_internal(tree, node%left_i, literal, res)
             end do
+         else
+            res = .false.
+            literal = ''
          end if
+
       else if (is_literal_tree_node(node)) then
          if (size(node%c, dim=1) == 1) then
             if (node%c(1)%min == node%c(1)%max) then
                literal = literal//char_utf8(node%c(1)%min)
+               res = .true.
+               return
             end if
          end if
-      else
+         res = .false.
          literal = ''
+
+      else
+         res = .false.
+         literal = ''
+
       end if
 
    end subroutine get_entire_literal_internal

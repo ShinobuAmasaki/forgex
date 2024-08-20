@@ -147,7 +147,9 @@ contains
       if (is_exactly) then
 
          if (flag_fixed_string) then
-            res = text == entire
+            if (len(text) == len(entire)) then
+               res = text == entire
+            end if
          else
             call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), flag_runs_engine)
          end if
