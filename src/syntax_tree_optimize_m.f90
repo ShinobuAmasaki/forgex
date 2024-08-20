@@ -191,6 +191,20 @@ contains
             call get_postfix_literal_internal(tree, node%left_i, postfix, res_right)
          end do
          res = res_right
+      case(op_closure)
+         ! +に対する処理
+         if (node%parent_i /= 0) then
+            if(tree(node%parent_i)%op == op_concat) then
+
+               ! 親の演算子が連結の場合、姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
+               call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right)
+               call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left)   
+               if (candidate1 == candidate2) then
+                  postfix = ''
+                  res = .true.
+               endif
+            end if
+         end if
       case default
          if (is_literal_tree_node(node)) then
             postfix = char_utf8(node%c(1)%min)//postfix
