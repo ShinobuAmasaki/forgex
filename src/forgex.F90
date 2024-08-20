@@ -13,7 +13,7 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_postfix_literal
+   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_postfix_literal, get_entire_literal
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
@@ -48,7 +48,7 @@ module forgex
 contains
 
    pure elemental function operator__in(pattern, str) result(res)
-      use :: forgex_parameters_m, only: ACCEPTED_EMPTY
+      use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
       !! The function implemented for the `.in.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
@@ -60,11 +60,14 @@ contains
       integer                        :: root
       integer                        :: from, to
 
-      character(:), allocatable :: prefix, postfix
+      character(:), allocatable :: prefix, postfix, entirely_fixed_string
       logical :: unused
 
       prefix = ''
       postfix = ''
+      entirely_fixed_string = ''
+      from = INVALID_CHAR_INDEX
+      to = INVALID_CHAR_INDEX
 
       buff = trim(pattern)
 
@@ -72,9 +75,23 @@ contains
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      entirely_fixed_string = get_entire_literal(tree)
+      if (entirely_fixed_string /= '') then
+         from = index(str, entirely_fixed_string)
+         if (from > 0) then
+            to = from + len(entirely_fixed_string) -1
+         end if
+         if (from > 0 .and. to > 0) then
+            res = .true.
+         else
+            res = .false.
+         end if
+         return
+      end if
+
       prefix = get_prefix_literal(tree)
       postfix = get_postfix_literal(tree)
-
+   
       call automaton%preprocess(tree)
 
       ! Initialize automaton with tree and root.
@@ -121,12 +138,13 @@ contains
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
       integer                        :: root
-      character(:), allocatable  :: prefix, postfix
+      character(:), allocatable  :: prefix, postfix, entirely_fixed_string
       logical :: unused
 
 
       prefix = ''
       postfix = ''
+      entirely_fixed_string = ''
 
       ! If the pattern begins with a caret character and ends with
       ! a doller character, they are removed and assigned to the string buffer.
@@ -143,6 +161,12 @@ contains
       ! Build a syntax tree from buff, and store the result in tree and root.
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
+
+      entirely_fixed_string = get_entire_literal(tree)
+      if (entirely_fixed_string /= '') then
+         res = str == entirely_fixed_string
+         return
+      end if
 
       prefix = get_prefix_literal(tree)
       ! postfix = get_postfix_literal(tree)
@@ -161,7 +185,7 @@ contains
 
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to)
-      use :: forgex_parameters_m, only: ACCEPTED_EMPTY
+      use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -173,16 +197,37 @@ contains
       integer                        :: root
       integer                        :: from_l, to_l
 
-      character(:), allocatable :: prefix, postfix
+      character(:), allocatable :: prefix, postfix, entirely_fixed_string
       logical :: unused
 
       prefix = ''
       postfix = ''
-
+      entirely_fixed_string = ''
+      from_l = INVALID_CHAR_INDEX
+      to_l = INVALID_CHAR_INDEX
+   
       buff = trim(pattern)
 
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
+
+
+      entirely_fixed_string = get_entire_literal(tree)
+      if (entirely_fixed_string /= '') then
+         from_l = index(text, entirely_fixed_string)
+         if (from_l > 0) then
+            to_l = from_l + len(entirely_fixed_string) -1
+         end if
+         if (from_l > 0 .and. to_l > 0) then
+            if (present(from)) from = from_l
+            if (present(to)) to = to_l
+            if (present(length)) length = len(entirely_fixed_string)
+            res = text(from_l:to_l)
+         else
+            res = ''
+         end if
+         return
+      end if
 
       prefix = get_prefix_literal(tree)
       postfix = get_postfix_literal(tree)

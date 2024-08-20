@@ -97,7 +97,11 @@ contains
             end do
          end if
       else if (is_literal_tree_node(node)) then
-         literal = literal//char_utf8(node%c(1)%min)
+         if (size(node%c, dim=1) == 1) then
+            if (node%c(1)%min == node%c(1)%max) then
+               literal = literal//char_utf8(node%c(1)%min)
+            end if
+         end if
       else
          literal = ''
       end if

@@ -99,7 +99,7 @@ contains
       character(:), allocatable :: dfa_for_print, literal, prefix, postfix, entire
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
-      logical :: res, runs_engine
+      logical :: res, flag_runs_engine, flag_fixed_string
       integer :: from, to
 
       dfa_for_print = ''
@@ -113,6 +113,8 @@ contains
       prefix = ''
       postfix = ''
       entire = ''
+      flag_fixed_string = .false.
+      flag_runs_engine = .false.
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
       
@@ -121,25 +123,35 @@ contains
       call tree%build(trim(pattern))
       lap1 = time_lap()
 
+      ! 
       call time_begin()
       if (.not. flags(FLAG_NO_LITERAL)) then
-         prefix = get_prefix_literal(tree)
-         postfix = get_postfix_literal(tree)
          entire = get_entire_literal(tree)
+         if (entire /= '') flag_fixed_string = .true.
+
+         if (.not. flag_fixed_string) then
+            prefix = get_prefix_literal(tree)
+            postfix = get_postfix_literal(tree)
+         end if
       end if
       lap5 = time_lap()
 
-      ! call time_begin()
-      call automaton%preprocess(tree)
-      lap2 = time_lap()
+      if (.not. flag_fixed_string) then
+         call automaton%preprocess(tree)
+         lap2 = time_lap()
 
-      ! call time_begin()
-      call automaton%init()
-      lap3 = time_lap()
+         call automaton%init()
+         lap3 = time_lap()
+      end if
 
       if (is_exactly) then
-         ! call time_begin()
-         call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
+
+         if (flag_fixed_string) then
+            res = text == entire
+         else
+            call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), flag_runs_engine)
+         end if
+
          lap4 = time_lap()
          if (res) then
             from = 1
@@ -147,27 +159,31 @@ contains
          end if
       else
          block
-            ! call time_begin()
-            call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
-                     prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
-
-            if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
-               from = 0
-               to = 0
-               res = .true.
-            end if
-
-
-            if (is_there_caret_at_the_top(pattern)) then
-               from = from
+            if (flag_fixed_string) then
+               from = index(text, entire)
+               if (from > 0 ) to = from + len(entire) -1
             else
-               from = from -1
-            end if
+               call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
+                     prefix, postfix, flags(FLAG_NO_LITERAL), flag_runs_engine)
+            
+               if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
+                  from = 0
+                  to = 0
+                  res = .true.
+               end if
 
-            if (is_there_dollar_at_the_end(pattern)) then
-               to = to - 2
-            else
-               to = to - 1
+
+               if (is_there_caret_at_the_top(pattern)) then
+                  from = from
+               else
+                  from = from -1
+               end if
+
+               if (is_there_dollar_at_the_end(pattern)) then
+                  to = to - 2
+               else
+                  to = to - 1
+               end if
             end if
 
             if (from > 0 .and. to > 0) then
@@ -225,8 +241,13 @@ contains
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
 
-         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
-                   + mem_dfa_graph(automaton%dfa) + 4*3
+         if (flag_fixed_string) then
+            memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes)
+         else
+            memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
+                      + mem_dfa_graph(automaton%dfa) + 4*3
+         end if
+
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
          end if
@@ -245,9 +266,9 @@ contains
             write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text_highlight_green(text, from, to)//'"'
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap5)
-            write(stdout, fmt_out_logi) trim(cbuff(5)), runs_engine
+            write(stdout, fmt_out_logi) trim(cbuff(5)), flag_runs_engine
             
-            if (runs_engine) then
+            if (flag_runs_engine .or. .not. flag_fixed_string) then
                write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap2)
                write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap3)
             else
@@ -273,20 +294,22 @@ contains
             write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text_highlight_green(text, from, to)//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap5)
-            write(stdout, fmt_out_logi) trim(cbuff(5)), runs_engine
-            if (runs_engine) then
+            write(stdout, fmt_out_logi) trim(cbuff(5)), flag_runs_engine
+
+            if (flag_runs_engine .or. .not. flag_fixed_string) then
                write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap2)
                write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap3)
             else
                write(stdout, fmt_out_char) trim(cbuff(6)), not_running
                write(stdout, fmt_out_char) trim(cbuff(7)), not_running
-            end if   
+            end if
+
             write(stdout, fmt_out_time) trim(cbuff(8)), get_lap_time_in_appropriate_unit(lap4)
-            write(stdout, fmt_out_logi)  trim(cbuff(9)), res
-            write(stdout, fmt_out_int) trim(cbuff(10)), memsiz
+            write(stdout, fmt_out_logi) trim(cbuff(9)), res
+            write(stdout, fmt_out_int)  trim(cbuff(10)), memsiz
          end if
 
-         if (flags(FLAG_TABLE_ONLY) .or. .not. runs_engine) then
+         if (flags(FLAG_TABLE_ONLY) .or. .not. flag_runs_engine .or. flag_fixed_string) then
             call automaton%free
             return
          end if
