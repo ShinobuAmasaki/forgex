@@ -161,6 +161,7 @@ contains
 
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to)
+      use :: forgex_parameters_m, only: ACCEPTED_EMPTY
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -190,6 +191,14 @@ contains
       call automaton%init()
 
       call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, postfix, unused)
+
+      if (from_l == ACCEPTED_EMPTY .and. to_l == ACCEPTED_EMPTY) then
+         res = ''
+         if (present(from)) from = 0
+         if (present(to)) to = 0
+         if (present(length)) length = 0
+         return
+      end if
 
       if (is_there_caret_at_the_top(pattern)) then
          from_l = from_l
