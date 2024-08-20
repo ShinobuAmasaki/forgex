@@ -27,6 +27,7 @@ module forgex_cli_utils_m
    public :: register_flag
    public :: register_cmd
    public :: get_os_type
+   public :: info
 
 contains
 
@@ -231,5 +232,12 @@ contains
 
       array(:) = buff(:)
    end subroutine
+
+   subroutine info (str)
+      implicit none
+      character(*), intent(in) :: str
+
+      write(stderr, '(a)') "[info]: "//str
+   end subroutine info
 
 end module forgex_cli_utils_m

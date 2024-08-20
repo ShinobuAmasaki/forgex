@@ -66,7 +66,8 @@ contains
 
    subroutine do_find_match_lazy_dfa(flags, pattern, text, is_exactly)
       use :: forgex_automaton_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
+      use :: forgex_syntax_tree_optimize_m
       use :: forgex_cli_memory_calculation_m
       use :: forgex_api_internal_m
       use :: forgex_nfa_state_set_m
@@ -78,37 +79,54 @@ contains
       character(*), intent(in) :: text
       logical, intent(in) :: is_exactly
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer :: root
 
       integer :: uni, ierr, i
-      character(:), allocatable :: dfa_for_print
+      character(:), allocatable :: dfa_for_print, literal, prefix, postfix
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4
-      logical :: res
+      logical :: res, runs_engine
 
       dfa_for_print = ''
+      lap1 = 0d0
+      lap2 = 0d0
+      lap3 = 0d0
+      lap4 = 0d0
+      prefix = ''
+      postfix = ''
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
+      
 
       call time_begin()
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      call tree%build(trim(pattern))
+      if (.not. flags(FLAG_NO_LITERAL)) then
+         prefix = get_prefix_literal(tree)
+         postfix = get_postfix_literal(tree)
+      end if
       lap1 = time_lap()
 
-      call automaton%preprocess(tree, root)
+
+      call time_begin()
+      call automaton%preprocess(tree)
       lap2 = time_lap()
 
       call automaton%init()
       lap3 = time_lap()
 
       if (is_exactly) then
-         call do_matching_exactly(automaton, text, res)
+         call time_begin
+         call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
+         lap4 = time_lap()
       else
          block
             integer :: from, to
-            call do_matching_including(automaton, char(0)//text//char(0), from, to)
+            call time_begin
+            call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
+                     prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
+
             if (is_there_caret_at_the_top(pattern)) then
                from = from
             else
@@ -126,10 +144,9 @@ contains
             else
                res = .false.
             end if
-
+            lap4 = time_lap()
          end block
       end if
-      lap4 = time_lap()
 
       open(newunit=uni, status='scratch')
       write(uni, fmta) HEADER_NFA
@@ -153,15 +170,18 @@ contains
       output: block
          character(NUM_DIGIT_KEY) :: pattern_key, text_key
          character(NUM_DIGIT_KEY) :: parse_time, nfa_time, dfa_init_time, matching_time, memory
+         character(NUM_DIGIT_KEY) :: runs_engine_key
          character(NUM_DIGIT_KEY) :: tree_count
          character(NUM_DIGIT_KEY) :: nfa_count
          character(NUM_DIGIT_KEY) :: dfa_count, matching_result
-         character(NUM_DIGIT_KEY) :: cbuff(11) = ''
+         character(NUM_DIGIT_KEY) :: cbuff(12) = ''
          integer :: memsiz
 
          pattern_key    = "pattern:"
          text_key       = "text:"
          parse_time     = "parse time:"
+         runs_engine_key= "runs engine:"
+
          nfa_time       = "compile nfa time:"
          dfa_init_time  = "dfa initialize time:"
          matching_time  = "search time:"
@@ -172,7 +192,7 @@ contains
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
 
-         memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
+         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
                    + mem_dfa_graph(automaton%dfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
@@ -182,38 +202,56 @@ contains
          end if
 
          if (flags(FLAG_VERBOSE)) then
-            cbuff = [pattern_key, text_key, parse_time, nfa_time, dfa_init_time, matching_time, matching_result, memory, &
-                     tree_count, nfa_count, dfa_count]
+            cbuff = [pattern_key, text_key, parse_time, runs_engine_key, nfa_time, dfa_init_time, &
+                     matching_time, matching_result, memory, tree_count, nfa_count, dfa_count]
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
             write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text//'"'
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
-            write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
-            write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap4)
-            write(stdout, fmt_out_logi)  trim(cbuff(7)), res
-            write(stdout, fmt_out_int) trim(cbuff(8)), memsiz
-            write(stdout, fmt_out_ratio) trim(cbuff(9)), root, size(tree, dim=1)
-            write(stdout, fmt_out_ratio) trim(cbuff(10)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
-            write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
+            write(stdout, fmt_out_logi) trim(cbuff(4)), runs_engine
+            
+            if (runs_engine) then
+               write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap2)
+               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap3)
+            else
+               write(stdout, fmt_out_char) trim(cbuff(5)), not_running
+               write(stdout, fmt_out_char) trim(cbuff(6)), not_running
+            end if
+
+            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap4)            
+            write(stdout, fmt_out_logi) trim(cbuff(8)), res
+            write(stdout, fmt_out_int)  trim(cbuff(9)), memsiz
+
+            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
+            write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
-            cbuff(:) = [pattern_key, text_key, parse_time, nfa_time, dfa_init_time, matching_time, matching_result, memory, &
-                        (repeat(" ", NUM_DIGIT_KEY), i = 1, 3)]
+            cbuff(:) = [pattern_key, text_key, parse_time, runs_engine_key, nfa_time, dfa_init_time, &
+                        matching_time, matching_result, memory, (repeat(" ", NUM_DIGIT_KEY), i = 1, 3)]
             call right_justify(cbuff)
             write(stdout, '(a,1x,a)') trim(cbuff(1)), pattern
             write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
-            write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
-            write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap4)
-            write(stdout, fmt_out_logi)  trim(cbuff(7)), res
-            write(stdout, fmt_out_int) trim(cbuff(8)), memsiz
+            write(stdout, fmt_out_logi) trim(cbuff(4)), runs_engine  
+            if (runs_engine) then
+               write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap2)
+               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap3)
+            else
+               write(stdout, fmt_out_char) trim(cbuff(5)), not_running
+               write(stdout, fmt_out_char) trim(cbuff(6)), not_running
+            end if   
+            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap4)
+            write(stdout, fmt_out_logi)  trim(cbuff(8)), res
+            write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
          end if
 
-         if (flags(FLAG_TABLE_ONLY)) return
+         if (flags(FLAG_TABLE_ONLY) .or. .not. runs_engine) then
+            call automaton%free
+            return
+         end if
 
          write(stdout, *) ""
 
@@ -227,7 +265,7 @@ contains
 
    subroutine do_find_match_dense_dfa(flags, pattern, text, is_exactly)
       use :: forgex_automaton_m
-      use :: forgex_syntax_tree_m
+      use :: forgex_syntax_tree_graph_m
       use :: forgex_cli_memory_calculation_m
       use :: forgex_cli_time_measurement_m
       use :: forgex_dense_dfa_m
@@ -240,8 +278,7 @@ contains
       character(*), intent(in) :: text
       logical, intent(in) :: is_exactly
 
-      type(tree_node_t), allocatable :: tree(:)
-      type(tape_t) :: tape
+      type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer(int32) :: root
 
@@ -252,12 +289,13 @@ contains
       logical :: res
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_dense_dfa
-
+      if (flags(FLAG_NO_LITERAL)) call info("No literal search optimization is implemented in dense DFA.")
       call time_begin()
-      call build_syntax_tree(trim(pattern), tape, tree, root)
+      ! call build_syntax_tree(trim(pattern), tape, tree, root)
+      call tree%build(trim(pattern))
       lap1 = time_lap()
 
-      call automaton%preprocess(tree, root)
+      call automaton%preprocess(tree)
       lap2 = time_lap() ! build nfa
 
       call automaton%init()
@@ -336,7 +374,7 @@ contains
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
          
-         memsiz = mem_tape(tape) + mem_tree(tree) + mem_nfa_graph(automaton%nfa) &
+         memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
             + mem_dfa_graph(automaton%dfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
             memsiz = memsiz + size(automaton%entry_set%vec, dim=1)
@@ -359,7 +397,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap5)
             write(stdout, fmt_out_logi) trim(cbuff(8)), res
             write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
-            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
             write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
             write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
@@ -393,5 +431,89 @@ contains
       call automaton%free()
       
    end subroutine do_find_match_dense_dfa
+
+   subroutine runner_do_matching_exactly(automaton, text, res, prefix, postfix, flag_no_literal_optimize, runs_engine)
+      use :: forgex_automaton_m
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_cli_api_internal_no_opts_m
+      use :: forgex_api_internal_m
+      implicit none
+      type(automaton_t), intent(inout) :: automaton
+      character(*), intent(in) :: text
+      logical, intent(inout) :: res
+      logical, intent(inout) :: runs_engine
+      logical, intent(in) :: flag_no_literal_optimize
+      character(*), intent(in) :: prefix, postfix
+
+
+
+      if (flag_no_literal_optimize) then
+         call do_matching_exactly_no_literal_opts(automaton, text, res)
+         runs_engine = .true.
+      else
+         call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
+      end if
+
+   end subroutine runner_do_matching_exactly
+
+
+   subroutine runner_do_matching_including(automaton, text, from, to, prefix, postfix, flag_no_literal_optimize, runs_engine)
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_automaton_m
+      use :: forgex_api_internal_m
+      use :: forgex_cli_api_internal_no_opts_m
+      implicit none
+      type(automaton_t), intent(inout) :: automaton
+      character(*), intent(in) :: text
+      integer(int32), intent(inout) :: from, to
+      character(*), intent(in) :: prefix, postfix
+      logical,intent(in) :: flag_no_literal_optimize
+      logical, intent(inout) :: runs_engine
+
+      if (flag_no_literal_optimize) then
+         call do_matching_including_no_literal_opts(automaton, text, from, to)
+         runs_engine = .true.
+      else
+         call do_matching_including(automaton, text, from, to, prefix, postfix, runs_engine)
+      end if
+   end subroutine runner_do_matching_including
+
+
+   function do_try_literal_match(tree, root, pattern, text) result(res)
+      use :: forgex_cli_time_measurement_m
+      use :: forgex_syntax_tree_graph_m
+      use :: forgex_syntax_tree_optimize_m
+      use :: forgex_literal_match_m
+      implicit none
+      type(tree_t), intent(in) :: tree
+      integer(int32), intent(in) :: root
+      character(*), intent(in) :: pattern, text
+      
+      logical :: res
+      integer :: from, to
+      character(:), allocatable :: patt_l, text_l, literal
+      real(real64) :: lap
+
+      res = .false.
+      patt_l = pattern
+      text_l = text
+
+      literal = ''
+      call all_literals(tree%nodes, root, literal)
+      if (literal == '') return
+      
+      call time_begin()
+      call literal_index_matching(literal, text, from, to)
+      lap = time_lap()
+
+      if (from > 0 .and. to > 0) then
+         res = .true.
+      else
+         res = .false.
+      end if
+
+      print *, res, get_lap_time_in_appropriate_unit(lap)      
+
+   end function do_try_literal_match
 
 end module forgex_cli_find_m
