@@ -28,6 +28,7 @@ module forgex_cli_utils_m
    public :: register_cmd
    public :: get_os_type
    public :: info
+   public ::text_highlight_green
 
 contains
 
@@ -239,5 +240,26 @@ contains
 
       write(stderr, '(a)') "[info]: "//str
    end subroutine info
+
+   function text_highlight_green(string, from, to) result(res)
+      implicit none
+      character(*), intent(in) :: string
+      integer(int32), intent(in) :: from, to
+      character(:), allocatable :: res
+
+      character(5) :: green = char(27)//"[32m"
+      character(5) :: hend = char(27)//"[39m"
+      character(4) :: bold = char(27)//"[1m"
+      character(4) :: bend = char(27)//"[0m"
+
+      res = ''
+      if (from > 0 .and. to > 0 .and. from <= to .and. len(string) > 0) then
+         res = string(1:from-1)//green//bold//string(from:to)//bend//hend//string(to+1:len(string))
+      else
+         res = string
+      end if
+      
+   end function text_highlight_green
+
 
 end module forgex_cli_utils_m

@@ -142,13 +142,14 @@ contains
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine, entire_fixed_string)
       implicit none
-      type(automaton_t), intent(inout) :: automaton
-      character(*),      intent(in)    :: string
-      logical,           intent(inout) :: res
-      character(*),      intent(in)    :: prefix, postfix
-      logical,           intent(inout) :: runs_engine
+      type(automaton_t),      intent(inout) :: automaton
+      character(*),           intent(in)    :: string
+      logical,                intent(inout) :: res
+      character(*),           intent(in)    :: prefix, postfix
+      logical,                intent(inout) :: runs_engine
+      character(*), optional, intent(inout) :: entire_fixed_string
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
@@ -159,6 +160,13 @@ contains
       logical :: empty_pre, empty_post, matches_pre, matches_post
 
       runs_engine = .false.
+
+      if (present(entire_fixed_string)) then
+         if (entire_fixed_string /= '') then
+            res = entire_fixed_string == string
+            return
+         end if
+      end if
 
       len_pre = len(prefix)
       len_post = len(postfix)

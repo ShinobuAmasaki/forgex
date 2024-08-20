@@ -96,6 +96,7 @@ contains
          if (is_supported) then
             is_succeeded = QueryPerformanceCounter(time_end_qhc)
             res = dble(time_end_qhc - time_begin_qhc)/dble(frequency)
+            time_begin_qhc = time_end_qhc
          else
             !$ end_s = omp_get_wtime()
             !$ res = end_s - last_s
