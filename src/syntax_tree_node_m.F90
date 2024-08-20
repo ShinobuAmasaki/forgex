@@ -77,13 +77,14 @@ contains
    pure subroutine reallocate_tree(tree, alloc_count)
       implicit none
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
-      integer,                    intent(in)    :: alloc_count
+      integer,                    intent(inout)    :: alloc_count
       
       type(tree_node_t), allocatable  :: tmp(:)
       integer                     :: new_part_begin, new_part_end, i
 
       if (.not. allocated(tree)) then
          allocate(tree(TREE_NODE_BASE:TREE_NODE_UNIT))
+         alloc_count = 1
          return
       end if
 
@@ -97,6 +98,7 @@ contains
       call move_alloc(tree, tmp)
 
       allocate(tree(TREE_NODE_BASE:new_part_end))
+      alloc_count = alloc_count + 1
 
       ! Deep copy
       tree(TREE_NODE_BASE:new_part_begin-1) = tmp(TREE_NODE_BASE:new_part_begin-1)

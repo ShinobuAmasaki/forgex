@@ -82,7 +82,6 @@ contains
       character(*), intent(in) :: pattern, expected_prefix
       logical :: res      
       character(:), allocatable :: resulting
-      integer :: i
 
       type(tree_t) :: tree
       call tree%build(pattern)
@@ -205,6 +204,7 @@ contains
       else
          write(error_unit, '(a,a,a)') 'result(prefix): FAILED', ' '//trim(pattern), ' "'//trim(prefix)//'"'
       end if
+      result = result .and. res
    end subroutine runner_prefix
 
    subroutine runner_postfix(pattern, postfix, result)
@@ -220,6 +220,7 @@ contains
       else
          write(error_unit, '(a,a,a)') 'result(postfix): FAILED', ' '//trim(pattern), ' "'//trim(postfix)//'"'
       end if
+      result = result .and. res
    end subroutine runner_postfix
 
 end module forgex_test_m

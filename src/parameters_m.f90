@@ -140,4 +140,6 @@ module forgex_parameters_m
    !> has been initialized.
    integer(int32), parameter, public :: DFA_INIT_TRANSITION_TOP = 0
 
+   integer(int32), parameter, public :: ACCEPTED_EMPTY = -2
+
 end module forgex_parameters_m

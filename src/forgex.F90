@@ -48,6 +48,7 @@ module forgex
 contains
 
    pure elemental function operator__in(pattern, str) result(res)
+      use :: forgex_parameters_m, only: ACCEPTED_EMPTY
       !! The function implemented for the `.in.` operator.
       implicit none
       character(*), intent(in)       :: pattern, str
@@ -81,7 +82,12 @@ contains
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, postfix, unused)
-         ! キャレットとダラーへの対応するために、strの前後にNULL文字を追加する。
+         ! キャレットとダラーへの対応するために、strの前後に改行文字を追加する。
+
+      if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
+         res = .true.
+         return
+      end if
 
       if (is_there_caret_at_the_top(pattern)) then
          from = from

@@ -28,9 +28,9 @@ contains
 
    !> This procedure reads a text, performs regular expression matching using an automaton,
    !> and stores the string index in the argument if it contains a match.
-   pure subroutine do_matching_including (automaton, string, from, to, prefix , postfix, runs_engine)
+   pure subroutine do_matching_including (automaton, string, from, to, prefix, postfix, runs_engine)
       use :: forgex_utility_m, only: get_index_list_forward
-      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, ACCEPTED_EMPTY
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
@@ -49,6 +49,7 @@ contains
       logical :: do_brute_force
 
       do_brute_force = .false.
+      runs_engine = .false.
       str = string
       from = 0
       to = 0
@@ -60,10 +61,10 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (string == char(10)//char(10)) then
+      if (string == char(0)//char(0)) then
          if (automaton%dfa%nodes(cur_i)%accepted) then
-            from = 1
-            to = 1
+            from = ACCEPTED_EMPTY
+            to = ACCEPTED_EMPTY
          end if
          return
       end if
@@ -164,6 +165,14 @@ contains
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
+      
+      ! Returns true immediately if the given prefix exactly matches the string.
+      if (len(string) > 0 .and. len(prefix) >0 ) then
+         if (prefix == string .and. len_pre == n) then
+            res = .true.
+            return
+         end if
+      end if
 
       empty_pre   = prefix == ''
       empty_post  = postfix == ''
@@ -176,13 +185,7 @@ contains
                          (empty_pre .and. empty_post), matches_pre])
 
 
-      ! Returns true immediately if the given prefix exactly matches the string.
-      if (len(string) > 0 .and. len(prefix) >0 ) then
-         if (prefix == string .and. len_pre == n) then
-            res = .true.
-            return
-         end if
-      end if
+
 
       if (.not. runs_engine) then
          res = .false.

@@ -172,7 +172,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara"></span>
+              <span class="anchor" id="variable-chara~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -190,7 +190,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res"></span>
+          <span class="anchor" id="variable-res~38"></span>
           logical
         </small>
       </h3>
@@ -222,7 +222,7 @@
 <span class="k">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">      </span><span class="n">siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">chara</span><span class="p">)</span>
 
-<span class="w">      </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ichar</span><span class="p">(</span><span class="n">chara</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">      </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ichar</span><span class="p">(</span><span class="n">chara</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="n">int8</span><span class="p">)</span>
 <span class="w">      </span><span class="n">shift_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 3 bits</span>
 <span class="w">      </span><span class="n">shift_4</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">4</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 4 bits</span>
 <span class="w">      </span><span class="n">shift_5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">5</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 5 bits</span>
@@ -249,7 +249,7 @@
 <span class="k">      end if</span>
 
 <span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">expected_siz</span>
-<span class="w">         </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ichar</span><span class="p">(</span><span class="n">chara</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="p">))</span>
+<span class="w">         </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ichar</span><span class="p">(</span><span class="n">chara</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="n">int8</span><span class="p">)</span>
 <span class="w">         </span><span class="n">shift_6</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 6 bits</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_6</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
@@ -281,7 +281,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-19 13:26              </p>
+ on 2024-08-20 05:59              </p>
           </div>
         </div>
         <br>
