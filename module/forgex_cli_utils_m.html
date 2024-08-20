@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.2% of total for modules and submodules.">171 statements</a>
+                 title=" 3.4% of total for modules and submodules.">188 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -122,7 +122,7 @@
       </a>
       <div id="inters-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_cli_utils_m.html#interface-operator%28.in.%29~2">operator(.in.)</a>
+            <a class="list-group-item" href="../module/forgex_cli_utils_m.html#interface-operator%28.in.%29~3">operator(.in.)</a>
         </div>
       </div>
     </div>
@@ -138,6 +138,7 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-get_flag_index">get_flag_index</a>
             <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-get_os_type">get_os_type</a>
+            <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-text_highlight_green">text_highlight_green</a>
             <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-does_command_exist">does_command_exist</a>
             <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-does_command_exist_type_cmd">does_command_exist_type_cmd</a>
             <a class="list-group-item" href="../module/forgex_cli_utils_m.html#proc-does_flag_exist">does_flag_exist</a>
@@ -202,8 +203,8 @@
           <h2>Interfaces</h2>
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.in.%29~2"></span>
-      <h3>public        interface <a href='../interface/operator(.in.)~2.html'>operator(.in.)</a> 
+      <span class="anchor" id="interface-operator%28.in.%29~3"></span>
+      <h3>public        interface <a href='../interface/operator(.in.)~3.html'>operator(.in.)</a> 
       </h3>
     </div>
     <ul class="list-group">
@@ -228,7 +229,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~7"></span>
+              <span class="anchor" id="variable-arg~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -287,7 +288,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~5"></span>
+              <span class="anchor" id="variable-arg~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -346,7 +347,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~6"></span>
+              <span class="anchor" id="variable-arg~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -405,7 +406,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~3"></span>
+              <span class="anchor" id="variable-arg~4"></span>
               type(<a href='../type/arg_element_t.html'>arg_element_t</a>),
             </td>
 <td>intent(in)</td>
@@ -473,7 +474,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~2"></span>
+              <span class="anchor" id="variable-arg~3"></span>
               type(<a href='../type/arg_element_t.html'>arg_element_t</a>),
             </td>
 <td>intent(in)</td>
@@ -532,6 +533,81 @@
   </div>
 
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-text_highlight_green"></span> <h3>public  function <a href='../proc/text_highlight_green.html'>text_highlight_green</a>(string, from, to) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-string~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>string</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-from~10"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>from</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-to~10"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>to</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-does_command_exist"></span> <h3>private pure function <a href='../proc/does_command_exist.html'>does_command_exist</a>(arg, cmd_list) result(res)  
 </h3></div>
     <div class="card-body">
@@ -551,7 +627,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~5"></span>
+              <span class="anchor" id="variable-arg~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -611,7 +687,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~6"></span>
+              <span class="anchor" id="variable-arg~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -671,7 +747,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~7"></span>
+              <span class="anchor" id="variable-arg~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -731,7 +807,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~3"></span>
+              <span class="anchor" id="variable-arg~4"></span>
               type(<a href='../type/arg_element_t.html'>arg_element_t</a>),
             </td>
 <td>intent(in)</td>
@@ -811,7 +887,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-arg~4"></span>
+              <span class="anchor" id="variable-arg~5"></span>
               type(<a href='../type/arg_element_t.html'>arg_element_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -826,7 +902,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-entire~2"></span>
+              <span class="anchor" id="variable-entire~4"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -866,7 +942,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~10"></span>
+              <span class="anchor" id="variable-str~13"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1046,7 +1122,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~3"></span>
+              <span class="anchor" id="variable-array"></span>
               character(len=NUM_DIGIT_KEY),
             </td>
 <td>intent(inout)</td>
@@ -1089,7 +1165,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 10:45              </p>
+ on 2024-08-20 18:25              </p>
           </div>
         </div>
         <br>

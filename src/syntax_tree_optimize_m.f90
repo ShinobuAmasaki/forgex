@@ -12,7 +12,7 @@ module forgex_syntax_tree_optimize_m
 
    public :: get_prefix_literal
    public :: get_postfix_literal
-   public :: all_literals
+   public :: get_entire_literal
 contains
 
    pure function get_prefix_literal(tree) result(chara)
@@ -32,13 +32,23 @@ contains
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
-      logical :: each_res
+      logical :: each_res, or_exists
 
       chara = ''
-
-      call get_postfix_literal_internal(tree%nodes, tree%top, chara, each_res)
+      or_exists = .false.
+      call get_postfix_literal_internal(tree%nodes, tree%top, chara, each_res, or_exists)
 
    end function get_postfix_literal
+
+   pure function get_entire_literal(tree) result(chara)
+      implicit none
+      type(tree_t), intent(in) :: tree 
+      character(:),allocatable :: chara
+      logical :: each_res
+      chara = ''
+
+      call get_entire_literal_internal(tree%nodes, tree%top, chara, each_res)
+   end function get_entire_literal
 
 
    pure function is_literal_tree_node(node) result(res)
@@ -66,28 +76,56 @@ contains
    end function is_char_class_tree_node
 
 
-   pure recursive subroutine all_literals(tree, idx, literal)
+   pure recursive subroutine get_entire_literal_internal(tree, idx, literal, res)
       use :: forgex_syntax_tree_node_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: literal
-      type(tree_node_t) :: node
+      logical, intent(inout) :: res
 
+      type(tree_node_t) :: node
+      integer :: i
       node = tree(idx)
 
       if (node%op == op_concat) then
-         call all_literals(tree, node%left_i, literal) 
+         call get_entire_literal_internal(tree, node%left_i, literal, res)
          if (literal == '') return
-         call all_literals(tree, node%right_i, literal)
+         if (res) then
+            call get_entire_literal_internal(tree, node%right_i, literal, res)
+         else
+            literal = ''
+         end if
          if (literal == '') return
+
+      else if (node%op == op_repeat) then
+         if (node%max_repeat == node%min_repeat) then
+            do i = 1, node%min_repeat
+               call get_entire_literal_internal(tree, node%left_i, literal, res)
+            end do
+         else
+            res = .false.
+            literal = ''
+         end if
+
       else if (is_literal_tree_node(node)) then
-         literal = literal//char_utf8(node%c(1)%min)
-      else
+         if (size(node%c, dim=1) == 1) then
+            if (node%c(1)%min == node%c(1)%max) then
+               literal = literal//char_utf8(node%c(1)%min)
+               res = .true.
+               return
+            end if
+         end if
+         res = .false.
          literal = ''
+
+      else
+         res = .false.
+         literal = ''
+
       end if
 
-   end subroutine all_literals
+   end subroutine get_entire_literal_internal
    
 
    pure recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res)
@@ -145,12 +183,12 @@ contains
    end subroutine get_prefix_literal_internal
 
 
-   pure recursive subroutine get_postfix_literal_internal(tree, idx, postfix, res)
+   pure recursive subroutine get_postfix_literal_internal(tree, idx, postfix, res, or_exists)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: postfix
-      logical, intent(inout) :: res
+      logical, intent(inout) :: res, or_exists
       
       logical :: res_left, res_right, unused
       type(tree_node_t) :: node
@@ -165,15 +203,18 @@ contains
 
       select case (node%op)
       case (op_concat)
-         call get_postfix_literal_internal(tree, node%right_i, postfix, res_right)
+         call get_postfix_literal_internal(tree, node%right_i, postfix, res_right, or_exists)
 
          if (res_right) then
-            call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left)
+            call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left, or_exists)
          end if
 
          if (res_right) then
             if (postfix == "") then
-                postfix = candidate1
+               postfix = candidate1
+            else if (or_exists) then
+               or_exists = .false.
+               res = .false.
             else
                postfix = candidate1//postfix
             end if
@@ -181,18 +222,26 @@ contains
 
          res = res_left .and. res_right
       case (op_union)
-         call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left)
-         call get_postfix_literal_internal(tree, node%right_i, candidate2, res_right)
+         call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left, or_exists)
+         call get_postfix_literal_internal(tree, node%right_i, candidate2, res_right, or_exists)
          postfix = extract_same_part_postfix(candidate1, candidate2)
-         res = postfix == ""
+         res = postfix /= ""
+         or_exists = .true.
          ! res = (postfix == "" .or. res_left .or. res_right)
          ! res = .true.
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_postfix_literal_internal(tree, node%left_i, postfix, res_right)
+            call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, or_exists)
          end do
-         res = res_right
+         
+         ! 子ノードのOR演算をキャッチして処理する
+         if (or_exists) then
+            res = .false.
+         else
+            res = res_right
+         end if
+         or_exists = .false. 
       case(op_closure)
          ! +に対する処理
          if (node%parent_i /= 0) then
@@ -201,12 +250,12 @@ contains
                
                ! 姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
                if (tree(node%parent_i)%right_i == node%own_i) then
-                  call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right)
+                  call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right, or_exists)
                else
                   candidate1 = ''
                end if
 
-               call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left)   
+               call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left, or_exists)   
                if (candidate1 == candidate2) then
                   postfix = ''
                   res = .true.

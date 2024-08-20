@@ -112,6 +112,7 @@ contains
       class(dfa_graph_t), intent(inout) :: self
 
       integer :: i
+      if (.not. allocated(self%nodes)) return
       do i = 1, self%dfa_limit
          call self%nodes(i)%free()
       end do

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.2% of total for procedures.">8 statements</a>
+                 title=" 0.2% of total for procedures.">9 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -143,8 +143,21 @@
     <div class="col-md-9" id='text'>
     <h2>private  subroutine init_flags()  
 </h2>
-    
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
 
+
+    <p>This subroutine registers all the flags forgex-cli accepts for the <code>flag_t</code> type array <code>all_flags</code>.</p>
 
 
     <h3>Arguments</h3>
@@ -165,12 +178,13 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">subroutine </span><span class="n">init_flags</span><span class="p">()</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_enums_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;help&#39;</span><span class="p">,</span><span class="s1">&#39;--help&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;-h&#39;</span><span class="p">)</span>
-<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--verbose&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;-v&#39;</span><span class="p">)</span>
-<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;no-table&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--no-table&#39;</span><span class="p">)</span>
-<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;table-only&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--table-only&#39;</span><span class="p">)</span>
-<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;no-literal-optimize&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--disable-literal-optimize&#39;</span><span class="p">)</span>
+<span class="k">      call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="n">FLAG_HELP</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;help&#39;</span><span class="p">,</span><span class="s1">&#39;--help&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;-h&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="n">FLAG_VERBOSE</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--verbose&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;-v&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="n">FLAG_NO_TABLE</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;no-table&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--no-table&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="n">FLAG_TABLE_ONLY</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;table-only&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--table-only&#39;</span><span class="p">)</span>
+<span class="w">      </span><span class="k">call </span><span class="n">register_flag</span><span class="p">(</span><span class="n">all_flags</span><span class="p">(</span><span class="n">FLAG_NO_LITERAL</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39;no-literal-optimize&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;--disable-literal-optimize&#39;</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">init_flags</span>
 </pre></div>
 
@@ -195,7 +209,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 10:45              </p>
+ on 2024-08-20 18:25              </p>
           </div>
         </div>
         <br>

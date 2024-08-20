@@ -400,7 +400,7 @@ contains
    end subroutine automaton__print_info
 
 
-   !> This subroutine prints DFA states and transitions to standard error.
+   !> This subroutine prints DFA states and transitions to a given unit number.
    subroutine automaton__print_dfa(self, uni)
       use :: forgex_nfa_state_set_m, only: print_nfa_state_set
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t

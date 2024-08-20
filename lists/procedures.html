@@ -84,12 +84,6 @@ by setting the corresponding element in <code>state%vec</code> to true.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/all_literals.html'>all_literals</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/arg_in_segment.html'>arg_in_segment</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Function</td>
@@ -158,7 +152,7 @@ and the corresponding set of transitionable NFA state.</p></td>
                  <td><a href='../proc/automaton__print_dfa.html'>automaton__print_dfa</a></td>
                  <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
                  <td>Subroutine</td>
-                 <td><p>This subroutine prints DFA states and transitions to standard error.</p></td>
+                 <td><p>This subroutine prints DFA states and transitions to a given unit number.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/automaton__print_info.html'>automaton__print_info</a></td>
@@ -460,12 +454,6 @@ and stores the string index in the argument if it contains a match.</p></td>
 and stores the string index in the argument if it contains a match.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/do_try_literal_match.html'>do_try_literal_match</a></td>
-                 <td><a href='../module/forgex_cli_find_m.html'>forgex_cli_find_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/does_command_exist.html'>does_command_exist</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Function</td>
@@ -551,6 +539,18 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/get_entire_literal.html'>get_entire_literal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_entire_literal_internal.html'>get_entire_literal_internal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/get_flag_index.html'>get_flag_index</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Function</td>
@@ -560,7 +560,8 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../proc/get_index_list_forward.html'>get_index_list_forward</a></td>
                  <td><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine creates an array containing a list of the positions of the
+<code>prefix</code>es that exist in the <code>text</code></p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_lap_time_in_appropriate_unit.html'>get_lap_time_in_appropriate_unit</a></td>
@@ -645,7 +646,7 @@ given the string str and the current index curr.</p></td>
                  <td><a href='../proc/init_flags.html'>init_flags</a></td>
                  <td><a href='../module/forgex_cli_cla_m.html'>forgex_cli_cla_m</a></td>
                  <td>Subroutine</td>
-                 <td></td>
+                 <td><p>This subroutine registers all the flags forgex-cli accepts for the <code>flag_t</code> type array <code>all_flags</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/init_state_set.html'>init_state_set</a></td>
@@ -985,23 +986,23 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
-                 <td>Interface</td>
-                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
-                 <td>Interface</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
 an integer and a segment, an integer and a list of segments, or a segment
 and a segment, is contained in the latter, respectively.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -1275,6 +1276,12 @@ returns one byte of the continuation part.</p></td>
                  <td><p>This function convert an input symbol into the segment corresponding it.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/text_highlight_green.html'>text_highlight_green</a></td>
+                 <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/time_begin.html'>time_begin</a></td>
                  <td><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></td>
                  <td>Subroutine</td>
@@ -1429,7 +1436,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 10:45              </p>
+ on 2024-08-20 18:25              </p>
           </div>
         </div>
         <br>
