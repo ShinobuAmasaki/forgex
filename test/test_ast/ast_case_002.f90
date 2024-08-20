@@ -33,6 +33,9 @@ program main
    call runner_postfix("\d{3,5}a\sb", "b", res)
    call runner_postfix("((ab)?c?){2,3}", "", res)
    call runner_postfix("((ab)?c+){2,3}", "c", res)
+   call runner_postfix("(ab)+", "ab", res)
+   call runner_postfix("(ab|bb|cb)+", "b", res)
+   call runner_postfix("((ab)+){2}", "ab", res)
 
    
    ! call runner_postfix(, , res)
