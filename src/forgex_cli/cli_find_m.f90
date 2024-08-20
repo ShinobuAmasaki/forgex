@@ -509,41 +509,4 @@ contains
    end subroutine runner_do_matching_including
 
 
-   function do_try_literal_match(tree, root, pattern, text) result(res)
-      use :: forgex_cli_time_measurement_m
-      use :: forgex_syntax_tree_graph_m
-      use :: forgex_syntax_tree_optimize_m
-      use :: forgex_literal_match_m
-      implicit none
-      type(tree_t), intent(in) :: tree
-      integer(int32), intent(in) :: root
-      character(*), intent(in) :: pattern, text
-      
-      logical :: res
-      integer :: from, to
-      character(:), allocatable :: patt_l, text_l, literal
-      real(real64) :: lap
-
-      res = .false.
-      patt_l = pattern
-      text_l = text
-
-      literal = ''
-      call all_literals(tree%nodes, root, literal)
-      if (literal == '') return
-      
-      call time_begin()
-      call literal_index_matching(literal, text, from, to)
-      lap = time_lap()
-
-      if (from > 0 .and. to > 0) then
-         res = .true.
-      else
-         res = .false.
-      end if
-
-      print *, res, get_lap_time_in_appropriate_unit(lap)      
-
-   end function do_try_literal_match
-
 end module forgex_cli_find_m
