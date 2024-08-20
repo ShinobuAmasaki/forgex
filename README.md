@@ -210,22 +210,27 @@ Command:
 
 ```shell
 forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
 
-# If you run it through fpm run
+If you run it through `fpm run`:
+
+```shell
 fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 ```
 
 Output:
 
 ```
-            pattern: ([a-z]*g+)n?
-               text: 'assign'
-         parse time:        46.5us
-   compile nfa time:        74.9us
-dfa initialize time:        78.4us
-        search time:       661.7us
-    matching result:         T
- memory (estimated):     10380
+             pattern: ([a-z]*g+)n?
+                text: 'assign'
+          parse time:        42.9us
+extract literal time:        23.0us
+         runs engine:         T
+    compile nfa time:        26.5us
+ dfa initialize time:         4.6us
+         search time:       617.1us
+     matching result:         T
+  memory (estimated):     10324
 
 ========== Thompson NFA ===========
 state    1: (?, 5)
@@ -260,7 +265,7 @@ The following features are planned to be implemented in the future:
 
 - [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
-- [ ] Optimize by literal searching method
+- [x] Optimize by literal searching method
 - [x] Add a CLI tool for debugging and benchmarking
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
