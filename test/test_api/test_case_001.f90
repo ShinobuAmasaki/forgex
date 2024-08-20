@@ -151,6 +151,7 @@ program test_001
    call runner_in("^[a-z]{3}", "0abc", .false., res)
    call runner_in("^abc", "0abc", .false., res)
    call runner_in("^abc$", "abc", .true., res)
+   call runner_in("^abc$", "def"//char(10)//"abc", .true., res)
 
    call runner_in("^abc$", "foo"//char(10)//"abc", .true., res)
    call runner_in("^[a-z][A-Z]$", "aT", .true., res)

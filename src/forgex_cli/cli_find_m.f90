@@ -73,6 +73,7 @@ contains
       use :: forgex_nfa_state_set_m
       use :: forgex_cli_utils_m
       use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
+      use :: forgex_parameters_m, only: ACCEPTED_EMPTY
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern
@@ -126,6 +127,13 @@ contains
             call time_begin
             call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
                      prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
+
+            if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
+               from = 0
+               to = 0
+               res = .true.
+            end if
+
 
             if (is_there_caret_at_the_top(pattern)) then
                from = from
@@ -309,7 +317,7 @@ contains
       else
          block
             integer :: from, to
-            call match_dense_dfa_including(automaton, char(0)//text//char(0), from, to)
+            call match_dense_dfa_including(automaton, char(10)//text//char(10), from, to)
             if (is_there_caret_at_the_top(pattern)) then
                from = from
             else
