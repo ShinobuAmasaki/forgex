@@ -30,7 +30,7 @@ contains
    !> and stores the string index in the argument if it contains a match.
    pure subroutine do_matching_including (automaton, string, from, to, prefix, postfix, runs_engine)
       use :: forgex_utility_m, only: get_index_list_forward
-      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, ACCEPTED_EMPTY
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
@@ -61,10 +61,10 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (string == char(10)//char(10)) then
+      if (string == char(0)//char(0)) then
          if (automaton%dfa%nodes(cur_i)%accepted) then
-            from = 1
-            to = 1
+            from = ACCEPTED_EMPTY
+            to = ACCEPTED_EMPTY
          end if
          return
       end if
