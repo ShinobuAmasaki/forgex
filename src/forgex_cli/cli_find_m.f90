@@ -23,8 +23,10 @@ module forgex_cli_find_m
 contains
 
    subroutine do_find_match_forgex(flags, pattern, text, is_exactly)
-      use :: forgex, only: operator(.in.), operator(.match.)
+      use :: forgex, only: regex, operator(.in.), operator(.match.)
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
       use :: forgex_cli_time_measurement_m
+      use :: forgex_cli_utils_m, only: text_highlight_green
       implicit none
       logical, intent(in) :: flags(:)
       character(*), intent(in) :: pattern, text
@@ -32,6 +34,13 @@ contains
 
       real(real64) :: lap
       logical :: res
+      character(:), allocatable :: res_string
+      integer :: from, to, unused
+
+      res_string = ''
+      from = INVALID_CHAR_INDEX
+      to = INVALID_CHAR_INDEX
+
       call time_begin()
       if (is_exactly) then
          res = pattern .match. text
@@ -39,6 +48,9 @@ contains
          res = pattern .in. text
       end if
       lap = time_lap()
+
+      ! Invoke regex subroutine to highlight matched substring.
+      call regex(pattern, text, res_string, unused, from, to)
 
       output: block
          character(NUM_DIGIT_KEY) :: pattern_key, text_key
@@ -55,7 +67,7 @@ contains
             buf = [pattern_key, text_key, total_time, matching_result]
             call right_justify(buf)
             write(stdout, '(a, 1x, a)') trim(buf(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(buf(2)), '"'//text//'"'
+            write(stdout, '(a, 1x, a)') trim(buf(2)), '"'//text_highlight_green(text, from, to)//'"'
             write(stdout, fmt_out_time) trim(buf(3)), get_lap_time_in_appropriate_unit(lap)
             write(stdout, fmt_out_logi) trim(buf(4)), res
          end if
