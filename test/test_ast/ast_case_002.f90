@@ -25,6 +25,15 @@ program main
    call runner_postfix("a.{1,5}g", "g", res)
    call runner_postfix("(ab|aa){3}b", "b", res)
    call runner_postfix("a(ac|bc|cc){3}", "c", res)
+   call runner_postfix("a(bbc|aac|abc)*", "", res)
+   call runner_postfix("a(bbc|aac|abc)*b{3}", "bbb", res)
+   call runner_postfix("(ad{2,3}|cd{1,2}){3}", "d", res)
+   call runner_postfix("(ab?|cd?){2,3}", "", res)
+   call runner_postfix("(xyz|ab|abc|ac){2,4}", "", res)
+   call runner_postfix("\d{3,5}a\sb", "b", res)
+   call runner_postfix("((ab)?c?){2,3}", "", res)
+   call runner_postfix("((ab)?c+){2,3}", "c", res)
+
    
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)

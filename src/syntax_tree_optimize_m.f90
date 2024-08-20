@@ -168,7 +168,15 @@ contains
          call get_postfix_literal_internal(tree, node%right_i, postfix, res_right)
 
          if (res_right) then
-            call get_postfix_literal_internal(tree, node%left_i, postfix, res_left)
+            call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left)
+         end if
+
+         if (res_right) then
+            if (postfix == "") then
+                postfix = candidate1
+            else
+               postfix = candidate1//postfix
+            end if
          end if
 
          res = res_left .and. res_right
