@@ -12,7 +12,7 @@ module forgex_syntax_tree_optimize_m
 
    public :: get_prefix_literal
    public :: get_postfix_literal
-   public :: all_literals
+   public :: get_entire_literal
 contains
 
    pure function get_prefix_literal(tree) result(chara)
@@ -40,6 +40,15 @@ contains
 
    end function get_postfix_literal
 
+   pure function get_entire_literal(tree) result(chara)
+      implicit none
+      type(tree_t), intent(in) :: tree 
+      character(:),allocatable :: chara
+      chara = ''
+
+      call get_entire_literal_internal(tree%nodes, tree%top, chara)
+   end function get_entire_literal
+
 
    pure function is_literal_tree_node(node) result(res)
       implicit none
@@ -66,28 +75,34 @@ contains
    end function is_char_class_tree_node
 
 
-   pure recursive subroutine all_literals(tree, idx, literal)
+   pure recursive subroutine get_entire_literal_internal(tree, idx, literal)
       use :: forgex_syntax_tree_node_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: literal
       type(tree_node_t) :: node
-
+      integer :: i
       node = tree(idx)
 
       if (node%op == op_concat) then
-         call all_literals(tree, node%left_i, literal) 
+         call get_entire_literal_internal(tree, node%left_i, literal) 
          if (literal == '') return
-         call all_literals(tree, node%right_i, literal)
+         call get_entire_literal_internal(tree, node%right_i, literal)
          if (literal == '') return
+      else if (node%op == op_repeat) then
+         if (node%max_repeat == node%min_repeat) then
+            do i = 1, node%min_repeat
+               call get_entire_literal_internal(tree, node%left_i, literal)
+            end do
+         end if
       else if (is_literal_tree_node(node)) then
          literal = literal//char_utf8(node%c(1)%min)
       else
          literal = ''
       end if
 
-   end subroutine all_literals
+   end subroutine get_entire_literal_internal
    
 
    pure recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res)

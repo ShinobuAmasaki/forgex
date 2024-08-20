@@ -84,7 +84,7 @@ contains
       type(automaton_t) :: automaton
 
       integer :: uni, ierr, i
-      character(:), allocatable :: dfa_for_print, literal, prefix, postfix
+      character(:), allocatable :: dfa_for_print, literal, prefix, postfix, entire
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res, runs_engine
@@ -100,6 +100,7 @@ contains
       to = 0
       prefix = ''
       postfix = ''
+      entire = ''
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
       
@@ -112,6 +113,7 @@ contains
       if (.not. flags(FLAG_NO_LITERAL)) then
          prefix = get_prefix_literal(tree)
          postfix = get_postfix_literal(tree)
+         entire = get_entire_literal(tree)
       end if
       lap5 = time_lap()
 
