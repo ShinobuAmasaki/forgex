@@ -253,7 +253,7 @@ contains
       character(4) :: bend = char(27)//"[0m"
 
       res = ''
-      if (from > 0 .and. to > 0 .and. from < to .and. len(string) > 0) then
+      if (from > 0 .and. to > 0 .and. from <= to .and. len(string) > 0) then
          res = string(1:from-1)//green//bold//string(from:to)//bend//hend//string(to+1:len(string))
       else
          res = string
