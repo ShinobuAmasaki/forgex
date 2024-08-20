@@ -45,9 +45,12 @@ program main
    call runner_postfix("((ab|bc)*|(de|ef)+)+", "", res)
    call runner_postfix("((ac|bc)*|(dc|ec)+)+", "", res)
    call runner_postfix("((ac|bc)+|(dc|ec)+)+", "c", res)
-
+   call runner_postfix("((ab|bb)|(db|eb))+", "b", res)
+   call runner_postfix("((ab|bb)|(db|eb))*", "", res)
+   call runner_postfix("((a|b)+)?", "", res)
+   call runner_postfix("((a|b)+c)+", "c", res)
+   call runner_postfix("((a|b)+|(c|b)+)+", "", res)
    
-   ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
