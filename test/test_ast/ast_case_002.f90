@@ -36,6 +36,7 @@ program main
    call runner_postfix("(ab)+", "ab", res)
    call runner_postfix("(ab|bb|cb)+", "b", res)
    call runner_postfix("((ab)+){2}", "ab", res)
+   call runner_postfix("a?b+|c*d", "", res)
 
    
    ! call runner_postfix(, , res)

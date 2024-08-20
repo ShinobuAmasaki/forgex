@@ -181,10 +181,12 @@ contains
 
          res = res_left .and. res_right
       case (op_union)
-         call get_postfix_literal_internal(tree, node%left_i, candidate1, unused)
-         call get_postfix_literal_internal(tree, node%right_i, candidate2, unused)
+         call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left)
+         call get_postfix_literal_internal(tree, node%right_i, candidate2, res_right)
          postfix = extract_same_part_postfix(candidate1, candidate2)
          res = postfix == ""
+         ! res = (postfix == "" .or. res_left .or. res_right)
+         ! res = .true.
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
@@ -197,11 +199,16 @@ contains
             if(tree(node%parent_i)%op == op_concat) then
 
                ! 親の演算子が連結の場合、姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
-               call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right)
+               if (tree(node%parent_i)%left_i /= node%own_i) then
+                  call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right)
+               else
+                  candidate1 = ''
+               end if
                call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left)   
                if (candidate1 == candidate2) then
                   postfix = ''
-                  res = .true.
+                  res = res_left
+                  return
                endif
             end if
          end if
