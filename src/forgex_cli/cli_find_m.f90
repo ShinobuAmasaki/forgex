@@ -82,19 +82,22 @@ contains
 
       type(tree_t) :: tree
       type(automaton_t) :: automaton
-      integer :: root
 
       integer :: uni, ierr, i
       character(:), allocatable :: dfa_for_print, literal, prefix, postfix
       character(256) :: line
-      real(real64) :: lap1, lap2, lap3, lap4
+      real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res, runs_engine
+      integer :: from, to
 
       dfa_for_print = ''
       lap1 = 0d0
       lap2 = 0d0
       lap3 = 0d0
       lap4 = 0d0
+      lap5 = 0d0
+      from = 0
+      to = 0
       prefix = ''
       postfix = ''
 
@@ -103,28 +106,34 @@ contains
 
       call time_begin()
       call tree%build(trim(pattern))
+      lap1 = time_lap()
+
+      call time_begin()
       if (.not. flags(FLAG_NO_LITERAL)) then
          prefix = get_prefix_literal(tree)
          postfix = get_postfix_literal(tree)
       end if
-      lap1 = time_lap()
+      lap5 = time_lap()
 
-
-      call time_begin()
+      ! call time_begin()
       call automaton%preprocess(tree)
       lap2 = time_lap()
 
+      ! call time_begin()
       call automaton%init()
       lap3 = time_lap()
 
       if (is_exactly) then
-         call time_begin
+         ! call time_begin()
          call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
          lap4 = time_lap()
+         if (res) then
+            from = 1
+            to = len(text)
+         end if
       else
          block
-            integer :: from, to
-            call time_begin
+            ! call time_begin()
             call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
                      prefix, postfix, flags(FLAG_NO_LITERAL), runs_engine)
 
@@ -177,17 +186,19 @@ contains
 
       output: block
          character(NUM_DIGIT_KEY) :: pattern_key, text_key
-         character(NUM_DIGIT_KEY) :: parse_time, nfa_time, dfa_init_time, matching_time, memory
+         character(NUM_DIGIT_KEY) :: parse_time, extract_time
+         character(NUM_DIGIT_KEY) :: nfa_time, dfa_init_time, matching_time, memory
          character(NUM_DIGIT_KEY) :: runs_engine_key
          character(NUM_DIGIT_KEY) :: tree_count
          character(NUM_DIGIT_KEY) :: nfa_count
          character(NUM_DIGIT_KEY) :: dfa_count, matching_result
-         character(NUM_DIGIT_KEY) :: cbuff(12) = ''
+         character(NUM_DIGIT_KEY) :: cbuff(13) = ''
          integer :: memsiz
 
          pattern_key    = "pattern:"
          text_key       = "text:"
          parse_time     = "parse time:"
+         extract_time   = "extract literal time:"
          runs_engine_key= "runs engine:"
 
          nfa_time       = "compile nfa time:"
@@ -210,50 +221,55 @@ contains
          end if
 
          if (flags(FLAG_VERBOSE)) then
-            cbuff = [pattern_key, text_key, parse_time, runs_engine_key, nfa_time, dfa_init_time, &
-                     matching_time, matching_result, memory, tree_count, nfa_count, dfa_count]
+            cbuff = [pattern_key, text_key, parse_time, extract_time, runs_engine_key, &
+                     nfa_time, dfa_init_time, matching_time, matching_result, memory, tree_count, &
+                     nfa_count, dfa_count]
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text//'"'
+            ! write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text//'"'
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), '"'//text_highlight_green(text, from, to)//'"'
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, fmt_out_logi) trim(cbuff(4)), runs_engine
+            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap5)
+            write(stdout, fmt_out_logi) trim(cbuff(5)), runs_engine
             
             if (runs_engine) then
-               write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap2)
-               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap3)
+               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap2)
+               write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap3)
             else
-               write(stdout, fmt_out_char) trim(cbuff(5)), not_running
                write(stdout, fmt_out_char) trim(cbuff(6)), not_running
+               write(stdout, fmt_out_char) trim(cbuff(7)), not_running
             end if
 
-            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap4)            
-            write(stdout, fmt_out_logi) trim(cbuff(8)), res
-            write(stdout, fmt_out_int)  trim(cbuff(9)), memsiz
+            write(stdout, fmt_out_time) trim(cbuff(8)), get_lap_time_in_appropriate_unit(lap4)            
+            write(stdout, fmt_out_logi) trim(cbuff(9)), res
+            write(stdout, fmt_out_int)  trim(cbuff(10)), memsiz
 
-            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
-            write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
-            write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
+            write(stdout, fmt_out_ratio) trim(cbuff(11)), tree%top, size(tree%nodes, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
+            write(stdout, fmt_out_ratio) trim(cbuff(13)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
             continue
          else
-            cbuff(:) = [pattern_key, text_key, parse_time, runs_engine_key, nfa_time, dfa_init_time, &
+            cbuff(:) = [pattern_key, text_key, parse_time, extract_time, runs_engine_key, nfa_time, dfa_init_time, &
                         matching_time, matching_result, memory, (repeat(" ", NUM_DIGIT_KEY), i = 1, 3)]
             call right_justify(cbuff)
             write(stdout, '(a,1x,a)') trim(cbuff(1)), pattern
-            write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text//"'"
+            ! write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text//"'"
+            write(stdout, '(a,1x,a)') trim(cbuff(2)), "'"//text_highlight_green(text, from, to)//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
-            write(stdout, fmt_out_logi) trim(cbuff(4)), runs_engine  
+            write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap5)
+            write(stdout, fmt_out_logi) trim(cbuff(5)), runs_engine
             if (runs_engine) then
-               write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap2)
-               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap3)
+               write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap2)
+               write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap3)
             else
-               write(stdout, fmt_out_char) trim(cbuff(5)), not_running
                write(stdout, fmt_out_char) trim(cbuff(6)), not_running
+               write(stdout, fmt_out_char) trim(cbuff(7)), not_running
             end if   
-            write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap4)
-            write(stdout, fmt_out_logi)  trim(cbuff(8)), res
-            write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
+            write(stdout, fmt_out_time) trim(cbuff(8)), get_lap_time_in_appropriate_unit(lap4)
+            write(stdout, fmt_out_logi)  trim(cbuff(9)), res
+            write(stdout, fmt_out_int) trim(cbuff(10)), memsiz
          end if
 
          if (flags(FLAG_TABLE_ONLY) .or. .not. runs_engine) then
@@ -295,6 +311,9 @@ contains
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res
+      integer :: from, to
+      from = 0
+      to = 0
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_dense_dfa
       if (flags(FLAG_NO_LITERAL)) call info("No literal search optimization is implemented in dense DFA.")
@@ -314,9 +333,12 @@ contains
 
       if (is_exactly) then
          res = match_dense_dfa_exactly(automaton, text)
+         if (res) then
+            from = 1
+            to = len(text)
+         end if
       else
          block
-            integer :: from, to
             call match_dense_dfa_including(automaton, char(10)//text//char(10), from, to)
             if (is_there_caret_at_the_top(pattern)) then
                from = from
@@ -397,7 +419,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text//"'"
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text_highlight_green(text,from,to)//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
@@ -405,7 +427,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap5)
             write(stdout, fmt_out_logi) trim(cbuff(8)), res
             write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
-            write(stdout, fmt_out_ratio) trim(cbuff(10)), root, size(tree%nodes, dim=1)
+            write(stdout, fmt_out_ratio) trim(cbuff(10)), tree%top, size(tree%nodes, dim=1)
             write(stdout, fmt_out_ratio) trim(cbuff(11)), automaton%nfa%nfa_top, automaton%nfa%nfa_limit
             write(stdout, fmt_out_ratio) trim(cbuff(12)), automaton%dfa%dfa_top, automaton%dfa%dfa_limit
          else if (flags(FLAG_NO_TABLE)) then
@@ -416,7 +438,7 @@ contains
             call right_justify(cbuff)
 
             write(stdout, '(a, 1x, a)') trim(cbuff(1)), trim(adjustl(pattern))
-            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text//"'"
+            write(stdout, '(a, 1x, a)') trim(cbuff(2)), "'"//text_highlight_green(text,from,to)//"'"
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_time) trim(cbuff(5)), get_lap_time_in_appropriate_unit(lap3)
