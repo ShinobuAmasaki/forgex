@@ -197,17 +197,19 @@ contains
          ! +に対する処理
          if (node%parent_i /= 0) then
             if(tree(node%parent_i)%op == op_concat) then
-
-               ! 親の演算子が連結の場合、姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
-               if (tree(node%parent_i)%left_i /= node%own_i) then
+               ! 親の演算子が連結の場合、
+               
+               ! 姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
+               if (tree(node%parent_i)%right_i == node%own_i) then
                   call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_right)
                else
                   candidate1 = ''
                end if
+
                call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left)   
                if (candidate1 == candidate2) then
                   postfix = ''
-                  res = res_left
+                  res = .true.
                   return
                endif
             end if
