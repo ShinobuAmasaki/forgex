@@ -51,34 +51,58 @@ contains
    end function is_there_dollar_at_the_end
 
 
+   !> This subroutine creates an array containing a list of the positions of the
+   !> `prefix`es that exist in the `text`
    pure subroutine get_index_list_forward(text, prefix, index_array)
       use, intrinsic :: iso_fortran_env, only: int32
       use :: forgex_parameters_m
       implicit none
       character(*), intent(in) :: text, prefix
       integer(int32), allocatable, intent(inout) :: index_array(:)
+      integer(int32), allocatable :: tmp(:)
 
-      integer :: offset, idx, len_pre
+      integer :: offset, idx, len_pre, i, siz
 
+      !! If the length of `prefix` equals to zero, return immediately.
       len_pre = len(prefix)
       if (len_pre == 0) then
          return
       end if
 
+      ! Intialize
       if (allocated(index_array)) deallocate(index_array)
+      allocate(index_array(LIT_OPTS_INDEX_UNIT), source=INVALID_CHAR_INDEX)
+      siz = LIT_OPTS_INDEX_UNIT
+
+      ! Get the first position with the `index` intrinsic function.
       idx = index(text, prefix)
       if (idx <= 0) then
-         index_array = [INVALID_CHAR_INDEX]
          return
       else
-         index_array = [idx]
+         index_array(1) = idx
       end if
 
+      ! Calculate the offset to specify a substring.
       offset = idx + len_pre -1
+      
+      i = 2      
       do while (offset < len(text))
+
+         ! Get the position and store it in the `idx` variable. 
          idx = index(text(offset+1:), prefix)
          if (idx <= 0) exit
-         index_array = [index_array, idx + offset]
+         index_array(i) = idx + offset
+         i = i + 1
+
+         ! Reallocate
+         if (i > siz) then
+            call move_alloc(index_array, tmp)
+            allocate(index_array(2*siz), source=INVALID_CHAR_INDEX)
+            index_array(1:siz) = tmp(1:siz)
+            siz = siz*2
+         end if
+
+         ! Update the offset to specify the next substring.
          offset = offset + idx + len_pre -1
       end do
    end subroutine get_index_list_forward
