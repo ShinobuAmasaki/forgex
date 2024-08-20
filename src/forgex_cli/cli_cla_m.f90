@@ -51,13 +51,15 @@ contains
 
 !=====================================================================!
 
+   !> This subroutine registers all the flags forgex-cli accepts for the `flag_t` type array `all_flags`.
    subroutine init_flags()
+      use :: forgex_enums_m
       implicit none
-      call register_flag(all_flags(1), 'help','--help', '-h')
-      call register_flag(all_flags(2), 'verbose', '--verbose', '-v')
-      call register_flag(all_flags(3), 'no-table', '--no-table')
-      call register_flag(all_flags(4), 'table-only', '--table-only')
-      call register_flag(all_flags(5), 'no-literal-optimize', '--disable-literal-optimize')
+      call register_flag(all_flags(FLAG_HELP), 'help','--help', '-h')
+      call register_flag(all_flags(FLAG_VERBOSE), 'verbose', '--verbose', '-v')
+      call register_flag(all_flags(FLAG_NO_TABLE), 'no-table', '--no-table')
+      call register_flag(all_flags(FLAG_TABLE_ONLY), 'table-only', '--table-only')
+      call register_flag(all_flags(FLAG_NO_LITERAL), 'no-literal-optimize', '--disable-literal-optimize')
    end subroutine init_flags
 
 
