@@ -14,6 +14,8 @@ module forgex_syntax_tree_optimize_m
    public :: get_prefix_literal
    public :: get_postfix_literal
    public :: get_entire_literal
+   public :: get_middle_literal
+
 contains
 
    pure function get_prefix_literal(tree) result(chara)
@@ -41,6 +43,7 @@ contains
 
    end function get_postfix_literal
 
+
    pure function get_entire_literal(tree) result(chara)
       implicit none
       type(tree_t), intent(in) :: tree 
@@ -52,6 +55,16 @@ contains
    end function get_entire_literal
 
 
+   pure function get_middle_literal(tree) result(chara)
+      implicit none
+      type(tree_t), intent(in) :: tree
+      character(:), allocatable :: chara
+      logical :: each_res
+      chara = ''
+
+      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res)
+   end function get_middle_literal
+ 
    pure function is_literal_tree_node(node) result(res)
       implicit none
       type(tree_node_t), intent(in) :: node
@@ -166,9 +179,9 @@ contains
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_prefix_literal_internal(tree, node%left_i, prefix, res_right)
+            call get_prefix_literal_internal(tree, node%left_i, prefix, res_left)
          end do
-         res = res_right
+         res = res_left
       case (op_char)
          if (is_literal_tree_node(node)) then
             if (node%c(1)%min == node%c(1)%max) then
@@ -275,6 +288,50 @@ contains
    end subroutine get_postfix_literal_internal
 
 
+   pure recursive subroutine get_middle_literal_internal(tree, idx, literal, res)
+      implicit none
+      type(tree_node_t), intent(in) :: tree(:)
+      integer(int32), intent(in) :: idx
+      character(:), allocatable, intent(inout) :: literal
+      logical, intent(inout) :: res
+
+      type(tree_node_t) :: node
+      character(:), allocatable :: candidate1, candidate2
+      logical :: res_left, res_right, unused
+      integer(int32) :: n, j
+
+      node = tree(idx)
+
+      select case (node%op)
+      case (op_concat)
+         call get_middle_literal_internal(tree, node%left_i, literal, res_left)
+         call get_middle_literal_internal(tree, node%right_i, literal, res_right)
+      case (op_union)
+         call get_middle_literal_internal(tree, node%left_i, candidate1, unused)
+         call get_middle_literal_internal(tree, node%right_i, candidate2, unused)
+         literal = extract_same_part_middle(candidate1, candidate2)
+         res = .false.
+      case (op_closure)
+      case (op_repeat)
+         n = node%min_repeat
+         do j = 1, n
+            call get_middle_literal_internal(tree, node%left_i, literal, res_left)
+         end do
+         res = res_left
+      case (op_char)
+         if (is_literal_tree_node(node)) then
+            if (node%c(1)%min == node%c(1)%max) then
+               literal = literal//adjustl_multi_byte(char_utf8(node%c(1)%min))
+               res = .true.
+               return
+            end if
+         end if
+         res = .false.
+      end select
+
+   end subroutine get_middle_literal_internal
+
+
    pure function extract_same_part_prefix (a, b) result(res)
       use :: forgex_utf8_m
       implicit none
@@ -356,4 +413,15 @@ contains
       end do
    end function extract_same_part_postfix
 
+   pure function extract_same_part_middle(a, b) result(res)
+      use :: forgex_utf8_m
+      implicit none
+      character(*), intent(in) :: a, b
+      character(:), allocatable :: res
+      
+      character(:), allocatable :: buf
+      integer :: i, ii, n, diff, ie
+      character(:), allocatable :: short_s, long_s
+   end function extract_same_part_middle
+      
 end module forgex_syntax_tree_optimize_m
