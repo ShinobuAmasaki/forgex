@@ -1,3 +1,11 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_cli_api_internal_no_opts_m module is a part of Forgex.
+!
 module forgex_cli_api_internal_no_opts_m
    use :: forgex_automaton_m
    use :: forgex_parameters_m

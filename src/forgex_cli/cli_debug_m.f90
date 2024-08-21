@@ -120,7 +120,7 @@ contains
       type(tree_t) :: tree
       type(automaton_t) :: automaton
       integer :: root
-      integer :: uni, ierr, siz, i
+      integer :: uni, ierr, i
       character(:), allocatable :: nfa
       character(256) :: line
       real(real64) :: lap1, lap2
@@ -135,7 +135,7 @@ contains
       call tree%build(trim(pattern))
       lap1 = time_lap()
 
-      call automaton%nfa%build(tree, root, automaton%nfa_entry, automaton%nfa_exit, automaton%all_segments)
+      call automaton%nfa%build(tree, automaton%nfa_entry, automaton%nfa_exit, automaton%all_segments)
       lap2 = time_lap()
 
       open(newunit=uni, status='scratch')
