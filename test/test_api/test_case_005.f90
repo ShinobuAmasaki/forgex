@@ -4,7 +4,7 @@ program test_005
 
    logical :: res = .true.
    character(10000) :: text
-   character(:), allocatable :: text_a, cache
+   character(:), allocatable :: text_a
    character(:), allocatable ::  pattern
 
    ! Stress-test cases
@@ -101,6 +101,8 @@ program test_005
    text = "akkkkkkkksscga"//trim(text)
    text = trim(text)//"ccccccccccccccccccc"
    call runner_match(pattern, trim(text), .false., res)
+
+   call runner_match("[ab]*a[ab]{20}", "abbbbbbbbbbbbbbbbbbbb", .true., res)
 
    if (res) then
       print *, "=== TEST CASE 5 END ==="
