@@ -196,58 +196,64 @@ contains
       character(:), allocatable, intent(inout) :: postfix
       logical, intent(inout) :: res, or_exists
       
-      logical :: res_left, res_right, unused
+      logical :: res_left, res_right, unused, or_r, or_l
       type(tree_node_t) :: node
       character(:), allocatable :: candidate1, candidate2
       integer :: n, j
 
+      if (idx < 1) return
       node = tree(idx)
       res_left = .false.
       res_right = .false.
       candidate1 = ''
       candidate2 = ''
+      or_l = .false.
+      or_r = .false.
+
+
       if (idx < 1) return
 
       select case (node%op)
       case (op_concat)
-         call get_postfix_literal_internal(tree, node%right_i, postfix, res_right, or_exists)
+         call get_postfix_literal_internal(tree, node%right_i, postfix, res_right, or_r)
 
          if (res_right) then
-            call get_postfix_literal_internal(tree, node%left_i, candidate1, unused, or_exists)
+            call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left, or_l)
          end if
 
-         if (res_right) then
-            if (postfix == "") then
-               postfix = candidate1
-            else if (or_exists) then
-               or_exists = .false.
-               res = .false.
-            else
-               postfix = candidate1//postfix
-            end if
+         or_exists = or_l .or. or_r
+         if (or_r .and. or_l) then
+            res = .false.
+            return
+         else if (or_r) then
+            res = .false.
+            return
+         else
+            postfix = candidate1//postfix
+            res = .true.
+            return
          end if
+   
+      case (op_union) !OR
+         call get_postfix_literal_internal(tree, node%left_i, candidate1, res_left, or_l)
+         call get_postfix_literal_internal(tree, node%right_i, candidate2, res_right, or_r)
 
-         res = res_left .and. res_right
-      case (op_union)
-         call get_postfix_literal_internal(tree, node%left_i, candidate1, unused, or_exists)
-         call get_postfix_literal_internal(tree, node%right_i, candidate2, unused, or_exists)
          postfix = extract_same_part_postfix(candidate1, candidate2)
+
          res = postfix /= ""
          or_exists = .true.
+
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, or_exists)
+            call get_postfix_literal_internal(tree, node%left_i, postfix, res_right, or_r)
+
          end do
-         
-         ! 子ノードのOR演算をキャッチして処理する
-         if (or_exists) then
-            res = .false.
-         else
-            res = res_right
-         end if
-         or_exists = .false. 
+         res = postfix /= ''
+         or_exists = or_r
+
       case(op_closure)
+         or_exists = .false.
          ! +に対する処理
          if (node%parent_i /= 0) then
             if(tree(node%parent_i)%op == op_concat) then
@@ -255,17 +261,24 @@ contains
                
                ! 姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
                if (tree(node%parent_i)%right_i == node%own_i) then
-                  call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, unused, or_exists)
-               else
-                  candidate1 = ''
-               end if
+                  call get_postfix_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, res_left, or_l)
 
-               call get_postfix_literal_internal(tree, node%left_i, candidate2, unused, or_exists)   
-               if (candidate1 == candidate2) then
-                  postfix = ''
-                  res = .true.
-                  return
-               endif
+
+                  call get_postfix_literal_internal(tree, node%left_i, candidate2, res_left, or_l)
+                  if (candidate1 == candidate2) then
+                     postfix = ''
+                     res = .true.
+                     return
+                  endif
+               else if (tree(node%parent_i)%left_i == node%own_i) then
+                  call get_postfix_literal_internal(tree, tree(node%parent_i)%right_i, candidate1, res_right, or_r)
+                  call get_postfix_literal_internal(tree, node%right_i, candidate2, res_right, or_r)
+                  if (candidate1 == candidate2) then
+                     postfix = ''
+                     res = .true.
+                     return
+                  end if
+               end if
             end if
          end if
       case default
