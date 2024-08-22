@@ -51,6 +51,7 @@ program main
    call runner_postfix("((a|b)+)?", "", res)
    call runner_postfix("((a|b)+c)+", "c", res)
    call runner_postfix("((a|b)+|(c|b)+)+", "", res)
+   call runner_postfix("([ab]*a[ab]{20}b)((ab|bb|cb))", "b", res)
    
    ! call runner_postfix(, , res)
    ! call runner_postfix(, , res)
