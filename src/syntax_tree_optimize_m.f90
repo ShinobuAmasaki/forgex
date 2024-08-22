@@ -312,6 +312,8 @@ contains
       res_right = .false.
       candidate_L = ''
       candidate_R= ''
+      has_closure_L = .false.
+      has_closure_R = .false.
 
       select case (node%op)
       case (op_concat)
@@ -319,25 +321,39 @@ contains
             root_left = .true.
             call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure, root_left)
             root_left = .false.
-            call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure, root_left)
-            middle = candidate_L//candidate_R
+            call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, unused, root_left)
+            
+            if (res_left .and. .not. has_closure) then
+               middle = candidate_L//candidate_R
+            else
+               middle = candidate_L
+            end if 
             return
          end if
 
          if (root_left) then
             call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
-            if (res_right) then
-               call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
+            call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
+
+            if (res_left .and. has_closure_L) then
+               middle = middle//candidate_R
+               res = .true.
+               has_closure = .false.
+
+            else if (has_closure_R) then
+               middle = candidate_L//middle
+               res = .true.
+               has_closure = .true.
+            else
+               middle = candidate_L//candidate_R
             end if
-
-            middle = candidate_L// candidate_R
-
 
          else
             call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
             if (res_left) then
                call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
             end if
+
             middle = candidate_L//candidate_R
 
          end if   
@@ -345,8 +361,13 @@ contains
          res = .true.
 
       case (op_repeat)
+         n = node%min_repeat
+         do j = 1, n
+            call get_middle_literal_internal(tree, node%left_i, middle, res_left, unused, root_left)
+         end do
+         res = res_left
       case (op_closure)
-         res = .true.
+         res = .false.
          has_closure = .true.
 
       case (op_union)
