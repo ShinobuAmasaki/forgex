@@ -12,7 +12,7 @@ module forgex_syntax_tree_optimize_m
    private
 
    public :: get_prefix_literal
-   public :: get_postfix_literal
+   public :: get_suffix_literal
    public :: get_entire_literal
 
 contains
@@ -30,7 +30,7 @@ contains
    end function get_prefix_literal
 
    
-   pure function get_postfix_literal(tree) result(chara)
+   pure function get_suffix_literal(tree) result(chara)
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
@@ -40,9 +40,9 @@ contains
       has_or = .false.
       has_closure = .false.
 
-      call get_postfix_literal_internal(tree%nodes, tree%top, chara, has_or, has_closure)
+      call get_suffix_literal_internal(tree%nodes, tree%top, chara, has_or, has_closure)
 
-   end function get_postfix_literal
+   end function get_suffix_literal
 
 
    pure function get_entire_literal(tree) result(chara)
@@ -191,11 +191,11 @@ contains
    end subroutine get_prefix_literal_internal
 
 
-   pure recursive subroutine get_postfix_literal_internal(tree, idx, postfix,  has_or, has_closure)
+   pure recursive subroutine get_suffix_literal_internal(tree, idx, suffix,  has_or, has_closure)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
-      character(:), allocatable, intent(inout) :: postfix
+      character(:), allocatable, intent(inout) :: suffix
       logical, intent(inout) :: has_or, has_closure
       
       logical :: or_r, or_l, closure_r, closure_l
@@ -216,9 +216,9 @@ contains
 
       select case (node%op)
       case (op_concat)
-         call get_postfix_literal_internal(tree, node%right_i, postfix, or_r, closure_r)
+         call get_suffix_literal_internal(tree, node%right_i, suffix, or_r, closure_r)
 
-         if(.not. or_r) call get_postfix_literal_internal(tree, node%left_i, candidate1, or_l, closure_l)
+         if(.not. or_r) call get_suffix_literal_internal(tree, node%left_i, candidate1, or_l, closure_l)
 
          has_or = or_l .or. or_r
          has_closure = closure_l .or. closure_r
@@ -229,24 +229,24 @@ contains
          else if (closure_l) then
             return
          else if (closure_r) then
-            postfix = postfix
+            suffix = suffix
          else
-            postfix = candidate1//postfix
+            suffix = candidate1//suffix
             return
          end if
    
       case (op_union) !OR
-         call get_postfix_literal_internal(tree, node%left_i, candidate1, or_l, has_closure)
-         call get_postfix_literal_internal(tree, node%right_i, candidate2, or_r, has_closure)
+         call get_suffix_literal_internal(tree, node%left_i, candidate1, or_l, has_closure)
+         call get_suffix_literal_internal(tree, node%right_i, candidate2, or_r, has_closure)
 
-         postfix = extract_same_part_postfix(candidate1, candidate2)
+         suffix = extract_same_part_suffix(candidate1, candidate2)
 
          has_or = .true.
 
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_postfix_literal_internal(tree, node%left_i, postfix, or_r, has_closure)
+            call get_suffix_literal_internal(tree, node%left_i, suffix, or_r, has_closure)
 
          end do
          has_or = or_r
@@ -256,12 +256,12 @@ contains
          has_closure = .true.
       case default
          if (is_literal_tree_node(node)) then
-            postfix = char_utf8(node%c(1)%min)//postfix
+            suffix = char_utf8(node%c(1)%min)//suffix
          else if (is_char_class_tree_node(node)) then
             continue
          end if
       end select
-   end subroutine get_postfix_literal_internal
+   end subroutine get_suffix_literal_internal
 
 
 !=====================================================================!
@@ -302,7 +302,7 @@ contains
    end function extract_same_part_prefix
 
 
-   pure function extract_same_part_postfix (a, b) result(res)
+   pure function extract_same_part_suffix (a, b) result(res)
       use :: forgex_utf8_m
       implicit none
       character(*), intent(in) :: a, b
@@ -346,7 +346,7 @@ contains
          end if
          i = ie + 1
       end do
-   end function extract_same_part_postfix
+   end function extract_same_part_suffix
 
 
    pure function extract_same_part_middle(left_middle, right_middle) result(middle)

@@ -28,14 +28,14 @@ contains
 
    !> This procedure reads a text, performs regular expression matching using an automaton,
    !> and stores the string index in the argument if it contains a match.
-   pure subroutine do_matching_including (automaton, string, from, to, prefix, postfix, runs_engine)
+   pure subroutine do_matching_including (automaton, string, from, to, prefix, suffix, runs_engine)
       use :: forgex_utility_m, only: get_index_list_forward
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, ACCEPTED_EMPTY
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
       integer,           intent(inout) :: from, to
-      character(*),      intent(in)    :: prefix, postfix
+      character(*),      intent(in)    :: prefix, suffix
       logical,           intent(inout) :: runs_engine
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
@@ -142,12 +142,12 @@ contains
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine, entire_fixed_string)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)
       implicit none
       type(automaton_t),      intent(inout) :: automaton
       character(*),           intent(in)    :: string
       logical,                intent(inout) :: res
-      character(*),           intent(in)    :: prefix, postfix
+      character(*),           intent(in)    :: prefix, suffix
       logical,                intent(inout) :: runs_engine
       character(*), optional, intent(inout) :: entire_fixed_string
 
@@ -169,7 +169,7 @@ contains
       end if
 
       len_pre = len(prefix)
-      len_post = len(postfix)
+      len_post = len(suffix)
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
@@ -183,9 +183,9 @@ contains
       end if
 
       empty_pre   = prefix == ''
-      empty_post  = postfix == ''
+      empty_post  = suffix == ''
       if (.not. empty_pre)  matches_pre = string(1:len_pre) == prefix
-      if (.not. empty_post) matches_post = string(n-len_post+1:n) == postfix
+      if (.not. empty_post) matches_post = string(n-len_post+1:n) == suffix
 
       runs_engine = any([(matches_pre .and. matches_post), &
                          (empty_pre .and. matches_post), &

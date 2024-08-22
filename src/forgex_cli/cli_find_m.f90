@@ -96,7 +96,7 @@ contains
       type(automaton_t) :: automaton
 
       integer :: uni, ierr, i
-      character(:), allocatable :: dfa_for_print, prefix, postfix, entire
+      character(:), allocatable :: dfa_for_print, prefix, suffix, entire
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res, flag_runs_engine, flag_fixed_string
@@ -111,7 +111,7 @@ contains
       from = 0
       to = 0
       prefix = ''
-      postfix = ''
+      suffix = ''
       entire = ''
       flag_fixed_string = .false.
       flag_runs_engine = .false.
@@ -131,7 +131,7 @@ contains
 
          if (.not. flag_fixed_string) then
             prefix = get_prefix_literal(tree)
-            postfix = get_postfix_literal(tree)
+            suffix = get_suffix_literal(tree)
          end if
       end if
       lap5 = time_lap()
@@ -151,7 +151,7 @@ contains
                res = text == entire
             end if
          else
-            call runner_do_matching_exactly(automaton, text, res, prefix, postfix, flags(FLAG_NO_LITERAL), flag_runs_engine)
+            call runner_do_matching_exactly(automaton, text, res, prefix, suffix, flags(FLAG_NO_LITERAL), flag_runs_engine)
          end if
 
          lap4 = time_lap()
@@ -166,7 +166,7 @@ contains
                if (from > 0 ) to = from + len(entire) -1
             else
                call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
-                     prefix, postfix, flags(FLAG_NO_LITERAL), flag_runs_engine)
+                     prefix, suffix, flags(FLAG_NO_LITERAL), flag_runs_engine)
             
                if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
                   from = 0
@@ -500,7 +500,7 @@ contains
       
    end subroutine do_find_match_dense_dfa
 
-   subroutine runner_do_matching_exactly(automaton, text, res, prefix, postfix, flag_no_literal_optimize, runs_engine)
+   subroutine runner_do_matching_exactly(automaton, text, res, prefix, suffix, flag_no_literal_optimize, runs_engine)
       use :: forgex_automaton_m
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_cli_api_internal_no_opts_m
@@ -511,7 +511,7 @@ contains
       logical, intent(inout) :: res
       logical, intent(inout) :: runs_engine
       logical, intent(in) :: flag_no_literal_optimize
-      character(*), intent(in) :: prefix, postfix
+      character(*), intent(in) :: prefix, suffix
 
 
 
@@ -519,13 +519,13 @@ contains
          call do_matching_exactly_no_literal_opts(automaton, text, res)
          runs_engine = .true.
       else
-         call do_matching_exactly(automaton, text, res, prefix, postfix, runs_engine)
+         call do_matching_exactly(automaton, text, res, prefix, suffix, runs_engine)
       end if
 
    end subroutine runner_do_matching_exactly
 
 
-   subroutine runner_do_matching_including(automaton, text, from, to, prefix, postfix, flag_no_literal_optimize, runs_engine)
+   subroutine runner_do_matching_including(automaton, text, from, to, prefix, suffix, flag_no_literal_optimize, runs_engine)
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_automaton_m
       use :: forgex_api_internal_m
@@ -534,7 +534,7 @@ contains
       type(automaton_t), intent(inout) :: automaton
       character(*), intent(in) :: text
       integer(int32), intent(inout) :: from, to
-      character(*), intent(in) :: prefix, postfix
+      character(*), intent(in) :: prefix, suffix
       logical,intent(in) :: flag_no_literal_optimize
       logical, intent(inout) :: runs_engine
 
@@ -542,7 +542,7 @@ contains
          call do_matching_including_no_literal_opts(automaton, text, from, to)
          runs_engine = .true.
       else
-         call do_matching_including(automaton, text, from, to, prefix, postfix, runs_engine)
+         call do_matching_including(automaton, text, from, to, prefix, suffix, runs_engine)
       end if
    end subroutine runner_do_matching_including
 
