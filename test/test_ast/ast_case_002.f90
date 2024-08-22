@@ -48,14 +48,20 @@ program main
 
 
    !! Currently, we choose not to extract literals from the + operator to minimize false positive rates.
-   ! call runner_suffix("(ab)bb|cb)+", "b", res)
+   call runner_suffix("(ab|bb|cb)+", "", res)
+   call runner_suffix("((ab)+){2}", "", res)
+   call runner_suffix("((ab|bb)|(db|eb))+", "", res)
+   call runner_suffix("((ac|bc)+|(dc|ec)+)+", "", res)
+   call runner_suffix("((ab)?c+){2,3}", "", res)
+   call runner_suffix("((a|b)+c)+", "", res)
+   
+   ! call runner_suffix("(ab|bb|cb)+", "b", res)
    ! call runner_suffix("((ab)+){2}", "abab", res)
    ! call runner_suffix("((ab|bb)|(db|eb))+", "b", res)
    ! call runner_suffix("((ac|bc)+|(dc|ec)+)+", "c", res)
    ! call runner_suffix("((ab)?c+){2,3}", "c", res)
-   ! call runner_suffix("((a|b)+c)+", "c", res)+", "ab", res)
-   ! call runner_suffix("(ab|
-   
+   ! call runner_suffix("((a|b)+c)+", "c", res)
+
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)
