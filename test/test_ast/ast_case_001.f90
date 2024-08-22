@@ -28,6 +28,13 @@ program main
 
    call runner_prefix("z(ab|ac|a+){3,4}", "za", res)
    call runner_prefix("z(ab|aa)b", "za", res)
+   call runner_prefix("zx{3}(ab|aa)b", "zxxxa", res)
+   call runner_prefix("zx{3}(ab|aa){2}b", "zxxxa", res)
+   call runner_prefix("(zx{3}(ab|aa)b)+", "zxxxa", res)
+   call runner_prefix("(zx{3}(ab|aa)b)|(zx)", "zx", res)
+   call runner_prefix("(zx{3}(ab|aa)b)|(z)", "z", res)
+   call runner_prefix("((zx{3}(ab|aa)b)|(zx))*", "", res)
+
 
    ! call runner_prefix(, , res)
    ! call runner_prefix(, , res)

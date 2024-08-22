@@ -163,11 +163,13 @@ contains
 
       select case (node%op)
       case (op_concat)
-         call get_prefix_literal_internal(tree, node%left_i, prefix, res_left)
+         call get_prefix_literal_internal(tree, node%left_i, candidate1, res_left)
 
          if (res_left) then
-            call get_prefix_literal_internal(tree, node%right_i, prefix, res_right)
+            call get_prefix_literal_internal(tree, node%right_i, candidate2, res_right)
          end if
+
+         prefix = prefix//candidate1//candidate2
 
          res = res_left .and. res_right
 
