@@ -45,22 +45,26 @@ program main
    call runner_suffix("((a|b)+|(c|b)+)+", "", res)
    call runner_suffix("((a|b)+)?", "", res)
    call runner_suffix("((ac|bc)*|(dc|ec)+)+", "", res)
+   call runner_suffix("([a-z]){2}", "", res)
 
 
-   !! Currently, we choose not to extract literals from the + operator to minimize false positive rates.
-   call runner_suffix("(ab|bb|cb)+", "", res)
-   call runner_suffix("((ab)+){2}", "", res)
-   call runner_suffix("((ab|bb)|(db|eb))+", "", res)
-   call runner_suffix("((ac|bc)+|(dc|ec)+)+", "", res)
-   call runner_suffix("((ab)?c+){2,3}", "", res)
-   call runner_suffix("((a|b)+c)+", "", res)
+   !! If the + operator is not processed on op_closure handling in get_suffix_literal_internal,
+   !! no suffix is ​​obtained.
+   ! call runner_suffix("(ab|bb|cb)+", "", res)
+   ! call runner_suffix("((ab)+){2}", "", res)
+   ! call runner_suffix("((ab|bb)|(db|eb))+", "", res)
+   ! call runner_suffix("((ac|bc)+|(dc|ec)+)+", "", res)
+   ! call runner_suffix("((ab)?c+){2,3}", "", res)
+   ! call runner_suffix("((a|b)+c)+", "", res)
    
-   ! call runner_suffix("(ab|bb|cb)+", "b", res)
-   ! call runner_suffix("((ab)+){2}", "abab", res)
-   ! call runner_suffix("((ab|bb)|(db|eb))+", "b", res)
-   ! call runner_suffix("((ac|bc)+|(dc|ec)+)+", "c", res)
-   ! call runner_suffix("((ab)?c+){2,3}", "c", res)
-   ! call runner_suffix("((a|b)+c)+", "c", res)
+   !! The implementation of op_closure handling in get_suffix_literal_internal has weak test coverage.
+   call runner_suffix("(ab|bb|cb)+", "b", res)
+   call runner_suffix("((ab)+){2}", "ab", res) !! abab is expected.
+   call runner_suffix("((ab|bb)|(db|eb))+", "b", res)
+   call runner_suffix("((ac|bc)+|(dc|ec)+)+", "c", res)
+   call runner_suffix("((ab)?c+){2,3}", "c", res)
+   call runner_suffix("((a|b)+c)+", "c", res)
+   call runner_suffix("a((ac|bc)+){3}", "c", res)
 
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)

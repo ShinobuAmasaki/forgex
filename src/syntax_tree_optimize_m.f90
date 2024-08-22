@@ -199,7 +199,7 @@ contains
       logical, intent(inout) :: has_or, has_closure
       
       logical :: or_r, or_l, closure_r, closure_l
-      type(tree_node_t) :: node
+      type(tree_node_t) :: node, parent
       character(:), allocatable :: candidate1, candidate2
       integer :: n, j
 
@@ -246,14 +246,31 @@ contains
       case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_suffix_literal_internal(tree, node%left_i, suffix, or_r, has_closure)
-
+            call get_suffix_literal_internal(tree, node%left_i, suffix, or_l, has_closure)
+            has_or = or_l .or. has_or
          end do
-         has_or = or_r
+
          if (node%min_repeat /= node%max_repeat) has_closure = .true.
 
       case(op_closure)
          has_closure = .true.
+         parent = tree(node%parent_i)
+
+         ! Processing the + operator
+         ! Get the left of the parent node, and if it has the same suffix as the current node, return it.
+         if (parent%own_i /= 0) then
+            if (parent%op == op_concat) then
+               if (parent%right_i == node%own_i) then
+                  call get_suffix_literal_internal(tree, parent%left_i, candidate1, or_l, closure_l)
+                  call get_suffix_literal_internal(tree, node%left_i, candidate2, or_r, closure_r)
+                  if (candidate1 == candidate2) then
+                     suffix = candidate1
+                  end if
+               end if
+            end if
+         end if
+         has_or = or_l .or. or_r
+
       case default
          if (is_literal_tree_node(node)) then
             suffix = char_utf8(node%c(1)%min)//suffix
