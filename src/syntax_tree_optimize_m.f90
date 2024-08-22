@@ -16,6 +16,8 @@ module forgex_syntax_tree_optimize_m
    public :: get_entire_literal
    public :: get_middle_literal
 
+   public :: extract_same_part_middle
+
 contains
 
    pure function get_prefix_literal(tree) result(chara)
@@ -59,10 +61,14 @@ contains
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
-      logical :: each_res, or_exists
+      logical :: each_res, or_exists, root_left, closure_exists
       chara = ''
+      or_exists = .false.
+      closure_exists = .false.
+      root_left = .false. 
 
-      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res, or_exists)
+      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res, or_exists, closure_exists, root_left)
+
    end function get_middle_literal
  
    pure function is_literal_tree_node(node) result(res)
@@ -290,75 +296,138 @@ contains
    end subroutine get_postfix_literal_internal
 
 
-   pure recursive subroutine get_middle_literal_internal(tree, idx, literal, res, or_exists)
+   pure recursive subroutine get_middle_literal_internal(tree, idx, middle, res, or_exists, closure_exists, root_left)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
-      character(:), allocatable, intent(inout) :: literal
-      logical, intent(inout) :: res, or_exists
-
+      character(:), allocatable, intent(inout) :: middle
+      logical, intent(inout) :: res, or_exists, closure_exists, root_left
+      
+      logical :: res_left, res_right, unused
       type(tree_node_t) :: node
       character(:), allocatable :: candidate1, candidate2
-      logical :: res_left, res_right, unused
-      integer(int32) :: n, j
+      integer :: n, j
 
       node = tree(idx)
       res_left = .false.
       res_right = .false.
-      candidate1 = ""
-      candidate2 = ""
+      candidate1 = ''
+      candidate2 = ''
 
       select case (node%op)
       case (op_concat)
-         call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, or_exists)
-         call get_middle_literal_internal(tree, node%left_i, candidate2, res_left, or_exists)
-
-
-         if (res_right) then
-            if (literal == "") then
-               literal = candidate1
-            else if (or_exists) then
-               or_exists = .false.
-               res = .false.
+         ! rootノードについての処理
+         if (tree(idx)%parent_i == 0) then
+            root_left = .true.
+            call get_middle_literal_internal(tree, node%left_i, candidate1, res_left, or_exists, closure_exists, root_left)
+            root_left = .false.
+            call get_middle_literal_internal(tree, node%right_i, candidate2, res_right, or_exists, unused, root_left)
+            
+            if (closure_exists) then
+               if (res_left) middle = candidate1
+               return
             else
-               literal = candidate1//literal
+               if (res_left .and. res_right) then
+                  middle = candidate1//candidate2
+               else if (res_right) then
+                  middle = candidate2
+               else if (res_left) then
+                  middle = candidate1
+               else
+                  middle = ''
+               end if
+            end if
+
+         else
+            if (root_left) then
+               ! root left
+               call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, or_exists, closure_exists, root_left)
+               if (res_right) then
+                  call get_middle_literal_internal(tree, node%left_i, candidate2, unused, or_exists, closure_exists, root_left)
+               end if
+               if (res_right) then
+                  if (middle == "") then
+                     middle = candidate1
+                  else if (or_exists) then
+                     or_exists = .false.
+                     res = .false.
+                  else
+                     middle = candidate1//middle
+                  end if
+               end if
+            else
+               ! root right
+               call get_middle_literal_internal(tree, node%left_i, candidate1, res_left, or_exists, closure_exists, root_left)
+               if (res_left) then
+                  call get_middle_literal_internal(tree, node%right_i, candidate2, res_right, or_exists, closure_exists, root_left)
+               end if
+
+               if (res_left) then
+                  if (candidate1 == "") then
+                     middle = candidate2
+                  else if (or_exists) then
+                     or_exists = .false.
+                     res = .false.
+                  else
+                     middle = middle//candidate1//candidate2
+                  end if
+               end if
             end if
          end if
 
-         res = res_left .and. res_right
+         res = res_left .or. res_right
       case (op_union)
-         call get_middle_literal_internal(tree, node%left_i, candidate1, unused, or_exists)
-         call get_middle_literal_internal(tree, node%right_i, candidate2, unused, or_exists)
-         literal = extract_same_part_postfix(candidate1, candidate2)
+         call get_middle_literal_internal(tree, node%left_i, candidate1, unused, or_exists, closure_exists, root_left)
+         call get_middle_literal_internal(tree, node%right_i, candidate2, unused, or_exists, closure_exists, root_left)
+         middle = extract_same_part_middle(candidate1, candidate2)
+         res = middle /= ""
          or_exists = .true.
-         res = .false.
-      case (op_closure)
-         literal = ""
-         res = .false.
-      case (op_repeat)
+      case(op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_middle_literal_internal(tree, node%left_i, literal, res_left, or_exists)
-         end do         ! 子ノードのOR演算をキャッチして処理する
+            call get_middle_literal_internal(tree, node%left_i, middle, res_right, or_exists, closure_exists, root_left)
+         end do
+         
+         ! 子ノードのOR演算をキャッチして処理する
          if (or_exists) then
             res = .false.
          else
             res = res_right
          end if
-         or_exists = .false.
-      case (op_char)
-         if (is_literal_tree_node(node)) then
-            if (node%c(1)%min == node%c(1)%max) then
-               literal = literal//adjustl_multi_byte(char_utf8(node%c(1)%min))
-               res = .true.
-               return
+         or_exists = .false. 
+      case(op_closure)
+         ! +に対する処理
+         if (node%parent_i /= 0) then
+            if(tree(node%parent_i)%op == op_concat) then
+               ! 親の演算子が連結の場合、
+               
+               ! 姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
+               if (tree(node%parent_i)%right_i == node%own_i) then
+                  call get_middle_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, unused, or_exists, &
+                                                   closure_exists, root_left)
+               else
+                  candidate1 = ''
+               end if
+
+               call get_middle_literal_internal(tree, node%left_i, candidate2, unused, or_exists, closure_exists, root_left)
+               if (candidate1 == candidate2) then
+                  middle = ''
+                  res = .true.
+               endif
             end if
          end if
-         res = .false.
+         closure_exists = .true.
+      case default
+         if (is_literal_tree_node(node)) then
+            middle = char_utf8(node%c(1)%min)//middle
+            res = .true.
+         else if (is_char_class_tree_node(node)) then
+            continue
+         else
+            res = .false.
+         end if
       end select
-
    end subroutine get_middle_literal_internal
-
 
    pure function extract_same_part_prefix (a, b) result(res)
       use :: forgex_utf8_m
@@ -441,15 +510,46 @@ contains
       end do
    end function extract_same_part_postfix
 
-   pure function extract_same_part_middle(a, b) result(res)
+
+   pure function extract_same_part_middle(left_middle, right_middle) result(middle)
       use :: forgex_utf8_m
       implicit none
-      character(*), intent(in) :: a, b
-      character(:), allocatable :: res
+      character(*), intent(in) :: left_middle, right_middle
+      character(:), allocatable :: middle
       
-      character(:), allocatable :: buf
-      integer :: i, ii, n, diff, ie
-      character(:), allocatable :: short_s, long_s
+      integer :: i, j, max_len, len_left, len_right, len_tmp
+      character(:), allocatable :: tmp_middle
+
+      len_left = len(left_middle)
+      len_right = len(right_middle)
+      max_len = 0
+      middle = ''
+
+      ! Compare all substring
+      do i = 1, len_left
+         do j = 1, len_right
+            if (left_middle(i:i) == right_middle(j:j)) then
+               tmp_middle = ''
+               len_tmp = 0
+
+               ! Check whether match strings or not.
+               do while (i+len_tmp <= len_left .and. j+len_tmp <= len_right)
+                  if (left_middle(i:i+len_tmp) == right_middle(j:j+len_tmp)) then
+                     tmp_middle = left_middle(i:i+len_tmp)
+                     len_tmp = len(tmp_middle)
+                  else
+                     exit
+                  end if
+               end do
+
+               ! Store the longest common part.
+               if (len_tmp > max_len) then
+                  max_len = len(tmp_middle)
+                  middle = tmp_middle
+               end if
+            end if
+         end do
+      end do
    end function extract_same_part_middle
       
 end module forgex_syntax_tree_optimize_m
