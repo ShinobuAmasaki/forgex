@@ -221,7 +221,7 @@ contains
          if(.not. or_r) call get_suffix_literal_internal(tree, node%left_i, candidate1, or_l, closure_l)
 
          has_or = or_l .or. or_r
-         has_closure = closure_l .or. closure_r
+         has_closure =  closure_r
          if (or_r .and. or_l) then
             return
          else if (or_r) then
@@ -254,6 +254,7 @@ contains
 
       case(op_closure)
          has_closure = .true.
+         if(node%parent_i == 0) return
          parent = tree(node%parent_i)
 
          ! Processing the + operator
@@ -275,7 +276,7 @@ contains
          if (is_literal_tree_node(node)) then
             suffix = char_utf8(node%c(1)%min)//suffix
          else if (is_char_class_tree_node(node)) then
-            continue
+            has_or = .true.
          end if
       end select
    end subroutine get_suffix_literal_internal

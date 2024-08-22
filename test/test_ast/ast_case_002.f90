@@ -6,6 +6,34 @@ program main
 
    print *, "=== AST CASE 2 BEGIN ==="
 
+   call runner_suffix("abc", "abc", res)
+   call runner_suffix("ab*c", "c", res)
+   call runner_suffix("xy+z", "z", res) ! cannot get yz
+   call runner_suffix("(abc|def)g", "g", res)
+   call runner_suffix("a(bc|de)f", "f", res)
+   call runner_suffix("(xy|z)+a", "a", res)
+   call runner_suffix("ab(cd|ef)g", "g", res)
+   call runner_suffix("x(yz|ab)+c", "c", res)
+   call runner_suffix("(a|b)*cde", "cde", res)
+   call runner_suffix("a(bc)*d", "d", res)
+   call runner_suffix("(ab|cd)+e", "e", res)
+   call runner_suffix("xy(z|w)+", "", res)
+   call runner_suffix("ab{2,3}c", "c", res)
+   call runner_suffix("a(bc|de){2,3}f", "f", res)
+   call runner_suffix("xy{1,2}z", "z", res) ! cannot get yz
+   call runner_suffix("a[bc]d", "d", res)
+   call runner_suffix("[a-z]x", "x", res)
+   call runner_suffix("abc[def]+g", "g", res)
+   call runner_suffix("a(b|c)*d", "d", res)
+   call runner_suffix("x(yz|ab)*c", "c", res)
+   call runner_suffix("(ab|cd)+ef", "ef", res)
+   call runner_suffix("(ab|cd)(ef|gh)i", "i", res)
+   call runner_suffix("a(b|c)d", "d", res)
+   call runner_suffix("(xy|z)+a", "a", res)
+   call runner_suffix("(ab|cd)efg", "efg", res)
+   call runner_suffix("x(yz|ab)cd", "cd", res)
+   call runner_suffix("a(bc|de)(fg)+h", "h", res) ! cannot get fgh
+
    call runner_suffix("[a]{3,4}", "aaa", res)
    call runner_suffix("(a|b)+", "", res)
    call runner_suffix("(b+)a*(ab){3,4}", "ababab", res)

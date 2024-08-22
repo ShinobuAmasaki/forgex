@@ -44,6 +44,7 @@ contains
       integer :: max_match    ! maximum value of match attempts
       integer :: start        ! starting character index
       integer :: i
+      integer :: suf_idx      ! right-most suffix index
       character(:), allocatable :: str
       integer, allocatable :: index_list(:)
       logical :: do_brute_force
@@ -54,6 +55,7 @@ contains
       from = 0
       to = 0
       do_brute_force = prefix == ''
+      suf_idx = INVALID_CHAR_INDEX
 
       cur_i = automaton%initial_index
 
@@ -90,6 +92,12 @@ contains
                i = 1
                start = index_list(i)
             end if
+
+            if (suffix /= '') then
+               suf_idx = index(string, suffix)
+               if (suf_idx == 0) return
+            end if
+
          end if
       end block loop_init
 
@@ -98,6 +106,10 @@ contains
          ci = start
          cur_i = automaton%initial_index
          runs_engine = .true.
+
+         if (suf_idx /= INVALID_CHAR_INDEX) then
+            if (suf_idx < ci) exit
+         end if
 
          ! Traverse the DFA with the input string from the current starting position of ``cur_i`.
          do while (cur_i /= DFA_INVALID_INDEX)
