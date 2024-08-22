@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.6% of total for procedures.">30 statements</a>
+                 title=" 0.6% of total for procedures.">29 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public pure subroutine build_nfa_graph(tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)  
+    <h2>public pure subroutine build_nfa_graph(tree, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -172,7 +172,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~7"></span>
+              <span class="anchor" id="variable-tree~6"></span>
               type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -187,22 +187,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-root_i"></span>
-              integer(kind=int32),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>root_i</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-nfa"></span>
+              <span class="anchor" id="variable-nfa~2"></span>
               type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -292,11 +277,10 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">build_nfa_graph</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">root_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_exit</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">all_segments</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">build_nfa_graph</span><span class="w"> </span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_entry</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_exit</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">all_segments</span><span class="p">)</span>
 <span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_parameters_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">NFA_TRANSITION_UNIT</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">                </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">                 </span><span class="kd">::</span><span class="w"> </span><span class="n">root_i</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_node_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa</span><span class="p">(:)</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa_entry</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa_exit</span>
@@ -362,7 +346,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 18:25              </p>
+ on 2024-08-22 14:34              </p>
           </div>
         </div>
         <br>

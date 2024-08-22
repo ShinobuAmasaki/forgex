@@ -25,7 +25,7 @@ module forgex_cli_help_messages_m
 
    integer(int32), parameter :: LINE_SIZ = 128
    integer(int32), parameter :: CMD_SIZ = 13
-   integer(int32), parameter :: CMD_DESC_SIZ = 113
+   integer(int32), parameter :: CMD_DESC_SIZ = 109
 
 contains
 
@@ -64,7 +64,7 @@ contains
       offset = offset + 1
       buff(offset) = "USAGE:"
       do i = 1, size(usage)
-         buff(i+offset) = "   "//usage(i)
+         buff(i+offset) = "   "//trim(usage(i))
       end do
 
       offset = offset + size(usage)

@@ -58,11 +58,10 @@ module forgex_nfa_node_m
 
 contains
 
-   pure subroutine build_nfa_graph (tree, root_i, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
+   pure subroutine build_nfa_graph (tree, nfa, nfa_entry, nfa_exit, nfa_top, all_segments)
       use :: forgex_parameters_m, only: NFA_TRANSITION_UNIT
       implicit none
       type(tree_t),         intent(in)                :: tree
-      integer(int32),         intent(in)                 :: root_i
       type(nfa_state_node_t), intent(inout), allocatable :: nfa(:)
       integer(int32),         intent(inout)              :: nfa_entry
       integer(int32),         intent(inout)              :: nfa_exit
@@ -212,7 +211,7 @@ contains
 
       case (op_repeat)
          block
-            integer(int32) :: min_repeat, max_repeat, j, entry_node, node3
+            integer(int32) :: min_repeat, max_repeat, j
             integer(int32) :: num_1st_repeat, num_2nd_repeat
             min_repeat = tree%nodes(i)%min_repeat
             max_repeat = tree%nodes(i)%max_repeat

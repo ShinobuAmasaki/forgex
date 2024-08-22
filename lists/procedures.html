@@ -491,6 +491,12 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><p>This function determines if two NFA state sets (logical vectors) are equivalent.</p><a href="../proc/equivalent_nfa_state_set.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/extract_same_part_middle.html'>extract_same_part_middle</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/extract_same_part_postfix.html'>extract_same_part_postfix</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Function</td>
@@ -748,6 +754,12 @@ compares the result to the <code>correct_answer</code>.</p></td>
 compares the result to the correct answer.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/is_valid__middle.html'>is_valid__middle</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/is_valid__postfix.html'>is_valid__postfix</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
@@ -820,12 +832,6 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/literal_index_matching.html'>literal_index_matching</a></td>
-                 <td><a href='../module/forgex_literal_match_m.html'>forgex_literal_match_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/literal_kmp_search.html'>literal_kmp_search</a></td>
                  <td><a href='../module/forgex_literal_match_m.html'>forgex_literal_match_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
@@ -986,23 +992,23 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Interface</td>
-                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
-an integer and a segment, an integer and a list of segments, or a segment
-and a segment, is contained in the latter, respectively.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
                </tr>
 			   <tr>
-                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></td>
                  <td>Interface</td>
                  <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td>Interface</td>
+                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
+an integer and a segment, an integer and a list of segments, or a segment
+and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -1195,6 +1201,12 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine runs the <code>is_valid__match</code> function and prints the result.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/runner_middle.html'>runner_middle</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_postfix.html'>runner_postfix</a></td>
@@ -1436,7 +1448,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 18:25              </p>
+ on 2024-08-22 14:34              </p>
           </div>
         </div>
         <br>

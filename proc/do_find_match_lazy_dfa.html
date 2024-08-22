@@ -149,15 +149,15 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
               </ul>
             </li>
         </ul>
@@ -180,7 +180,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~2"></span>
+              <span class="anchor" id="variable-flags~6"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -195,7 +195,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~12"></span>
+              <span class="anchor" id="variable-pattern~24"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -210,7 +210,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~2"></span>
+              <span class="anchor" id="variable-text~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -275,7 +275,7 @@
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
 
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">uni</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">,</span><span class="w"> </span><span class="n">i</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dfa_for_print</span><span class="p">,</span><span class="w"> </span><span class="n">literal</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span><span class="p">,</span><span class="w"> </span><span class="n">entire</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">dfa_for_print</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span><span class="p">,</span><span class="w"> </span><span class="n">entire</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">line</span>
 <span class="w">      </span><span class="kt">real</span><span class="p">(</span><span class="n">real64</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">lap1</span><span class="p">,</span><span class="w"> </span><span class="n">lap2</span><span class="p">,</span><span class="w"> </span><span class="n">lap3</span><span class="p">,</span><span class="w"> </span><span class="n">lap4</span><span class="p">,</span><span class="w"> </span><span class="n">lap5</span>
 <span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">flag_runs_engine</span><span class="p">,</span><span class="w"> </span><span class="n">flag_fixed_string</span>
@@ -526,7 +526,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 18:25              </p>
+ on 2024-08-22 14:34              </p>
           </div>
         </div>
         <br>

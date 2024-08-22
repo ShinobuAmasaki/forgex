@@ -57,7 +57,6 @@ contains
       character(:),      allocatable :: buff
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
-      integer                        :: root
       integer                        :: from, to
 
       character(:), allocatable :: prefix, postfix, entirely_fixed_string
@@ -137,7 +136,6 @@ contains
       character(:),      allocatable :: buff
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
-      integer                        :: root
       character(:), allocatable  :: prefix, postfix, entirely_fixed_string
       logical :: unused
 
@@ -196,7 +194,6 @@ contains
       character(:),      allocatable :: buff
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
-      integer                        :: root
       integer                        :: from_l, to_l
 
       character(:), allocatable :: prefix, postfix, entirely_fixed_string

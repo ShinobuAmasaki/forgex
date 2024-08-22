@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.8% of total for modules and submodules.">153 statements</a>
+                 title=" 3.1% of total for modules and submodules.">172 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -127,6 +127,7 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__in">is_valid__in</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__match">is_valid__match</a>
+            <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__middle">is_valid__middle</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__postfix">is_valid__postfix</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__prefix">is_valid__prefix</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__regex">is_valid__regex</a>
@@ -143,6 +144,7 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_in">runner_in</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_match">runner_match</a>
+            <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_middle">runner_middle</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_postfix">runner_postfix</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_prefix">runner_prefix</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-runner_regex">runner_regex</a>
@@ -171,8 +173,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex.html'>forgex</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
               </ul>
             </li>
@@ -212,7 +214,7 @@ compares the result to the <code>correct_answer</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern"></span>
+              <span class="anchor" id="variable-pattern~9"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -227,7 +229,7 @@ compares the result to the <code>correct_answer</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str"></span>
+              <span class="anchor" id="variable-str~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -288,7 +290,7 @@ compares the result to the correct answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~2"></span>
+              <span class="anchor" id="variable-pattern~10"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -303,7 +305,7 @@ compares the result to the correct answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~2"></span>
+              <span class="anchor" id="variable-str~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -344,6 +346,81 @@ compares the result to the correct answer.</p>
   </div>
 
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-is_valid__middle"></span> <h3>public  function <a href='../proc/is_valid__middle.html'>is_valid__middle</a>(pattern, expected, middle) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~14"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-expected"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>expected</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-middle"></span>
+              character(len=:),
+            </td>
+<td></td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>middle</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-is_valid__postfix"></span> <h3>public  function <a href='../proc/is_valid__postfix.html'>is_valid__postfix</a>(pattern, expected_postfix) result(res)  
 </h3></div>
     <div class="card-body">
@@ -363,7 +440,7 @@ compares the result to the correct answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~5"></span>
+              <span class="anchor" id="variable-pattern~13"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -423,7 +500,7 @@ compares the result to the correct answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~4"></span>
+              <span class="anchor" id="variable-pattern~12"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -484,7 +561,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~3"></span>
+              <span class="anchor" id="variable-pattern~11"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -499,7 +576,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~3"></span>
+              <span class="anchor" id="variable-str~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -579,7 +656,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~6"></span>
+              <span class="anchor" id="variable-pattern~15"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -594,7 +671,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~4"></span>
+              <span class="anchor" id="variable-str~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -664,7 +741,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~7"></span>
+              <span class="anchor" id="variable-pattern~16"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -679,7 +756,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~5"></span>
+              <span class="anchor" id="variable-str~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -730,6 +807,76 @@ function and compares the result to the expected answer.</p>
   </div>
 
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-runner_middle"></span> <h3>public  subroutine <a href='../proc/runner_middle.html'>runner_middle</a>(pattern, middle, result)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~20"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-middle~2"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>middle</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-result~6"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>result</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-runner_postfix"></span> <h3>public  subroutine <a href='../proc/runner_postfix.html'>runner_postfix</a>(pattern, postfix, result)  
 </h3></div>
     <div class="card-body">
@@ -749,7 +896,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~10"></span>
+              <span class="anchor" id="variable-pattern~19"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -764,7 +911,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-postfix"></span>
+              <span class="anchor" id="variable-postfix~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -819,7 +966,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~9"></span>
+              <span class="anchor" id="variable-pattern~18"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -834,7 +981,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix"></span>
+              <span class="anchor" id="variable-prefix~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -889,7 +1036,7 @@ function and compares the result to the expected answer.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~8"></span>
+              <span class="anchor" id="variable-pattern~17"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -904,7 +1051,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~6"></span>
+              <span class="anchor" id="variable-str~9"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -977,7 +1124,7 @@ function and compares the result to the expected answer.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 18:25              </p>
+ on 2024-08-22 14:34              </p>
           </div>
         </div>
         <br>

@@ -10,7 +10,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>literal_kmp_search &ndash; Forgex—Fortran Regular Expression</title>
+    <title>is_valid__middle &ndash; Forgex—Fortran Regular Expression</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -64,8 +64,8 @@
 
     <div class="container">
   <div class="row">
-    <h1>literal_kmp_search
-      <small>Subroutine</small>
+    <h1>is_valid__middle
+      <small>Function</small>
       
     </h1>
       <div class="container p-2 mb-4 bg-light border rounded-3">
@@ -76,21 +76,21 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.1% of total for procedures.">6 statements</a>
+                 title=" 0.2% of total for procedures.">10 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/literal_match_m.f90"> Source File</a>
+              <a href="../src/test_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/literal_match_m.f90.html'>literal_match_m.f90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_literal_match_m.html'>forgex_literal_match_m</a></li>
-            <li class="breadcrumb-item active" aria-current="page">literal_kmp_search</li>
+                <li class="breadcrumb-item"><a href='../sourcefile/test_m.f90.html'>test_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_test_m.html'>forgex_test_m</a></li>
+            <li class="breadcrumb-item active" aria-current="page">is_valid__middle</li>
           </ol>
         </nav>
       </div>
@@ -131,7 +131,7 @@
     <div class="card card-primary">
       <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
-        <a class="list-group-item" href="../proc/literal_kmp_search.html#src">literal_kmp_search</a>
+        <a class="list-group-item" href="../proc/is_valid__middle.html#src">is_valid__middle</a>
       </div>
     </div>
 
@@ -141,9 +141,22 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private pure subroutine literal_kmp_search(pattern, text, array)  
+    <h2>public  function is_valid__middle(pattern, expected, middle) result(res)  
 </h2>
-    
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
 
 
 
@@ -160,7 +173,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~24"></span>
+              <span class="anchor" id="variable-pattern~14"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -175,7 +188,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~11"></span>
+              <span class="anchor" id="variable-expected"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -183,22 +196,22 @@
               
             </td>
             <td>::</td>
-            <td><strong>text</strong></td>
+            <td><strong>expected</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-array~2"></span>
-              type(<a href='../type/from_to_result_t.html'>from_to_result_t</a>),
+              <span class="anchor" id="variable-middle"></span>
+              character(len=:),
             </td>
-<td>intent(inout),</td>
+<td></td>
               <td></td>            <td>
               allocatable
             </td>
             <td>::</td>
-            <td><strong>array</strong>(:)</td>
+            <td><strong>middle</strong></td>
             <td>
                 
             </td>
@@ -206,6 +219,13 @@
     </tbody>
   </table>
 
+      <h3>Return Value
+        <small>
+          <span class="anchor" id="variable-res~14"></span>
+          logical
+        </small>
+      </h3>
+      
     <br>
 
 
@@ -220,13 +240,26 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">literal_kmp_search</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="k">array</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">function </span><span class="n">is_valid__middle</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">middle</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_optimize_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">text</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">from_to_result_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">array</span><span class="p">(:)</span>
-<span class="w">      </span>
-<span class="w">   </span><span class="k">end subroutine </span><span class="n">literal_kmp_search</span>
+<span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">middle</span>
+<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">resulting</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
+<span class="w">      </span><span class="c">! call tree%build(pattern)</span>
+<span class="w">      </span><span class="c">! resulting = get_middle_literal(tree)</span>
+<span class="w">      </span><span class="c">! middle = resulting</span>
+<span class="w">      </span><span class="c">! if (len_utf8(expected) == len_utf8(resulting)) then</span>
+<span class="w">      </span><span class="c">!    res = expected == resulting</span>
+<span class="w">      </span><span class="c">!    return</span>
+<span class="w">      </span><span class="c">! end if</span>
+<span class="w">      </span><span class="c">! res = .false.</span>
+
+<span class="w">   </span><span class="k">end function </span><span class="n">is_valid__middle</span>
 </pre></div>
 
     </section>
@@ -250,7 +283,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-20 18:25              </p>
+ on 2024-08-22 14:34              </p>
           </div>
         </div>
         <br>
