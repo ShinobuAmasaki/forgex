@@ -11,6 +11,7 @@ program main
    call runner_postfix("(b+)a*(ab){3,4}", "ababab", res)
    call runner_postfix("(ab|ac|a+){3,4}", "", res)
    call runner_postfix("(ab|ac){3,4}", "", res)
+   call runner_postfix("(ab|ac){3,4}z", "z", res)
    call runner_postfix("(ab){3,4}", "ababab", res)
    call runner_postfix("c{5,10}", "ccccc", res)
    call runner_postfix("c{4,10}", "cccc", res)
