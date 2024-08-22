@@ -59,10 +59,10 @@ contains
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
-      logical :: each_res
+      logical :: each_res, or_exists
       chara = ''
 
-      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res)
+      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res, or_exists)
    end function get_middle_literal
  
    pure function is_literal_tree_node(node) result(res)
@@ -288,12 +288,12 @@ contains
    end subroutine get_postfix_literal_internal
 
 
-   pure recursive subroutine get_middle_literal_internal(tree, idx, literal, res)
+   pure recursive subroutine get_middle_literal_internal(tree, idx, literal, res, or_exists)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: literal
-      logical, intent(inout) :: res
+      logical, intent(inout) :: res, or_exists
 
       type(tree_node_t) :: node
       character(:), allocatable :: candidate1, candidate2
@@ -301,23 +301,49 @@ contains
       integer(int32) :: n, j
 
       node = tree(idx)
+      res_left = .false.
+      res_right = .false.
+      candidate1 = ""
+      candidate2 = ""
 
       select case (node%op)
       case (op_concat)
-         call get_middle_literal_internal(tree, node%left_i, literal, res_left)
-         call get_middle_literal_internal(tree, node%right_i, literal, res_right)
+         call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, or_exists)
+         call get_middle_literal_internal(tree, node%left_i, candidate2, res_left, or_exists)
+
+
+         if (res_right) then
+            if (literal == "") then
+               literal = candidate1
+            else if (or_exists) then
+               or_exists = .false.
+               res = .false.
+            else
+               literal = candidate1//literal
+            end if
+         end if
+
+         res = res_left .and. res_right
       case (op_union)
-         call get_middle_literal_internal(tree, node%left_i, candidate1, unused)
-         call get_middle_literal_internal(tree, node%right_i, candidate2, unused)
-         literal = extract_same_part_middle(candidate1, candidate2)
+         call get_middle_literal_internal(tree, node%left_i, candidate1, unused, or_exists)
+         call get_middle_literal_internal(tree, node%right_i, candidate2, unused, or_exists)
+         literal = extract_same_part_postfix(candidate1, candidate2)
+         or_exists = .true.
          res = .false.
       case (op_closure)
+         literal = ""
+         res = .false.
       case (op_repeat)
          n = node%min_repeat
          do j = 1, n
-            call get_middle_literal_internal(tree, node%left_i, literal, res_left)
-         end do
-         res = res_left
+            call get_middle_literal_internal(tree, node%left_i, literal, res_left, or_exists)
+         end do         ! 子ノードのOR演算をキャッチして処理する
+         if (or_exists) then
+            res = .false.
+         else
+            res = res_right
+         end if
+         or_exists = .false.
       case (op_char)
          if (is_literal_tree_node(node)) then
             if (node%c(1)%min == node%c(1)%max) then
