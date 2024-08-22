@@ -295,6 +295,7 @@ contains
    end subroutine get_postfix_literal_internal
 
 
+   ! 接尾辞に寄せる方針
    pure recursive subroutine get_middle_literal_internal(tree, idx, middle, res, has_closure, root_left)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
@@ -302,7 +303,7 @@ contains
       character(:), allocatable, intent(inout) :: middle
       logical, intent(inout) :: res, has_closure, root_left
       
-      logical :: res_left, res_right, unused, has_closure_L, has_closure_R
+      logical :: res_left, res_right, unused, has_closure_L, has_closure_R, has_or
       type(tree_node_t) :: node
       character(:), allocatable :: candidate_L, candidate_R
       integer :: n, j
@@ -331,33 +332,39 @@ contains
             return
          end if
 
-         if (root_left) then
+         if (root_left) then ! left of the root node
             call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
             call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
 
-            if (res_left .and. has_closure_L) then
+            if (has_closure_L .and. has_closure_R) then
+               middle = candidate_R
+            else if (has_closure_R) then
+               if (candidate_L == '') then
+                  middle = middle//candidate_R
+               else
+                  middle = candidate_L//middle
+               end if
+   
+               res = .true.
+               has_closure = .true.
+            else if (res_left .and. has_closure_L) then
                middle = middle//candidate_R
                res = .true.
                has_closure = .false.
 
-            else if (has_closure_R) then
-               middle = candidate_L//middle
-               res = .true.
-               has_closure = .true.
             else
                middle = candidate_L//candidate_R
             end if
 
-         else
+         else ! right of the root node
             call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
             if (res_left) then
                call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
             end if
 
-            middle = candidate_L//candidate_R
+            middle = middle//candidate_L//candidate_R
 
-         end if   
-
+         end if
          res = .true.
 
       case (op_repeat)

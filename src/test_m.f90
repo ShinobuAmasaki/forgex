@@ -118,18 +118,19 @@ contains
 
    end function is_valid__postfix
 
-   function is_valid__middle(pattern, expected) result(res)
+   function is_valid__middle(pattern, expected, middle) result(res)
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_utf8_m
       implicit none
       character(*), intent(in) :: pattern, expected
+      character(:), allocatable :: middle
       logical :: res
 
       character(:), allocatable :: resulting
       type(tree_t) :: tree
       call tree%build(pattern)
       resulting = get_middle_literal(tree)
-
+      middle = resulting
       if (len_utf8(expected) == len_utf8(resulting)) then
          res = expected == resulting
          return
@@ -251,14 +252,16 @@ contains
       implicit none
       character(*), intent(in) :: pattern, middle
       logical, intent(inout) :: result
+      character(:),allocatable :: resulting
       logical :: res
 
-      res = is_valid__middle(pattern, middle)
+      res = is_valid__middle(pattern, middle, resulting)
 
       if (res) then
          write(error_unit, '(a,a,a)') 'result(middle): Success', ' '//trim(pattern), ' "'//trim(middle)//'"'
       else
-         write(error_unit, '(a,a,a)') 'result(middle): FAILED ', ' '//trim(pattern), ' "'//trim(middle)//'"'
+         write(error_unit, '(a,a,a a)') 'result(middle): FAILED ', ' '//trim(pattern), ': got "'//resulting//'"', &
+                                        ', "'//trim(middle)//'" is expected.'
       end if
       result = result .and. res
    end subroutine runner_middle
