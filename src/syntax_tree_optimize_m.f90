@@ -322,7 +322,7 @@ contains
             call get_middle_literal_internal(tree, node%left_i, candidate1, res_left, or_exists, closure_exists, root_left)
             root_left = .false.
             call get_middle_literal_internal(tree, node%right_i, candidate2, res_right, or_exists, unused, root_left)
-            
+
             if (closure_exists) then
                if (res_left) middle = candidate1
                return
@@ -341,18 +341,21 @@ contains
          else
             if (root_left) then
                ! root left
-               call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, or_exists, closure_exists, root_left)
+               call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, unused, closure_exists, root_left)
                if (res_right) then
                   call get_middle_literal_internal(tree, node%left_i, candidate2, unused, or_exists, closure_exists, root_left)
                end if
                if (res_right) then
-                  if (middle == "") then
+                  if (candidate1 == "") then
+                     middle = candidate2
+                  else if (candidate2 == '') then
                      middle = candidate1
                   else if (or_exists) then
                      or_exists = .false.
                      res = .false.
+                     middle = candidate2//middle
                   else
-                     middle = candidate1//middle
+                     middle = candidate2//candidate1//middle
                   end if
                end if
             else
