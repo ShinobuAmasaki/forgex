@@ -96,7 +96,7 @@ contains
       type(automaton_t) :: automaton
 
       integer :: uni, ierr, i
-      character(:), allocatable :: dfa_for_print, literal, prefix, postfix, entire
+      character(:), allocatable :: dfa_for_print, prefix, postfix, entire
       character(256) :: line
       real(real64) :: lap1, lap2, lap3, lap4, lap5
       logical :: res, flag_runs_engine, flag_fixed_string
@@ -343,7 +343,6 @@ contains
 
       type(tree_t) :: tree
       type(automaton_t) :: automaton
-      integer(int32) :: root
 
       integer :: uni, ierr, i
       character(:), allocatable :: dfa_for_print

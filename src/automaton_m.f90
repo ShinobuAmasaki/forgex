@@ -58,7 +58,7 @@ contains
 
       self%tree = tree
       !-- NFA building
-      call self%nfa%build(tree, tree%top, self%nfa_entry, self%nfa_exit, self%all_segments)
+      call self%nfa%build(tree, self%nfa_entry, self%nfa_exit, self%all_segments)
    end subroutine automaton__build_nfa
 
    !> This subroutine reads `tree` and `tree_top` variable, constructs the NFA graph,

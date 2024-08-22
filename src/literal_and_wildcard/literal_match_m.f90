@@ -1,3 +1,11 @@
+! Fortran Regular Expression (Forgex)
+!
+! MIT License
+!
+! (C) Amasaki Shinobu, 2023-2024
+!     A regular expression engine for Fortran.
+!     forgex_literal_match_m module is a part of Forgex.
+!
 module forgex_literal_match_m
    use :: iso_fortran_env, only: int32
    implicit none
@@ -23,12 +31,12 @@ contains
 
    end subroutine literal_index_matching
 
-   pure subroutine literal_kmp_search(pattern, text, array)
-      implicit none
-      character(*), intent(in) :: pattern
-      character(*), intent(in) :: text
-      type(from_to_result_t), intent(inout), allocatable :: array(:)
+   ! pure subroutine literal_kmp_search(pattern, text, array)
+   !    implicit none
+   !    character(*), intent(in) :: pattern
+   !    character(*), intent(in) :: text
+   !    type(from_to_result_t), intent(inout), allocatable :: array(:)
       
-   end subroutine literal_kmp_search
+   ! end subroutine literal_kmp_search
 
 end module forgex_literal_match_m

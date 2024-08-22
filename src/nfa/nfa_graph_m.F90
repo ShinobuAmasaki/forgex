@@ -39,17 +39,16 @@ contains
 
 !== Currently, the nfa_graph_m procedures are just a wrapper around nfa_node_m.
 
-   pure subroutine nfa_graph__build(self, tree, root_i, nfa_entry, nfa_exit, all_segments)
+   pure subroutine nfa_graph__build(self, tree, nfa_entry, nfa_exit, all_segments)
       use :: forgex_syntax_tree_graph_m
       use :: forgex_segment_m
       implicit none
       class(nfa_graph_t), intent(inout) :: self
       type(tree_t),   intent(in) :: tree
-      integer(int32), intent(in) :: root_i
       integer(int32), intent(inout) :: nfa_entry, nfa_exit
       type(segment_t), allocatable, intent(inout) :: all_segments(:)
 
-      call build_nfa_graph(tree, tree%top, self%nodes, nfa_entry, nfa_exit, self%nfa_top, all_segments)
+      call build_nfa_graph(tree, self%nodes, nfa_entry, nfa_exit, self%nfa_top, all_segments)
       self%nfa_limit = ubound(self%nodes, dim=1)
    end subroutine nfa_graph__build
 
@@ -63,12 +62,11 @@ contains
    end subroutine
 
 
-   pure subroutine nfa_graph__generate(self, tree, tree_root, entry, exit)
+   pure subroutine nfa_graph__generate(self, tree, entry, exit)
       use :: forgex_syntax_tree_graph_m
       implicit none
       class(nfa_graph_t), intent(inout) :: self
       type(tree_t),   intent(in) :: tree
-      integer(int32), intent(in) :: tree_root
       integer(int32), intent(in) :: entry, exit
 
       call generate_nfa(tree, tree%top, self%nodes, self%nfa_top, entry, exit)
