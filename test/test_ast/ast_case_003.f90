@@ -12,6 +12,7 @@ program ast_case_003
    call runner_middle("(b?)a+(cd){3,4}", "a", res)
    call runner_middle("z(ab|ac|a+){3,4}", "", res)
    call runner_middle("z(ab|ac){3,4}", "", res)
+   call runner_middle("ab*c+d*e", "c", res)
    call runner_middle("(ab){3,4}", "ababab", res)
    call runner_middle("c{5,10}", "ccccc", res)
    call runner_middle("c{4,10}", "cccc", res)

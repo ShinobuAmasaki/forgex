@@ -61,13 +61,12 @@ contains
       implicit none
       type(tree_t), intent(in) :: tree
       character(:), allocatable :: chara
-      logical :: each_res, or_exists, root_left, closure_exists
+      logical :: each_res, or_exists, has_closure, root_left
       chara = ''
       or_exists = .false.
-      closure_exists = .false.
-      root_left = .false. 
-
-      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res, or_exists, closure_exists, root_left)
+      has_closure = .false.
+      root_left = .false.
+      call get_middle_literal_internal(tree%nodes, tree%top, chara, each_res, has_closure, root_left)
 
    end function get_middle_literal
  
@@ -296,139 +295,79 @@ contains
    end subroutine get_postfix_literal_internal
 
 
-   pure recursive subroutine get_middle_literal_internal(tree, idx, middle, res, or_exists, closure_exists, root_left)
+   pure recursive subroutine get_middle_literal_internal(tree, idx, middle, res, has_closure, root_left)
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
       integer(int32), intent(in) :: idx
       character(:), allocatable, intent(inout) :: middle
-      logical, intent(inout) :: res, or_exists, closure_exists, root_left
+      logical, intent(inout) :: res, has_closure, root_left
       
-      logical :: res_left, res_right, unused
+      logical :: res_left, res_right, unused, has_closure_L, has_closure_R
       type(tree_node_t) :: node
-      character(:), allocatable :: candidate1, candidate2
+      character(:), allocatable :: candidate_L, candidate_R
       integer :: n, j
 
       node = tree(idx)
       res_left = .false.
       res_right = .false.
-      candidate1 = ''
-      candidate2 = ''
+      candidate_L = ''
+      candidate_R= ''
 
       select case (node%op)
       case (op_concat)
-         ! rootノードについての処理
-         if (tree(idx)%parent_i == 0) then
+         if (node%parent_i == 0) then
             root_left = .true.
-            call get_middle_literal_internal(tree, node%left_i, candidate1, res_left, or_exists, closure_exists, root_left)
+            call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure, root_left)
             root_left = .false.
-            call get_middle_literal_internal(tree, node%right_i, candidate2, res_right, or_exists, unused, root_left)
-
-            if (closure_exists) then
-               if (res_left) middle = candidate1
-               return
-            else
-               if (res_left .and. res_right) then
-                  middle = candidate1//candidate2
-               else if (res_right) then
-                  middle = candidate2
-               else if (res_left) then
-                  middle = candidate1
-               else
-                  middle = ''
-               end if
-            end if
-
-         else
-            if (root_left) then
-               ! root left
-               call get_middle_literal_internal(tree, node%right_i, candidate1, res_right, unused, closure_exists, root_left)
-               if (res_right) then
-                  call get_middle_literal_internal(tree, node%left_i, candidate2, unused, or_exists, closure_exists, root_left)
-               end if
-               if (res_right) then
-                  if (candidate1 == "") then
-                     middle = candidate2
-                  else if (candidate2 == '') then
-                     middle = candidate1
-                  else if (or_exists) then
-                     or_exists = .false.
-                     res = .false.
-                     middle = candidate2//middle
-                  else
-                     middle = candidate2//candidate1//middle
-                  end if
-               end if
-            else
-               ! root right
-               call get_middle_literal_internal(tree, node%left_i, candidate1, res_left, or_exists, closure_exists, root_left)
-               if (res_left) then
-                  call get_middle_literal_internal(tree, node%right_i, candidate2, res_right, or_exists, closure_exists, root_left)
-               end if
-
-               if (res_left) then
-                  if (candidate1 == "") then
-                     middle = candidate2
-                  else if (or_exists) then
-                     or_exists = .false.
-                     res = .false.
-                  else
-                     middle = middle//candidate1//candidate2
-                  end if
-               end if
-            end if
+            call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure, root_left)
+            middle = candidate_L//candidate_R
+            return
          end if
 
-         res = res_left .or. res_right
+         if (root_left) then
+            call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
+            if (res_right) then
+               call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
+            end if
+
+            middle = candidate_L// candidate_R
+
+
+         else
+            call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure_L, root_left)
+            if (res_left) then
+               call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure_R, root_left)
+            end if
+            middle = candidate_L//candidate_R
+
+         end if   
+
+         res = .true.
+
+      case (op_repeat)
+      case (op_closure)
+         res = .true.
+         has_closure = .true.
+
       case (op_union)
-         call get_middle_literal_internal(tree, node%left_i, candidate1, unused, or_exists, closure_exists, root_left)
-         call get_middle_literal_internal(tree, node%right_i, candidate2, unused, or_exists, closure_exists, root_left)
-         middle = extract_same_part_middle(candidate1, candidate2)
-         res = middle /= ""
-         or_exists = .true.
-      case(op_repeat)
-         n = node%min_repeat
-         do j = 1, n
-            call get_middle_literal_internal(tree, node%left_i, middle, res_right, or_exists, closure_exists, root_left)
-         end do
-         
-         ! 子ノードのOR演算をキャッチして処理する
-         if (or_exists) then
-            res = .false.
+         call get_middle_literal_internal(tree, node%left_i, candidate_L, res_left, has_closure, root_left)
+         call get_middle_literal_internal(tree, node%right_i, candidate_R, res_right, has_closure, root_left)
+         if (res_left .and. res_right) then
+            middle = extract_same_part_middle(candidate_L, candidate_R)
+            res = middle /= ''
          else
-            res = res_right
+            res = .false. 
          end if
-         or_exists = .false. 
-      case(op_closure)
-         ! +に対する処理
-         if (node%parent_i /= 0) then
-            if(tree(node%parent_i)%op == op_concat) then
-               ! 親の演算子が連結の場合、
-               
-               ! 姉ノードのリテラルを抽出し、子ノードのリテラルがそれと一致する場合は真を返す
-               if (tree(node%parent_i)%right_i == node%own_i) then
-                  call get_middle_literal_internal(tree, tree(node%parent_i)%left_i, candidate1, unused, or_exists, &
-                                                   closure_exists, root_left)
-               else
-                  candidate1 = ''
-               end if
 
-               call get_middle_literal_internal(tree, node%left_i, candidate2, unused, or_exists, closure_exists, root_left)
-               if (candidate1 == candidate2) then
-                  middle = ''
-                  res = .true.
-               endif
-            end if
-         end if
-         closure_exists = .true.
-      case default
+      case (op_char)
          if (is_literal_tree_node(node)) then
-            middle = char_utf8(node%c(1)%min)//middle
+            middle = middle//char_utf8(node%c(1)%min)
             res = .true.
-         else if (is_char_class_tree_node(node)) then
-            continue
          else
             res = .false.
          end if
+      case default
+         res = .false.
       end select
    end subroutine get_middle_literal_internal
 
