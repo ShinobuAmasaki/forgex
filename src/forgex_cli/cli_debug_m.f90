@@ -34,19 +34,18 @@ contains
       integer :: root
       integer :: uni, ierr, siz
       character(:), allocatable :: buff
-      character(:),allocatable :: ast, prefix, middle, postfix, entire
+      character(:),allocatable :: ast, prefix, postfix, entire !, middle
       real(real64) :: lap1, lap2
 
       if (flags(FLAG_HELP)) call print_help_debug_ast
 
       call time_begin
-      ! call build_syntax_tree(trim(pattern), tree%tape, tree, root)
       call tree%build(trim(pattern))
       lap1 = time_lap()
 
       entire = get_entire_literal(tree)
       prefix = get_prefix_literal(tree)
-      middle = get_middle_literal(tree)
+      ! middle = get_middle_literal(tree)
       postfix = get_postfix_literal(tree)
       lap2 = time_lap()
 
@@ -87,7 +86,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_char) trim(cbuff(3)), entire
             write(stdout, fmt_out_char) trim(cbuff(4)), prefix
-            write(stdout, fmt_out_char) trim(cbuff(5)), middle
+            ! write(stdout, fmt_out_char) trim(cbuff(5)), middle
             write(stdout, fmt_out_char) trim(cbuff(6)), postfix
             write(stdout, fmt_out_int) trim(cbuff(7)), mem_tape(tree%tape) + mem_tree(tree%nodes)
             write(stdout, fmt_out_int) trim(cbuff(8)), root
@@ -103,7 +102,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(2)), get_lap_time_in_appropriate_unit(lap2)
             write(stdout, fmt_out_char) trim(cbuff(3)), entire
             write(stdout, fmt_out_char) trim(cbuff(4)), prefix
-            write(stdout, fmt_out_char) trim(cbuff(5)), middle
+            ! write(stdout, fmt_out_char) trim(cbuff(5)), middle
             write(stdout, fmt_out_char) trim(cbuff(6)), postfix
             write(stdout, fmt_out_int) trim(cbuff(7)), mem_tape(tree%tape)+mem_tree(tree%nodes)
          end if
