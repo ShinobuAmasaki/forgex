@@ -53,18 +53,19 @@ contains
 
    !> This subroutine creates an array containing a list of the positions of the
    !> `prefix`es that exist in the `text`
-   pure subroutine get_index_list_forward(text, prefix, index_array)
+   pure subroutine get_index_list_forward(text, prefix, suffix, index_array)
       use, intrinsic :: iso_fortran_env, only: int32
       use :: forgex_parameters_m
       implicit none
-      character(*), intent(in) :: text, prefix
+      character(*), intent(in) :: text, prefix, suffix
       integer(int32), allocatable, intent(inout) :: index_array(:)
       integer(int32), allocatable :: tmp(:)
 
-      integer :: offset, idx, len_pre, i, siz
+      integer :: offset, idx, len_pre, len_suf, i, siz, suf_idx
 
       !! If the length of `prefix` equals to zero, return immediately.
       len_pre = len(prefix)
+      len_suf = len(suffix)
       if (len_pre == 0) then
          return
       end if
@@ -76,8 +77,13 @@ contains
 
       ! Get the first position with the `index` intrinsic function.
       idx = index(text, prefix)
+      suf_idx = index(text, suffix, back=.true.)
+      if (suf_idx == 0) suf_idx = INVALID_CHAR_INDEX
+
       if (idx <= 0) then
          return
+      else if (suf_idx /= INVALID_CHAR_INDEX) then
+         if (idx <= suf_idx) index_array(1) = idx
       else
          index_array(1) = idx
       end if
@@ -104,6 +110,7 @@ contains
 
          ! Update the offset to specify the next substring.
          offset = offset + idx + len_pre -1
+         if (suf_idx /= INVALID_CHAR_INDEX .and. offset > suf_idx) exit
       end do
    end subroutine get_index_list_forward
    

@@ -70,7 +70,7 @@ contains
       end if
 
       if (.not. do_brute_force) then
-         call get_index_list_forward(string, prefix, index_list)
+         call get_index_list_forward(string, prefix, suffix, index_list)
          if (.not. allocated(index_list)) return
          if (index_list(1) == INVALID_CHAR_INDEX) then
             do_brute_force = .true.
