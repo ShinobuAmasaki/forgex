@@ -21,13 +21,13 @@ module forgex_test_m
    public :: is_valid__regex
    public :: is_valid__prefix
    public :: is_valid__suffix
-   public :: is_valid__middle
+   ! public :: is_valid__middle
    public :: runner_in
    public :: runner_match
    public :: runner_regex
    public :: runner_prefix
    public :: runner_suffix
-   public :: runner_middle
+   ! public :: runner_middle
 
 
 contains
@@ -118,26 +118,26 @@ contains
 
    end function is_valid__suffix
 
-   function is_valid__middle(pattern, expected, middle) result(res)
-      use :: forgex_syntax_tree_optimize_m
-      use :: forgex_utf8_m
-      implicit none
-      character(*), intent(in) :: pattern, expected
-      character(:), allocatable :: middle
-      logical :: res
+   ! function is_valid__middle(pattern, expected, middle) result(res)
+   !    use :: forgex_syntax_tree_optimize_m
+   !    use :: forgex_utf8_m
+   !    implicit none
+   !    character(*), intent(in) :: pattern, expected
+   !    character(:), allocatable :: middle
+   !    logical :: res
 
-      character(:), allocatable :: resulting
-      type(tree_t) :: tree
-      ! call tree%build(pattern)
-      ! resulting = get_middle_literal(tree)
-      ! middle = resulting
-      ! if (len_utf8(expected) == len_utf8(resulting)) then
-      !    res = expected == resulting
-      !    return
-      ! end if
-      ! res = .false.
+   ! !    character(:), allocatable :: resulting
+   ! !    type(tree_t) :: tree
+   ! !    ! call tree%build(pattern)
+   ! !    ! resulting = get_middle_literal(tree)
+   ! !    ! middle = resulting
+   ! !    ! if (len_utf8(expected) == len_utf8(resulting)) then
+   ! !    !    res = expected == resulting
+   ! !    !    return
+   ! !    ! end if
+   ! !    ! res = .false.
 
-   end function is_valid__middle
+   ! end function is_valid__middle
 
 
 
@@ -248,22 +248,22 @@ contains
    end subroutine runner_suffix
 
 
-   subroutine runner_middle(pattern, middle, result)
-      implicit none
-      character(*), intent(in) :: pattern, middle
-      logical, intent(inout) :: result
-      character(:),allocatable :: resulting
-      logical :: res
+   ! subroutine runner_middle(pattern, middle, result)
+   !    implicit none
+   !    character(*), intent(in) :: pattern, middle
+   !    logical, intent(inout) :: result
+   !    character(:),allocatable :: resulting
+   !    logical :: res
 
-      ! res = is_valid__middle(pattern, middle, resulting)
+   !    ! res = is_valid__middle(pattern, middle, resulting)
 
-      ! if (res) then
-      !    write(error_unit, '(a,a,a)') 'result(middle): Success', ' '//trim(pattern), ' "'//trim(middle)//'"'
-      ! else
-      !    write(error_unit, '(a,a,a a)') 'result(middle): FAILED ', ' '//trim(pattern), ': got "'//resulting//'"', &
-      !                                   ', "'//trim(middle)//'" is expected.'
-      ! end if
-      ! result = result .and. res
-   end subroutine runner_middle
+   !    ! if (res) then
+   !    !    write(error_unit, '(a,a,a)') 'result(middle): Success', ' '//trim(pattern), ' "'//trim(middle)//'"'
+   !    ! else
+   !    !    write(error_unit, '(a,a,a a)') 'result(middle): FAILED ', ' '//trim(pattern), ': got "'//resulting//'"', &
+   !    !                                   ', "'//trim(middle)//'" is expected.'
+   !    ! end if
+   !    ! result = result .and. res
+   ! end subroutine runner_middle
 
 end module forgex_test_m

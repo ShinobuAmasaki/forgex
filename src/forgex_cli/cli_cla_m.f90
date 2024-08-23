@@ -95,7 +95,6 @@ contains
    subroutine cla__init_find_match_subsubc(cla)
       implicit none
       class(cla_t), intent(inout) :: cla
-      integer :: idx
 
       allocate(cla%sub_cmd%subc(NUM_SUBSUBC_MATCH))
       cla%sub_cmd%subc(1) = ENGINE_LAZY_DFA
@@ -172,7 +171,6 @@ contains
       use :: forgex_cli_debug_m
       implicit none
       class(cla_t), intent(inout) :: cla
-      logical :: is_exactly
       integer :: pattern_offset
 
       pattern_offset = 3
@@ -222,7 +220,7 @@ contains
       implicit none
       class(cla_t), intent(inout) :: cla
       logical :: is_exactly
-      integer :: i, pattern_offset
+      integer :: pattern_offset
       character(:), allocatable :: text
 
       pattern_offset = 4

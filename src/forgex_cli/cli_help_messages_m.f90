@@ -24,7 +24,7 @@ module forgex_cli_help_messages_m
    public :: print_help_find_match_forgex_api
 
    integer(int32), parameter :: LINE_SIZ = 128
-   integer(int32), parameter :: CMD_SIZ = 13
+   integer(int32), parameter :: CMD_SIZ = 26
    integer(int32), parameter :: CMD_DESC_SIZ = 109
 
 contains
