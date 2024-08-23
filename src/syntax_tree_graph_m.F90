@@ -34,7 +34,7 @@ module forgex_syntax_tree_graph_m
       procedure :: get_top => tree_graph__get_top
       procedure :: regex => tree_graph__regex
       procedure :: term => tree_graph__term
-      procedure :: postfix_op => tree_graph__postfix_op
+      procedure :: suffix_op => tree_graph__suffix_op
       procedure :: primary => tree_graph__primary
       procedure :: char_class =>tree_graph__char_class
       procedure :: caret_dollar => tree_graph__make_tree_caret_dollar
@@ -209,14 +209,14 @@ contains
          node = make_tree_node(op_empty)
          call self%register_connector(node, terminal, terminal)
       else
-         call self%postfix_op()
+         call self%suffix_op()
          left = self%get_top()
 
          do while (self%tape%current_token /= tk_union &
                      .and. self%tape%current_token /= tk_rpar &
                      .and. self%tape%current_token /= tk_end)
                
-            call self%postfix_op()
+            call self%suffix_op()
             right = self%get_top()
 
             node = make_tree_node(op_concat)
@@ -228,7 +228,7 @@ contains
    end subroutine
 
 
-   pure subroutine tree_graph__postfix_op(self)
+   pure subroutine tree_graph__suffix_op(self)
       implicit none
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
@@ -266,7 +266,7 @@ contains
          call self%tape%get_token()
 
       end select
-   end subroutine tree_graph__postfix_op
+   end subroutine tree_graph__suffix_op
 
 
    pure subroutine tree_graph__primary(self)

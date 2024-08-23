@@ -497,13 +497,13 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/extract_same_part_postfix.html'>extract_same_part_postfix</a></td>
+                 <td><a href='../proc/extract_same_part_prefix.html'>extract_same_part_prefix</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Function</td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/extract_same_part_prefix.html'>extract_same_part_prefix</a></td>
+                 <td><a href='../proc/extract_same_part_suffix.html'>extract_same_part_suffix</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Function</td>
                  <td></td>
@@ -583,18 +583,6 @@ units, and returns a string with the unit for output.</p></td>
                  <td><a href="../proc/get_os_type.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/get_postfix_literal.html'>get_postfix_literal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/get_postfix_literal_internal.html'>get_postfix_literal_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/get_prefix_literal.html'>get_prefix_literal</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Function</td>
@@ -602,6 +590,18 @@ units, and returns a string with the unit for output.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_prefix_literal_internal.html'>get_prefix_literal_internal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_suffix_literal.html'>get_suffix_literal</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/get_suffix_literal_internal.html'>get_suffix_literal_internal</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
@@ -760,12 +760,6 @@ compares the result to the correct answer.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/is_valid__postfix.html'>is_valid__postfix</a></td>
-                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/is_valid__prefix.html'>is_valid__prefix</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
@@ -777,6 +771,12 @@ compares the result to the correct answer.</p></td>
                  <td>Function</td>
                  <td><p>This function checks if a pattern matches a string using the <code>regex</code>
 function and compares the result to the expected answer.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/is_valid__suffix.html'>is_valid__suffix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_valid_multiple_byte_character.html'>is_valid_multiple_byte_character</a></td>
@@ -992,9 +992,11 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
-                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
+an integer and a segment, an integer and a list of segments, or a segment
+and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
@@ -1004,11 +1006,9 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
-                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
-an integer and a segment, an integer and a list of segments, or a segment
-and a segment, is contained in the latter, respectively.</p></td>
+                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -1209,12 +1209,6 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/runner_postfix.html'>runner_postfix</a></td>
-                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/runner_prefix.html'>runner_prefix</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
@@ -1225,6 +1219,12 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine runs the <code>is_valid__regex</code> function and prints the result.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/runner_suffix.html'>runner_suffix</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/seg_in_segment.html'>seg_in_segment</a></td>
@@ -1355,12 +1355,6 @@ since the last call of <code>time_begin</code> or <code>time_lap</code>.</p></td
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/tree_graph__postfix_op.html'>tree_graph__postfix_op</a></td>
-                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/tree_graph__primary.html'>tree_graph__primary</a></td>
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
@@ -1402,6 +1396,12 @@ since the last call of <code>time_begin</code> or <code>time_lap</code>.</p></td
                  <td>Subroutine</td>
                  <td><p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
 <code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__suffix_op.html'>tree_graph__suffix_op</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/tree_graph__term.html'>tree_graph__term</a></td>
@@ -1448,7 +1448,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-22 14:34              </p>
+ on 2024-08-23 02:33              </p>
           </div>
         </div>
         <br>

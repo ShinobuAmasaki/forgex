@@ -141,7 +141,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public pure subroutine do_matching_exactly(automaton, string, res, prefix, postfix, runs_engine, entire_fixed_string)  
+    <h2>public pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)  
 </h2>
     
 
@@ -161,7 +161,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~8"></span>
+              <span class="anchor" id="variable-automaton~9"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -176,7 +176,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~4"></span>
+              <span class="anchor" id="variable-string~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -191,7 +191,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~27"></span>
+              <span class="anchor" id="variable-res~55"></span>
               logical,
             </td>
 <td>intent(inout)</td>
@@ -206,7 +206,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~9"></span>
+              <span class="anchor" id="variable-prefix~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -221,7 +221,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-postfix~8"></span>
+              <span class="anchor" id="variable-suffix~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -229,7 +229,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>postfix</strong></td>
+            <td><strong>suffix</strong></td>
             <td>
                 
             </td>
@@ -281,12 +281,12 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">do_matching_exactly</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span><span class="p">,</span><span class="w"> </span><span class="n">runs_engine</span><span class="p">,</span><span class="w"> </span><span class="n">entire_fixed_string</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">do_matching_exactly</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">runs_engine</span><span class="p">,</span><span class="w"> </span><span class="n">entire_fixed_string</span><span class="p">)</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w">      </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">           </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">string</span>
 <span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w">                </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">           </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">postfix</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">           </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span>
 <span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w">                </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runs_engine</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">entire_fixed_string</span>
 
@@ -308,7 +308,7 @@
 <span class="k">      end if</span>
 
 <span class="k">      </span><span class="n">len_pre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
-<span class="w">      </span><span class="n">len_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">postfix</span><span class="p">)</span>
+<span class="w">      </span><span class="n">len_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
 <span class="w">      </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 <span class="w">      </span><span class="n">matches_pre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">      </span><span class="n">matches_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
@@ -322,9 +322,9 @@
 <span class="k">      end if</span>
 
 <span class="k">      </span><span class="n">empty_pre</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
-<span class="w">      </span><span class="n">empty_post</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">postfix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
+<span class="w">      </span><span class="n">empty_post</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">suffix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">empty_pre</span><span class="p">)</span><span class="w">  </span><span class="n">matches_pre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">len_pre</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">prefix</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">empty_post</span><span class="p">)</span><span class="w"> </span><span class="n">matches_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">len_post</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">postfix</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">empty_post</span><span class="p">)</span><span class="w"> </span><span class="n">matches_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">len_post</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">suffix</span>
 
 <span class="w">      </span><span class="n">runs_engine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">any</span><span class="p">([(</span><span class="n">matches_pre</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">matches_post</span><span class="p">),</span><span class="w"> </span><span class="p">&amp;</span>
 <span class="w">                         </span><span class="p">(</span><span class="n">empty_pre</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">matches_post</span><span class="p">),</span><span class="w"> </span><span class="p">&amp;</span>
@@ -412,7 +412,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-22 14:34              </p>
+ on 2024-08-23 02:33              </p>
           </div>
         </div>
         <br>

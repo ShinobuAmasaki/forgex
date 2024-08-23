@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.0% of total for modules and submodules.">167 statements</a>
+                 title=" 3.2% of total for modules and submodules.">176 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -154,10 +154,10 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
         </ul>
@@ -177,11 +177,142 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_exactly"></span> <h3>public pure subroutine <a href='../proc/do_matching_exactly.html'>do_matching_exactly</a>(automaton, string, res, prefix, postfix, runs_engine, entire_fixed_string)  
+    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_exactly"></span> <h3>public pure subroutine <a href='../proc/do_matching_exactly.html'>do_matching_exactly</a>(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)  
 </h3></div>
     <div class="card-body">
           
   <p>This subroutine is intended to be called from the <code>forgex</code> API module.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-automaton~9"></span>
+              type(<a href='../type/automaton_t.html'>automaton_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>automaton</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-string~5"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>string</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-res~55"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>res</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-prefix~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>prefix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-suffix~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>suffix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-runs_engine~2"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>runs_engine</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-entire_fixed_string"></span>
+              character(len=*),
+            </td>
+<td>intent(inout),</td>
+              <td>optional</td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>entire_fixed_string</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_including"></span> <h3>public pure subroutine <a href='../proc/do_matching_including.html'>do_matching_including</a>(automaton, string, from, to, prefix, suffix, runs_engine)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This procedure reads a text, performs regular expression matching using an automaton,
+and stores the string index in the argument if it contains a match.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -226,138 +357,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~27"></span>
-              logical,
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>res</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-prefix~9"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>prefix</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-postfix~8"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>postfix</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-runs_engine~2"></span>
-              logical,
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>runs_engine</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-entire_fixed_string"></span>
-              character(len=*),
-            </td>
-<td>intent(inout),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>entire_fixed_string</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_including"></span> <h3>public pure subroutine <a href='../proc/do_matching_including.html'>do_matching_including</a>(automaton, string, from, to, prefix, postfix, runs_engine)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This procedure reads a text, performs regular expression matching using an automaton,
-and stores the string index in the argument if it contains a match.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-automaton~7"></span>
-              type(<a href='../type/automaton_t.html'>automaton_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>automaton</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-string~3"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>string</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-from~4"></span>
+              <span class="anchor" id="variable-from~5"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -372,7 +372,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~4"></span>
+              <span class="anchor" id="variable-to~5"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -387,7 +387,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~8"></span>
+              <span class="anchor" id="variable-prefix~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -402,7 +402,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-postfix~7"></span>
+              <span class="anchor" id="variable-suffix~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -410,7 +410,7 @@ and stores the string index in the argument if it contains a match.</p>
               
             </td>
             <td>::</td>
-            <td><strong>postfix</strong></td>
+            <td><strong>suffix</strong></td>
             <td>
 
             </td>
@@ -460,7 +460,7 @@ and stores the string index in the argument if it contains a match.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-22 14:34              </p>
+ on 2024-08-23 02:33              </p>
           </div>
         </div>
         <br>
