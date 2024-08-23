@@ -94,12 +94,13 @@ contains
             end if
 
             if (suffix /= '') then
-               suf_idx = index(string, suffix)
+               suf_idx = index(string, suffix, back=.true.)
                if (suf_idx == 0) return
             end if
 
          end if
       end block loop_init
+
 
       do while (start < len(str))
          max_match = 0
