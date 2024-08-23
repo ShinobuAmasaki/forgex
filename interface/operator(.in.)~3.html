@@ -76,20 +76,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p> 0.1% of total for procedures.</p>Including implementation: 60 statements,  1.2% of total for procedures.">3 statements</a>
+                 title="<p> 0.1% of total for procedures.</p>Including implementation: 54 statements,  1.1% of total for procedures.">6 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/forgex.F90"> Source File</a>
+              <a href="../src/cli_utils_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/forgex.f90.html'>forgex.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex.html'>forgex</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/cli_utils_m.f90.html'>cli_utils_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">operator(.in.)</li>
           </ol>
         </nav>
@@ -133,7 +133,10 @@
       </a>
       <div id="modprocs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../interface/operator(.in.)~3.html#moduleprocedure-operator__in">operator__in</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~3.html#moduleprocedure-does_flag_exist">does_flag_exist</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~3.html#moduleprocedure-does_command_exist">does_command_exist</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~3.html#moduleprocedure-does_command_exist_type_cmd">does_command_exist_type_cmd</a>
+            <a class="list-group-item" href="../interface/operator(.in.)~3.html#moduleprocedure-is_arg_contained_in_flags">is_arg_contained_in_flags</a>
         </div>
       </div>
     </div>
@@ -147,17 +150,17 @@
 
     <div class="col-md-9" id='text'>
       <h2>public interface operator(.in.)</h2>
-      <p>Interface for user-defined operator of <code>.in.</code></p>
-<br>
+      
+
 
 
         <h2>Module Procedures</h2>
             <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-operator__in"></span> <h3>private pure elemental function <a href='../proc/operator__in.html'>operator__in</a>(pattern, str) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-does_flag_exist"></span> <h3>private pure function <a href='../proc/does_flag_exist.html'>does_flag_exist</a>(arg, flag_list) result(res)  
 </h3></div>
     <div class="card-body">
           
-  <p>The function implemented for the <code>.in.</code> operator.</p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -172,7 +175,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~22"></span>
+              <span class="anchor" id="variable-arg~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -180,14 +183,59 @@
               
             </td>
             <td>::</td>
-            <td><strong>pattern</strong></td>
+            <td><strong>arg</strong></td>
             <td>
 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~18"></span>
+              <span class="anchor" id="variable-flag_list"></span>
+              type(<a href='../type/flag_t.html'>flag_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flag_list</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-does_command_exist"></span> <h3>private pure function <a href='../proc/does_command_exist.html'>does_command_exist</a>(arg, cmd_list) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-arg~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -195,7 +243,142 @@
               
             </td>
             <td>::</td>
-            <td><strong>str</strong></td>
+            <td><strong>arg</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd_list"></span>
+              character(len=LEN_CMD),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cmd_list</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-does_command_exist_type_cmd"></span> <h3>private pure function <a href='../proc/does_command_exist_type_cmd.html'>does_command_exist_type_cmd</a>(arg, cmd_list) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-arg~7"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>arg</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-cmd_list~2"></span>
+              type(<a href='../type/cmd_t.html'>cmd_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>cmd_list</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+            <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-is_arg_contained_in_flags"></span> <h3>private  function <a href='../proc/is_arg_contained_in_flags.html'>is_arg_contained_in_flags</a>(arg, flags) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-arg~4"></span>
+              type(<a href='../type/arg_element_t.html'>arg_element_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>arg</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-flags~8"></span>
+              type(<a href='../type/flag_t.html'>flag_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>flags</strong>(:)</td>
             <td>
 
             </td>
@@ -229,7 +412,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 02:33              </p>
+ on 2024-08-23 04:19              </p>
           </div>
         </div>
         <br>

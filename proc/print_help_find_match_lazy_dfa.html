@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.3% of total for procedures.">17 statements</a>
+                 title=" 0.4% of total for procedures.">19 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -168,8 +168,8 @@
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="n">LINE_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">header</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">LINE_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">usage</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">CMD_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">CMD_DESC_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">odesc</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">CMD_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">op</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="n">CMD_DESC_SIZ</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">odesc</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
 <span class="w">      </span><span class="n">header</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Executes a search for matches using a lazy DFA regex engine.&quot;</span>
 <span class="w">      </span><span class="n">usage</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;forgex-cli debug lazy-dfa &lt;pattern&gt; .match. &lt;text&gt;&quot;</span>
 <span class="w">      </span><span class="n">usage</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;forgex-cli debug lazy-dfa &lt;pattern&gt; .in. &lt;text&gt;&quot;</span>
@@ -177,9 +177,11 @@
 <span class="w">      </span><span class="n">op</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--verbose&quot;</span>
 <span class="w">      </span><span class="n">odesc</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Print more information.&quot;</span>
 <span class="w">      </span><span class="n">op</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--no-table&quot;</span>
-<span class="w">      </span><span class="n">odesc</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Suppresses the output of the property information table.&quot;</span>
+<span class="w">      </span><span class="n">odesc</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Suppress the output of the property information table.&quot;</span>
 <span class="w">      </span><span class="n">op</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--table-only&quot;</span>
 <span class="w">      </span><span class="n">odesc</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Print the property information table only. &quot;</span>
+<span class="w">      </span><span class="n">op</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;--disable-literal-optimize&quot;</span>
+<span class="w">      </span><span class="n">odesc</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;Disable literals search optimization.&quot;</span>
 
 <span class="w">      </span><span class="k">call </span><span class="n">generate_and_output</span><span class="p">(</span><span class="n">header</span><span class="p">,</span><span class="w"> </span><span class="n">usage</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;OPTIONS&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">,</span><span class="w"> </span><span class="n">odesc</span><span class="p">)</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">print_help_find_match_lazy_dfa</span>
@@ -206,7 +208,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 02:33              </p>
+ on 2024-08-23 04:19              </p>
           </div>
         </div>
         <br>

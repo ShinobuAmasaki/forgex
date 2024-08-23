@@ -24,7 +24,7 @@ module forgex_cli_help_messages_m
    public :: print_help_find_match_forgex_api
 
    integer(int32), parameter :: LINE_SIZ = 128
-   integer(int32), parameter :: CMD_SIZ = 13
+   integer(int32), parameter :: CMD_SIZ = 26
    integer(int32), parameter :: CMD_DESC_SIZ = 109
 
 contains
@@ -155,9 +155,9 @@ contains
 
       op(1)    = "--verbose"
       odesc(1) ="Print more information."
-      op(2)    ="--no-table "
+      op(2)    ="--no-table"
       odesc(2) ="Suppresses the output of the property information table."
-      op(3)    ="--table-only "
+      op(3)    ="--table-only"
       odesc(3) ="Print the property information table only."
 
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
@@ -205,8 +205,8 @@ contains
       implicit none
       character(LINE_SIZ) :: header
       character(LINE_SIZ) :: usage(2)
-      character(CMD_SIZ) :: op(3)
-      character(CMD_DESC_SIZ) :: odesc(3)
+      character(CMD_SIZ) :: op(4)
+      character(CMD_DESC_SIZ) :: odesc(4)
       header = "Executes a search for matches using a lazy DFA regex engine."
       usage(1) = "forgex-cli debug lazy-dfa <pattern> .match. <text>"
       usage(2) = "forgex-cli debug lazy-dfa <pattern> .in. <text>"
@@ -214,9 +214,11 @@ contains
       op(1)    = "--verbose"
       odesc(1) = "Print more information."
       op(2)    = "--no-table"
-      odesc(2) = "Suppresses the output of the property information table."
+      odesc(2) = "Suppress the output of the property information table."
       op(3)    = "--table-only"
       odesc(3) = "Print the property information table only. "
+      op(4)    = "--disable-literal-optimize"
+      odesc(4) = "Disable literals search optimization."
 
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
    end subroutine print_help_find_match_lazy_dfa
@@ -227,14 +229,14 @@ contains
       character(LINE_SIZ) :: usage(2)
       character(CMD_SIZ) :: op(3)
       character(CMD_DESC_SIZ) :: odesc(3)
-      header = "Executes a search for matches using a fully-compiled DFA regex engine."
+      header = "Execute a search for matches using a fully-compiled DFA regex engine."
       usage(1) = "forgex-cli find match dense <pattern> .match. <text>"
       usage(2) = "forgex-cli find match dense <pattern> .in. <text>"
 
       op(1)    = "--verbose"
       odesc(1) = "Print more information."
       op(2)    = "--no-table"
-      odesc(2) = "Suppresses the output of the property information table."
+      odesc(2) = "Suppress the output of the property information table."
       op(3)    = "--table-only"
       odesc(3) = "Print the property information table only. "
 
@@ -252,7 +254,7 @@ contains
       usage(2) = "forgex-cli find match forgex <pattern> .in. <text>"
 
       op(1)    = "--no-table"
-      odesc(1) = "Suppresses the output of the property information table."
+      odesc(1) = "Suppress the output of the property information table."
 
       call generate_and_output(header, usage, "OPTIONS", op, odesc)
    end subroutine print_help_find_match_forgex_api

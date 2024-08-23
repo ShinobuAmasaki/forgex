@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.1% of total for source files.">172 statements</a>
+                 title=" 2.8% of total for source files.">153 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -176,13 +176,13 @@
 <a id="ln-21" name="ln-21" href="#ln-21"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid__regex</span>
 <a id="ln-22" name="ln-22" href="#ln-22"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid__prefix</span>
 <a id="ln-23" name="ln-23" href="#ln-23"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid__suffix</span>
-<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid__middle</span>
+<a id="ln-24" name="ln-24" href="#ln-24"></a><span class="w">   </span><span class="c">! public :: is_valid__middle</span>
 <a id="ln-25" name="ln-25" href="#ln-25"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_in</span>
 <a id="ln-26" name="ln-26" href="#ln-26"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_match</span>
 <a id="ln-27" name="ln-27" href="#ln-27"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_regex</span>
 <a id="ln-28" name="ln-28" href="#ln-28"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_prefix</span>
 <a id="ln-29" name="ln-29" href="#ln-29"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_suffix</span>
-<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">runner_middle</span>
+<a id="ln-30" name="ln-30" href="#ln-30"></a><span class="w">   </span><span class="c">! public :: runner_middle</span>
 <a id="ln-31" name="ln-31" href="#ln-31"></a>
 <a id="ln-32" name="ln-32" href="#ln-32"></a>
 <a id="ln-33" name="ln-33" href="#ln-33"></a><span class="k">contains</span>
@@ -273,26 +273,26 @@
 <a id="ln-118" name="ln-118" href="#ln-118"></a>
 <a id="ln-119" name="ln-119" href="#ln-119"></a><span class="w">   </span><span class="k">end function </span><span class="n">is_valid__suffix</span>
 <a id="ln-120" name="ln-120" href="#ln-120"></a>
-<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">   </span><span class="k">function </span><span class="n">is_valid__middle</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span><span class="p">,</span><span class="w"> </span><span class="n">middle</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<a id="ln-122" name="ln-122" href="#ln-122"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_syntax_tree_optimize_m</span>
-<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span>
-<a id="ln-124" name="ln-124" href="#ln-124"></a><span class="w">      </span><span class="k">implicit none</span>
-<a id="ln-125" name="ln-125" href="#ln-125"></a><span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">expected</span>
-<a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">middle</span>
-<a id="ln-127" name="ln-127" href="#ln-127"></a><span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<a id="ln-121" name="ln-121" href="#ln-121"></a><span class="w">   </span><span class="c">! function is_valid__middle(pattern, expected, middle) result(res)</span>
+<a id="ln-122" name="ln-122" href="#ln-122"></a><span class="w">   </span><span class="c">!    use :: forgex_syntax_tree_optimize_m</span>
+<a id="ln-123" name="ln-123" href="#ln-123"></a><span class="w">   </span><span class="c">!    use :: forgex_utf8_m</span>
+<a id="ln-124" name="ln-124" href="#ln-124"></a><span class="w">   </span><span class="c">!    implicit none</span>
+<a id="ln-125" name="ln-125" href="#ln-125"></a><span class="w">   </span><span class="c">!    character(*), intent(in) :: pattern, expected</span>
+<a id="ln-126" name="ln-126" href="#ln-126"></a><span class="w">   </span><span class="c">!    character(:), allocatable :: middle</span>
+<a id="ln-127" name="ln-127" href="#ln-127"></a><span class="w">   </span><span class="c">!    logical :: res</span>
 <a id="ln-128" name="ln-128" href="#ln-128"></a>
-<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">resulting</span>
-<a id="ln-130" name="ln-130" href="#ln-130"></a><span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
-<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">      </span><span class="c">! call tree%build(pattern)</span>
-<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">      </span><span class="c">! resulting = get_middle_literal(tree)</span>
-<a id="ln-133" name="ln-133" href="#ln-133"></a><span class="w">      </span><span class="c">! middle = resulting</span>
-<a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">      </span><span class="c">! if (len_utf8(expected) == len_utf8(resulting)) then</span>
-<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">      </span><span class="c">!    res = expected == resulting</span>
-<a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">      </span><span class="c">!    return</span>
-<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">      </span><span class="c">! end if</span>
-<a id="ln-138" name="ln-138" href="#ln-138"></a><span class="w">      </span><span class="c">! res = .false.</span>
+<a id="ln-129" name="ln-129" href="#ln-129"></a><span class="w">   </span><span class="c">! !    character(:), allocatable :: resulting</span>
+<a id="ln-130" name="ln-130" href="#ln-130"></a><span class="w">   </span><span class="c">! !    type(tree_t) :: tree</span>
+<a id="ln-131" name="ln-131" href="#ln-131"></a><span class="w">   </span><span class="c">! !    ! call tree%build(pattern)</span>
+<a id="ln-132" name="ln-132" href="#ln-132"></a><span class="w">   </span><span class="c">! !    ! resulting = get_middle_literal(tree)</span>
+<a id="ln-133" name="ln-133" href="#ln-133"></a><span class="w">   </span><span class="c">! !    ! middle = resulting</span>
+<a id="ln-134" name="ln-134" href="#ln-134"></a><span class="w">   </span><span class="c">! !    ! if (len_utf8(expected) == len_utf8(resulting)) then</span>
+<a id="ln-135" name="ln-135" href="#ln-135"></a><span class="w">   </span><span class="c">! !    !    res = expected == resulting</span>
+<a id="ln-136" name="ln-136" href="#ln-136"></a><span class="w">   </span><span class="c">! !    !    return</span>
+<a id="ln-137" name="ln-137" href="#ln-137"></a><span class="w">   </span><span class="c">! !    ! end if</span>
+<a id="ln-138" name="ln-138" href="#ln-138"></a><span class="w">   </span><span class="c">! !    ! res = .false.</span>
 <a id="ln-139" name="ln-139" href="#ln-139"></a>
-<a id="ln-140" name="ln-140" href="#ln-140"></a><span class="w">   </span><span class="k">end function </span><span class="n">is_valid__middle</span>
+<a id="ln-140" name="ln-140" href="#ln-140"></a><span class="w">   </span><span class="c">! end function is_valid__middle</span>
 <a id="ln-141" name="ln-141" href="#ln-141"></a>
 <a id="ln-142" name="ln-142" href="#ln-142"></a>
 <a id="ln-143" name="ln-143" href="#ln-143"></a>
@@ -403,23 +403,23 @@
 <a id="ln-248" name="ln-248" href="#ln-248"></a><span class="w">   </span><span class="k">end subroutine </span><span class="n">runner_suffix</span>
 <a id="ln-249" name="ln-249" href="#ln-249"></a>
 <a id="ln-250" name="ln-250" href="#ln-250"></a>
-<a id="ln-251" name="ln-251" href="#ln-251"></a><span class="w">   </span><span class="k">subroutine </span><span class="n">runner_middle</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">middle</span><span class="p">,</span><span class="w"> </span><span class="k">result</span><span class="p">)</span>
-<a id="ln-252" name="ln-252" href="#ln-252"></a><span class="w">      </span><span class="k">implicit none</span>
-<a id="ln-253" name="ln-253" href="#ln-253"></a><span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">middle</span>
-<a id="ln-254" name="ln-254" href="#ln-254"></a><span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">result</span>
-<a id="ln-255" name="ln-255" href="#ln-255"></a><span class="k">      </span><span class="kt">character</span><span class="p">(:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">resulting</span>
-<a id="ln-256" name="ln-256" href="#ln-256"></a><span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<a id="ln-251" name="ln-251" href="#ln-251"></a><span class="w">   </span><span class="c">! subroutine runner_middle(pattern, middle, result)</span>
+<a id="ln-252" name="ln-252" href="#ln-252"></a><span class="w">   </span><span class="c">!    implicit none</span>
+<a id="ln-253" name="ln-253" href="#ln-253"></a><span class="w">   </span><span class="c">!    character(*), intent(in) :: pattern, middle</span>
+<a id="ln-254" name="ln-254" href="#ln-254"></a><span class="w">   </span><span class="c">!    logical, intent(inout) :: result</span>
+<a id="ln-255" name="ln-255" href="#ln-255"></a><span class="w">   </span><span class="c">!    character(:),allocatable :: resulting</span>
+<a id="ln-256" name="ln-256" href="#ln-256"></a><span class="w">   </span><span class="c">!    logical :: res</span>
 <a id="ln-257" name="ln-257" href="#ln-257"></a>
-<a id="ln-258" name="ln-258" href="#ln-258"></a><span class="w">      </span><span class="c">! res = is_valid__middle(pattern, middle, resulting)</span>
+<a id="ln-258" name="ln-258" href="#ln-258"></a><span class="w">   </span><span class="c">!    ! res = is_valid__middle(pattern, middle, resulting)</span>
 <a id="ln-259" name="ln-259" href="#ln-259"></a>
-<a id="ln-260" name="ln-260" href="#ln-260"></a><span class="w">      </span><span class="c">! if (res) then</span>
-<a id="ln-261" name="ln-261" href="#ln-261"></a><span class="w">      </span><span class="c">!    write(error_unit, &#39;(a,a,a)&#39;) &#39;result(middle): Success&#39;, &#39; &#39;//trim(pattern), &#39; &quot;&#39;//trim(middle)//&#39;&quot;&#39;</span>
-<a id="ln-262" name="ln-262" href="#ln-262"></a><span class="w">      </span><span class="c">! else</span>
-<a id="ln-263" name="ln-263" href="#ln-263"></a><span class="w">      </span><span class="c">!    write(error_unit, &#39;(a,a,a a)&#39;) &#39;result(middle): FAILED &#39;, &#39; &#39;//trim(pattern), &#39;: got &quot;&#39;//resulting//&#39;&quot;&#39;, &amp;</span>
-<a id="ln-264" name="ln-264" href="#ln-264"></a><span class="w">      </span><span class="c">!                                   &#39;, &quot;&#39;//trim(middle)//&#39;&quot; is expected.&#39;</span>
-<a id="ln-265" name="ln-265" href="#ln-265"></a><span class="w">      </span><span class="c">! end if</span>
-<a id="ln-266" name="ln-266" href="#ln-266"></a><span class="w">      </span><span class="c">! result = result .and. res</span>
-<a id="ln-267" name="ln-267" href="#ln-267"></a><span class="w">   </span><span class="k">end subroutine </span><span class="n">runner_middle</span>
+<a id="ln-260" name="ln-260" href="#ln-260"></a><span class="w">   </span><span class="c">!    ! if (res) then</span>
+<a id="ln-261" name="ln-261" href="#ln-261"></a><span class="w">   </span><span class="c">!    !    write(error_unit, &#39;(a,a,a)&#39;) &#39;result(middle): Success&#39;, &#39; &#39;//trim(pattern), &#39; &quot;&#39;//trim(middle)//&#39;&quot;&#39;</span>
+<a id="ln-262" name="ln-262" href="#ln-262"></a><span class="w">   </span><span class="c">!    ! else</span>
+<a id="ln-263" name="ln-263" href="#ln-263"></a><span class="w">   </span><span class="c">!    !    write(error_unit, &#39;(a,a,a a)&#39;) &#39;result(middle): FAILED &#39;, &#39; &#39;//trim(pattern), &#39;: got &quot;&#39;//resulting//&#39;&quot;&#39;, &amp;</span>
+<a id="ln-264" name="ln-264" href="#ln-264"></a><span class="w">   </span><span class="c">!    !                                   &#39;, &quot;&#39;//trim(middle)//&#39;&quot; is expected.&#39;</span>
+<a id="ln-265" name="ln-265" href="#ln-265"></a><span class="w">   </span><span class="c">!    ! end if</span>
+<a id="ln-266" name="ln-266" href="#ln-266"></a><span class="w">   </span><span class="c">!    ! result = result .and. res</span>
+<a id="ln-267" name="ln-267" href="#ln-267"></a><span class="w">   </span><span class="c">! end subroutine runner_middle</span>
 <a id="ln-268" name="ln-268" href="#ln-268"></a>
 <a id="ln-269" name="ln-269" href="#ln-269"></a><span class="k">end module </span><span class="n">forgex_test_m</span>
 </pre></div>
@@ -443,7 +443,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 02:33              </p>
+ on 2024-08-23 04:19              </p>
           </div>
         </div>
         <br>
