@@ -13,7 +13,7 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_postfix_literal, get_entire_literal
+   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_suffix_literal, get_entire_literal
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
@@ -59,11 +59,11 @@ contains
       type(automaton_t)              :: automaton
       integer                        :: from, to
 
-      character(:), allocatable :: prefix, postfix, entirely_fixed_string
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string
       logical :: unused
 
       prefix = ''
-      postfix = ''
+      suffix = ''
       entirely_fixed_string = ''
       from = INVALID_CHAR_INDEX
       to = INVALID_CHAR_INDEX
@@ -89,7 +89,7 @@ contains
       end if
 
       prefix = get_prefix_literal(tree)
-      postfix = get_postfix_literal(tree)
+      suffix = get_suffix_literal(tree)
    
       call automaton%preprocess(tree)
 
@@ -97,7 +97,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, postfix, unused)
+      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, suffix, unused)
          ! キャレットとダラーへの対応するために、strの前後に改行文字を追加する。
 
       if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
@@ -136,12 +136,12 @@ contains
       character(:),      allocatable :: buff
       type(tree_t)                   :: tree
       type(automaton_t)              :: automaton
-      character(:), allocatable  :: prefix, postfix, entirely_fixed_string
+      character(:), allocatable  :: prefix, suffix, entirely_fixed_string
       logical :: unused
 
 
       prefix = ''
-      postfix = ''
+      suffix = ''
       entirely_fixed_string = ''
 
       ! If the pattern begins with a caret character and ends with
@@ -169,7 +169,7 @@ contains
       end if
 
       prefix = get_prefix_literal(tree)
-      ! postfix = get_postfix_literal(tree)
+      ! suffix = get_suffix_literal(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
@@ -177,7 +177,7 @@ contains
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_exactly(automaton, str, res, prefix, postfix, unused)
+      call do_matching_exactly(automaton, str, res, prefix, suffix, unused)
 
       call automaton%free()
 
@@ -196,11 +196,11 @@ contains
       type(automaton_t)              :: automaton
       integer                        :: from_l, to_l
 
-      character(:), allocatable :: prefix, postfix, entirely_fixed_string
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string
       logical :: unused
 
       prefix = ''
-      postfix = ''
+      suffix = ''
       entirely_fixed_string = ''
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
@@ -229,12 +229,12 @@ contains
       end if
 
       prefix = get_prefix_literal(tree)
-      postfix = get_postfix_literal(tree)
+      suffix = get_suffix_literal(tree)
 
       call automaton%preprocess(tree)
       call automaton%init()
 
-      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, postfix, unused)
+      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, suffix, unused)
 
       if (from_l == ACCEPTED_EMPTY .and. to_l == ACCEPTED_EMPTY) then
          res = ''

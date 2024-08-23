@@ -20,13 +20,13 @@ module forgex_test_m
    public :: is_valid__match
    public :: is_valid__regex
    public :: is_valid__prefix
-   public :: is_valid__postfix
+   public :: is_valid__suffix
    public :: is_valid__middle
    public :: runner_in
    public :: runner_match
    public :: runner_regex
    public :: runner_prefix
-   public :: runner_postfix
+   public :: runner_suffix
    public :: runner_middle
 
 
@@ -98,25 +98,25 @@ contains
    end function is_valid__prefix
 
    
-   function is_valid__postfix(pattern, expected_postfix) result(res)
+   function is_valid__suffix(pattern, expected_suffix) result(res)
       use :: forgex_syntax_tree_optimize_m
       use :: forgex_utf8_m
       implicit none
-      character(*), intent(in) :: pattern, expected_postfix
+      character(*), intent(in) :: pattern, expected_suffix
       logical :: res
       character(:), allocatable :: resulting
 
       type(tree_t) :: tree
       call tree%build(pattern)
-      resulting = get_postfix_literal(tree)
+      resulting = get_suffix_literal(tree)
 
-      if (len_utf8(expected_postfix) == len_utf8(resulting)) then
-         res = expected_postfix == resulting
+      if (len_utf8(expected_suffix) == len_utf8(resulting)) then
+         res = expected_suffix == resulting
          return
       end if
       res = .false.
 
-   end function is_valid__postfix
+   end function is_valid__suffix
 
    function is_valid__middle(pattern, expected, middle) result(res)
       use :: forgex_syntax_tree_optimize_m
@@ -231,21 +231,21 @@ contains
       result = result .and. res
    end subroutine runner_prefix
 
-   subroutine runner_postfix(pattern, postfix, result)
+   subroutine runner_suffix(pattern, suffix, result)
       implicit none
-      character(*), intent(in) :: pattern, postfix
+      character(*), intent(in) :: pattern, suffix
       logical, intent(inout) :: result
       logical :: res
 
-      res = is_valid__postfix(pattern, postfix)
+      res = is_valid__suffix(pattern, suffix)
 
       if (res) then
-         write(error_unit, '(a,a,a)') 'result(postfix): Success', ' '//trim(pattern), ' "'//trim(postfix)//'"'
+         write(error_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
       else
-         write(error_unit, '(a,a,a)') 'result(postfix): FAILED ', ' '//trim(pattern), ' "'//trim(postfix)//'"'
+         write(error_unit, '(a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"'
       end if
       result = result .and. res
-   end subroutine runner_postfix
+   end subroutine runner_suffix
 
 
    subroutine runner_middle(pattern, middle, result)

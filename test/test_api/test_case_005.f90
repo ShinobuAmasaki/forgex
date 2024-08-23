@@ -104,6 +104,8 @@ program test_005
 
    call runner_match("[ab]*a[ab]{20}", "abbbbbbbbbbbbbbbbbbbb", .true., res)
 
+   call runner_in("[ab]*a[ab]{20}", "cccbbbbbabbbbbbbbbbbbbbbbbbbbccc", .true., res)
+
    if (res) then
       print *, "=== TEST CASE 5 END ==="
       stop

@@ -34,7 +34,7 @@ contains
       integer :: root
       integer :: uni, ierr, siz
       character(:), allocatable :: buff
-      character(:),allocatable :: ast, prefix, postfix, entire !, middle
+      character(:),allocatable :: ast, prefix, suffix, entire !, middle
       real(real64) :: lap1, lap2
 
       if (flags(FLAG_HELP)) call print_help_debug_ast
@@ -46,7 +46,7 @@ contains
       entire = get_entire_literal(tree)
       prefix = get_prefix_literal(tree)
       ! middle = get_middle_literal(tree)
-      postfix = get_postfix_literal(tree)
+      suffix = get_suffix_literal(tree)
       lap2 = time_lap()
 
       open(newunit=uni, status='scratch')
@@ -73,7 +73,7 @@ contains
          literal_all    = "extracted literal:"
          literal_pre    = "extracted prefix:"
          literal_mid    = "extracted middle:"
-         literal_post   = "extracted postfix:"
+         literal_post   = "extracted suffix:"
          memory         = "memory (estimated):"
          
 
@@ -87,7 +87,7 @@ contains
             write(stdout, fmt_out_char) trim(cbuff(3)), entire
             write(stdout, fmt_out_char) trim(cbuff(4)), prefix
             ! write(stdout, fmt_out_char) trim(cbuff(5)), middle
-            write(stdout, fmt_out_char) trim(cbuff(6)), postfix
+            write(stdout, fmt_out_char) trim(cbuff(6)), suffix
             write(stdout, fmt_out_int) trim(cbuff(7)), mem_tape(tree%tape) + mem_tree(tree%nodes)
             write(stdout, fmt_out_int) trim(cbuff(8)), root
             write(stdout, fmt_out_int) trim(cbuff(9)), size(tree%nodes, dim=1)
@@ -103,7 +103,7 @@ contains
             write(stdout, fmt_out_char) trim(cbuff(3)), entire
             write(stdout, fmt_out_char) trim(cbuff(4)), prefix
             ! write(stdout, fmt_out_char) trim(cbuff(5)), middle
-            write(stdout, fmt_out_char) trim(cbuff(6)), postfix
+            write(stdout, fmt_out_char) trim(cbuff(6)), suffix
             write(stdout, fmt_out_int) trim(cbuff(7)), mem_tape(tree%tape)+mem_tree(tree%nodes)
          end if
       end block output
