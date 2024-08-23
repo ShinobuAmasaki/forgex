@@ -49,9 +49,6 @@ program main
    call runner_suffix("c{0,3}", "", res)
 
    call runner_suffix("(aa|ab|ac)", "", res)
-   call runner_suffix("(ああう|あいう|あうう)", "う", res)
-   call runner_suffix("(あああ|いああ|うああ)", "ああ", res)
-   call runner_suffix("あ", "あ", res)
    call runner_suffix("a.{1,5}g", "g", res)
    call runner_suffix("(ab|aa){3}b", "b", res)
    call runner_suffix("(aa|ba){3}b", "ab", res)
@@ -74,6 +71,15 @@ program main
    call runner_suffix("((a|b)+)?", "", res)
    call runner_suffix("((ac|bc)*|(dc|ec)+)+", "", res)
    call runner_suffix("([a-z]){2}", "", res)
+
+
+   call runner_suffix("あ", "あ", res)
+   call runner_suffix("(ああう|あいう|あうう)", "う", res)
+   call runner_suffix("(あああ|いああ|うああ)", "ああ", res)
+   call runner_suffix("(たちつ)+", "たちつ", res)
+   call runner_suffix("(たちつ)*てと", "てと", res)
+   call runner_suffix("([ぁ-ん]+)かき", "かき", res)
+   call runner_suffix("さし([ぁ-ん]+)かき", "かき", res)
 
 
    !! If the + operator is not processed on op_closure handling in get_suffix_literal_internal,
