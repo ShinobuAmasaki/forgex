@@ -12,7 +12,7 @@
 module forgex_syntax_tree_graph_m
    use :: forgex_parameters_m
    use :: forgex_enums_m
-   use :: forgex_segment_m,
+   use :: forgex_segment_m
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
    implicit none
