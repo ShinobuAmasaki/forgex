@@ -135,7 +135,7 @@ contains
          if (max_match > 0) then
             from = start-1
             if (from == 0) from = 1 ! handle leading NULL character.
-            if (max_match == len(str)) then
+            if (max_match >= len(str)) then
                to = len(string)
             else
                to = max_match-2
