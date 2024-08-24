@@ -51,7 +51,9 @@ contains
 
       do_brute_force = .false.
       runs_engine = .false.
-      str = string
+
+      str = char(0)//string//char(0)
+
       from = 0
       to = 0
       do_brute_force = prefix == ''
@@ -63,7 +65,7 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (string == char(0)//char(0)) then
+      if (len(string) <= 1 .and. string == '') then
          if (automaton%dfa%nodes(cur_i)%accepted) then
             from = ACCEPTED_EMPTY
             to = ACCEPTED_EMPTY
@@ -72,7 +74,7 @@ contains
       end if
 
       if (.not. do_brute_force) then
-         call get_index_list_forward(string, prefix, suffix, index_list)
+         call get_index_list_forward(str, prefix, suffix, index_list)
          if (.not. allocated(index_list)) return
          if (index_list(1) == INVALID_CHAR_INDEX) then
             do_brute_force = .true.
@@ -123,16 +125,21 @@ contains
 
             next_ci = idxutf8(str, ci) + 1
 
-            call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
+            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
 
             cur_i = dst_i
             ci = next_ci
          end do
 
          ! Update match position if a match is found.
-         if (max_match > 1) then
-            from = start
-            to = max_match - 1
+         if (max_match > 0) then
+            from = start-1
+            if (from == 0) from = 1 ! handle leading NULL character.
+            if (max_match >= len(str)) then
+               to = len(string)
+            else
+               to = max_match-2
+            end if
             return
          end if
 
@@ -168,6 +175,7 @@ contains
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
       integer :: max_match    !
+      character(:), allocatable :: str
 
       integer :: len_pre, len_post, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
@@ -186,7 +194,7 @@ contains
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
-      
+
       ! Returns true immediately if the given prefix exactly matches the string.
       if (len(string) > 0 .and. len(prefix) >0 ) then
          if (prefix == string .and. len_pre == n) then
@@ -204,8 +212,6 @@ contains
                          (empty_pre .and. matches_post), &
                          (empty_post .and. matches_pre), &
                          (empty_pre .and. empty_post), matches_pre])
-
-
 
 
       if (.not. runs_engine) then
@@ -231,6 +237,7 @@ contains
       ! Initialize counter variables.
       max_match = 0
       ci = 1
+      str = char(0)//string//char(0)
 
       ! Loop and proceed with matching unless the current index is DFA_INVALID_INDEX.
       do while (cur_i /= DFA_INVALID_INDEX)
@@ -240,24 +247,30 @@ contains
             max_match = ci
          end if
 
-         if (ci > len(string)) exit
+         if (ci > len(str)) exit
 
          ! Get the index of the next character and assign it to `next_ci`.
-         next_ci = idxutf8(string, ci) + 1
+         next_ci = idxutf8(str, ci) + 1
 
          ! Lazy evaluation is performed by calling this procedure here.
          ! The index of destination DFA node is stored in the `dst_i` variable.
-         call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
+         call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+
+         ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
+         if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
+            ci = 2
+            next_ci = idxutf8(str, ci) + 1
+            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+         end if
 
          ! update counters
          cur_i = dst_i
          ci = next_ci
 
       end do
-
       ! If the maximum index of the match is one larger than length of the string,
       ! this function returns true, otherwise it returns false.
-      if (max_match == len(string)+1) then
+      if (max_match >= len(string)+2) then
          res = .true.
       else
          res = .false.
