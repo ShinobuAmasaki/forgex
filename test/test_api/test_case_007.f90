@@ -69,7 +69,7 @@ program test_case_007
    call runner_match("(ab){3}b", "abababb", .true., res)
 
 
-   
+
    call runner_in("(a|b)*", 'ababab', .true., res)
    call runner_in("(a|b)+", 'ababab', .true., res)
    call runner_in("(a|b)?", 'a', .true., res)
@@ -130,6 +130,8 @@ program test_case_007
    call runner_in("(ab){3}b", "abababb", .true., res)
    call runner_in("a?b+|c*d", "bbd", .true., res)
 
+   call runner_in("(^a)", "alpha", .true., res)
+
    if (res) then
       print *, "=== TEST CASE 7 END ==="
       stop
@@ -137,5 +139,5 @@ program test_case_007
       error stop "There are cases where the match fails."
    end if
 
-   
+
 end program test_case_007

@@ -14,6 +14,7 @@ program test_001
    call runner_regex('', '', '', res)
 
    call runner_match(".*a(a|b)", "kkkab", .true., res)
+   call runner_in("b*abc", "bbbabcabc", .true., res)
 
    call runner_match("a{1,7}", "aaaaaaaaa", .false., res)
    call runner_match("a{1,7}", "aaaaaaaa", .false., res)
