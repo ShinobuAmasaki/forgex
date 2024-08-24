@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.1% of total for procedures.">53 statements</a>
+                 title=" 1.2% of total for procedures.">59 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -174,7 +174,7 @@ and stores the string index in the argument if it contains a match.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~2"></span>
+              <span class="anchor" id="variable-automaton"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -266,7 +266,9 @@ and stores the string index in the argument if it contains a match.</p>
 
 <span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span>
 <span class="w">      </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
-<span class="w">      </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span>
+<span class="w">      </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+
+<span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">//</span><span class="n">string</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="w">      </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">initial_index</span>
 
@@ -274,14 +276,13 @@ and stores the string index in the argument if it contains a match.</p>
 <span class="k">         error stop</span><span class="w"> </span><span class="s2">&quot;DFA have not been initialized.&quot;</span>
 <span class="w">      </span><span class="k">end if</span>
 
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">automaton</span><span class="p">%</span><span class="n">dfa</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">cur_i</span><span class="p">)%</span><span class="n">accepted</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCEPTED_EMPTY</span>
+<span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCEPTED_EMPTY</span>
 <span class="w">         </span><span class="k">end if</span>
 <span class="k">         return</span>
 <span class="k">      end if</span>
-
 
 <span class="k">      </span><span class="n">loop_init</span><span class="p">:</span><span class="w"> </span><span class="k">block</span>
 <span class="k">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
@@ -304,20 +305,25 @@ and stores the string index in the argument if it contains a match.</p>
 
 <span class="k">            </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="w">            </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">            </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="w">            </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dst_i</span>
 <span class="w">            </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_ci</span>
 <span class="w">         </span><span class="k">end do</span>
 
 <span class="w">         </span><span class="c">! Update match position if a match is found.</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span>
-<span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_match</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">            </span><span class="k">return</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! handle leading NULL character.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">               </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="k">               </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_match</span><span class="o">-</span><span class="mi">2</span>
+<span class="w">            </span><span class="k">end if</span>
+<span class="k">            return</span>
 <span class="k">         end if</span>
 
-<span class="k">         </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! Bruteforce searching        </span>
+<span class="k">         </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! Bruteforce searching</span>
 
 <span class="w">      </span><span class="k">end do</span>
 <span class="k">   end subroutine </span><span class="n">do_matching_including_no_literal_opts</span>
@@ -344,7 +350,7 @@ and stores the string index in the argument if it contains a match.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 04:19              </p>
+ on 2024-08-24 06:19              </p>
           </div>
         </div>
         <br>

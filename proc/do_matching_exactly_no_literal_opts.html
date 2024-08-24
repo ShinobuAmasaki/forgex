@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.7% of total for procedures.">35 statements</a>
+                 title=" 0.9% of total for procedures.">42 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -161,7 +161,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~3"></span>
+              <span class="anchor" id="variable-automaton~2"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -191,7 +191,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~3"></span>
+              <span class="anchor" id="variable-res~5"></span>
               logical,
             </td>
 <td>intent(inout)</td>
@@ -231,6 +231,7 @@
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ci</span><span class="w">           </span><span class="c">! character index</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">next_ci</span><span class="w">      </span><span class="c">! next character index</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">max_match</span><span class="w">    </span><span class="c">!</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span>
 
 <span class="w">      </span><span class="c">! Initialize `cur_i` with automaton&#39;s initial index.</span>
 <span class="w">      </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">automaton</span><span class="p">%</span><span class="n">initial_index</span>
@@ -250,6 +251,7 @@
 <span class="w">      </span><span class="c">! Initialize counter variables.</span>
 <span class="w">      </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">//</span><span class="n">string</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="w">      </span><span class="c">! Loop and proceed with matching unless the current index is DFA_INVALID_INDEX.</span>
 <span class="w">      </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">cur_i</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">DFA_INVALID_INDEX</span><span class="p">)</span>
@@ -259,14 +261,21 @@
 <span class="k">            </span><span class="n">max_match</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ci</span>
 <span class="w">         </span><span class="k">end if</span>
 
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">ci</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">ci</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
 
 <span class="w">         </span><span class="c">! Get the index of the next character and assign it to `next_ci`.</span>
-<span class="w">         </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">         </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
 <span class="w">         </span><span class="c">! Lazy evaluation is performed by calling this procedure here.</span>
 <span class="w">         </span><span class="c">! The index of destination DFA node is stored in the `dst_i` variable.</span>
-<span class="w">         </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">         </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="w">         </span><span class="c">! If there is mismatch in the first byte of the NULL character, try again with the second byte.</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">dst_i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">DFA_INVALID_INDEX</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">ci</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">            </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">         </span><span class="k">end if</span>
 
 <span class="w">         </span><span class="c">! update counters</span>
 <span class="w">         </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dst_i</span>
@@ -276,7 +285,7 @@
 
 <span class="w">      </span><span class="c">! If the maximum index of the match is one larger than length of the string,</span>
 <span class="w">      </span><span class="c">! this function returns true, otherwise it returns false.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">      </span><span class="k">else</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
@@ -305,7 +314,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 04:19              </p>
+ on 2024-08-24 06:19              </p>
           </div>
         </div>
         <br>

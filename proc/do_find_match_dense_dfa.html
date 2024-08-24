@@ -149,14 +149,14 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_cli_time_measurement_m.html'>forgex_cli_time_measurement_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cli_memory_calculation_m.html'>forgex_cli_memory_calculation_m</a></li>
               </ul>
             </li>
         </ul>
@@ -179,7 +179,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-flags~5"></span>
+              <span class="anchor" id="variable-flags~3"></span>
               logical,
             </td>
 <td>intent(in)</td>
@@ -194,7 +194,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~6"></span>
+              <span class="anchor" id="variable-pattern~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -361,7 +361,7 @@
 <span class="w">         </span><span class="n">parse_time</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;parse time:&quot;</span>
 <span class="w">         </span><span class="n">nfa_time</span><span class="w">       </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;compile nfa time:&quot;</span>
 <span class="w">         </span><span class="n">dfa_init_time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dfa initialize time:&quot;</span>
-<span class="w">         </span><span class="n">dfa_compile_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;compile dfa time:&quot;</span><span class="w"> </span>
+<span class="w">         </span><span class="n">dfa_compile_time</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;compile dfa time:&quot;</span>
 <span class="w">         </span><span class="n">matching_time</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;search time:&quot;</span>
 <span class="w">         </span><span class="k">memory</span><span class="w">         </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;memory (estimated):&quot;</span>
 <span class="w">         </span><span class="n">matching_result</span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;matching result:&quot;</span>
@@ -369,7 +369,7 @@
 <span class="w">         </span><span class="n">tree_count</span><span class="w">     </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;tree node count:&quot;</span>
 <span class="w">         </span><span class="n">nfa_count</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;nfa states:&quot;</span>
 <span class="w">         </span><span class="n">dfa_count</span><span class="w">      </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;dfa states:&quot;</span>
-<span class="w">         </span>
+
 <span class="w">         </span><span class="n">memsiz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mem_tape</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">tape</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mem_tree</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">mem_nfa_graph</span><span class="p">(</span><span class="n">automaton</span><span class="p">%</span><span class="n">nfa</span><span class="p">)</span><span class="w"> </span><span class="p">&amp;</span>
 <span class="w">            </span><span class="o">+</span><span class="w"> </span><span class="n">mem_dfa_graph</span><span class="p">(</span><span class="n">automaton</span><span class="p">%</span><span class="n">dfa</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="o">*</span><span class="mi">3</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">automaton</span><span class="p">%</span><span class="n">entry_set</span><span class="p">%</span><span class="n">vec</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
@@ -413,7 +413,7 @@
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_logi</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">8</span><span class="p">)),</span><span class="w"> </span><span class="n">res</span>
 <span class="w">            </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmt_out_int</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">cbuff</span><span class="p">(</span><span class="mi">9</span><span class="p">)),</span><span class="w"> </span><span class="n">memsiz</span>
 <span class="w">         </span><span class="k">end if</span>
-<span class="k">         </span>
+
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">flags</span><span class="p">(</span><span class="n">FLAG_TABLE_ONLY</span><span class="p">))</span><span class="w">  </span><span class="k">then</span>
 <span class="k">            call </span><span class="n">automaton</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
 <span class="w">            </span><span class="k">return</span>
@@ -423,9 +423,9 @@
 <span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">,</span><span class="w"> </span><span class="n">advance</span><span class="o">=</span><span class="s1">&#39;no&#39;</span><span class="p">)</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">dfa_for_print</span><span class="p">)</span>
 <span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="w"> </span><span class="n">fmta</span><span class="p">)</span><span class="w"> </span><span class="n">FOOTER</span>
 <span class="w">      </span><span class="k">end block </span><span class="n">output</span>
-<span class="w">      </span>
+
 <span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
-<span class="w">      </span>
+
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">do_find_match_dense_dfa</span>
 </pre></div>
 
@@ -450,7 +450,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 04:19              </p>
+ on 2024-08-24 06:19              </p>
           </div>
         </div>
         <br>

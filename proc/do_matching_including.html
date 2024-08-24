@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.0% of total for procedures.">98 statements</a>
+                 title=" 2.1% of total for procedures.">103 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -175,7 +175,7 @@ and stores the string index in the argument if it contains a match.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~8"></span>
+              <span class="anchor" id="variable-automaton~18"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -190,7 +190,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~3"></span>
+              <span class="anchor" id="variable-string~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -205,7 +205,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~6"></span>
+              <span class="anchor" id="variable-from~11"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -220,7 +220,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~6"></span>
+              <span class="anchor" id="variable-to~11"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -235,7 +235,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~6"></span>
+              <span class="anchor" id="variable-prefix~11"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -250,7 +250,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-suffix~6"></span>
+              <span class="anchor" id="variable-suffix~11"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -318,7 +318,9 @@ and stores the string index in the argument if it contains a match.</p>
 
 <span class="w">      </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">      </span><span class="n">runs_engine</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
-<span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">string</span>
+
+<span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">//</span><span class="n">string</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
 <span class="w">      </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">prefix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
@@ -330,7 +332,7 @@ and stores the string index in the argument if it contains a match.</p>
 <span class="k">         error stop</span><span class="w"> </span><span class="s2">&quot;DFA have not been initialized.&quot;</span>
 <span class="w">      </span><span class="k">end if</span>
 
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">string</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">//</span><span class="nb">char</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">automaton</span><span class="p">%</span><span class="n">dfa</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">cur_i</span><span class="p">)%</span><span class="n">accepted</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCEPTED_EMPTY</span>
 <span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ACCEPTED_EMPTY</span>
@@ -339,7 +341,7 @@ and stores the string index in the argument if it contains a match.</p>
 <span class="k">      end if</span>
 
 <span class="k">      if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">do_brute_force</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         call </span><span class="n">get_index_list_forward</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">index_list</span><span class="p">)</span>
+<span class="k">         call </span><span class="n">get_index_list_forward</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">index_list</span><span class="p">)</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span><span class="w"> </span><span class="k">return</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">index_list</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">do_brute_force</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
@@ -390,17 +392,22 @@ and stores the string index in the argument if it contains a match.</p>
 
 <span class="k">            </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
-<span class="w">            </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">            </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">construct</span><span class="p">(</span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">dst_i</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
 <span class="w">            </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dst_i</span>
 <span class="w">            </span><span class="n">ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_ci</span>
 <span class="w">         </span><span class="k">end do</span>
 
 <span class="w">         </span><span class="c">! Update match position if a match is found.</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span>
-<span class="w">            </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_match</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">            </span><span class="k">return</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span><span class="o">-</span><span class="mi">1</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">from</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c">! handle leading NULL character.</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">max_match</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">               </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+<span class="w">            </span><span class="k">else</span>
+<span class="k">               </span><span class="n">to</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_match</span><span class="o">-</span><span class="mi">2</span>
+<span class="w">            </span><span class="k">end if</span>
+<span class="k">            return</span>
 <span class="k">         end if</span>
 
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">do_brute_force</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -442,7 +449,7 @@ and stores the string index in the argument if it contains a match.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-23 04:19              </p>
+ on 2024-08-24 06:19              </p>
           </div>
         </div>
         <br>

@@ -90,14 +90,14 @@ contains
 
       prefix = get_prefix_literal(tree)
       suffix = get_suffix_literal(tree)
-   
+
       call automaton%preprocess(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
-      call do_matching_including(automaton, char(0)//str//char(0), from, to, prefix, suffix, unused)
+      call do_matching_including(automaton, str, from, to, prefix, suffix, unused)
          ! キャレットとダラーへの対応するために、strの前後に改行文字を追加する。
 
       if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
@@ -105,17 +105,17 @@ contains
          return
       end if
 
-      if (is_there_caret_at_the_top(pattern)) then
-         from = from
-      else
-         from = from -1
-      end if
+      ! if (is_there_caret_at_the_top(pattern)) then
+      !    from = from
+      ! else
+      !    from = from -1
+      ! end if
 
-      if (is_there_dollar_at_the_end(pattern)) then
-         to = to - 2
-      else
-         to = to - 1
-      end if
+      ! if (is_there_dollar_at_the_end(pattern)) then
+      !    to = to - 2
+      ! else
+      !    to = to - 1
+      ! end if
 
       if (from > 0 .and. to > 0) then
          res = .true.
@@ -204,7 +204,7 @@ contains
       entirely_fixed_string = ''
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
-   
+
       buff = trim(pattern)
 
       ! call build_syntax_tree(buff, tape, tree, root)
@@ -234,7 +234,7 @@ contains
       call automaton%preprocess(tree)
       call automaton%init()
 
-      call do_matching_including(automaton, char(0)//text//char(0), from_l, to_l, prefix, suffix, unused)
+      call do_matching_including(automaton, text, from_l, to_l, prefix, suffix, unused)
 
       if (from_l == ACCEPTED_EMPTY .and. to_l == ACCEPTED_EMPTY) then
          res = ''
@@ -244,17 +244,17 @@ contains
          return
       end if
 
-      if (is_there_caret_at_the_top(pattern)) then
-         from_l = from_l
-      else
-         from_l = from_l - 1
-      end if
+      ! if (is_there_caret_at_the_top(pattern)) then
+      !    from_l = from_l
+      ! else
+      !    from_l = from_l - 1
+      ! end if
 
-      if (is_there_dollar_at_the_end(pattern)) then
-         to_l = to_l - 2
-      else
-         to_l = to_l - 1
-      end if
+      ! if (is_there_dollar_at_the_end(pattern)) then
+      !    to_l = to_l - 2
+      ! else
+      !    to_l = to_l - 1
+      ! end if
 
 
       if (from_l > 0 .and. to_l > 0) then
