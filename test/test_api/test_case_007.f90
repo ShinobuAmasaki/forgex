@@ -131,6 +131,9 @@ program test_case_007
    call runner_in("a?b+|c*d", "bbd", .true., res)
 
    call runner_in("(^a)", "alpha", .true., res)
+   call runner_in("(^a)|.*a\s*$", "alpha", .true., res)
+   call runner_in("(a\s*$)", "alpha", .true., res)
+
 
    if (res) then
       print *, "=== TEST CASE 7 END ==="

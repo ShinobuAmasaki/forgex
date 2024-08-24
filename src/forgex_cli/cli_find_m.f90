@@ -117,13 +117,13 @@ contains
       flag_runs_engine = .false.
 
       if (flags(FLAG_HELP) .or. pattern == '') call print_help_find_match_lazy_dfa
-      
+
 
       call time_begin()
       call tree%build(trim(pattern))
       lap1 = time_lap()
 
-      ! 
+
       call time_begin()
       if (.not. flags(FLAG_NO_LITERAL)) then
          entire = get_entire_literal(tree)
@@ -165,35 +165,20 @@ contains
                from = index(text, entire)
                if (from > 0 ) to = from + len(entire) -1
             else
-               call runner_do_matching_including(automaton, char(0)//text//char(0), from, to, &
+               call runner_do_matching_including(automaton, text, from, to, &
                      prefix, suffix, flags(FLAG_NO_LITERAL), flag_runs_engine)
-            
-               if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
-                  from = 0
-                  to = 0
-                  res = .true.
-               end if
-
-
-               if (is_there_caret_at_the_top(pattern)) then
-                  from = from
-               else
-                  from = from -1
-               end if
-
-               if (is_there_dollar_at_the_end(pattern)) then
-                  to = to - 2
-               else
-                  to = to - 1
-               end if
             end if
 
             if (from > 0 .and. to > 0) then
                res = .true.
+            else if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
+               res = .true.
             else
                res = .false.
             end if
+
             lap4 = time_lap()
+
          end block
       end if
 
@@ -269,7 +254,7 @@ contains
             write(stdout, fmt_out_time) trim(cbuff(3)), get_lap_time_in_appropriate_unit(lap1)
             write(stdout, fmt_out_time) trim(cbuff(4)), get_lap_time_in_appropriate_unit(lap5)
             write(stdout, fmt_out_logi) trim(cbuff(5)), flag_runs_engine
-            
+
             if (flag_runs_engine .or. .not. flag_fixed_string) then
                write(stdout, fmt_out_time) trim(cbuff(6)), get_lap_time_in_appropriate_unit(lap2)
                write(stdout, fmt_out_time) trim(cbuff(7)), get_lap_time_in_appropriate_unit(lap3)
@@ -278,7 +263,7 @@ contains
                write(stdout, fmt_out_char) trim(cbuff(7)), not_running
             end if
 
-            write(stdout, fmt_out_time) trim(cbuff(8)), get_lap_time_in_appropriate_unit(lap4)            
+            write(stdout, fmt_out_time) trim(cbuff(8)), get_lap_time_in_appropriate_unit(lap4)
             write(stdout, fmt_out_logi) trim(cbuff(9)), res
             write(stdout, fmt_out_int)  trim(cbuff(10)), memsiz
 
@@ -433,7 +418,7 @@ contains
          parse_time     = "parse time:"
          nfa_time       = "compile nfa time:"
          dfa_init_time  = "dfa initialize time:"
-         dfa_compile_time = "compile dfa time:" 
+         dfa_compile_time = "compile dfa time:"
          matching_time  = "search time:"
          memory         = "memory (estimated):"
          matching_result= "matching result:"
@@ -441,7 +426,7 @@ contains
          tree_count     = "tree node count:"
          nfa_count      = "nfa states:"
          dfa_count      = "dfa states:"
-         
+
          memsiz = mem_tape(tree%tape) + mem_tree(tree%nodes) + mem_nfa_graph(automaton%nfa) &
             + mem_dfa_graph(automaton%dfa) + 4*3
          if (allocated(automaton%entry_set%vec)) then
@@ -485,7 +470,7 @@ contains
             write(stdout, fmt_out_logi) trim(cbuff(8)), res
             write(stdout, fmt_out_int) trim(cbuff(9)), memsiz
          end if
-         
+
          if (flags(FLAG_TABLE_ONLY))  then
             call automaton%free()
             return
@@ -495,9 +480,9 @@ contains
          write(stdout, fmta, advance='no') trim(dfa_for_print)
          write(stdout, fmta) FOOTER
       end block output
-      
+
       call automaton%free()
-      
+
    end subroutine do_find_match_dense_dfa
 
    subroutine runner_do_matching_exactly(automaton, text, res, prefix, suffix, flag_no_literal_optimize, runs_engine)

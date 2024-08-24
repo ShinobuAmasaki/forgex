@@ -33,7 +33,9 @@ contains
 
       str = string
       from = 0
-      to = 0 
+      to = 0
+
+      str = char(0)//string//char(0)
 
       cur_i = automaton%initial_index
 
@@ -41,14 +43,13 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (string == char(10)//char(10)) then
+      if (len(string) <= 1 .and. string == '') then
          if (automaton%dfa%nodes(cur_i)%accepted) then
-            from = 1
-            to = 1
+            from = ACCEPTED_EMPTY
+            to = ACCEPTED_EMPTY
          end if
          return
       end if
-
 
       loop_init: block
          i = 1
@@ -71,25 +72,30 @@ contains
 
             next_ci = idxutf8(str, ci) + 1
 
-            call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
+            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
 
             cur_i = dst_i
             ci = next_ci
          end do
 
          ! Update match position if a match is found.
-         if (max_match > 1) then
-            from = start
-            to = max_match - 1
+         if (max_match > 0) then
+            from = start-1
+            if (from == 0) from = 1 ! handle leading NULL character.
+            if (max_match == len(str)) then
+               to = len(string)
+            else
+               to = max_match-2
+            end if
             return
          end if
 
-         start = idxutf8(str, start) + 1 ! Bruteforce searching        
+         start = idxutf8(str, start) + 1 ! Bruteforce searching
 
       end do
    end subroutine do_matching_including_no_literal_opts
 
-   
+
    !> This subroutine is intended to be called from the `forgex_cli_find_m` module.
    subroutine do_matching_exactly_no_literal_opts(automaton, string, res)
       implicit none
@@ -101,6 +107,7 @@ contains
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
       integer :: max_match    !
+      character(:), allocatable :: str
 
       ! Initialize `cur_i` with automaton's initial index.
       cur_i = automaton%initial_index
@@ -120,6 +127,7 @@ contains
       ! Initialize counter variables.
       max_match = 0
       ci = 1
+      str = char(0)//string//char(0)
 
       ! Loop and proceed with matching unless the current index is DFA_INVALID_INDEX.
       do while (cur_i /= DFA_INVALID_INDEX)
@@ -129,14 +137,21 @@ contains
             max_match = ci
          end if
 
-         if (ci > len(string)) exit
+         if (ci > len(str)) exit
 
          ! Get the index of the next character and assign it to `next_ci`.
-         next_ci = idxutf8(string, ci) + 1
+         next_ci = idxutf8(str, ci) + 1
 
          ! Lazy evaluation is performed by calling this procedure here.
          ! The index of destination DFA node is stored in the `dst_i` variable.
-         call automaton%construct(cur_i, dst_i, string(ci:next_ci-1))
+         call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+
+         ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
+         if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
+            ci = 2
+            next_ci = idxutf8(str, ci) + 1
+            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+         end if
 
          ! update counters
          cur_i = dst_i
@@ -146,12 +161,12 @@ contains
 
       ! If the maximum index of the match is one larger than length of the string,
       ! this function returns true, otherwise it returns false.
-      if (max_match == len(string)+1) then
+      if (max_match >= len(string)+2) then
          res = .true.
       else
          res = .false.
       end if
    end subroutine do_matching_exactly_no_literal_opts
 
-   
+
 end module forgex_cli_api_internal_no_opts_m
