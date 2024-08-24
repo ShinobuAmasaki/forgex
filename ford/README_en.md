@@ -43,6 +43,9 @@ where `num` and `max` must NOT be zero.
 - `\d`, digit character (`[0-9]`)
 - `\D`, non-digit character (`[^0-9]`)
 
+## Documentation
+The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
+
 ## Usage
 ### Build
 
@@ -207,8 +210,11 @@ Command:
 
 ```shell
 forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
 
-# If you run it through fpm run
+If you run it through `fpm run`:
+
+```shell
 fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 ```
 
@@ -256,7 +262,7 @@ state    4A = ( 2 4 5 6 )
 
 - Add Unicode escape sequence `\p{...}`
 - Deal with invalid byte strings in UTF-8
-- Optimize by literal searching method
+- ✅️ Optimize by literal searching method
 - ✅️ Add a CLI tool for debugging and benchmarking
 - ✅️ Make all operators `pure elemental` attribute
 - ✅️ Publish the documentation
@@ -271,7 +277,7 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
