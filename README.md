@@ -94,7 +94,6 @@ The `.match.` operator returns true if the pattern exactly matches the string.
 ```fortran
 block
    character(:), allocatable :: pattern, str
-
    pattern = '\d{3}-\d{4}'
    str = '100-0001'
    print *, pattern .match. str  ! T
@@ -281,7 +280,7 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.

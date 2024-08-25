@@ -47,6 +47,10 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `\d`, 半角数字 (`[0-9]`)
 - `\D`, 非半角数字 (`[^0-9]`)
 
+## ドキュメント
+ドキュメントは英語と日本語で次のリンクから利用可能です。
+[https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
+
 ## 使用方法
 動作確認は以下のコンパイラーで行っています。
 
@@ -209,12 +213,16 @@ end block
 
 ```shell
 forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
 
-# fpm run を通して実行する場合
+`fpm run`経由で実行する場合:
+
+```shell
 fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
 ```
 
 出力:
+<div class="none-highlight-user">
 
 ```
             pattern: ([a-z]*g+)n?
@@ -248,6 +256,8 @@ state    4A = ( 2 4 5 6 )
 ===================================
 ```
 
+</div>
+
 ### 注意
 
 - WindowおよびmacOS環境の`gfortran`でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。
@@ -256,7 +266,7 @@ state    4A = ( 2 4 5 6 )
 ## To Do
 - Unicodeエスケープシーケンス`\p{...}`の追加
 - UTF-8において無効なバイトストリームへの対処
-- リテラル検索によるマッチングの最適化
+- ✅️ リテラル検索によるマッチングの最適化
 - ✅️ デバッグおよびベンチマーク用のCLIツールを追加
 - ✅️ すべてのAPI演算子に`pure elemental`属性を追加
 - ✅️ ドキュメントの公開
@@ -274,6 +284,7 @@ state    4A = ( 2 4 5 6 )
 優先度付きキューの実装は、[ue1221さんのコード](https://github.com/ue1221/fortran-utilities)に基づいています。
 文字列に対して`.in.`演算子を適用するというアイデアは、soybeanさんのものにインスパイアされました。
 `forgex-cli`のコマンドラインインターフェイスの設計については、Rust言語の`regex-cli`を参考にしました。
+
 ## 参考文献
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007年
 2. 近藤嘉雪, "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998年, SB Creative.
