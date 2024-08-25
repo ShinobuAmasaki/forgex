@@ -1,4 +1,4 @@
-Forgex is a regular expression engine written entirely in Fortran.
+Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
 This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license.
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.
@@ -42,6 +42,9 @@ where `num` and `max` must NOT be zero.
 - `\W`, (`[^a-zA-Z0-9_]`)
 - `\d`, digit character (`[0-9]`)
 - `\D`, non-digit character (`[^0-9]`)
+
+## Documentation
+The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
 
 ## Usage
 ### Build
@@ -176,11 +179,8 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-## Examples
 
-Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
-
-### UTF-8 String matching
+#### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters.
@@ -202,10 +202,67 @@ block
 end block
 ```
 
+### Command Line Interface Tool
+
+Version 3.2 introduces a command line tool that is called  `forgex-cli` and uses the Forgex engine for debugging, testing, and benchmarking regex matches. It performs matching with commands such as the one shown in below, and outputs the results directly to standard output. [For detailed information, please refer to the documentation.](https://shinobuamasaki.github.io/forgex/page/English/forgex_on_command_line_en.html)
+
+Command:
+
+```shell
+forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+If you run it through `fpm run`:
+
+```shell
+fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+Output:
+
+```
+            pattern: ([a-z]*g+)n?
+               text: 'assign'
+         parse time:        46.5us
+   compile nfa time:        74.9us
+dfa initialize time:        78.4us
+        search time:       661.7us
+    matching result:         T
+ memory (estimated):     10380
+
+========== Thompson NFA ===========
+state    1: (?, 5)
+state    2: <Accepted>
+state    3: (n, 2)(?, 2)
+state    4: (g, 7)
+state    5: (["a"-"f"], 6)(g, 6)(["h"-"m"], 6)(n, 6)(["o"-"z"], 6)(?, 4)
+state    6: (?, 5)
+state    7: (?, 8)
+state    8: (g, 9)(?, 3)
+state    9: (?, 8)
+=============== DFA ===============
+   1 : ["a"-"f"]=>2
+   2 : ["o"-"z"]=>2 ["h"-"m"]=>2 g=>3
+   3A: n=>4
+   4A:
+state    1  = ( 1 4 5 )
+state    2  = ( 4 5 6 )
+state    3A = ( 2 3 4 5 6 7 8 )
+state    4A = ( 2 4 5 6 )
+===================================
+```
+
+### Notes
+
+- A program built by `gfortran` on Windows and macOC may crash if an allocatable character is used in an OpenMP parallel block.
+- If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.
+
+
 ## To do
 
+- Add Unicode escape sequence `\p{...}`
 - Deal with invalid byte strings in UTF-8
-- Optimize by literal searching method
+- ✅️ Optimize by literal searching method
 - ✅️ Add a CLI tool for debugging and benchmarking
 - ✅️ Make all operators `pure elemental` attribute
 - ✅️ Publish the documentation
@@ -220,9 +277,10 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
+The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
 
 ## References
 

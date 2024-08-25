@@ -94,7 +94,6 @@ The `.match.` operator returns true if the pattern exactly matches the string.
 ```fortran
 block
    character(:), allocatable :: pattern, str
-
    pattern = '\d{3}-\d{4}'
    str = '100-0001'
    print *, pattern .match. str  ! T
@@ -179,9 +178,7 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-Note that in the current version, these APIs can be used in `do` loops and `do concurrent` loops, but not in OpenMP parallel blocks.
-
-### UTF-8 String matching
+#### UTF-8 String matching
 
 UTF-8 string can be matched using regular expression patterns just like ASCII strings.
 The following example demonstrates matching Chinese characters.
@@ -204,12 +201,70 @@ block
 end block
 ```
 
+### Command Line Interface Tool
+
+Version 3.2 introduces a command line tool that is called `forgex-cli` and uses the Forgex engine for debugging, testing, and benchmarking regex matches. It performs matching with commands such as the one shown in below, and outputs the results directly to standard output. [For detailed information, please refer to the documentation.](https://shinobuamasaki.github.io/forgex/page/English/forgex_on_command_line_en.html)
+
+Command:
+
+```shell
+forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+If you run it through `fpm run`:
+
+```shell
+fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+Output:
+
+```
+             pattern: ([a-z]*g+)n?
+                text: 'assign'
+          parse time:        42.9us
+extract literal time:        23.0us
+         runs engine:         T
+    compile nfa time:        26.5us
+ dfa initialize time:         4.6us
+         search time:       617.1us
+     matching result:         T
+  memory (estimated):     10324
+
+========== Thompson NFA ===========
+state    1: (?, 5)
+state    2: <Accepted>
+state    3: (n, 2)(?, 2)
+state    4: (g, 7)
+state    5: (["a"-"f"], 6)(g, 6)(["h"-"m"], 6)(n, 6)(["o"-"z"], 6)(?, 4)
+state    6: (?, 5)
+state    7: (?, 8)
+state    8: (g, 9)(?, 3)
+state    9: (?, 8)
+=============== DFA ===============
+   1 : ["a"-"f"]=>2
+   2 : ["o"-"z"]=>2 ["h"-"m"]=>2 g=>3
+   3A: n=>4
+   4A:
+state    1  = ( 1 4 5 )
+state    2  = ( 4 5 6 )
+state    3A = ( 2 3 4 5 6 7 8 )
+state    4A = ( 2 4 5 6 )
+===================================
+```
+
+### Notes
+
+- A program built by `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
+- If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.
+
 ## To do
 
 The following features are planned to be implemented in the future:
 
+- [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
-- [ ] Optimize by literal searching method
+- [x] Optimize by literal searching method
 - [x] Add a CLI tool for debugging and benchmarking
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
@@ -225,7 +280,7 @@ All code contained herein shall be written with a three-space indentation.
 
 ## Acknowledgements
 
-For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Kondo Yoshiyuki's book.
+For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.

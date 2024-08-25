@@ -47,6 +47,10 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `\d`, 半角数字 (`[0-9]`)
 - `\D`, 非半角数字 (`[^0-9]`)
 
+## ドキュメント
+ドキュメントは英語と日本語で次のリンクから利用可能です。
+[https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
+
 ## 使用方法
 動作確認は以下のコンパイラーで行っています。
 
@@ -175,9 +179,7 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
-現時点のバージョンでは、これらのAPIをループ内で使用する場合、`do`ループと`do concurrent`ループでは使用できますが、OpenMPの並列コードブロックでは使用できない点に注意してください。
-
-### UTF-8文字列のマッチング
+#### UTF-8文字列のマッチング
 
 UTF-8の文字列についても、ASCII文字と同様に正規表現のパターンで一致させることができます。
 以下の例は、漢文の一節に対してマッチングを試みています。
@@ -200,16 +202,78 @@ end block
 
 この例では`length`変数にバイト長が格納され、この場合は10個の3バイト文字に一致したので、その長さは30となります。
 
+
+### CLIツール
+
+バージョン3.2以降では、Forgexエンジンを使用したコマンドラインツール`forgex-cli`が提供されてり、Forgexエンジン自体のデバッグ、正規表現マッチングのテストやベンチマークのために使用することができます。
+以下のようにコマンドを実行することで、標準出力に結果を得ることができます。
+[使い方の詳細についてはドキュメンテーションを参照してください。](https://shinobuamasaki.github.io/forgex/page/Japanese/forgex_on_command_line_ja.html)
+
+コマンド:
+
+```shell
+forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+`fpm run`経由で実行する場合:
+
+```shell
+fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+```
+
+出力:
+<div class="none-highlight-user">
+
+```
+            pattern: ([a-z]*g+)n?
+               text: 'assign'
+         parse time:        46.5us
+   compile nfa time:        74.9us
+dfa initialize time:        78.4us
+        search time:       661.7us
+    matching result:         T
+ memory (estimated):     10380
+
+========== Thompson NFA ===========
+state    1: (?, 5)
+state    2: <Accepted>
+state    3: (n, 2)(?, 2)
+state    4: (g, 7)
+state    5: (["a"-"f"], 6)(g, 6)(["h"-"m"], 6)(n, 6)(["o"-"z"], 6)(?, 4)
+state    6: (?, 5)
+state    7: (?, 8)
+state    8: (g, 9)(?, 3)
+state    9: (?, 8)
+=============== DFA ===============
+   1 : ["a"-"f"]=>2
+   2 : ["o"-"z"]=>2 ["h"-"m"]=>2 g=>3
+   3A: n=>4
+   4A:
+state    1  = ( 1 4 5 )
+state    2  = ( 4 5 6 )
+state    3A = ( 2 3 4 5 6 7 8 )
+state    4A = ( 2 4 5 6 )
+===================================
+```
+
+</div>
+
+### 注意
+
+- WindowおよびmacOS環境の`gfortran`でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。
+- コマンドラインツール`forgex-cli`をWindows上のPowerShellで利用する場合、Unicode文字を正しく入出力するには、システムのロケールをUTF-8に変更する必要があります。
+
 ## To Do
+- Unicodeエスケープシーケンス`\p{...}`の追加
 - UTF-8において無効なバイトストリームへの対処
-- リテラル検索によるマッチングの最適化
+- ✅️ リテラル検索によるマッチングの最適化
 - ✅️ デバッグおよびベンチマーク用のCLIツールを追加
 - ✅️ すべてのAPI演算子に`pure elemental`属性を追加
 - ✅️ ドキュメントの公開
 - ✅️ UTF-8文字の基本的なサポート
 - ✅️ On-the-FlyのDFA構築
 - ✅️ CMakeによるビルドのサポート
-- ✅️ 時間計測ツールの追加
+- ✅️ 簡単な時間計測ツールの追加
 - <s>マッチングの並列化</s>
 
 ## コーディング規約
@@ -220,6 +284,7 @@ end block
 優先度付きキューの実装は、[ue1221さんのコード](https://github.com/ue1221/fortran-utilities)に基づいています。
 文字列に対して`.in.`演算子を適用するというアイデアは、soybeanさんのものにインスパイアされました。
 `forgex-cli`のコマンドラインインターフェイスの設計については、Rust言語の`regex-cli`を参考にしました。
+
 ## 参考文献
 1. Russ Cox ["Regular Expression Matching Can Be Simple And Fast"](https://swtch.com/~rsc/regexp/regexp1.html), 2007年
 2. 近藤嘉雪, "定本 Cプログラマのためのアルゴリズムとデータ構造", 1998年, SB Creative.
