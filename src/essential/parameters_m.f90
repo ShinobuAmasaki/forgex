@@ -44,7 +44,7 @@ module forgex_parameters_m
    character(1), parameter, public :: SYMBOL_STAR = '*'  ! asterisk
    character(1), parameter, public :: SYMBOL_PLUS = '+'  ! plus
    character(1), parameter, public :: SYMBOL_QUES = '?'  ! question
-   character(1), parameter, public :: SYMBOL_BSLH = '\'  ! backslash
+   character(1), parameter, public :: SYMBOL_BSLH = "\\"  ! backslash
    character(1), parameter, public :: SYMBOL_LSBK = '['  ! left square bracket
    character(1), parameter, public :: SYMBOL_RSBK = ']'  ! right square bracket
    character(1), parameter, public :: SYMBOL_LCRB = '{'  ! left curly brace

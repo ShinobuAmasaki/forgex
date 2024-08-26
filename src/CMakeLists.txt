@@ -1,24 +1,19 @@
 set(SHARED_LIB forgex)
 
-add_library(${SHARED_LIB}
-   SHARED
-   api_internal_m.f90
-   automaton_m.f90
-   enums_m.f90
-   lazy_dfa_graph_m.f90
-   lazy_dfa_node_m.f90
-   nfa_graph_m.f90
-   nfa_node_m.f90
-   parameters_m.f90
-   priority_queue_m.f90
-   segment_disjoin_m.f90
-   segment_m.f90
-   sort_m.f90
-   syntax_tree_m.f90
-   utf8_m.f90
-   forgex.f90
+add_subdirectory(essential)
+add_subdirectory(nfa)
+add_subdirectory(lazy_dfa)
+add_subdirectory(ast)
+
+
+add_library(${SHARED_LIB} SHARED
+   api_internal_m.F90
+   automaton_m.F90
+   forgex.F90
+   test_m.f90
 )
 
+target_link_libraries(forgex PRIVATE essential ast nfa lazy_dfa)
 
 set_target_properties(${LIBRARY}
    PROPERTIES
