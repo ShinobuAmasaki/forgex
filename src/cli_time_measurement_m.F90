@@ -29,7 +29,6 @@ module forgex_cli_time_measurement_m
    logical(c_bool) :: is_succeeded = .false.
 
    !> For Windows, use high-resolution system call for timing.
-#if defined(_WIN32) || defined(_WIN64)
    interface
       function QueryPerformanceCounter(PerformanceCount_count) result(is_succeeded_c) &
             bind(c, name="QueryPerformanceCounter")
@@ -46,35 +45,10 @@ module forgex_cli_time_measurement_m
          logical(c_bool) :: is_supported_c
       end function QueryPerformanceFrequency
    end interface
-#endif
    !! cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b
 
 
 contains
-
-#if defined(_WIN32) || defined(_WIN64)
-#else
-   function QueryPerformanceCounter(PerformanceCount) result(res)
-      use, intrinsic :: iso_c_binding
-      implicit none
-      integer(c_long_long), intent(inout) :: PerformanceCount
-      logical(c_bool):: res
-      PerformanceCount = 1
-      res = .false.
-
-   end function QueryPerformanceCounter
-
-
-   function QueryPerformanceFrequency(PerformanceCountPerSec) result(res)
-      use, intrinsic :: iso_c_binding
-      implicit none
-      integer(c_long_long), intent(inout) :: PerformanceCountPerSec
-      logical(c_bool) :: res
-      PerformanceCountPerSec = 1
-      res = .false.
-
-   end function QueryPerformanceFrequency
-#endif
 
 
    !> This subroutine is for timing purpose and starts a stopwatch.
