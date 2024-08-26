@@ -177,7 +177,7 @@ contains
       integer :: max_match    !
       character(:), allocatable :: str
 
-      integer :: len_pre, len_post, n
+      integer :: len_pre, len_suf, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
 
       runs_engine = .false.
@@ -190,7 +190,7 @@ contains
       end if
 
       len_pre = len(prefix)
-      len_post = len(suffix)
+      len_suf = len(suffix)
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
@@ -202,11 +202,18 @@ contains
             return
          end if
       end if
-
+      
+      ! Returns false if the prefix or suffix is ​​longer than the input string.
+      if (len_pre > len(string) .or. len_suf > len(string)) then
+            res = .false.
+            return
+      end if
+      
       empty_pre   = prefix == ''
       empty_post  = suffix == ''
-      if (.not. empty_pre)  matches_pre = string(1:len_pre) == prefix
-      if (.not. empty_post) matches_post = string(n-len_post+1:n) == suffix
+
+      if (.not. empty_pre) matches_pre = string(1:len_pre) == prefix
+      if (.not. empty_post) matches_post = string(n-len_suf+1:n) == suffix
 
       runs_engine = any([(matches_pre .and. matches_post), &
                          (empty_pre .and. matches_post), &
