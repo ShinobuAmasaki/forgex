@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.9% of total for modules and submodules.">103 statements</a>
+                 title=" 1.9% of total for modules and submodules.">105 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -133,19 +133,7 @@
   
   
   
-      <div class="card mb-4">
-      <a data-bs-toggle="collapse" href="#inters-0"
-         aria-expanded="false" aria-controls="inters-0">
-         <h4 class="card-header bg-primary text-white">Interfaces</h4>
-      </a>
-      <div id="inters-0" class="collapse">
-        <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#interface-queryperformancecounter">QueryPerformanceCounter</a>
-            <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#interface-queryperformancefrequency">QueryPerformanceFrequency</a>
-        </div>
-      </div>
-    </div>
-
+  
   
   
       <div class="card mb-4">
@@ -157,6 +145,8 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#proc-get_lap_time_in_appropriate_unit">get_lap_time_in_appropriate_unit</a>
             <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#proc-time_lap">time_lap</a>
+            <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#proc-queryperformancecounter">QueryPerformanceCounter</a>
+            <a class="list-group-item" href="../module/forgex_cli_time_measurement_m.html#proc-queryperformancefrequency">QueryPerformanceFrequency</a>
         </div>
       </div>
     </div>
@@ -188,6 +178,7 @@
 
     <div class="col-md-9" id='text'>
       <p>This module provides procedures to measure the time it takes to execute.
+For Windows, use high-resolution system call for timing.
 cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b</p>
 <br>          <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -195,11 +186,11 @@ cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b</p>
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_c_binding'>iso_c_binding</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_cli_parameters_m.html'>forgex_cli_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_c_binding'>iso_c_binding</a></li>
                   <li class="list-inline-item"><a href='forgex_cli_utils_m.html'>forgex_cli_utils_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
               </ul>
             </li>
         </ul>
@@ -365,122 +356,6 @@ cf. https://qiita.com/implicit_none/items/86c9117990798c1e8b3b</p>
         <br>
 
 
-        <section>
-          <h2>Interfaces</h2>
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-queryperformancecounter"></span>
-      <h3>        interface
-      </h3>
-    </div>
-      <div class="card-body">
-        <p>For Windows, use high-resolution system call for timing.</p>
-      </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>
-    private  function QueryPerformanceCounter(PerformanceCount_count) result(is_succeeded_c) bind(c, name="QueryPerformanceCounter")  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-performancecount_count"></span>
-              integer(kind=c_long_long),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>PerformanceCount_count</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical(kind=c_bool)</small>
-    </h4>
-    
-
-        </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-queryperformancefrequency"></span>
-      <h3>        interface
-      </h3>
-    </div>
-      <div class="card-body">
-        <p>For Windows, use high-resolution system call for timing.</p>
-      </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-              <h3>
-    private  function QueryPerformanceFrequency(Frequency_countPerSec) result(is_supported_c) bind(c, name="QueryPerformanceFrequency")  
-
-    </h3>
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-frequency_countpersec"></span>
-              integer(kind=c_long_long),
-            </td>
-<td>intent(out)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>Frequency_countPerSec</strong></td>
-            <td>
-                
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical(kind=c_bool)</small>
-    </h4>
-    
-
-        </li>
-    </ul>
-  </div>
-
-        </section>
-        <br>
 
 
 
@@ -551,6 +426,96 @@ since the last call of <code>time_begin</code> or <code>time_lap</code>.</p>
     </div>
   </div>
 
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-queryperformancecounter"></span> <h3>private  function <a href='../proc/queryperformancecounter.html'>QueryPerformanceCounter</a>(PerformanceCount) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-performancecount"></span>
+              integer(kind=c_long_long),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>PerformanceCount</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical(kind=c_bool)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-queryperformancefrequency"></span> <h3>private  function <a href='../proc/queryperformancefrequency.html'>QueryPerformanceFrequency</a>(PerformanceCountPerSec) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-performancecountpersec"></span>
+              integer(kind=c_long_long),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>PerformanceCountPerSec</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical(kind=c_bool)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
         </section>
         <br>
 
@@ -592,7 +557,7 @@ since the last call of <code>time_begin</code> or <code>time_lap</code>.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-26 02:21              </p>
+ on 2024-08-26 02:22              </p>
           </div>
         </div>
         <br>
