@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 enable_language(Fortran)
 
 project(forgex
-   VERSION 3.0
+   VERSION 3.4
    DESCRIPTION "Fortran Regular Expression"
    LANGUAGES Fortran
 )
@@ -21,11 +21,12 @@ set(TEST001 test_case_001)
 set(TEST002 test_case_002)
 set(TEST003 test_case_003)
 set(TEST004 test_case_004)
+set(TEST_API_DIR test/test_api)
 
-add_executable(${TEST001} test/test_case_001.f90)
-add_executable(${TEST002} test/test_case_002.f90)
-add_executable(${TEST003} test/test_case_003.f90)
-add_executable(${TEST004} test/test_case_004.f90)
+add_executable(${TEST001} ${TEST_API_DIR}/test_case_001.f90)
+add_executable(${TEST002} ${TEST_API_DIR}/test_case_002.f90)
+add_executable(${TEST003} ${TEST_API_DIR}/test_case_003.f90)
+add_executable(${TEST004} ${TEST_API_DIR}/test_case_004.f90)
 
 target_sources(${TEST001} PRIVATE src/test_m.f90)
 target_sources(${TEST002} PRIVATE src/test_m.f90)
@@ -37,11 +38,10 @@ target_include_directories(${TEST002} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
 target_include_directories(${TEST003} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
 target_include_directories(${TEST004} PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src)
 
-
-target_link_libraries(${TEST001} PRIVATE forgex)
-target_link_libraries(${TEST002} PRIVATE forgex)
-target_link_libraries(${TEST003} PRIVATE forgex)
-target_link_libraries(${TEST004} PRIVATE forgex)
+target_link_libraries(${TEST001} PRIVATE ast forgex)
+target_link_libraries(${TEST002} PRIVATE ast forgex)
+target_link_libraries(${TEST003} PRIVATE ast forgex)
+target_link_libraries(${TEST004} PRIVATE ast forgex)
 
 
 enable_testing()
