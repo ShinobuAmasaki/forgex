@@ -1,4 +1,4 @@
-set(SHARED_LIB forgex)
+set(STATIC_LIB forgex)
 
 add_subdirectory(essential)
 add_subdirectory(nfa)
@@ -6,26 +6,33 @@ add_subdirectory(lazy_dfa)
 add_subdirectory(ast)
 
 
-add_library(${SHARED_LIB} SHARED
+add_library(${STATIC_LIB} STATIC
    api_internal_m.F90
    automaton_m.F90
    forgex.F90
-   test_m.f90
 )
 
 target_link_libraries(forgex PRIVATE essential ast nfa lazy_dfa)
+target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/ast)
+target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/nfa)
+target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/lazy_dfa)
+
+target_include_directories(forgex PUBLIC $<TARGET_PROPERTY:essential,Fortran_MODULE_DIRECTORY>)
+target_include_directories(forgex PUBLIC $<TARGET_PROPERTY:ast,Fortran_MODULE_DIRECTORY>)
+target_include_directories(forgex PUBLIC $<TARGET_PROPERTY:nfa,Fortran_MODULE_DIRECTORY>)
+target_include_directories(forgex PUBLIC $<TARGET_PROPERTY:lazy_dfa,Fortran_MODULE_DIRECTORY>)
 
 set_target_properties(${LIBRARY}
    PROPERTIES
    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
    )
 
-set_target_properties(${SHARED_LIB}
+set_target_properties(${STATIC_LIB}
    PROPERTIES
    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
    )
 
-install (TARGETS ${SHARED_LIB}
+install (TARGETS ${STATIC_LIB}
    LIBRARY DESTINATION lib
    PUBLIC_HEADER DESTINATION include
    )

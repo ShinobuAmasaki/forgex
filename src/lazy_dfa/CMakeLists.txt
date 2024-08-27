@@ -1,4 +1,4 @@
-add_library(lazy_dfa SHARED
+add_library(lazy_dfa STATIC
    lazy_dfa_graph_m.F90
    lazy_dfa_node_m.F90
 )

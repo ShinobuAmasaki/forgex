@@ -1,4 +1,4 @@
-add_library(nfa SHARED
+add_library(nfa STATIC
    nfa_node_m.F90
    nfa_graph_m.F90
    nfa_state_set_m.F90
