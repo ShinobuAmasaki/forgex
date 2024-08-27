@@ -10,7 +10,6 @@ add_library(${STATIC_LIB} STATIC
    api_internal_m.F90
    automaton_m.F90
    forgex.F90
-   test_m.f90
 )
 
 target_link_libraries(forgex PRIVATE essential ast nfa lazy_dfa)
