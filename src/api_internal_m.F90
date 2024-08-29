@@ -218,11 +218,19 @@ contains
       empty_pre   = prefix == ''
       empty_post  = suffix == ''
 
-      if (.not. empty_pre) matches_pre = string(1:len_pre) == prefix
-      if (.not. empty_post) matches_post = string(n-len_suf+1:n) == suffix
-                          
+      ! If thestring is not an empty string, branch the process.
+      if (len(string) > 0) then
+         if (.not. empty_pre) matches_pre = (string(1:len_pre) == prefix)
+         if (.not. empty_post) matches_post = (string(n-len_suf+1:n) == suffix)
+      else
+         ! If the string is empty string, these flags are true if the prefix/suffix length is zero, false otherwise.
+         matches_pre = (len(prefix) == 0)
+         matches_post = (len(suffix) == 0)
+      end if
+
       ! True if the prefix is empty or matches, and the suffix is empty or matches.
       runs_engine = (empty_pre .or. matches_pre) .and. (empty_post .or. matches_post)
+
 
       if (.not. runs_engine) then
          res = .false.

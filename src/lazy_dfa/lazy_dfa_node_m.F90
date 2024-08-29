@@ -100,12 +100,18 @@ contains
 
       integer :: j
 
-      if (.not. self%initialized) then
+      if (.not. self%initialized .or. .not. allocated(self%transition)) then
          call self%realloc_f()
       end if
 
+      !== At this point, self%transition is definitely already assigned. ==!
+
       if (self%get_tra_top() == DFA_NOT_INIT_TRAENSITION_TOP) then
          error stop "ERROR: Invalid counting transitions"
+      end if
+
+      if (.not. allocated(self%transition)) then
+         error stop "ERROR: Transition array not allocated."
       end if
 
       call self%increment_tra_top()
@@ -147,7 +153,7 @@ contains
 
       !! @note Note that the return value of the `size` intrinsic function for an unallocated array is undefined.
 
-      if (self%initialized) then
+      if (self%initialized .and. allocated(self%transition)) then
          ! If already initialized, copy the transitions to a temporary array `tmp`.
          siz = size(self%transition, dim=1)
          call move_alloc(self%transition, tmp)
