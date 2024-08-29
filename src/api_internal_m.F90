@@ -86,7 +86,8 @@ contains
             i = 1
             start = i
          else
-            ! indexリストの先頭が2の場合、NULL文字を考慮してstart=1, i=0にする。
+            ! If the first in the index list is 2, set start=1, i=0
+            ! to take into account the leading NULL character. 
             if (index_list(1) == 2) then
                start = 1
                i = 0
@@ -174,7 +175,9 @@ contains
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
-      integer :: max_match    !
+      integer :: max_match    ! the highest index number matched
+
+      ! The character string variable that will have null characters added to the beginning and end.
       character(:), allocatable :: str
 
       integer :: len_pre, len_suf, n
@@ -182,6 +185,8 @@ contains
 
       runs_engine = .false.
 
+      ! If the entire pattern is a fixed string, it will be compared with the input string
+      ! and the answer will be returned immediately.
       if (present(entire_fixed_string)) then
          if (entire_fixed_string /= '') then
             res = entire_fixed_string == string
@@ -209,6 +214,7 @@ contains
             return
       end if
       
+      ! If prefix and suffix are empty strings, each flag is set.
       empty_pre   = prefix == ''
       empty_post  = suffix == ''
 
@@ -222,6 +228,8 @@ contains
          res = .false.
          return
       end if
+      !==  The decision to run the engine ends here.  ==! 
+
 
       ! Initialize `cur_i` with automaton's initial index.
       cur_i = automaton%initial_index
@@ -272,7 +280,7 @@ contains
          ci = next_ci
 
       end do
-      ! If the maximum index of the match is one larger than length of the string,
+      ! If the maximum index of the match is two larger than length of the string,
       ! this function returns true, otherwise it returns false.
       if (max_match >= len(string)+2) then
          res = .true.
