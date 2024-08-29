@@ -214,12 +214,9 @@ contains
 
       if (.not. empty_pre) matches_pre = string(1:len_pre) == prefix
       if (.not. empty_post) matches_post = string(n-len_suf+1:n) == suffix
-
-      runs_engine = any([(matches_pre .and. matches_post), &
-                         (empty_pre .and. matches_post), &
-                         (empty_post .and. matches_pre), &
-                         (empty_pre .and. empty_post), matches_pre])
-
+                          
+      ! True if the prefix is empty or matches, and the suffix is empty or matches.
+      runs_engine = (empty_pre .or. matches_pre) .and. (empty_post .or. matches_post)
 
       if (.not. runs_engine) then
          res = .false.
