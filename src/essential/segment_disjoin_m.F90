@@ -47,6 +47,9 @@ contains
       integer(int32) :: i, j, k, count, siz, top, bottom, real_size, m
       logical        :: flag
 
+      ! If list is not allocated, it returns immediately.
+      if (.not. allocated(list)) return
+
       siz = size(list, dim=1)
       if (siz <= 0) then
          return
@@ -81,6 +84,8 @@ contains
 
       ! Generate a list of unique indices from the `old_list`.
       call index_list_from_segment_list(index_list, old_list)
+
+      !==  At this point, index_list is allocated by index_list_from_segment_list procedure.
 
       ! Initialize
       new = SEG_UPPER   ! segment_t(2**21, 2**21)
@@ -158,7 +163,7 @@ contains
 
       ! Determine the real size of the new list.
       ! This loop calculates the actual number of non-empty segments in the new `list`.
-      real_size = 0
+      real_size = 0 
       do i = 1, size(list)
          if (list(i) /= SEG_INIT) real_size = real_size + 1
       end do

@@ -173,7 +173,7 @@ contains
 !=====================================================================!
 !  Parsing procedures
 
-   pure subroutine tree_graph__regex(self)
+   pure recursive subroutine tree_graph__regex(self)
       implicit none
       class(tree_t), intent(inout) :: self
 
@@ -196,7 +196,7 @@ contains
    end subroutine tree_graph__regex
 
 
-   pure subroutine tree_graph__term(self)
+   pure recursive subroutine tree_graph__term(self)
       implicit none
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
@@ -228,7 +228,7 @@ contains
    end subroutine
 
 
-   pure subroutine tree_graph__suffix_op(self)
+   pure recursive subroutine tree_graph__suffix_op(self)
       implicit none
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
@@ -269,7 +269,7 @@ contains
    end subroutine tree_graph__suffix_op
 
 
-   pure subroutine tree_graph__primary(self)
+   pure recursive subroutine tree_graph__primary(self)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       class(tree_t), intent(inout) :: self
@@ -404,12 +404,18 @@ contains
          i = i_next
       end do
 
+      ! the seglist array have been allocated near the L362.
       if (is_inverted) then
          call invert_segment_list(seglist)
       end if
 
+      if (.not. allocated(seglist)) then
+         error stop "ERROR: `seg_list` is not allocated. This should not happen."
+      end if
+
       node = make_tree_node(op_char)
       if (.not. allocated(node%c)) allocate(node%c(size(seglist, dim=1)))
+
       node%c(:) = seglist(:)
 
       call self%register_connector(node, terminal, terminal)
@@ -546,6 +552,8 @@ contains
       end select
 
       allocate(node%c(size(seglist, dim=1)))
+      ! This size function is safe because it is always allocated 
+      ! to the non-returned branches of the select case above.
 
       node%c(:) = seglist(:)
       node%op = op_char
@@ -723,7 +731,11 @@ contains
       character(:),allocatable :: buf
 
       str = ''
-      siz = size(tree(root_i)%c, dim=1)
+      if (allocated(tree(root_i)%c)) then
+         siz = size(tree(root_i)%c, dim=1)
+      else
+         return
+      end if
 
       if (siz == 0) return
 
