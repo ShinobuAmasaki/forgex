@@ -62,6 +62,9 @@ contains
       logical :: res
 
       res = .false.
+
+      if (.not. allocated(node%c)) return
+
       if (node%op == op_char .and. size(node%c) == 1) then
          if (node%c(1)%min == node%c(1)%max) then
             res = .true.
@@ -114,7 +117,11 @@ contains
          end if
 
       else if (is_literal_tree_node(node)) then
+
+         ! This size function is safe because is_literal_function returns false
+         ! if the node%c is not allocated. 
          if (size(node%c, dim=1) == 1) then
+
             if (node%c(1)%min == node%c(1)%max) then
                literal = literal//char_utf8(node%c(1)%min)
                res = .true.

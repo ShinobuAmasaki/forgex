@@ -186,6 +186,9 @@ contains
 
       select case(tree%nodes(i)%op)
       case (op_char)
+         if (.not. allocated(tree%nodes(i)%c)) then
+            error stop "ERROR: Character node of the AST do not have actual character list."
+         end if
          ! Handle character operations by adding transition for each character.
          do k = 1, size(tree%nodes(i)%c, dim=1)
             call nfa_graph(entry)%add_transition(nfa_graph, entry, exit, tree%nodes(i)%c(k))
@@ -345,7 +348,12 @@ contains
       end if
 
       !> @note Note that the return value of the size function on an unallocated array is undefined.
-      if (j >= size(self%forward, dim=1) .or. .not. allocated(self%forward)) then
+      if (.not. allocated(self%forward)) then
+         ! Reallocate the forward array component.
+         call self%realloc_f()
+      endif
+
+      if (j >= size(self%forward, dim=1)) then
          ! Reallocate the forward array component.
          call self%realloc_f()
       endif
@@ -376,7 +384,12 @@ contains
          j = nfa_graph(dst)%backward_top
       end if
 
-      if (j >= size(nfa_graph(dst)%backward, dim=1) .or. .not. allocated(nfa_graph(dst)%backward)) then
+      if (.not. allocated(nfa_graph(dst)%backward)) then
+         ! Reallocate backward array component.
+         call nfa_graph(dst)%realloc_b
+      end if
+
+      if (j >= size(nfa_graph(dst)%backward, dim=1)) then
          ! Reallocate backward array component.
          call nfa_graph(dst)%realloc_b
       endif
@@ -454,9 +467,14 @@ contains
          seg_list = seg_list(:m) ! reallocation implicitly
       end block
 
+      !==  At this point, seg_list is always allocated.  ==!
 
       ! Disjoin the segment lists to ensure no over laps
       call disjoin(seg_list)
+
+      if (.not. allocated(seg_list)) then
+         error stop "ERROR: Array that should have been disjoined is not allocated."
+      end if
 
       ! Apply disjoining to all transitions over the NFA graph.
 

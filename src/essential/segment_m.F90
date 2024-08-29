@@ -192,6 +192,8 @@ contains
       integer :: i, n, count
       integer :: current_min
 
+      if (.not. allocated(list)) return
+
       ! sort and merge segments
       call sort_segment_by_min(list)
       call merge_segments(list)
@@ -316,6 +318,8 @@ contains
       integer :: i, j, n
       type(segment_t) :: temp ! temporary variable
 
+      if (.not. allocated(segments)) return
+
       n = size(segments)
       do i = 1, n-1
          do j = i+1, n
@@ -334,6 +338,7 @@ contains
       type(segment_t), allocatable, intent(inout) :: segments(:)
       integer :: i, j, n, m
 
+      if (.not. allocated(segments)) return
       n = size(segments)
 
       m = 1
