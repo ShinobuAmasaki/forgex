@@ -173,7 +173,7 @@ contains
 !=====================================================================!
 !  Parsing procedures
 
-   pure subroutine tree_graph__regex(self)
+   pure recursive subroutine tree_graph__regex(self)
       implicit none
       class(tree_t), intent(inout) :: self
 
@@ -196,7 +196,7 @@ contains
    end subroutine tree_graph__regex
 
 
-   pure subroutine tree_graph__term(self)
+   pure recursive subroutine tree_graph__term(self)
       implicit none
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
@@ -228,7 +228,7 @@ contains
    end subroutine
 
 
-   pure subroutine tree_graph__suffix_op(self)
+   pure recursive subroutine tree_graph__suffix_op(self)
       implicit none
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
@@ -269,7 +269,7 @@ contains
    end subroutine tree_graph__suffix_op
 
 
-   pure subroutine tree_graph__primary(self)
+   pure recursive subroutine tree_graph__primary(self)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       class(tree_t), intent(inout) :: self

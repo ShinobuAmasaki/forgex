@@ -267,7 +267,7 @@ contains
    end subroutine generate_nfa
 
 
-   pure subroutine generate_nfa_concatenate(tree, idx, nfa_graph, nfa_top, entry, exit)
+   pure recursive subroutine generate_nfa_concatenate(tree, idx, nfa_graph, nfa_top, entry, exit)
       implicit none
       type(tree_t),  intent(in) :: tree
       type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
@@ -289,7 +289,7 @@ contains
 
    end subroutine generate_nfa_concatenate
 
-   pure subroutine generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry, exit)
+   pure recursive subroutine generate_nfa_closure(tree, idx, nfa_graph, nfa_top, entry, exit)
       implicit none
       type(tree_t),  intent(in) :: tree
       type(nfa_state_node_t), allocatable, intent(inout) :: nfa_graph(:)
