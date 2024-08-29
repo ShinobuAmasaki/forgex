@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.1% of total for procedures.">51 statements</a>
+                 title=" 1.2% of total for procedures.">57 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -178,7 +178,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~10"></span>
+              <span class="anchor" id="variable-self~12"></span>
               class(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -238,7 +238,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-c~4"></span>
+              <span class="anchor" id="variable-c~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -295,7 +295,12 @@
 <span class="w">      </span><span class="k">end if</span>
 
 <span class="w">      </span><span class="c">!&gt; @note Note that the return value of the size function on an unallocated array is undefined.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">forward</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">forward</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">forward</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="c">! Reallocate the forward array component.</span>
+<span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">realloc_f</span><span class="p">()</span>
+<span class="w">      </span><span class="k">endif</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">forward</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="w">         </span><span class="c">! Reallocate the forward array component.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">realloc_f</span><span class="p">()</span>
 <span class="w">      </span><span class="k">endif</span>
@@ -326,7 +331,12 @@
 <span class="k">         </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">backward_top</span>
 <span class="w">      </span><span class="k">end if</span>
 
-<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">backward</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="p">.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">backward</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">      if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">backward</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="c">! Reallocate backward array component.</span>
+<span class="w">         </span><span class="k">call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">realloc_b</span>
+<span class="w">      </span><span class="k">end if</span>
+
+<span class="k">      if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">backward</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
 <span class="w">         </span><span class="c">! Reallocate backward array component.</span>
 <span class="w">         </span><span class="k">call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">dst</span><span class="p">)%</span><span class="n">realloc_b</span>
 <span class="w">      </span><span class="k">endif</span>
@@ -365,7 +375,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-27 05:05              </p>
+ on 2024-08-29 07:07              </p>
           </div>
         </div>
         <br>

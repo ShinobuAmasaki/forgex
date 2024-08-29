@@ -93,10 +93,6 @@ contains
 
       allocate(self%nodes(0:new_part_end))
 
-#if defined(IMPURE) && defined(DEBUG)
-! write(stderr, *) "DFA node reallocate: ", self%alloc_count_node
-#endif
-
       self%nodes(1:siz) = tmp(1:siz)
 
       self%nodes(new_part_begin:new_part_end)%own_i = [(i, i=new_part_begin, new_part_end)]
