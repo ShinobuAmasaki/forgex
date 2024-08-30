@@ -178,7 +178,7 @@ contains
       
       ! Get the prefix contained in the AST.
       prefix = get_prefix_literal(tree)
-      ! suffix = get_suffix_literal(tree)
+      suffix = get_suffix_literal(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
