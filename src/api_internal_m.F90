@@ -163,36 +163,26 @@ contains
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine)
       implicit none
       type(automaton_t),      intent(inout) :: automaton
       character(*),           intent(in)    :: string
       logical,                intent(inout) :: res
       character(*),           intent(in)    :: prefix, suffix
       logical,                intent(inout) :: runs_engine
-      character(*), optional, intent(inout) :: entire_fixed_string
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
       integer :: max_match    ! the highest index number matched
 
-      ! The character string variable that will have null characters added to the beginning and end.
+      ! This character string variable will have null characters added to the beginning and end.
       character(:), allocatable :: str
 
       integer :: len_pre, len_suf, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
 
       runs_engine = .false.
-
-      ! If the entire pattern is a fixed string, it will be compared with the input string
-      ! and the answer will be returned immediately.
-      if (present(entire_fixed_string)) then
-         if (entire_fixed_string /= '') then
-            res = entire_fixed_string == string
-            return
-         end if
-      end if
 
       len_pre = len(prefix)
       len_suf = len(suffix)
@@ -218,7 +208,7 @@ contains
       empty_pre   = prefix == ''
       empty_post  = suffix == ''
 
-      ! If thestring is not an empty string, branch the process.
+      ! If the string is not an empty string, branch the process.
       if (len(string) > 0) then
          if (.not. empty_pre) matches_pre = (string(1:len_pre) == prefix)
          if (.not. empty_post) matches_post = (string(n-len_suf+1:n) == suffix)
