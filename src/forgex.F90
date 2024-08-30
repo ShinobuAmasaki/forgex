@@ -51,13 +51,13 @@ contains
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
       !! The function implemented for the `.in.` operator.
       implicit none
-      character(*), intent(in)       :: pattern, str
-      logical                        :: res
+      character(*), intent(in)  :: pattern, str
+      logical                   :: res
 
-      character(:),      allocatable :: buff
-      type(tree_t)                   :: tree
-      type(automaton_t)              :: automaton
-      integer                        :: from, to
+      character(:), allocatable :: buff
+      type(tree_t)              :: tree
+      type(automaton_t)         :: automaton
+      integer                   :: from, to
 
       character(:), allocatable :: prefix, suffix, entirely_fixed_string
       logical :: unused
@@ -71,58 +71,60 @@ contains
       buff = trim(pattern)
 
       ! Build a syntax tree from buff, and store the result in tree and root.
-      ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)
+      
+      ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
+
+         ! from_l stores the position of the literal in input text.
          from = index(str, entirely_fixed_string)
+
+          ! If the literal is included,
          if (from > 0) then
+            ! to_l stores the position of the end of the literal in the text.
             to = from + len(entirely_fixed_string) -1
          end if
+
+         ! If the pattern is contained, it returns true, otherwise it returns false.
          if (from > 0 .and. to > 0) then
             res = .true.
          else
             res = .false.
          end if
+   
          return
       end if
 
+    != From here on, we will deal with cases where an entire pattern is not a fixed string.
+
+      ! Extract a prefix and a suffix from the tree.
       prefix = get_prefix_literal(tree)
       suffix = get_suffix_literal(tree)
 
+      ! Initialize automaton with tree.
       call automaton%preprocess(tree)
-
-      ! Initialize automaton with tree and root.
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_including(automaton, str, from, to, prefix, suffix, unused)
-         ! キャレットとダラーへの対応するために、strの前後に改行文字を追加する。
-
+   
+       ! Handle when it matches an empty string.
       if (from == ACCEPTED_EMPTY .and. to == ACCEPTED_EMPTY) then
          res = .true.
          return
       end if
 
-      ! if (is_there_caret_at_the_top(pattern)) then
-      !    from = from
-      ! else
-      !    from = from -1
-      ! end if
-
-      ! if (is_there_dollar_at_the_end(pattern)) then
-      !    to = to - 2
-      ! else
-      !    to = to - 1
-      ! end if
-
+      ! If the pattern is contained in the text, it returns true, otherwise it returns false.
       if (from > 0 .and. to > 0) then
          res = .true.
       else
          res = .false.
       end if
 
+      ! Free the automaton instance.
       call automaton%free()
    end function operator__in
 
@@ -130,16 +132,16 @@ contains
    pure elemental function operator__match(pattern, str) result(res)
       !! The function implemented for the `.match.` operator.
       implicit none
-      character(*), intent(in)       :: pattern, str
-      logical                        :: res
+      character(*), intent(in)  :: pattern, str
+      logical                   :: res
 
-      character(:),      allocatable :: buff
-      type(tree_t)                   :: tree
-      type(automaton_t)              :: automaton
-      character(:), allocatable  :: prefix, suffix, entirely_fixed_string
+      character(:), allocatable :: buff
+      type(tree_t)              :: tree
+      type(automaton_t)         :: automaton
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string
       logical :: unused
 
-
+      ! Initalize
       prefix = ''
       suffix = ''
       entirely_fixed_string = ''
@@ -160,28 +162,36 @@ contains
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)
+
+      ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
          if (len(str) == len(entirely_fixed_string)) then
+            ! return true if the lengths are equal and the strings are equal.
             res = str == entirely_fixed_string
             return
          end if
       end if
 
+   != From here on, we will deal with cases where an entire pattern is not a fixed string.
+      
+      ! Get the prefix contained in the AST.
       prefix = get_prefix_literal(tree)
       ! suffix = get_suffix_literal(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
-
       call automaton%init()
 
       ! Call the internal procedure to match string, and store the result in logical `res`.
       call do_matching_exactly(automaton, str, res, prefix, suffix, unused)
 
+      ! Free the automaton instance.
       call automaton%free()
 
    end function operator__match
+
 
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to)
@@ -199,6 +209,7 @@ contains
       character(:), allocatable :: prefix, suffix, entirely_fixed_string
       logical :: unused
 
+      ! Initialize
       prefix = ''
       suffix = ''
       entirely_fixed_string = ''
@@ -207,35 +218,55 @@ contains
 
       buff = trim(pattern)
 
-      ! call build_syntax_tree(buff, tape, tree, root)
+      ! Build tree from regex pattern in the buff variable.
       call tree%build(buff)
 
-
+      ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)
+
+      ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
+
+         ! from_l stores the position of the literal in input text.
          from_l = index(text, entirely_fixed_string)
+
+         ! If the literal is included, 
          if (from_l > 0) then
+            ! to_l stores the position of the end of the literal in the text.
             to_l = from_l + len(entirely_fixed_string) -1
          end if
+
+         ! If the pattern is contained,
          if (from_l > 0 .and. to_l > 0) then
+            ! assign the value of the local variable to the argument,
             if (present(from)) from = from_l
             if (present(to)) to = to_l
             if (present(length)) length = len(entirely_fixed_string)
             res = text(from_l:to_l)
          else
+            ! otherwise return the empty string.
+            if (present(from)) from = 0
+            if (present(to)) to = 0
+            if (present(length)) length = 0
             res = ''
          end if
          return
       end if
 
+   != From here on, we will deal with cases where an entire pattern is not a fixed string.
+
+      ! Extract a prefix and a suffix from the tree.
       prefix = get_prefix_literal(tree)
       suffix = get_suffix_literal(tree)
 
+      ! Initialize automaton
       call automaton%preprocess(tree)
       call automaton%init()
 
+      ! Perform a match for whether a pattern is included. 
       call do_matching_including(automaton, text, from_l, to_l, prefix, suffix, unused)
 
+      ! Handle when it matches an empty string.
       if (from_l == ACCEPTED_EMPTY .and. to_l == ACCEPTED_EMPTY) then
          res = ''
          if (present(from)) from = 0
@@ -244,33 +275,22 @@ contains
          return
       end if
 
-      ! if (is_there_caret_at_the_top(pattern)) then
-      !    from_l = from_l
-      ! else
-      !    from_l = from_l - 1
-      ! end if
-
-      ! if (is_there_dollar_at_the_end(pattern)) then
-      !    to_l = to_l - 2
-      ! else
-      !    to_l = to_l - 1
-      ! end if
-
-
+      ! Process if the pattern is contained in text,
       if (from_l > 0 .and. to_l > 0) then
          res = text(from_l:to_l)
          if (present(length)) length = to_l - from_l + 1
          if (present(from)) from = from_l
          if (present(to)) to = to_l
       else
+         ! otherwise return an empty string and 0. 
          res = ''
          if (present(length)) length = 0
          if (present(from)) from = 0
          if (present(to)) to = 0
       end if
 
+      ! Free the automaton instance.
       call automaton%free()
-
    end subroutine subroutine__regex
 
 
