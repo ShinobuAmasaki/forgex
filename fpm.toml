@@ -22,4 +22,4 @@ source-dir = "app"
 main = "forgex-cli.f90"
 [preprocess]
 [preprocess.cpp]
-macros = ["RELEASE"] # This macro is not defined in the source codes, but it tells fpm to use the preprocessor.
+suffixes = ["F90", "f90"]
