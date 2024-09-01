@@ -257,13 +257,13 @@ The following features are planned to be implemented in the future:
 - [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
 - [x] Optimize by literal searching method
-- [x] Add a CLI tool for debugging and benchmarking
+- [x] Add a CLI tool for debugging and benchmarking => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
 - [x] Support UTF-8 basic feature
 - [x] Construct DFA on-the-fly
 - [x] Support CMake building
-- [x] Add Time measurement tools (basic)
+- [x] Add Time measurement tools (basic) => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - ~~Parallelize on matching~~
 
 ## Code Convention
