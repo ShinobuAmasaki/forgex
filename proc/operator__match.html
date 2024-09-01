@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.7% of total for procedures.">34 statements</a>
+                 title=" 1.0% of total for procedures.">35 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -161,7 +161,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~5"></span>
+              <span class="anchor" id="variable-pattern~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -176,7 +176,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~13"></span>
+              <span class="anchor" id="variable-str~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -194,7 +194,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~40"></span>
+          <span class="anchor" id="variable-res~11"></span>
           logical
         </small>
       </h3>
@@ -216,16 +216,16 @@
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure elemental function </span><span class="n">operator__match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 <span class="w">      </span><span class="c">!! The function implemented for the `.match.` operator.</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">       </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
-<span class="w">      </span><span class="kt">logical</span><span class="w">                        </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+<span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span>
+<span class="w">      </span><span class="kt">logical</span><span class="w">                   </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 
-<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w">      </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">buff</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">)</span><span class="w">                   </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">entirely_fixed_string</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">buff</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">)</span><span class="w">              </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">)</span><span class="w">         </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">entirely_fixed_string</span>
 <span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">unused</span>
 
-
+<span class="w">      </span><span class="c">! Initalize</span>
 <span class="w">      </span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
 <span class="w">      </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
 <span class="w">      </span><span class="n">entirely_fixed_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
@@ -246,25 +246,32 @@
 <span class="w">      </span><span class="c">! call build_syntax_tree(buff, tape, tree, root)</span>
 <span class="w">      </span><span class="k">call </span><span class="n">tree</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 
+<span class="w">      </span><span class="c">! If the whole pattern is a fixed string, get it.</span>
 <span class="w">      </span><span class="n">entirely_fixed_string</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_entire_literal</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+
+<span class="w">      </span><span class="c">! If the pattern consists only of fixed character string,</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">entirely_fixed_string</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">entirely_fixed_string</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">entirely_fixed_string</span>
+<span class="w">            </span><span class="c">! return true if the lengths are equal and the strings are equal.</span>
+<span class="w">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">entirely_fixed_string</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="k">         end if</span>
 <span class="k">      end if</span>
 
-<span class="k">      </span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_prefix_literal</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-<span class="w">      </span><span class="c">! suffix = get_suffix_literal(tree)</span>
+<span class="w">   </span><span class="c">!= From here on, we will deal with cases where an entire pattern is not a fixed string.</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="c">! Get the prefix contained in the AST.</span>
+<span class="w">      </span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_prefix_literal</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+<span class="w">      </span><span class="n">suffix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_suffix_literal</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
 
 <span class="w">      </span><span class="c">! Initialize automaton with tree and root.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">preprocess</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
-
 <span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">init</span><span class="p">()</span>
 
 <span class="w">      </span><span class="c">! Call the internal procedure to match string, and store the result in logical `res`.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">do_matching_exactly</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">prefix</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">unused</span><span class="p">)</span>
 
+<span class="w">      </span><span class="c">! Free the automaton instance.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">automaton</span><span class="p">%</span><span class="n">free</span><span class="p">()</span>
 
 <span class="w">   </span><span class="k">end function </span><span class="n">operator__match</span>
@@ -291,7 +298,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-29 07:07              </p>
+ on 2024-09-01 05:30              </p>
           </div>
         </div>
         <br>

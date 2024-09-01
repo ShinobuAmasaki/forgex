@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.5% of total for modules and submodules.">197 statements</a>
+                 title=" 4.8% of total for modules and submodules.">190 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -154,10 +154,10 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
                   <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='forgex_utf8_m.html'>forgex_utf8_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
               </ul>
             </li>
         </ul>
@@ -177,7 +177,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_exactly"></span> <h3>public pure subroutine <a href='../proc/do_matching_exactly.html'>do_matching_exactly</a>(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)  
+    <div class="card-header codesum"><span class="anchor" id="proc-do_matching_exactly"></span> <h3>public pure subroutine <a href='../proc/do_matching_exactly.html'>do_matching_exactly</a>(automaton, string, res, prefix, suffix, runs_engine)  
 </h3></div>
     <div class="card-body">
           
@@ -196,7 +196,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~4"></span>
+              <span class="anchor" id="variable-automaton~5"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -211,7 +211,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~4"></span>
+              <span class="anchor" id="variable-string~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -226,7 +226,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~35"></span>
+              <span class="anchor" id="variable-res~16"></span>
               logical,
             </td>
 <td>intent(inout)</td>
@@ -241,7 +241,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~4"></span>
+              <span class="anchor" id="variable-prefix~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -256,7 +256,7 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-suffix~4"></span>
+              <span class="anchor" id="variable-suffix~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -280,21 +280,6 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
             </td>
             <td>::</td>
             <td><strong>runs_engine</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-entire_fixed_string"></span>
-              character(len=*),
-            </td>
-<td>intent(inout),</td>
-              <td>optional</td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>entire_fixed_string</strong></td>
             <td>
 
             </td>
@@ -327,7 +312,7 @@ and stores the string index in the argument if it contains a match.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~3"></span>
+              <span class="anchor" id="variable-automaton~4"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -342,7 +327,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~3"></span>
+              <span class="anchor" id="variable-string"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -357,7 +342,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~2"></span>
+              <span class="anchor" id="variable-from~3"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -372,7 +357,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~2"></span>
+              <span class="anchor" id="variable-to~3"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -387,7 +372,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~3"></span>
+              <span class="anchor" id="variable-prefix~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -402,7 +387,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-suffix~3"></span>
+              <span class="anchor" id="variable-suffix~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -460,7 +445,7 @@ and stores the string index in the argument if it contains a match.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-08-29 07:07              </p>
+ on 2024-09-01 05:30              </p>
           </div>
         </div>
         <br>

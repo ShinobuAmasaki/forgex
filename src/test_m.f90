@@ -10,8 +10,8 @@
 
 !> The `forgex_test_m` module provides helper procedures to unit testing for Forgex.
 module forgex_test_m
-   use, intrinsic :: iso_fortran_env
-   use :: forgex
+   use, intrinsic :: iso_fortran_env, only: int32, error_unit
+   use :: forgex, only: operator(.in.), operator(.match.), regex
    use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
    private
@@ -77,15 +77,18 @@ contains
 
    end function is_valid__regex
 
+   !> This function checks whether the correct prefix is extracted
+   !> for a given pattern.
    function is_valid__prefix(pattern, expected_prefix) result(res)
-      use :: forgex_syntax_tree_optimize_m
-      use :: forgex_utf8_m
+      use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal
+      use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_prefix
-      logical :: res      
-      character(:), allocatable :: resulting
+      logical :: res
 
+      character(:), allocatable :: resulting
       type(tree_t) :: tree
+
       call tree%build(pattern)
       resulting = get_prefix_literal(tree)
 
@@ -97,16 +100,18 @@ contains
 
    end function is_valid__prefix
 
-   
+   !> This function checks whether the correct suffix is extracted
+   !> for a given pattern.
    function is_valid__suffix(pattern, expected_suffix) result(res)
-      use :: forgex_syntax_tree_optimize_m
-      use :: forgex_utf8_m
+      use :: forgex_syntax_tree_optimize_m, only: get_suffix_literal
+      use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_suffix
       logical :: res
-      character(:), allocatable :: resulting
 
+      character(:), allocatable :: resulting
       type(tree_t) :: tree
+
       call tree%build(pattern)
       resulting = get_suffix_literal(tree)
 
@@ -215,6 +220,7 @@ contains
    end subroutine runner_regex
 
 
+   !> This subroutine runs the `is_valid_prefix` function and prints the result.
    subroutine runner_prefix(pattern, prefix, result)
       implicit none
       character(*), intent(in) :: pattern, prefix
@@ -231,6 +237,8 @@ contains
       result = result .and. res
    end subroutine runner_prefix
 
+
+   !> This function runs the `is_valid_suffix` function and prints the result.
    subroutine runner_suffix(pattern, suffix, result)
       implicit none
       character(*), intent(in) :: pattern, suffix
