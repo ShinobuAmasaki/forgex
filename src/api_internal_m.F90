@@ -86,7 +86,8 @@ contains
             i = 1
             start = i
          else
-            ! indexリストの先頭が2の場合、NULL文字を考慮してstart=1, i=0にする。
+            ! If the first in the index list is 2, set start=1, i=0
+            ! to take into account the leading NULL character. 
             if (index_list(1) == 2) then
                start = 1
                i = 0
@@ -162,32 +163,26 @@ contains
 
 
    !> This subroutine is intended to be called from the `forgex` API module.
-   pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine, entire_fixed_string)
+   pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine)
       implicit none
       type(automaton_t),      intent(inout) :: automaton
       character(*),           intent(in)    :: string
       logical,                intent(inout) :: res
       character(*),           intent(in)    :: prefix, suffix
       logical,                intent(inout) :: runs_engine
-      character(*), optional, intent(inout) :: entire_fixed_string
 
       integer :: cur_i, dst_i ! current and destination index of DFA nodes
       integer :: ci           ! character index
       integer :: next_ci      ! next character index
-      integer :: max_match    !
+      integer :: max_match    ! the highest index number matched
+
+      ! This character string variable will have null characters added to the beginning and end.
       character(:), allocatable :: str
 
       integer :: len_pre, len_suf, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
 
       runs_engine = .false.
-
-      if (present(entire_fixed_string)) then
-         if (entire_fixed_string /= '') then
-            res = entire_fixed_string == string
-            return
-         end if
-      end if
 
       len_pre = len(prefix)
       len_suf = len(suffix)
@@ -208,12 +203,12 @@ contains
             res = .false.
             return
       end if
-
-      ! Flag whether prefix and suffix are empty strings.
+      
+      ! If prefix and suffix are empty strings, each flag is set.
       empty_pre   = prefix == ''
       empty_post  = suffix == ''
 
-      ! If thestring is not an empty string, branch the process.
+      ! If the string is not an empty string, branch the process.
       if (len(string) > 0) then
          if (.not. empty_pre) matches_pre = (string(1:len_pre) == prefix)
          if (.not. empty_post) matches_post = (string(n-len_suf+1:n) == suffix)
@@ -223,16 +218,16 @@ contains
          matches_post = (len(suffix) == 0)
       end if
 
-      runs_engine = any([(matches_pre .and. matches_post), &
-                         (empty_pre .and. matches_post), &
-                         (empty_post .and. matches_pre), &
-                         (empty_pre .and. empty_post), matches_pre])
+      ! True if the prefix is empty or matches, and the suffix is empty or matches.
+      runs_engine = (empty_pre .or. matches_pre) .and. (empty_post .or. matches_post)
 
 
       if (.not. runs_engine) then
          res = .false.
          return
       end if
+      !==  The decision to run the engine ends here.  ==! 
+
 
       ! Initialize `cur_i` with automaton's initial index.
       cur_i = automaton%initial_index
@@ -283,7 +278,7 @@ contains
          ci = next_ci
 
       end do
-      ! If the maximum index of the match is one larger than length of the string,
+      ! If the maximum index of the match is two larger than length of the string,
       ! this function returns true, otherwise it returns false.
       if (max_match >= len(string)+2) then
          res = .true.
