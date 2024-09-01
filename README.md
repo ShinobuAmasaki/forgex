@@ -203,31 +203,19 @@ end block
 
 ### Command Line Interface Tool
 
-Version 3.2 introduces a command line tool that is called `forgex-cli` and uses the Forgex engine for debugging, testing, and benchmarking regex matches. It performs matching with commands such as the one shown in below, and outputs the results directly to standard output. [For detailed information, please refer to the documentation.](https://shinobuamasaki.github.io/forgex/page/English/forgex_on_command_line_en.html)
-
-Command:
-
-```shell
-forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
-```
-
-If you run it through `fpm run`:
-
-```shell
-fpm run forgex-cli --profile release -- find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
-```
-
-Output:
+Version 3.2 introduces a command line tool that is called `forgex-cli` and uses the Forgex engine for debugging, testing, and benchmarking regex matches. It performs matching with commands such as the one shown in below, and outputs the results directly to standard output.
 
 ```
+% forgex-cli find match lazy-dfa '([a-z]*g+)n?' .match. 'assign'
+
              pattern: ([a-z]*g+)n?
                 text: 'assign'
-          parse time:        42.9us
-extract literal time:        23.0us
+          parse time:        64.0μs
+extract literal time:         6.9μs
          runs engine:         T
-    compile nfa time:        26.5us
- dfa initialize time:         4.6us
-         search time:       617.1us
+    compile nfa time:        47.8μs
+ dfa initialize time:         5.4μs
+         search time:       704.9μs
      matching result:         T
   memory (estimated):     10324
 
@@ -253,6 +241,10 @@ state    4A = ( 2 4 5 6 )
 ===================================
 ```
 
+Starting with version 3.5, the command line tools are provided in a separate repository, see the link below:
+
+[ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
+
 ### Notes
 
 - A program built by `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
@@ -265,13 +257,13 @@ The following features are planned to be implemented in the future:
 - [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
 - [x] Optimize by literal searching method
-- [x] Add a CLI tool for debugging and benchmarking
+- [x] Add a CLI tool for debugging and benchmarking => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - [x] Make all operators `pure elemental` attribute
 - [x] Publish the documentation
 - [x] Support UTF-8 basic feature
 - [x] Construct DFA on-the-fly
 - [x] Support CMake building
-- [x] Add Time measurement tools (basic)
+- [x] Add Time measurement tools (basic) => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - ~~Parallelize on matching~~
 
 ## Code Convention
