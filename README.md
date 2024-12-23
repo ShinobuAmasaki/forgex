@@ -65,6 +65,35 @@ First of all, add the following to your project's `fpm.toml`:
 forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
+### Alternative options
+
+If you use macOS, you can install this library by using MacPorts with the following command:
+
+```shell
+sudo port install forgex
+```
+
+In this case, the `.mod` files will be placed in `/opt/local/include/forgex` and the library file will be placed in `/opt/local/lib`,
+so to compile your source code, run the following command:
+
+```shell
+gfortran main.f90 -I/opt/local/include/forgex -L/opt/local/lib -lforgex
+```
+
+If you are using this installation method and want to build using `fpm`, make the following changes to `fpm.toml`:
+
+```toml
+[build]
+external-modules = [ "forgex" ]
+link = [ "forgex" ]
+```
+
+Then you can build your program with the following command:
+
+```shell
+fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
+```
+
 ### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
@@ -276,6 +305,7 @@ For the algorithm of the power set construction method and syntax analysis, I re
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
+The MacPorts package of `forgex` are maintained by [@barracuda156](https://github.com/barracuda156).
 
 ## References
 
