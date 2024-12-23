@@ -94,6 +94,8 @@ Then you can build your program with the following command:
 fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
 ```
 
+See also [https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
+
 ### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
