@@ -11,17 +11,21 @@
 !> The `forgex_test_m` module provides helper procedures to unit testing for Forgex.
 module forgex_test_m
    use, intrinsic :: iso_fortran_env, only: int32, error_unit
-   use :: forgex, only: operator(.in.), operator(.match.), regex
+   use :: forgex, only: operator(.in.), operator(.match.), regex, is_valid_regex
    use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
    private
 
+   public :: is_valid__pattern
    public :: is_valid__in
    public :: is_valid__match
    public :: is_valid__regex
    public :: is_valid__prefix
    public :: is_valid__suffix
    ! public :: is_valid__middle
+
+
+   public :: runner_validate
    public :: runner_in
    public :: runner_match
    public :: runner_regex
@@ -31,6 +35,18 @@ module forgex_test_m
 
 
 contains
+
+   !> This function checks if the given pattern is valid as a regex pattern
+   !> and compares the result to the `correct_answer`.
+   function is_valid__pattern(pattern, correct_answer) result(res)
+      implicit none
+      character(*), intent(in) :: pattern
+      logical,      intent(in) :: correct_answer
+
+      logical :: res
+
+      res = is_valid_regex(pattern) .eqv. correct_answer
+   end function is_valid__pattern
 
    !> This function checks if a pattern is found within a string and
    !> compares the result to the `correct_answer`.
@@ -147,6 +163,26 @@ contains
 
 
 !=====================================================================!
+
+   !> This subroutine runs the `is_valid__pattern` function and prints the result.
+   subroutine runner_validate(pattern, answer, result)
+      implicit none
+      character(*), intent(in)    :: pattern
+      logical,      intent(in)    :: answer
+      logical,      intent(inout) :: result
+      
+      logical :: res
+
+      res = is_valid__pattern(pattern, answer)
+
+      if (res) then
+         write(error_unit, '(a,a,a)') 'result(validate): Success', ' '//trim(pattern)
+      else
+         write(error_unit, '(a,a,l1)') 'result(validate): FAILED ', ' '//trim(pattern)//' ', answer
+      end if
+
+      result = result .and. res
+   end subroutine runner_validate
 
    !> This subroutine runs the `is_valid__in` function and prints the result.
    subroutine runner_in(pattern, str, answer, result)
