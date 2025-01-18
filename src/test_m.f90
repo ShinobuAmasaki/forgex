@@ -176,7 +176,7 @@ contains
       res = is_valid__pattern(pattern, answer)
 
       if (res) then
-         write(error_unit, '(a,a,a)') 'result(validate): Success', ' '//trim(pattern)
+         write(error_unit, '(a,a,l1)') 'result(validate): Success', ' '//trim(pattern)//' ', answer
       else
          write(error_unit, '(a,a,l1)') 'result(validate): FAILED ', ' '//trim(pattern)//' ', answer
       end if
