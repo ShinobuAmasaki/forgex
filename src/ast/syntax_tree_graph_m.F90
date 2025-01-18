@@ -70,7 +70,10 @@ contains
       self%paren_balance = 0
       call self%tape%get_token()
 
+      ! Generate AST from a given pattern.
       call self%regex()
+
+      ! Check the pattern is valid.
       if (.not. self%is_valid_pattern) return
       
       self%nodes(self%top)%parent_i = TERMINAL_INDEX
@@ -224,14 +227,10 @@ contains
       if (self%tape%current_token == tk_lpar) then
          self%paren_balance = self%paren_balance +1
       end if
-
+                  
       if (self%tape%current_token == tk_union &
             .or. self%tape%current_token == tk_rpar &
             .or. self%tape%current_token == tk_end) then
-
-         if (self%tape%current_token == tk_rpar) then
-            self%paren_balance = self%paren_balance - 1
-         end if
          
          node = make_tree_node(op_empty)
          call self%register_connector(node, terminal, terminal)
@@ -255,6 +254,11 @@ contains
 
             left = self%get_top()
          end do
+      end if
+
+      ! 
+      if (self%tape%current_token == tk_rpar) then
+         self%paren_balance = self%paren_balance -1
       end if
 
    end subroutine
