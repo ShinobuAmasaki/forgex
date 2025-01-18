@@ -26,6 +26,7 @@ module forgex_syntax_tree_graph_m
       type(tape_t) :: tape
       logical :: is_valid_pattern = .true.
       integer :: code = SYNTAX_VALID
+      integer :: paren_balance
    contains
       procedure :: build => tree_graph__build_syntax_tree
       procedure :: reallocate => tree_graph__reallocate
@@ -66,6 +67,7 @@ contains
       self%tape%idx = 1
       self%tape%str = pattern
       self%top = 0
+      self%paren_balance = 0
       call self%tape%get_token()
 
       call self%regex()
@@ -193,7 +195,7 @@ contains
          call self%tape%get_token()
 
          call self%term()
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid_pattern) exit
 
          right = self%get_top()
 
@@ -202,6 +204,15 @@ contains
 
          left = self%get_top()
       end do
+
+      if (self%paren_balance > 0) then
+         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_PARENTHESIS_MISSING
+      else if (self%paren_balance < 0) then
+         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
+      end if
+
    end subroutine tree_graph__regex
 
 
@@ -210,10 +221,17 @@ contains
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
 
+      if (self%tape%current_token == tk_lpar) then
+         self%paren_balance = self%paren_balance +1
+      end if
 
       if (self%tape%current_token == tk_union &
             .or. self%tape%current_token == tk_rpar &
             .or. self%tape%current_token == tk_end) then
+
+         if (self%tape%current_token == tk_rpar) then
+            self%paren_balance = self%paren_balance - 1
+         end if
          
          node = make_tree_node(op_empty)
          call self%register_connector(node, terminal, terminal)
@@ -226,7 +244,7 @@ contains
          do while (self%tape%current_token /= tk_union &
                      .and. self%tape%current_token /= tk_rpar &
                      .and. self%tape%current_token /= tk_end)
-               
+            
             call self%suffix_op()
             if (.not. self%is_valid_pattern) return
 
@@ -238,6 +256,7 @@ contains
             left = self%get_top()
          end do
       end if
+
    end subroutine
 
 
