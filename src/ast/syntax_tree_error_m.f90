@@ -21,13 +21,13 @@ module forgex_syntax_tree_error_m
    end enum
 
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
-   character(*), parameter :: err_generic       = "Pattern includes some syntax error."
-   character(*), parameter :: err_r_parenthesis_missing    = "Closing parenthesis is expected."
-   character(*), parameter :: err_r_parenthesis_unexpected = "Unexpected closing parenthesis error."
-   character(*), parameter :: err_r_bracket_missing        = "Closing square bracket is expected."
-   character(*), parameter :: err_r_bracket_unexpected     = "Unexpected closing square bracket error."
-   character(*), parameter :: err_r_curlybrace_missing     = "Closing right curlybrace is expected."
-   character(*), parameter :: err_r_curlybrace_unexpected  = "Unexpected closing right curlybrace error."
+   character(*), parameter :: err_generic                  = "ERROR: Pattern includes some syntax error."
+   character(*), parameter :: err_r_parenthesis_missing    = "ERROR: Closing parenthesis is expected."
+   character(*), parameter :: err_r_parenthesis_unexpected = "ERROR: Unexpected closing parenthesis error."
+   character(*), parameter :: err_r_bracket_missing        = "ERROR: Closing square bracket is expected."
+   character(*), parameter :: err_r_bracket_unexpected     = "ERROR: Unexpected closing square bracket error."
+   character(*), parameter :: err_r_curlybrace_missing     = "ERROR: Closing right curlybrace is expected."
+   character(*), parameter :: err_r_curlybrace_unexpected  = "ERROR: Unexpected closing right curlybrace error."
 
 contains
 
@@ -43,14 +43,17 @@ contains
          msg = err_r_parenthesis_missing
       case (SYNTAX_ERR_PARENTHESIS_UNEXPECTED)
          msg = err_r_parenthesis_unexpected
+
       case (SYNTAX_ERR_BRACKET_MISSING)
          msg = err_r_bracket_missing
       case (SYNTAX_ERR_BRACKET_UNEXPECTED)
          msg = err_r_bracket_unexpected
+
       case (SYNTAX_ERR_CURLYBRACE_MISSING)
          msg = err_r_curlybrace_missing
       case (SYNTAX_ERR_CURLYBRACE_UNEXPECTED)
          msg = err_r_curlybrace_unexpected
+
       case default
          msg = err_is_nothing
       end select

@@ -347,6 +347,7 @@ contains
          self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
          self%is_valid_pattern = .false.
          return
+   
       case default
          self%code = SYNTAX_ERR
          self%is_valid_pattern = .false.
@@ -373,6 +374,9 @@ contains
 
       buf = ''
       do while (self%tape%current_token /= tk_rsbracket)
+         if (self%tape%current_token == tk_end) then
+            return
+         end if
          ie = idxutf8(self%tape%token_char, 1)
          buf = buf// self%tape%token_char(1:ie)
          call self%tape%get_token(class_flag=.true.)
