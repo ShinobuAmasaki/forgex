@@ -20,10 +20,16 @@ module forgex
    implicit none
    private
 
+   public :: is_valid_regex
    public :: operator(.in.)
    public :: operator(.match.)
    public :: regex
    public :: regex_f
+
+   interface is_valid_regex
+      module procedure :: is_valid_regex_pattern
+   end interface
+
 
    interface operator(.in.)
       !! Interface for user-defined operator of `.in.`
@@ -46,6 +52,21 @@ module forgex
    end interface regex_f
 
 contains
+
+   pure elemental function is_valid_regex_pattern (pattern) result(res)
+      implicit none
+      character(*), intent(in)  :: pattern
+      logical                   :: res
+
+      character(:), allocatable :: buff
+      type(tree_t)              :: tree
+
+      buff = trim(pattern)
+      call tree%build(buff)
+
+      res = tree%is_valid_pattern
+   end function is_valid_regex_pattern
+
 
    pure elemental function operator__in(pattern, str) result(res)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
@@ -72,6 +93,12 @@ contains
 
       ! Build a syntax tree from buff, and store the result in tree and root.
       call tree%build(buff)
+
+      ! Reterns .false. if the given pattern is invalid.
+      if (.not. tree%is_valid_pattern) then
+         res = .false.
+         return
+      end if
 
       ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)
@@ -162,6 +189,12 @@ contains
       ! call build_syntax_tree(buff, tape, tree, root)
       call tree%build(buff)
 
+      ! Reterns .false. if the given pattern is invalid.
+      if (.not. tree%is_valid_pattern) then
+         res = .false.
+         return
+      end if
+
       ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)
 
@@ -194,12 +227,13 @@ contains
 
 
    !> The function implemented for the `regex` subroutine.
-   pure subroutine subroutine__regex(pattern, text, res, length, from, to)
+   pure subroutine subroutine__regex(pattern, text, res, length, from, to, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
       integer, optional,         intent(inout) :: length, from, to
+      character(*), optional,    intent(inout) :: err_msg
 
       character(:),      allocatable :: buff
       type(tree_t)                   :: tree
@@ -220,6 +254,16 @@ contains
 
       ! Build tree from regex pattern in the buff variable.
       call tree%build(buff)
+
+      ! Assigns invalid value of arguments if the given pattern is invalid.
+      if (.not. tree%is_valid_pattern) then
+         res = ""
+         if (present(length)) length = 0
+         if (present(from))   from = INVALID_CHAR_INDEX
+         if (present(to))     to = INVALID_CHAR_INDEX
+         if (present(err_msg)) err_msg = tree%err_msg
+         return
+      end if
 
       ! If the whole pattern is a fixed string, get it.
       entirely_fixed_string = get_entire_literal(tree)

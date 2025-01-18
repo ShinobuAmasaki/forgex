@@ -23,6 +23,8 @@ module forgex_syntax_tree_graph_m
       integer :: top = INVALID_INDEX
       integer :: num_alloc = 0
       type(tape_t) :: tape
+      logical :: is_valid_pattern = .true.
+      character(:), allocatable :: err_msg
    contains
       procedure :: build => tree_graph__build_syntax_tree
       procedure :: reallocate => tree_graph__reallocate
@@ -66,6 +68,8 @@ contains
       call self%tape%get_token()
 
       call self%regex()
+      if (.not. self%is_valid_pattern) return
+      
       self%nodes(self%top)%parent_i = TERMINAL_INDEX
    end subroutine tree_graph__build_syntax_tree
 
@@ -180,12 +184,16 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%term()
+      if (.not. self%is_valid_pattern) return
+
       left = self%get_top()
 
       do while (self%tape%current_token == tk_union)
          call self%tape%get_token()
 
          call self%term()
+         if (.not. self%is_valid_pattern) return
+
          right = self%get_top()
 
          node = make_tree_node(op_union)
@@ -210,6 +218,8 @@ contains
          call self%register_connector(node, terminal, terminal)
       else
          call self%suffix_op()
+         if (.not. self%is_valid_pattern) return
+
          left = self%get_top()
 
          do while (self%tape%current_token /= tk_union &
@@ -217,6 +227,8 @@ contains
                      .and. self%tape%current_token /= tk_end)
                
             call self%suffix_op()
+            if (.not. self%is_valid_pattern) return
+
             right = self%get_top()
 
             node = make_tree_node(op_concat)
@@ -234,6 +246,8 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%primary()
+      if (.not. self%is_valid_pattern) return
+
       left = self%get_top()
 
       select case (self%tape%current_token)
@@ -263,6 +277,7 @@ contains
 
       case (tk_lcurlybrace)
          call self%range()
+         if (.not. self%is_valid_pattern) return
          call self%tape%get_token()
 
       end select
@@ -290,14 +305,20 @@ contains
          call self%tape%get_token()
          call self%regex()
          if (self%tape%current_token /= tk_rpar) then
-            error stop "primary: Close parenthesis is expected."
+            ! error stop "primary: Close parenthesis is expected."
+            self%err_msg = "Close parenthesis is expected."
+            self%is_valid_pattern = .false.
+            return
          end if
          call self%tape%get_token()
 
       case (tk_lsbracket)
          call self%char_class()
          if (self%tape%current_token /= tk_rsbracket) then
-            error stop "primary: Close square bracket is expected."
+            ! error stop "primary: Close square bracket is expected."
+            self%err_msg = "Close square bracket is expected."
+            self%is_valid_pattern = .false.
+            return
          end if
          call self%tape%get_token()
 
@@ -319,8 +340,11 @@ contains
          call self%tape%get_token()
       
       case default
-         error stop "primary: Pattern include some syntax error. "
-      end select   
+         ! error stop "primary: Pattern include some syntax error. "
+         self%err_msg = "Pattern include some syntax error."
+         self%is_valid_pattern = .false.
+         return
+      end select
 
    end subroutine tree_graph__primary
       
@@ -583,7 +607,10 @@ contains
          call self%tape%get_token
 
          if (self%tape%current_token == tk_end) then
-            error stop "range_min_max: Closing right curlybrace is expected."
+            ! error stop "range_min_max: Closing right curlybrace is expected."
+            self%err_msg = "Closing right curlybrace is expected."
+            self%is_valid_pattern = .false.
+            return
          end if
       end do
 
