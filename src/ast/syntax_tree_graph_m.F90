@@ -190,23 +190,31 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%term()
-      if (.not. self%is_valid_pattern) return
-
-      left = self%get_top()
-
-      do while (self%tape%current_token == tk_union)
-         call self%tape%get_token()
-
-         call self%term()
-         if (.not. self%is_valid_pattern) exit
-
-         right = self%get_top()
-
-         node = make_tree_node(op_union)
-         call self%register_connector(node, left, right)
+      
+      ! When term's analysis is valid,
+      if (self%is_valid_pattern) then
 
          left = self%get_top()
-      end do
+
+         do while (self%tape%current_token == tk_union)
+            call self%tape%get_token()
+
+            call self%term()
+            if (.not. self%is_valid_pattern) exit
+
+            right = self%get_top()
+
+            node = make_tree_node(op_union)
+            call self%register_connector(node, left, right)
+
+            left = self%get_top()
+         end do
+      
+      else
+         if (self%code /= SYNTAX_VALID) then
+            return
+         end if
+      end if
 
       if (self%paren_balance > 0) then
          self%is_valid_pattern = .false.
@@ -328,6 +336,11 @@ contains
       case (tk_lpar)
          call self%tape%get_token()
          call self%regex()
+      
+         ! If regex fails, return immediately.
+         if (.not. self%is_valid_pattern) return
+
+         ! If not a right parenthesis, throw an error.
          if (self%tape%current_token /= tk_rpar) then
             self%code = SYNTAX_ERR_PARENTHESIS_MISSING
             self%is_valid_pattern = .false.
