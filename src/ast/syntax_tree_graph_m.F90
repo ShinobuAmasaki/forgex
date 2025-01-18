@@ -306,7 +306,7 @@ contains
          call self%tape%get_token()
          call self%regex()
          if (self%tape%current_token /= tk_rpar) then
-            self%code = SYNTAX_ERR_PARENTHESIS
+            self%code = SYNTAX_ERR_PARENTHESIS_MISSING
             self%is_valid_pattern = .false.
             return
          end if
@@ -315,7 +315,7 @@ contains
       case (tk_lsbracket)
          call self%char_class()
          if (self%tape%current_token /= tk_rsbracket) then
-            self%code = SYNTAX_ERR_BRACKET
+            self%code = SYNTAX_ERR_BRACKET_MISSING
             self%is_valid_pattern = .false.
             return
          end if
@@ -338,6 +338,15 @@ contains
          call self%caret_dollar()
          call self%tape%get_token()
       
+      case (tk_rsbracket)
+         self%code = SYNTAX_ERR_BRACKET_UNEXPECTED
+         self%is_valid_pattern = .false.
+         return
+
+      case (tk_rpar)
+         self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
+         self%is_valid_pattern = .false.
+         return
       case default
          self%code = SYNTAX_ERR
          self%is_valid_pattern = .false.
@@ -605,7 +614,7 @@ contains
          call self%tape%get_token
 
          if (self%tape%current_token == tk_end) then
-            self%code = SYNTAX_ERR_CURLYBRACE
+            self%code = SYNTAX_ERR_CURLYBRACE_MISSING
             self%is_valid_pattern = .false.
             return
          end if
