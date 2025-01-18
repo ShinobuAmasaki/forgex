@@ -27,6 +27,7 @@ module forgex
    public :: regex_f
 
    interface is_valid_regex
+      !! The generic name for the `is_valid_regex` function implemented as `is_valid_regex_pattern`.
       module procedure :: is_valid_regex_pattern
    end interface
 
@@ -54,6 +55,7 @@ module forgex
 contains
 
    pure elemental function is_valid_regex_pattern (pattern) result(res)
+      !! The function validating a given regex patten.
       implicit none
       character(*), intent(in)  :: pattern
       logical                   :: res
@@ -229,6 +231,7 @@ contains
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
+      use :: forgex_syntax_tree_error_m, only: get_error_message
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -261,7 +264,7 @@ contains
          if (present(length)) length = 0
          if (present(from))   from = INVALID_CHAR_INDEX
          if (present(to))     to = INVALID_CHAR_INDEX
-         if (present(err_msg)) err_msg = tree%err_msg
+         if (present(err_msg)) err_msg = get_error_message(tree%code)
          return
       end if
 

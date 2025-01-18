@@ -15,6 +15,7 @@ module forgex_syntax_tree_graph_m
    use :: forgex_segment_m
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
+   use :: forgex_syntax_tree_error_m
    implicit none
    private
 
@@ -24,7 +25,7 @@ module forgex_syntax_tree_graph_m
       integer :: num_alloc = 0
       type(tape_t) :: tape
       logical :: is_valid_pattern = .true.
-      character(:), allocatable :: err_msg
+      integer :: code = SYNTAX_VALID
    contains
       procedure :: build => tree_graph__build_syntax_tree
       procedure :: reallocate => tree_graph__reallocate
@@ -305,8 +306,7 @@ contains
          call self%tape%get_token()
          call self%regex()
          if (self%tape%current_token /= tk_rpar) then
-            ! error stop "primary: Close parenthesis is expected."
-            self%err_msg = "Close parenthesis is expected."
+            self%code = SYNTAX_ERR_PARENTHESIS
             self%is_valid_pattern = .false.
             return
          end if
@@ -315,8 +315,7 @@ contains
       case (tk_lsbracket)
          call self%char_class()
          if (self%tape%current_token /= tk_rsbracket) then
-            ! error stop "primary: Close square bracket is expected."
-            self%err_msg = "Close square bracket is expected."
+            self%code = SYNTAX_ERR_BRACKET
             self%is_valid_pattern = .false.
             return
          end if
@@ -340,8 +339,7 @@ contains
          call self%tape%get_token()
       
       case default
-         ! error stop "primary: Pattern include some syntax error. "
-         self%err_msg = "Pattern include some syntax error."
+         self%code = SYNTAX_ERR
          self%is_valid_pattern = .false.
          return
       end select
@@ -607,8 +605,7 @@ contains
          call self%tape%get_token
 
          if (self%tape%current_token == tk_end) then
-            ! error stop "range_min_max: Closing right curlybrace is expected."
-            self%err_msg = "Closing right curlybrace is expected."
+            self%code = SYNTAX_ERR_CURLYBRACE
             self%is_valid_pattern = .false.
             return
          end if
