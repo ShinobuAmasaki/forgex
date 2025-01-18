@@ -18,6 +18,7 @@ module forgex_syntax_tree_error_m
       enumerator :: SYNTAX_ERR_BRACKET_UNEXPECTED
       enumerator :: SYNTAX_ERR_CURLYBRACE_MISSING
       enumerator :: SYNTAX_ERR_CURLYBRACE_UNEXPECTED
+      enumerator :: SYNTAX_ERR_INVALID_RANGE
    end enum
 
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
@@ -28,6 +29,7 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_r_bracket_unexpected     = "ERROR: Unexpected closing square bracket error."
    character(*), parameter :: err_r_curlybrace_missing     = "ERROR: Closing right curlybrace is expected."
    character(*), parameter :: err_r_curlybrace_unexpected  = "ERROR: Unexpected closing right curlybrace error."
+   character(*), parameter :: err_invalid_range            = "ERROR: Given range is invalid."
 
 contains
 
@@ -53,6 +55,9 @@ contains
          msg = err_r_curlybrace_missing
       case (SYNTAX_ERR_CURLYBRACE_UNEXPECTED)
          msg = err_r_curlybrace_unexpected
+
+      case (SYNTAX_ERR_INVALID_RANGE)
+         msg = err_invalid_range
 
       case default
          msg = err_is_nothing

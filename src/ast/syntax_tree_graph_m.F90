@@ -305,7 +305,10 @@ contains
 
       case (tk_lcurlybrace)
          call self%range()
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid_pattern) then
+            self%code = SYNTAX_ERR_INVALID_RANGE
+            return
+         end if
          call self%tape%get_token()
 
       end select
@@ -645,6 +648,7 @@ contains
 
       type(tree_node_t) :: left, node
 
+      ios = 0
       buf = ''
       arg(:) = INVALID_REPEAT_VAL
 
@@ -666,6 +670,19 @@ contains
       end if
 
       read(buf, fmt=*, iostat=ios) arg(:)
+
+      ! ios has a negative value if an end-of-record condition is encountered during non-advancing input,
+      ! a different negative value if and endfile condition was detected on the input device, a positive value
+      ! if an error was detected, or the value zero otherwise.
+      !
+      ! cf. Michael Metcalf, John Reid and Malcolm Cohen (2018)
+      !       - "Modern Fortran Explained--Incorporating Fortran 2018"
+
+      if (ios > 0) then
+         self%is_valid_pattern = .false.
+         return
+      end if
+
       buf = adjustl(buf)
 
       if (arg(1) == 0) then   ! {,max}, {0,max}
@@ -689,6 +706,11 @@ contains
       else
          min = arg(1)
          max = arg(2)
+      end if
+
+      if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
+         self%is_valid_pattern = .false.
+         return
       end if
 
       node = make_repeat_node(min, max)
