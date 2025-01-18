@@ -75,6 +75,15 @@ contains
 
       ! Check the pattern is valid.
       if (.not. self%is_valid_pattern) return
+
+      ! Determine if parentheses are balanced.
+      if (self%paren_balance > 0) then
+         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_PARENTHESIS_MISSING
+      else if (self%paren_balance < 0) then
+         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
+      end if
       
       self%nodes(self%top)%parent_i = TERMINAL_INDEX
    end subroutine tree_graph__build_syntax_tree
@@ -190,7 +199,7 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%term()
-      
+
       ! When term's analysis is valid,
       if (self%is_valid_pattern) then
 
@@ -216,14 +225,6 @@ contains
          end if
       end if
 
-      if (self%paren_balance > 0) then
-         self%is_valid_pattern = .false.
-         self%code = SYNTAX_ERR_PARENTHESIS_MISSING
-      else if (self%paren_balance < 0) then
-         self%is_valid_pattern = .false.
-         self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
-      end if
-
    end subroutine tree_graph__regex
 
 
@@ -232,10 +233,6 @@ contains
       class(tree_t), intent(inout) :: self
       type(tree_node_t) :: node, left, right
 
-      if (self%tape%current_token == tk_lpar) then
-         self%paren_balance = self%paren_balance +1
-      end if
-                  
       if (self%tape%current_token == tk_union &
             .or. self%tape%current_token == tk_rpar &
             .or. self%tape%current_token == tk_end) then
@@ -264,7 +261,6 @@ contains
          end do
       end if
 
-      ! 
       if (self%tape%current_token == tk_rpar) then
          self%paren_balance = self%paren_balance -1
       end if
@@ -334,6 +330,11 @@ contains
          call self%tape%get_token() 
       
       case (tk_lpar)
+         
+         if (self%tape%current_token == tk_lpar) then
+            self%paren_balance = self%paren_balance +1
+         end if
+
          call self%tape%get_token()
          call self%regex()
       
