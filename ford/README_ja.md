@@ -1,4 +1,4 @@
-<!--> Readme[JA] version 4.0 <--->
+<!-- Readme[JA] version 4.0 -->
 
 Forgexは、すべてFortranで書かれた正規表現エンジンです。
 
