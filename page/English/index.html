@@ -113,6 +113,7 @@
 
     <div class="col-9" id='text'>
       <h1>Readme</h1>
+<!-- Readme[EN] version 4.0 -->
 <p>Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.</p>
 <p>This project is managed by <a href="https://fpm.fortran-lang.org/index.html">Fortran Package Manager (FPM)</a>, providing basic processing of regular expression, and as a freely available under the MIT license.
 The engine's core algorithm uses a deterministic finite automaton (DFA) approach. This choice have been focused on runtime performance.</p>
@@ -173,6 +174,27 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">}</span>
 </code></pre></div>
 
+<h3>Alternative options</h3>
+<p>If you use macOS, you can install this library by using MacPorts with the following command:</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>forgex
+</code></pre></div>
+
+<p>In this case, the <code>.mod</code> files will be placed in <code>/opt/local/include/forgex</code> and the library file will be placed in <code>/opt/local/lib</code>,
+so to compile your source code, run the following command:</p>
+<div class="codehilite"><pre><span></span><code>gfortran<span class="w"> </span>main.f90<span class="w"> </span>-I/opt/local/include/forgex<span class="w"> </span>-L/opt/local/lib<span class="w"> </span>-lforgex
+</code></pre></div>
+
+<p>If you are using this installation method and want to build using <code>fpm</code>, make the following changes to <code>fpm.toml</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[build]</span>
+<span class="n">external-modules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;forgex&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;forgex&quot;</span><span class="w"> </span><span class="p">]</span>
+</code></pre></div>
+
+<p>Then you can build your program with the following command:</p>
+<div class="codehilite"><pre><span></span><code>fpm<span class="w"> </span>build<span class="w"> </span>--flag<span class="w"> </span><span class="s2">&quot;-I/opt/local/include/forgex&quot;</span><span class="w"> </span>--link-flag<span class="w"> </span><span class="s2">&quot;-L/opt/local/lib&quot;</span>
+</code></pre></div>
+
+<p>See also <a href="https://ports.macports.org/port/forgex/details">https://ports.macports.org/port/forgex/details</a></p>
 <h3>APIs</h3>
 <p>When you write <code>use forgex</code> at the header on your program, <code>.in.</code> and <code>.match.</code> operators, <code>regex</code> subroutine, and <code>regex_f</code> function are introduced.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">program </span><span class="n">main</span>
@@ -206,6 +228,7 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <span class="k">end block</span>
 </code></pre></div>
 
+<p>Note that the <code>.in.</code> and <code>.match.</code> operators return false for invalid pattern inputs.</p>
 <p>The <code>regex</code> is a subroutine that returns the substring of a string that matches pattern as <code>intent(out)</code> argument.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
@@ -254,13 +277,15 @@ where <code>num</code> and <code>max</code> must NOT be zero.</li>
 <span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">subroutine__regex</span>
 <span class="k">end interface</span>
 
-<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">err_msg</span><span class="p">)</span>
 <span class="w">   </span><span class="k">implicit none</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w">      </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">err_msg</span>
 </code></pre></div>
 
+<p>The list of all <code>status</code> values is defined in the source file at src/ast/syntax_tree_error_m.f90.</p>
 <p>If you want to the matched character string as the return value of the function,
 consider using <code>regex_f</code> defined in the <code>forgex</code> module.</p>
 <div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex_f</span>
@@ -271,6 +296,18 @@ consider using <code>regex_f</code> defined in the <code>forgex</code> module.</
 <span class="w">   </span><span class="k">implicit none</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+</code></pre></div>
+
+<h4>Validating Regular Expression</h4>
+<p>Before calling APIs, you can validate a regex pattern using <code>is_valid_regex</code> function introduced in version 4.0 and later. The interface of <code>is_valid_regex</code> function is following:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">is_valid_regex</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid_regex_pattern</span>
+<span class="k">end </span><span class="n">interfac</span>
+
+<span class="k">pure elemental function </span><span class="n">is_valid_regex_pattern</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span>
+<span class="w">   </span><span class="kt">logical</span><span class="w">                   </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 </code></pre></div>
 
 <h4>UTF-8 String matching</h4>
@@ -338,6 +375,7 @@ In this example, the <code>length</code> variable stores the byte length, and in
 <ul>
 <li>A program built by <code>gfortran</code> on Windows and macOC may crash if an allocatable character is used in an OpenMP parallel block.</li>
 <li>If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.</li>
+<li>As internal changes to the API related to the addition of the <code>is_valid_regex</code> function, the <code>.in.</code> and <code>.match.</code> operators now return False for invalid pattern input (in versions prior to 3.5 they would terminate processing by executing an <code>error stop</code> statement).</li>
 </ul>
 <h2>To do</h2>
 <ul>
@@ -386,7 +424,7 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-12-23 02:39 +0000             </p>
+ on 2025-01-19 07:38 +0000             </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="14.4% of total for modules and submodules.">567 statements</a>
+                 title="15.3% of total for modules and submodules.">629 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -193,9 +193,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_syntax_tree_error_m.html'>forgex_syntax_tree_error_m</a></li>
                   <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></li>
               </ul>
             </li>
@@ -238,7 +239,41 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes~2"></span>
+              <span class="anchor" id="variable-code~3"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>code</strong></td>
+<td> =</td>
+                <td>SYNTAX_VALID</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-is_valid_pattern"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>is_valid_pattern</strong></td>
+<td> =</td>
+                <td>.true.</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-nodes~3"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
               <td>public,</td>
@@ -266,6 +301,23 @@
             <td><strong>num_alloc</strong></td>
 <td> =</td>
                 <td>0</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-paren_balance"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>paren_balance</strong></td>
+                <td></td>
+                <td></td>
             <td>
 
             </td>
@@ -370,7 +422,7 @@
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/tree_t.html#boundprocedure-reallocate'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
+  <strong><a href='../type/tree_t.html#boundprocedure-reallocate~2'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -493,7 +545,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~30"></span>
+              <span class="anchor" id="variable-self~32"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -613,7 +665,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uni~4"></span>
+              <span class="anchor" id="variable-uni~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -653,7 +705,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~40"></span>
+              <span class="anchor" id="variable-self~42"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -668,7 +720,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uni~3"></span>
+              <span class="anchor" id="variable-uni~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -708,7 +760,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~23"></span>
+              <span class="anchor" id="variable-self~25"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -723,7 +775,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~13"></span>
+              <span class="anchor" id="variable-pattern~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -763,7 +815,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~35"></span>
+              <span class="anchor" id="variable-self~37"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -803,7 +855,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~28"></span>
+              <span class="anchor" id="variable-self~30"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -873,7 +925,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~29"></span>
+              <span class="anchor" id="variable-self~31"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -943,7 +995,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~25"></span>
+              <span class="anchor" id="variable-self~27"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -983,7 +1035,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~37"></span>
+              <span class="anchor" id="variable-self~39"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1023,7 +1075,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~36"></span>
+              <span class="anchor" id="variable-self~38"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1063,7 +1115,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~34"></span>
+              <span class="anchor" id="variable-self~36"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1103,7 +1155,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~39"></span>
+              <span class="anchor" id="variable-self~41"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1143,7 +1195,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~24"></span>
+              <span class="anchor" id="variable-self~26"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1183,7 +1235,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~31"></span>
+              <span class="anchor" id="variable-self~33"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1223,7 +1275,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~27"></span>
+              <span class="anchor" id="variable-self~29"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1308,7 +1360,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~26"></span>
+              <span class="anchor" id="variable-self~28"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1364,7 +1416,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~38"></span>
+              <span class="anchor" id="variable-self~40"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1404,7 +1456,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~33"></span>
+              <span class="anchor" id="variable-self~35"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1444,7 +1496,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~32"></span>
+              <span class="anchor" id="variable-self~34"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1487,7 +1539,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-12-23 02:39 +0000             </p>
+ on 2025-01-19 07:38 +0000             </p>
           </div>
         </div>
         <br>

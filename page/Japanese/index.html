@@ -113,6 +113,8 @@
 
     <div class="col-9" id='text'>
       <h1>Readme</h1>
+<!-- Readme[JA] version 4.0 -->
+
 <p>Forgexは、すべてFortranで書かれた正規表現エンジンです。</p>
 <p>このプロジェクトは<a href="https://fpm.fortran-lang.org/ja/index.html">Fortranパッケージマネージャー</a>で管理され、
 正規表現の基本的な処理を提供し、<a href="https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE">MITライセンス</a>
@@ -178,6 +180,26 @@
 <span class="n">forgex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">git</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="s2">&quot;https://github.com/shinobuamasaki/forgex&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">tag</span><span class="p">=</span><span class="s2">&quot;v2.0&quot;</span><span class="p">}</span>
 </code></pre></div>
 
+<h3>代替の選択肢</h3>
+<p>macOSを使用している場合、このライブラリはMacPortsを使用して、以下のコマンドを実行することによりインストールすることができます。</p>
+<div class="codehilite"><pre><span></span><code>sudo<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>forgex
+</code></pre></div>
+
+<p>この場合には、Forgexのモジュールファイル<code>forgex*.mod</code>は、<code>/opt/local/include/forgex</code>ディレクトリに配置され、ライブラリのバイナリファイルは<code>/opt/local/lib</code>に配置されるので、ソースファイルをコンパイルするためには以下のようなコマンドを実行する必要があります。</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">gfortran</span><span class="w"> </span><span class="nv">main</span>.<span class="nv">f90</span><span class="w"> </span><span class="o">-</span><span class="nv">I</span><span class="o">/</span><span class="nv">opt</span><span class="o">/</span><span class="nv">local</span><span class="o">/</span><span class="k">include</span><span class="o">/</span><span class="nv">forgex</span><span class="w"> </span><span class="o">-</span><span class="nv">L</span><span class="o">/</span><span class="nv">opt</span><span class="o">/</span><span class="nv">local</span><span class="o">/</span><span class="nv">lib</span><span class="w"> </span><span class="o">-</span><span class="nv">lforgex</span>
+</code></pre></div>
+
+<p>このインストールの方法を使用した場合に、<code>fpm</code>を使用してプロジェクトをビルドするには、次の変更を<code>fpm.toml</code>に加えます。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">[build]</span>
+<span class="n">external-modules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;forgex&quot;</span><span class="w"> </span><span class="p">]</span>
+<span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">&quot;forgex&quot;</span><span class="w"> </span><span class="p">]</span>
+</code></pre></div>
+
+<p>そしてそのプロジェクトを次のコマンドによってビルドします。</p>
+<div class="codehilite"><pre><span></span><code>fpm<span class="w"> </span>build<span class="w"> </span>--flag<span class="w"> </span><span class="s2">&quot;-I/opt/local/include/forgex&quot;</span><span class="w"> </span>--link-flag<span class="w"> </span><span class="s2">&quot;-L/opt/local/lib&quot;</span>
+</code></pre></div>
+
+<p>こちらも参照してください：<a href="https://ports.macports.org/port/forgex/details">https://ports.macports.org/port/forgex/details</a></p>
 <h3>APIの使い方</h3>
 <p>そのプロジェクトのプログラムのヘッダーに<code>use forgex</code>と記述すると、<code>.in.</code>と<code>.match.</code>の演算子、
 <code>regex</code>サブルーチンと<code>regex_f</code>関数が導入され、<code>use</code>文の有効なスコープでこれらの4つを使用することができます。</p>
@@ -212,6 +234,7 @@
 <span class="k">end block</span>
 </code></pre></div>
 
+<p>なお、<code>.in.</code>と<code>.match.</code>の演算子は無効なパターンの入力に対して偽を返します。</p>
 <p><code>regex</code>関数は、入力文字列の中でパターンに一致した部分文字列を返します。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">block</span>
 <span class="w">   </span><span class="k">character</span><span class="p">(</span><span class="o">:</span><span class="p">),</span><span class="w"> </span><span class="n">allocatable</span><span class="w"> </span><span class="o">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">res</span>
@@ -255,16 +278,17 @@
 <span class="k">end block</span>
 </code></pre></div>
 
-<p><code>regex</code>関数の宣言部（インタフェース）は次の通りです。</p>
+<p><code>regex</code>サブルーチンの宣言部（インタフェース）は次の通りです。</p>
 <div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">regex</span>
 <span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">subroutine__regex</span>
 <span class="k">end interface</span>
 
-<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
+<span class="k">pure subroutine </span><span class="n">subroutine__regex</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span><span class="p">,</span><span class="w"> </span><span class="n">res</span><span class="p">,</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="n">err_msg</span><span class="p">)</span>
 <span class="w">   </span><span class="k">implicit none</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w">              </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
-<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w">      </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span>
+<span class="w">   </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w">         </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">length</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">,</span><span class="w"> </span><span class="n">status</span>
+<span class="w">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">optional</span><span class="p">,</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">err_msg</span>
 </code></pre></div>
 
 <p>マッチした文字列を関数の戻り値として得たい場合には、<code>regex_f</code>関数を使用してください。</p>
@@ -276,6 +300,19 @@
 <span class="w">   </span><span class="k">implicit none</span>
 <span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">text</span>
 <span class="w">   </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
+</code></pre></div>
+
+<h4>入力パターンの検証</h4>
+<p>バージョン4.0より、<code>is_valid_regex</code>関数が導入され、正規表現パターンを有効なものかどうかを確認できるようになりました。入力パターンを事前に検査する場合にはこの関数を使用してから上のAPIにパターンを渡してください。</p>
+<p>この関数のインタフェースは次の通りです。</p>
+<div class="codehilite"><pre><span></span><code><span class="k">interface </span><span class="n">is_valid_regex</span>
+<span class="w">   </span><span class="k">module procedure</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_valid_regex_pattern</span>
+<span class="k">end </span><span class="n">interfac</span>
+
+<span class="k">pure elemental function </span><span class="n">is_valid_regex_pattern</span><span class="w"> </span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="w">   </span><span class="k">implicit none</span>
+<span class="k">   </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">  </span><span class="kd">::</span><span class="w"> </span><span class="n">pattern</span>
+<span class="w">   </span><span class="kt">logical</span><span class="w">                   </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 </code></pre></div>
 
 <h4>UTF-8文字列のマッチング</h4>
@@ -348,23 +385,26 @@
 
 </div>
 
+<p>バージョン3.5以降、コマンドラインツールはForgexとは別のリポジトリで提供されるようになりました。このリンクを参照してください：<a href="https://github.com/ShinobuAmasaki/forgex-cli">ShinobuAmasaki/forgex-cli</a></p>
 <h3>注意</h3>
 <ul>
 <li>WindowおよびmacOS環境の<code>gfortran</code>でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。</li>
 <li>コマンドラインツール<code>forgex-cli</code>をWindows上のPowerShellで利用する場合、Unicode文字を正しく入出力するには、システムのロケールをUTF-8に変更する必要があります。</li>
+<li><code>is_valid_regex</code>関数の追加に関わるAPIの内部的な変更として、<code>.in.</code>と<code>.match.</code>の演算子は無効なパターンの入力に対してFalseを返すようになりました（バージョン3.5以前では<code>error stop</code>文を実行して処理を終了します）。</li>
 </ul>
 <h2>To Do</h2>
 <ul>
 <li>Unicodeエスケープシーケンス<code>\p{...}</code>の追加</li>
 <li>UTF-8において無効なバイトストリームへの対処</li>
+<li>✅ 無効なパターンの処理</li>
 <li>✅️ リテラル検索によるマッチングの最適化</li>
-<li>✅️ デバッグおよびベンチマーク用のCLIツールを追加</li>
+<li>✅️ デバッグおよびベンチマーク用のCLIツールを追加 -&gt; <a href="https://github.com/ShinobuAmasaki/forgex-cli">ShinobuAmasaki/forgex-cli</a></li>
 <li>✅️ すべてのAPI演算子に<code>pure elemental</code>属性を追加</li>
 <li>✅️ ドキュメントの公開</li>
 <li>✅️ UTF-8文字の基本的なサポート</li>
 <li>✅️ On-the-FlyのDFA構築</li>
 <li>✅️ CMakeによるビルドのサポート</li>
-<li>✅️ 簡単な時間計測ツールの追加</li>
+<li>✅️ 簡単な時間計測ツールの追加 -&gt; <a href="https://github.com/ShinobuAmasaki/forgex-cli">ShinobuAmasaki/forgex-cli</a></li>
 <li><s>マッチングの並列化</s></li>
 </ul>
 <h2>コーディング規約</h2>
@@ -402,7 +442,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-12-23 02:39 +0000             </p>
+ on 2025-01-19 07:38 +0000             </p>
           </div>
         </div>
         <br>

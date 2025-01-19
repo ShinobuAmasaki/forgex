@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.4% of total for procedures.">15 statements</a>
+                 title=" 0.7% of total for procedures.">24 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -162,7 +162,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~23"></span>
+              <span class="anchor" id="variable-self~25"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -177,7 +177,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~13"></span>
+              <span class="anchor" id="variable-pattern~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -222,10 +222,25 @@
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">idx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">str</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pattern</span>
 <span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">top</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">paren_balance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">get_token</span><span class="p">()</span>
 
+<span class="w">      </span><span class="c">! Generate AST from a given pattern.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">regex</span><span class="p">()</span>
-<span class="w">      </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">top</span><span class="p">)%</span><span class="n">parent_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TERMINAL_INDEX</span>
+
+<span class="w">      </span><span class="c">! Check the pattern is valid.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+
+<span class="w">      </span><span class="c">! Determine if parentheses are balanced.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">paren_balance</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_PARENTHESIS_MISSING</span>
+<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">paren_balance</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_PARENTHESIS_UNEXPECTED</span>
+<span class="w">      </span><span class="k">end if</span>
+<span class="k">      </span>
+<span class="k">      </span><span class="n">self</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">top</span><span class="p">)%</span><span class="n">parent_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TERMINAL_INDEX</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">tree_graph__build_syntax_tree</span>
 </pre></div>
 
@@ -250,7 +265,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2024-12-23 02:39 +0000             </p>
+ on 2025-01-19 07:38 +0000             </p>
           </div>
         </div>
         <br>
