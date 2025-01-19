@@ -229,13 +229,13 @@ contains
 
 
    !> The function implemented for the `regex` subroutine.
-   pure subroutine subroutine__regex(pattern, text, res, length, from, to, err_msg)
+   pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
       use :: forgex_syntax_tree_error_m, only: get_error_message
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
-      integer, optional,         intent(inout) :: length, from, to
+      integer, optional,         intent(inout) :: length, from, to, status
       character(*), optional,    intent(inout) :: err_msg
 
       character(:),      allocatable :: buff
@@ -265,6 +265,7 @@ contains
          if (present(from))   from = INVALID_CHAR_INDEX
          if (present(to))     to = INVALID_CHAR_INDEX
          if (present(err_msg)) err_msg = get_error_message(tree%code)
+         if (present(status)) status = tree%code
          return
       end if
 
