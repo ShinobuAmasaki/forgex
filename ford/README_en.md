@@ -65,7 +65,39 @@ First of all, add the following to your project's `fpm.toml`:
 forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
+### Alternative options
+
+If you use macOS, you can install this library by using MacPorts with the following command:
+
+```shell
+sudo port install forgex
+```
+
+In this case, the `.mod` files will be placed in `/opt/local/include/forgex` and the library file will be placed in `/opt/local/lib`,
+so to compile your source code, run the following command:
+
+```shell
+gfortran main.f90 -I/opt/local/include/forgex -L/opt/local/lib -lforgex
+```
+
+If you are using this installation method and want to build using `fpm`, make the following changes to `fpm.toml`:
+
+```toml
+[build]
+external-modules = [ "forgex" ]
+link = [ "forgex" ]
+```
+
+Then you can build your program with the following command:
+
+```shell
+fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
+```
+
+See also [https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
+
 ### APIs
+
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
 
 ```fortran
@@ -103,6 +135,8 @@ block
    print *, pattern .match. str  ! F
 end block
 ```
+
+Note that the `.in.` and `.match.` operators return false for invalid pattern inputs.
 
 The `regex` is a subroutine that returns the substring of a string that matches pattern as `intent(out)` argument.
 
@@ -158,12 +192,15 @@ interface regex
    module procedure :: subroutine__regex
 end interface
 
-pure subroutine subroutine__regex(pattern, text, res, length, from, to)
+pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
    implicit none
    character(*),              intent(in)    :: pattern, text
    character(:), allocatable, intent(inout) :: res
-   integer,      optional,    intent(inout) :: length, from, to
+   integer, optional,         intent(inout) :: length, from, to, status
+   character(*), optional,    intent(inout) :: err_msg
 ```
+
+The list of all `status` values is defined in the source file at src/ast/syntax_tree_error_m.f90.
 
 If you want to the matched character string as the return value of the function,
 consider using `regex_f` defined in the `forgex` module.
@@ -179,6 +216,20 @@ pure function function__regex(pattern, text) result(res)
    character(:), allocatable :: res
 ```
 
+#### Validating Regular Expression
+
+Before calling APIs, you can validate a regex pattern using `is_valid_regex` function introduced in version 4.0 and later. The interface of `is_valid_regex` function is following:
+
+```fortran
+interface is_valid_regex
+   module procedure :: is_valid_regex_pattern
+end interfac
+
+pure elemental function is_valid_regex_pattern (pattern) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern
+   logical                   :: res
+```
 
 #### UTF-8 String matching
 
@@ -256,6 +307,7 @@ state    4A = ( 2 4 5 6 )
 
 - A program built by `gfortran` on Windows and macOC may crash if an allocatable character is used in an OpenMP parallel block.
 - If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.
+- As internal changes to the API related to the addition of the `is_valid_regex` function, the `.in.` and `.match.` operators now return False for invalid pattern input (in versions prior to 3.5 they would terminate processing by executing an `error stop` statement).
 
 
 ## To do

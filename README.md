@@ -1,3 +1,5 @@
+<!--> Readme[EN] version 4.0<-->
+
 # Fortran Regular Expression
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
@@ -134,6 +136,8 @@ block
 end block
 ```
 
+Note that the `.in.` and `.match.` operators return false for invalid pattern inputs.
+
 The `regex` is a subroutine that returns the substring of a string that matches a pattern as its arguments.
 
 ```fortran
@@ -188,12 +192,15 @@ interface regex
    module procedure :: subroutine__regex
 end interface
 
-pure subroutine subroutine__regex(pattern, text, res, length, from, to)
+pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
    implicit none
    character(*),              intent(in)    :: pattern, text
    character(:), allocatable, intent(inout) :: res
-   integer,      optional,    intent(inout) :: length, from, to
+   integer, optional,         intent(inout) :: length, from, to, status
+   character(*), optional,    intent(inout) :: err_msg
 ```
+
+The list of all `status` values is defined in the source file at src/ast/syntax_tree_error_m.f90.
 
 If you want to the matched character string as the return value of a function,
 consider using `regex_f` defined in the `forgex` module.
@@ -207,6 +214,21 @@ pure function function__regex(pattern, text) result(res)
    implicit none
    character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
+```
+
+#### Validating Regular Expression
+
+Before calling APIs, you can validate a regex pattern using `is_valid_regex` function introduced in version 4.0 and later. The interface of `is_valid_regex` function is following:
+
+```fortran
+interface is_valid_regex
+   module procedure :: is_valid_regex_pattern
+end interfac
+
+pure elemental function is_valid_regex_pattern (pattern) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern
+   logical                   :: res
 ```
 
 #### UTF-8 String matching
@@ -280,6 +302,7 @@ Starting with version 3.5, the command line tools are provided in a separate rep
 
 - A program built by `gfortran` on Windows and macOS may crash if an allocatable character is used in an OpenMP parallel block.
 - If you use the command line tool with PowerShell on Windows, use UTF-8 as your system locale to properly input and output Unicode characters.
+- As internal changes to the API related to the addition of the `is_valid_regex` function, the `.in.` and `.match.` operators now return False for invalid pattern input (in versions prior to 3.5 they would terminate processing by executing an `error stop` statement).
 
 ## To do
 
@@ -287,6 +310,7 @@ The following features are planned to be implemented in the future:
 
 - [ ] Add Unicode escape sequence `\p{...}`
 - [ ] Deal with invalid byte strings in UTF-8
+- [x] Recovery from invalid patterns
 - [x] Optimize by literal searching method
 - [x] Add a CLI tool for debugging and benchmarking => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - [x] Make all operators `pure elemental` attribute

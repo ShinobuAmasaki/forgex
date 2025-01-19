@@ -1,3 +1,5 @@
+<!--> Readme[JA] version 4.0 <--->
+
 Forgexは、すべてFortranで書かれた正規表現エンジンです。
 
 このプロジェクトは[Fortranパッケージマネージャー](https://fpm.fortran-lang.org/ja/index.html)で管理され、
@@ -67,8 +69,38 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 ```
 
+### 代替の選択肢
+
+macOSを使用している場合、このライブラリはMacPortsを使用して、以下のコマンドを実行することによりインストールすることができます。
+
+```shell
+sudo port install forgex
+```
+
+この場合には、Forgexのモジュールファイル`forgex*.mod`は、`/opt/local/include/forgex`ディレクトリに配置され、ライブラリのバイナリファイルは`/opt/local/lib`に配置されるので、ソースファイルをコンパイルするためには以下のようなコマンドを実行する必要があります。
+
+```
+gfortran main.f90 -I/opt/local/include/forgex -L/opt/local/lib -lforgex
+```
+
+このインストールの方法を使用した場合に、`fpm`を使用してプロジェクトをビルドするには、次の変更を`fpm.toml`に加えます。
+
+```toml
+[build]
+external-modules = [ "forgex" ]
+link = [ "forgex" ]
+```
+
+そしてそのプロジェクトを次のコマンドによってビルドします。
+
+```shell
+fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
+```
+
+こちらも参照してください：[https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
 
 ### APIの使い方
+
 そのプロジェクトのプログラムのヘッダーに`use forgex`と記述すると、`.in.`と`.match.`の演算子、
 `regex`サブルーチンと`regex_f`関数が導入され、`use`文の有効なスコープでこれらの4つを使用することができます。
 
@@ -108,7 +140,10 @@ block
 end block
 ```
 
+なお、`.in.`と`.match.`の演算子は無効なパターンの入力に対して偽を返します。
+
 `regex`関数は、入力文字列の中でパターンに一致した部分文字列を返します。
+
 ```
 block
    character(:), allocatable :: pattern, str, res
@@ -153,17 +188,19 @@ block
 end block
 ```
 
-`regex`関数の宣言部（インタフェース）は次の通りです。
+`regex`サブルーチンの宣言部（インタフェース）は次の通りです。
+
 ```fortran
 interface regex
    module procedure :: subroutine__regex
 end interface
 
-pure subroutine subroutine__regex(pattern, text, res, length, from, to)
+pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
    implicit none
    character(*),              intent(in)    :: pattern, text
    character(:), allocatable, intent(inout) :: res
-   integer,      optional,    intent(inout) :: length, from, to
+   integer, optional,         intent(inout) :: length, from, to, status
+   character(*), optional,    intent(inout) :: err_msg
 ```
 
 マッチした文字列を関数の戻り値として得たい場合には、`regex_f`関数を使用してください。
@@ -177,6 +214,23 @@ pure function function__regex(pattern, text) result(res)
    implicit none
    character(*), intent(in)  :: pattern, text
    character(:), allocatable :: res
+```
+
+#### 入力パターンの検証
+
+バージョン4.0より、`is_valid_regex`関数が導入され、正規表現パターンを有効なものかどうかを確認できるようになりました。入力パターンを事前に検査する場合にはこの関数を使用してから上のAPIにパターンを渡してください。
+
+この関数のインタフェースは次の通りです。
+
+```fortran
+interface is_valid_regex
+   module procedure :: is_valid_regex_pattern
+end interfac
+
+pure elemental function is_valid_regex_pattern (pattern) result(res)
+   implicit none
+   character(*), intent(in)  :: pattern
+   logical                   :: res
 ```
 
 #### UTF-8文字列のマッチング
@@ -258,22 +312,26 @@ state    4A = ( 2 4 5 6 )
 
 </div>
 
+バージョン3.5以降、コマンドラインツールはForgexとは別のリポジトリで提供されるようになりました。このリンクを参照してください：[ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
+
 ### 注意
 
 - WindowおよびmacOS環境の`gfortran`でコンパイルされたプログラムでは、OpenMPの並列ブロックの中で割り付け可能文字列型変数を使用すると、セグメンテーション違反などでプログラムが停止する可能性があります。
 - コマンドラインツール`forgex-cli`をWindows上のPowerShellで利用する場合、Unicode文字を正しく入出力するには、システムのロケールをUTF-8に変更する必要があります。
+- `is_valid_regex`関数の追加に関わるAPIの内部的な変更として、`.in.`と`.match.`の演算子は無効なパターンの入力に対してFalseを返すようになりました（バージョン3.5以前では`error stop`文を実行して処理を終了します）。
 
 ## To Do
 - Unicodeエスケープシーケンス`\p{...}`の追加
 - UTF-8において無効なバイトストリームへの対処
+- ✅ 無効なパターンの処理
 - ✅️ リテラル検索によるマッチングの最適化
-- ✅️ デバッグおよびベンチマーク用のCLIツールを追加
+- ✅️ デバッグおよびベンチマーク用のCLIツールを追加 -> [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - ✅️ すべてのAPI演算子に`pure elemental`属性を追加
 - ✅️ ドキュメントの公開
 - ✅️ UTF-8文字の基本的なサポート
 - ✅️ On-the-FlyのDFA構築
 - ✅️ CMakeによるビルドのサポート
-- ✅️ 簡単な時間計測ツールの追加
+- ✅️ 簡単な時間計測ツールの追加 -> [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
 - <s>マッチングの並列化</s>
 
 ## コーディング規約
