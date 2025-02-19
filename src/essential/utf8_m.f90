@@ -41,6 +41,12 @@ contains
          ! Shifted byte values.
 
 
+      ! If the index exceeds the length of str, return the invalid value.
+      if (curr > len(str)) then
+         tail = INVALID_CHAR_INDEX
+         return
+      end if
+
       tail = curr    ! Initialize tail to the current index.
 
       do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character.

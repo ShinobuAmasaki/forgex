@@ -410,6 +410,8 @@ contains
       integer :: siz, ie, i, j, i_next, i_terminal
       logical :: is_inverted
 
+      siz = 0
+
       call self%tape%get_token(class_flag=.true.)
 
       buf = ''
@@ -429,8 +431,17 @@ contains
       end if
 
       siz = len_utf8(buf)
+    
+      ! Pattern '[-]' is valid.
 
+!-----この実装が悪い
       siz = siz - 2*count_token(buf(2:len_trim(buf)-1), SYMBOL_HYPN)
+
+      if (siz <= 0) then
+         self%is_valid_pattern = .false.
+         return
+      end if
+!-----ここまで
 
       if (buf(len_trim(buf):len_trim(buf)) == SYMBOL_HYPN) siz = siz -1
 
@@ -721,6 +732,30 @@ contains
    end subroutine tree_graph__range
 
 
+   pure function update_next_utf8_char_index(str, idx) result(res)
+      use :: forgex_utf8_m, only: idxutf8
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      implicit none
+      character(*), intent(in) :: str
+      integer, intent(in) :: idx
+      integer :: res
+
+      integer :: curr_end ! The index of the end of the multibyte character
+
+      curr_end = idxutf8(str, idx)
+
+      if (curr_end >= len(str)) then
+         res = INVALID_CHAR_INDEX
+
+      else if (curr_end == INVALID_CHAR_INDEX) then
+         res = INVALID_CHAR_INDEX
+      
+      else
+         ! curr_end is not invalid and is not the end of the string.
+         res = curr_end + 1
+      end if
+      
+   end function update_next_utf8_char_index
 
       
 !=====================================================================!

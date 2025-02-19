@@ -47,6 +47,9 @@ program main
    call runner_validate("a{1,b}", .false., res)
    call runner_validate("a{2,1}", .false., res)
 
+   call runner_validate("[]", .false., res)
+   call runner_validate("[-]", .true., res)
+
 
 !=====================================================================!
    if (res) then
