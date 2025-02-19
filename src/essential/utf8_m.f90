@@ -14,6 +14,7 @@ module forgex_utf8_m
    private
 
    public :: idxutf8
+   public :: next_idxutf8
    public :: char_utf8, ichar_utf8
    public :: count_token
    public :: is_first_byte_of_character
@@ -95,6 +96,29 @@ contains
       end do
 
    end function idxutf8
+
+
+   !> This function returns the index of the next character,
+   !> given the string str and the current index curr.
+   !> If the current index is for the last character, it returns the invalid value.
+   pure function next_idxutf8(str, curr) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      character(*), intent(in) :: str
+      integer, intent(in) :: curr
+      
+      integer :: res
+      integer :: curr_end
+
+      curr_end = idxutf8(str, curr)
+
+      if (curr_end /= INVALID_CHAR_INDEX) then
+         res = curr_end + 1
+      else
+         res = INVALID_CHAR_INDEX
+      end if
+      
+   end function next_idxutf8
 
 
    pure function is_valid_multiple_byte_character(chara) result(res)
