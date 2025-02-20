@@ -414,6 +414,7 @@ contains
 
       call self%tape%get_token(class_flag=.true.)
 
+      ! The variable buf stores the string representing the character class.
       buf = ''
       do while (self%tape%current_token /= tk_rsbracket)
          if (self%tape%current_token == tk_end) then
@@ -424,15 +425,22 @@ contains
          call self%tape%get_token(class_flag=.true.)
       end do
 
+      ! Handling a negative class case.
       is_inverted = .false.
       if (buf(1:1) == SYMBOL_CRET) then
          is_inverted = .true.
          buf = buf(2:len(buf))
       end if
 
+      ! The variable siz stores the length of buf.
       siz = len_utf8(buf)
     
       ! Pattern '[-]' is valid.
+
+      ! call interpret_class_string(buf, seglist, self%is_valid_pattern)
+      ! if (.not. self%is_valid_pattern) then
+      !    return
+      ! end if
 
 !-----この実装が悪い
       siz = siz - 2*count_token(buf(2:len_trim(buf)-1), SYMBOL_HYPN)
@@ -757,6 +765,33 @@ contains
       
    end function update_next_utf8_char_index
 
+
+   pure subroutine interpret_class_string(str, seglist, is_valid)
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      implicit none
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      logical, intent(inout) :: is_valid
+
+      integer :: siz
+      integer :: i, ie ! current index
+      integer :: j, je ! next index
+      integer :: k, ke ! index of after the next
+
+      
+      is_valid = .true.
+      siz = len_utf8(str)
+      i  = 1
+      ie = idxutf8(str, i)
+
+      j  = next_idxutf8(str, i)
+      je = idxutf8(str, j)
+      k  = next_idxutf8(str, j)
+      ke = idxutf8(str, k)
+
+
+   end subroutine interpret_class_string
       
 !=====================================================================!
   
