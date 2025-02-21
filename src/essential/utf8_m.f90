@@ -13,6 +13,11 @@ module forgex_utf8_m
    implicit none
    private
 
+   type :: character_array_t
+      character(:), allocatable :: c
+   end type
+
+   public :: character_array_t
    public :: idxutf8
    public :: next_idxutf8
    public :: char_utf8, ichar_utf8
@@ -23,6 +28,7 @@ module forgex_utf8_m
    public :: is_valid_multiple_byte_character
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
+   public :: character_string_to_array
 
 contains
 
@@ -510,5 +516,31 @@ contains
       end if
    
    end function trim_invalid_utf8_byte
+
+   pure subroutine character_string_to_array(str, array)
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      implicit none
+      character(*), intent(in) :: str
+      type(character_array_t), intent(inout), allocatable :: array(:)
+
+      integer :: siz, ib, ie, j
+
+      siz = len_utf8(str)
+      if (siz < 1) return
+
+      if (allocated(array)) deallocate(array)
+      allocate(array(siz))
+
+      ib = 0
+      ie = 0
+      do j = 1, siz
+         ib = ie + 1
+         ie = idxutf8(str, ib)
+         if (ib == INVALID_CHAR_INDEX .or. ie == INVALID_CHAR_INDEX) return
+         array(j)%c = str(ib:ie)
+      end do
+
+   end subroutine character_string_to_array
+      
 
 end module forgex_utf8_m
