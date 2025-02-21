@@ -771,7 +771,7 @@ contains
 
 
    pure subroutine interpret_class_string(str, seglist, is_valid)
-      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, character_array_t, str2array => character_string_to_array
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, character_array_t, str2array => character_string_to_array
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, SYMBOL_BSLH
       implicit none
       character(*), intent(in) :: str
@@ -779,25 +779,67 @@ contains
       logical, intent(inout) :: is_valid
 
       integer :: i, j, siz
+      type(segment_t) :: seg
+      logical :: backslashed, hyphened
       type(character_array_t), allocatable :: ca(:) ! character array
+      character(:), allocatable :: c, b, a
 
       is_valid = .true.
+      backslashed = .false.
+      hyphened = .false.
       
+      c = ''
+      b = ''
+      a = ''
       call str2array(str, ca)
       if (.not. allocated(ca)) then
          is_valid = .false.
          return
-      else if (siz < 1) then
+      end if
+
+      siz = size(ca, dim=1)      
+      if (siz < 1) then
          is_valid = .false.
          return
       end if
 
-      siz = size(ca, dim=1)
-
       do i = 1, siz
-         if (ca(1)%c == SYMBOL_BSLH) then
-         else
+         c = ca(i)%c
+         if (i>1) b = ca(i-1)%c
+         if (i>2) a = ca(i-2)%c
+
+         if (c == SYMBOL_BSLH) then
+            if (.not. backslashed) then
+               backslashed = .true.
+               cycle
+            else
+               seg%min = ichar_utf8(c)
+            end if
          end if
+
+         if (c == SYMBOL_HYPN) then
+            if (hyphened) then
+               is_valid = .false.
+               return
+            else
+               hyphened = .true.
+               cycle
+            end if
+         end if
+
+
+         if (backslashed) then
+            if (.not. hyphened) then
+               select case (c)
+               case (SYMBOL_LCRB)
+
+               end select
+            end if
+         end if
+
+         if (hyphened) then
+         end if
+
       end do
 
    contains
