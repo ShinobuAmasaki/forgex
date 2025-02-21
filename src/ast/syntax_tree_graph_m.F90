@@ -434,6 +434,10 @@ contains
 
       ! The variable siz stores the length of buf.
       siz = len_utf8(buf)
+      if (siz < 1) then
+         self%is_valid_pattern = .false.
+         return
+      end if
     
       ! Pattern '[-]' is valid.
 
@@ -759,7 +763,7 @@ contains
          res = INVALID_CHAR_INDEX
       
       else
-         ! curr_end is not invalid and is not the end of the string.
+         ! curr_end is valid and is not the end of the string.
          res = curr_end + 1
       end if
       
@@ -767,28 +771,50 @@ contains
 
 
    pure subroutine interpret_class_string(str, seglist, is_valid)
-      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8
-      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, character_array_t, str2array => character_string_to_array
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, SYMBOL_BSLH
       implicit none
       character(*), intent(in) :: str
       type(segment_t), intent(inout), allocatable :: seglist(:)
       logical, intent(inout) :: is_valid
 
-      integer :: siz
-      integer :: i, ie ! current index
-      integer :: j, je ! next index
-      integer :: k, ke ! index of after the next
+      integer :: i, j, siz
+      type(character_array_t), allocatable :: ca(:) ! character array
 
-      
       is_valid = .true.
-      siz = len_utf8(str)
-      i  = 1
-      ie = idxutf8(str, i)
+      
+      call str2array(str, ca)
+      if (.not. allocated(ca)) then
+         is_valid = .false.
+         return
+      else if (siz < 1) then
+         is_valid = .false.
+         return
+      end if
 
-      j  = next_idxutf8(str, i)
-      je = idxutf8(str, j)
-      k  = next_idxutf8(str, j)
-      ke = idxutf8(str, k)
+      siz = size(ca, dim=1)
+
+      do i = 1, siz
+         if (ca(1)%c == SYMBOL_BSLH) then
+         else
+         end if
+      end do
+
+   contains
+
+      pure function extract(string, ibegin, iend) result(res)
+         implicit none
+         character(*), intent(in) :: string
+         integer, intent(in) :: ibegin, iend
+         character(:), allocatable :: res
+
+         res = ''
+         if (ibegin < 0 .or. iend < 0) return
+         if (ibegin > len(str) .or. iend > len(str)) return
+         if (ibegin > iend) return
+         
+         res = str(ibegin:iend)
+      end function extract
 
 
    end subroutine interpret_class_string
