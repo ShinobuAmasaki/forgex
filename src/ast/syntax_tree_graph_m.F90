@@ -49,7 +49,9 @@ module forgex_syntax_tree_graph_m
    end type
 
    public :: dump_tree_table
-      
+   public :: interpret_class_string
+
+
 contains
 
    pure subroutine tree_graph__build_syntax_tree(self, pattern)
@@ -324,6 +326,7 @@ contains
       type(segment_t) :: seg
       character(:), allocatable :: chara
 
+
       select case (self%tape%current_token)
       case (tk_char)
          chara = self%tape%token_char
@@ -408,7 +411,8 @@ contains
       type(tree_node_t) :: node
 
       integer :: siz, ie, i, j, i_next, i_terminal
-      logical :: is_inverted
+      logical :: is_inverted, backslashed
+      character(:), allocatable :: prev, curr
 
       siz = 0
 
@@ -416,13 +420,34 @@ contains
 
       ! The variable buf stores the string representing the character class.
       buf = ''
+      prev = ''
+      curr = ''
+      backslashed = .false.
       do while (self%tape%current_token /= tk_rsbracket)
+         prev = curr
          if (self%tape%current_token == tk_end) then
             return
          end if
+
          ie = idxutf8(self%tape%token_char, 1)
-         buf = buf// self%tape%token_char(1:ie)
+         curr = self%tape%token_char(1:ie)
+         buf = buf//curr
          call self%tape%get_token(class_flag=.true.)
+
+         if (curr == SYMBOL_BSLH .and. prev /= SYMBOL_BSLH) then
+            backslashed = .true.
+         else
+            backslashed = .false.
+         end if
+         
+         ! for an escaped right square bracket 
+         if (self%tape%current_token == tk_rsbracket .and. backslashed) then
+            ie = idxutf8(self%tape%token_char, 1)
+            curr = self%tape%token_char(1:ie)
+            buf = buf//curr
+            call self%tape%get_token(class_flag=.true.)
+         end if
+
       end do
 
       ! Handling a negative class case.
@@ -434,73 +459,23 @@ contains
 
       ! The variable siz stores the length of buf.
       siz = len_utf8(buf)
+
       if (siz < 1) then
          self%is_valid_pattern = .false.
          return
       end if
-    
-      ! Pattern '[-]' is valid.
 
-      ! call interpret_class_string(buf, seglist, self%is_valid_pattern)
-      ! if (.not. self%is_valid_pattern) then
-      !    return
-      ! end if
+      call interpret_class_string(buf, seglist, self%is_valid_pattern)
 
-!-----この実装が悪い
-      siz = siz - 2*count_token(buf(2:len_trim(buf)-1), SYMBOL_HYPN)
+      if (.not. self%is_valid_pattern) return
 
-      if (siz <= 0) then
+      if (.not. allocated(seglist)) return
+
+      if (size(seglist) < 1) then
+
          self%is_valid_pattern = .false.
          return
       end if
-!-----ここまで
-
-      if (buf(len_trim(buf):len_trim(buf)) == SYMBOL_HYPN) siz = siz -1
-
-      allocate(seglist(siz))
-      
-      i_terminal = len(buf)
-      i = 1
-      j = 1
-      buf = buf//char(0)
-
-      do while (i <= i_terminal)
-         ie = idxutf8(buf, i)
-         i_next = ie + 1
-
-         ! 次の文字がハイフンでないならば
-         if (buf(i_next:i_next) /= SYMBOL_HYPN) then
-            seglist(j)%min = ichar_utf8(buf(i:ie))
-            seglist(j)%max = ichar_utf8(buf(i:ie))
-            j = j + 1
-         else
-            seglist(j)%min = ichar_utf8(buf(i:ie))
-
-            i = i_next + 1
-            ie = idxutf8(buf, i)
-            i_next = ie + 1
-
-            seglist(j)%max = ichar_utf8(buf(i:ie))
-            j = j + 1
-         end if
-
-         ! 先頭の記号がハイフンならば
-         if (j == 1 .and. buf(1:1) == SYMBOL_HYPN) then
-            seglist(1)%min = ichar_utf8(SYMBOL_HYPN)
-            seglist(1)%max = ichar_utf8(SYMBOL_HYPN)
-            i = i_next
-            j = j + 1
-            cycle
-         end if
-
-         ! 最後の記号がハイフンならば
-         if (i >= i_terminal .and. buf(i_terminal:i_terminal) == SYMBOL_HYPN) then
-            seglist(siz)%max = UTF8_CODE_MAX
-            exit
-         end if
-
-         i = i_next
-      end do
 
       ! the seglist array have been allocated near the L362.
       if (is_inverted) then
@@ -744,6 +719,204 @@ contains
    end subroutine tree_graph__range
 
 
+   pure subroutine interpret_class_string(str, seglist, is_valid)
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, &
+         character_array_t, str2array => character_string_to_array
+      use :: forgex_parameters_m
+      use :: forgex_segment_m, register => register_segment_to_list
+      implicit none
+
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      logical, intent(inout) :: is_valid
+      ! integer, intent(inout) :: ierr
+
+      integer :: i, j, siz
+      type(segment_t) :: seg
+      type(segment_t), allocatable :: list(:)
+      logical :: backslashed, hyphened
+      type(character_array_t), allocatable :: ca(:) ! character array
+      character(:), allocatable :: c, b, a
+      character(:), allocatable :: prev
+
+      is_valid = .true.
+      backslashed = .false.
+      hyphened = .false.
+
+      seg = segment_t()
+      
+      c = EMPTY_CHAR
+      b = EMPTY_CHAR
+      a = EMPTY_CHAR
+
+      call str2array(str, ca)
+      if (.not. allocated(ca)) then
+         is_valid = .false.
+         return
+      end if
+
+      siz = size(ca, dim=1)      
+      if (siz < 1) then
+         is_valid = .false.
+         return
+      end if
+
+      allocate(list(siz))
+      j = 0
+      outer: do i = 1, siz
+         c = ca(i)%c
+         if (i>1) b = ca(i-1)%c
+         if (i>2) a = ca(i-2)%c
+
+         if (i == 1 .and. c == SYMBOL_HYPN) then
+            seg%min = ichar_utf8(c)
+            seg%max = ichar_utf8(c)
+            call register(list, seg, j)
+            cycle
+         end if
+
+
+         if (backslashed .and. .not. hyphened) then
+            select case (c)
+            case (SYMBOL_BSLH)
+               seg%min = ichar_utf8(SYMBOL_BSLH)
+            case (SYMBOL_LCRB)
+               seg%min = ichar_utf8(SYMBOL_LCRB)
+            case (SYMBOL_RCRB)
+               seg%min = ichar_utf8(SYMBOL_RCRB)
+            case (SYMBOL_LSBK)
+               seg%min = ichar_utf8(SYMBOL_LSBK)
+            case (SYMBOL_RSBK)
+               seg%min = ichar_utf8(SYMBOL_RSBK)
+            case default
+               is_valid = .false.
+               return
+            end select
+
+            backslashed = .false.
+            cycle
+         end if
+
+         if (backslashed .and. hyphened) then
+            select case (c)
+            case (SYMBOL_BSLH)
+               seg%max = ichar_utf8(SYMBOL_BSLH)
+            case (SYMBOL_LCRB)
+               seg%max = ichar_utf8(SYMBOL_LCRB)
+            case (SYMBOL_RCRB)
+               seg%max = ichar_utf8(SYMBOL_RCRB)
+            case (SYMBOL_LSBK)
+               seg%max = ichar_utf8(SYMBOL_LSBK)
+            case (SYMBOL_RSBK)
+               seg%max = ichar_utf8(SYMBOL_RSBK)
+            case default
+               is_valid = .false.
+               return
+            end select
+
+
+            if (seg%validate()) then
+               call register(list, seg, j)
+               
+            else
+               is_valid = .false.
+               return
+            end if
+
+            backslashed = .false.
+            cycle
+         end if
+
+         if (hyphened) then
+            if (c == SYMBOL_BSLH) cycle
+
+            hyphened = .false.
+            seg%min = ichar_utf8(prev)
+
+            seg%max = ichar_utf8(c)
+            if (.not. seg%validate()) then
+               
+               is_valid = .false.
+               return
+            end if
+
+            if (i == siz) then
+               seg%min = ichar_utf8(prev)
+               seg%max = ichar_utf8(c)
+
+               if (seg%validate()) then
+                  call register(list, seg, j)
+                  
+               else
+                  
+                  is_valid = .false.
+                  return
+               end if
+               exit outer
+            end if
+
+            if (b == SYMBOL_BSLH) then
+               seg%min = ichar_utf8(prev)
+            else
+               seg%min = ichar_utf8(a)
+            end if
+
+            seg%max = ichar_utf8(c)
+            if (seg%validate()) then
+               call register(list, seg, j)
+            else
+               is_valid = .false.
+               return
+            end if
+
+         end if
+
+         if (c == SYMBOL_BSLH) then
+            prev = b
+            backslashed = .true.
+            cycle
+         end if
+
+         if (c == SYMBOL_HYPN) then
+            prev = b
+            if (a == SYMBOL_HYPN) then
+               is_valid = .false.
+               return
+            else
+               hyphened = .true.
+            end if
+            cycle
+         end if
+
+         seg%min = ichar_utf8(c)
+         seg%max = ichar_utf8(c)
+
+         if (seg%validate()) call register(list, seg, j)
+
+      end do outer
+
+
+      if (backslashed) then
+         is_valid = .false.
+         return
+      end if
+
+      if (hyphened) then
+         if (seg%min < ichar_utf8(c)) then
+            seg%max = ichar_utf8(c)
+            if (seg%validate()) call register(list, seg, j)
+         end if
+         seg%min = ichar_utf8(SYMBOL_HYPN)
+         seg%max = ichar_utf8(SYMBOL_HYPN)
+         if (seg%validate()) call register(list, seg, j)
+      end if
+
+      allocate(seglist(j))
+      seglist(1:j) = list(1:j)
+
+   end subroutine interpret_class_string
+
+
    pure function update_next_utf8_char_index(str, idx) result(res)
       use :: forgex_utf8_m, only: idxutf8
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
@@ -770,97 +943,6 @@ contains
    end function update_next_utf8_char_index
 
 
-   pure subroutine interpret_class_string(str, seglist, is_valid)
-      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, character_array_t, str2array => character_string_to_array
-      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, SYMBOL_BSLH
-      implicit none
-      character(*), intent(in) :: str
-      type(segment_t), intent(inout), allocatable :: seglist(:)
-      logical, intent(inout) :: is_valid
-
-      integer :: i, j, siz
-      type(segment_t) :: seg
-      logical :: backslashed, hyphened
-      type(character_array_t), allocatable :: ca(:) ! character array
-      character(:), allocatable :: c, b, a
-
-      is_valid = .true.
-      backslashed = .false.
-      hyphened = .false.
-      
-      c = ''
-      b = ''
-      a = ''
-      call str2array(str, ca)
-      if (.not. allocated(ca)) then
-         is_valid = .false.
-         return
-      end if
-
-      siz = size(ca, dim=1)      
-      if (siz < 1) then
-         is_valid = .false.
-         return
-      end if
-
-      do i = 1, siz
-         c = ca(i)%c
-         if (i>1) b = ca(i-1)%c
-         if (i>2) a = ca(i-2)%c
-
-         if (c == SYMBOL_BSLH) then
-            if (.not. backslashed) then
-               backslashed = .true.
-               cycle
-            else
-               seg%min = ichar_utf8(c)
-            end if
-         end if
-
-         if (c == SYMBOL_HYPN) then
-            if (hyphened) then
-               is_valid = .false.
-               return
-            else
-               hyphened = .true.
-               cycle
-            end if
-         end if
-
-
-         if (backslashed) then
-            if (.not. hyphened) then
-               select case (c)
-               case (SYMBOL_LCRB)
-
-               end select
-            end if
-         end if
-
-         if (hyphened) then
-         end if
-
-      end do
-
-   contains
-
-      pure function extract(string, ibegin, iend) result(res)
-         implicit none
-         character(*), intent(in) :: string
-         integer, intent(in) :: ibegin, iend
-         character(:), allocatable :: res
-
-         res = ''
-         if (ibegin < 0 .or. iend < 0) return
-         if (ibegin > len(str) .or. iend > len(str)) return
-         if (ibegin > iend) return
-         
-         res = str(ibegin:iend)
-      end function extract
-
-
-   end subroutine interpret_class_string
-      
 !=====================================================================!
   
    subroutine dump_tree_table(tree)

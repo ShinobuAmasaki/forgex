@@ -49,7 +49,11 @@ program main
 
    call runner_validate("[]", .false., res)
    call runner_validate("[-]", .true., res)
-
+   call runner_validate("[+]", .true., res)
+   call runner_validate("[\[-\]]", .true., res)
+   call runner_validate("[\[-\\]", .true., res)
+   call runner_validate("[a]{3,4}", .true., res)
+   call runner_validate("[--]", .false., res)
 
 !=====================================================================!
    if (res) then
