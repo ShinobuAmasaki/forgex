@@ -153,6 +153,7 @@ contains
                select case (trim(c))
                case (SYMBOL_RSBK)
                   self%current_token = tk_rsbracket
+                  self%token_char = c
                case (SYMBOL_HYPN)
                   self%current_token = tk_hyphen
                   self%token_char = c

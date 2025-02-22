@@ -758,7 +758,6 @@ contains
       c = EMPTY_CHAR
       b = EMPTY_CHAR
       a = EMPTY_CHAR
-! write(0,*) "HOGE"
       call str2array(str, ca)
       if (.not. allocated(ca)) then
          is_valid = .false.
@@ -803,8 +802,7 @@ contains
                return
             end select
 
-            backslashed = .false.
-            cycle
+            backslashed = .false. 
          end if
 
          if (backslashed .and. hyphened) then
