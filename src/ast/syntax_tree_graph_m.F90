@@ -432,6 +432,7 @@ contains
          ie = idxutf8(self%tape%token_char, 1)
          curr = self%tape%token_char(1:ie)
          buf = buf//curr
+
          call self%tape%get_token(class_flag=.true.)
 
          if (curr == SYMBOL_BSLH .and. prev /= SYMBOL_BSLH) then
@@ -449,6 +450,12 @@ contains
          end if
 
       end do
+
+      ! If the character class pattern is empty, return false. 
+      if (len(buf) == 0) then
+         self%is_valid_pattern = .false.
+         return
+      end if
 
       ! Handling a negative class case.
       is_inverted = .false.
@@ -751,7 +758,7 @@ contains
       c = EMPTY_CHAR
       b = EMPTY_CHAR
       a = EMPTY_CHAR
-
+! write(0,*) "HOGE"
       call str2array(str, ca)
       if (.not. allocated(ca)) then
          is_valid = .false.
