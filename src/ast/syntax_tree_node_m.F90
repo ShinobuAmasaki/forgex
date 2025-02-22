@@ -157,6 +157,9 @@ contains
                case (SYMBOL_HYPN)
                   self%current_token = tk_hyphen
                   self%token_char = c
+               case (SYMBOL_BSLH)
+                  self%current_token = tk_backslash
+                  self%token_char = c
                case default
                   self%current_token = tk_char
                   self%token_char = c

@@ -423,7 +423,7 @@ contains
       prev = ''
       curr = ''
       backslashed = .false.
-      do while (self%tape%current_token /= tk_rsbracket)
+      outer: do while (self%tape%current_token /= tk_rsbracket)
          prev = curr
          if (self%tape%current_token == tk_end) then
             return
@@ -433,13 +433,13 @@ contains
          curr = self%tape%token_char(1:ie)
          buf = buf//curr
 
-         call self%tape%get_token(class_flag=.true.)
-
-         if (curr == SYMBOL_BSLH .and. prev /= SYMBOL_BSLH) then
+         if (self%tape%current_token == tk_backslash .and. .not. backslashed) then
             backslashed = .true.
          else
             backslashed = .false.
          end if
+
+         call self%tape%get_token(class_flag=.true.)
          
          ! for an escaped right square bracket 
          if (self%tape%current_token == tk_rsbracket .and. backslashed) then
@@ -447,9 +447,10 @@ contains
             curr = self%tape%token_char(1:ie)
             buf = buf//curr
             call self%tape%get_token(class_flag=.true.)
+            backslashed = .false.
          end if
 
-      end do
+      end do outer
 
       ! If the character class pattern is empty, return false. 
       if (len(buf) == 0) then
