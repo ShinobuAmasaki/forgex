@@ -38,6 +38,7 @@ module forgex_parameters_m
 
    ! These character constants represent characters that have special
    ! meaning in regular expression parsing.
+   character(0), parameter, public :: EMPTY_CHAR  = ''
    character(1), parameter, public :: SYMBOL_VBAR = '|'  ! vartical bar
    character(1), parameter, public :: SYMBOL_LPAR = '('  ! left parentheses
    character(1), parameter, public :: SYMBOL_RPAR = ')'  ! right parentheses
