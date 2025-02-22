@@ -19,6 +19,7 @@ module forgex_syntax_tree_error_m
       enumerator :: SYNTAX_ERR_CURLYBRACE_MISSING
       enumerator :: SYNTAX_ERR_CURLYBRACE_UNEXPECTED
       enumerator :: SYNTAX_ERR_INVALID_RANGE
+      enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
    end enum
 
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
@@ -30,7 +31,7 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_r_curlybrace_missing     = "ERROR: Closing right curlybrace is expected."
    character(*), parameter :: err_r_curlybrace_unexpected  = "ERROR: Unexpected closing right curlybrace error."
    character(*), parameter :: err_invalid_range            = "ERROR: Given range is invalid."
-
+   character(*), parameter :: err_escaped_symbol_missing   = "ERROR: Pattern cannot end with a trailing unescaped backslash."
 contains
 
    pure function get_error_message(code) result(msg)
@@ -43,21 +44,27 @@ contains
          msg = err_generic
       case (SYNTAX_ERR_PARENTHESIS_MISSING)
          msg = err_r_parenthesis_missing
+
       case (SYNTAX_ERR_PARENTHESIS_UNEXPECTED)
          msg = err_r_parenthesis_unexpected
 
       case (SYNTAX_ERR_BRACKET_MISSING)
          msg = err_r_bracket_missing
+
       case (SYNTAX_ERR_BRACKET_UNEXPECTED)
          msg = err_r_bracket_unexpected
 
       case (SYNTAX_ERR_CURLYBRACE_MISSING)
          msg = err_r_curlybrace_missing
+   
       case (SYNTAX_ERR_CURLYBRACE_UNEXPECTED)
          msg = err_r_curlybrace_unexpected
 
       case (SYNTAX_ERR_INVALID_RANGE)
          msg = err_invalid_range
+
+      case (SYNTAX_ERR_ESCAPED_SYMBOL_MISSING)
+         msg = err_escaped_symbol_missing
 
       case default
          msg = err_is_nothing

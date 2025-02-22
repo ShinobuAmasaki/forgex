@@ -615,7 +615,10 @@ contains
          seglist(5) = SEG_FF
          seglist(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seglist)
-
+      case (EMPTY_CHAR)
+         self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
+         self%is_valid_pattern = .false.
+         return
       case default
          chara = self%tape%token_char
          seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
@@ -879,7 +882,7 @@ contains
 
          if (c == SYMBOL_HYPN) then
             prev = b
-            if (a == SYMBOL_HYPN) then
+            if (a == SYMBOL_HYPN .or. b == SYMBOL_HYPN) then
                is_valid = .false.
                return
             else

@@ -130,7 +130,7 @@ contains
    !  `current_token` component.
    !  This is a type-bound procedure of `tape_t`.
    pure subroutine get_token(self, class_flag)
-      use :: forgex_utf8_m, only: idxutf8
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8
       implicit none
       class(tape_t),     intent(inout) :: self
       logical, optional, intent(in)    :: class_flag
@@ -139,7 +139,7 @@ contains
       integer(int32)            :: ib, ie
 
       ib = self%idx
-      if (ib > len(self%str)) then
+      if (ib == INVALID_CHAR_INDEX .or. ib > len(self%str)) then
          self%current_token = tk_end
          self%token_char = ''
       else
@@ -177,11 +177,10 @@ contains
                self%current_token = tk_question
             case (SYMBOL_BSLH)
                self%current_token = tk_backslash
-
-               ib = ie +1
+               ib = next_idxutf8(self%str, ie)
                ie = idxutf8(self%str, ib)
-
                self%token_char = self%str(ib:ie)
+
             case (SYMBOL_LSBK)
                self%current_token = tk_lsbracket
             case (SYMBOL_RSBK)
@@ -202,7 +201,7 @@ contains
             end select
          end if
 
-         self%idx = ie + 1
+         self%idx = next_idxutf8(self%str, ib)
 
       end if
    end subroutine get_token
