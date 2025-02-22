@@ -461,7 +461,7 @@ contains
       is_inverted = .false.
       if (buf(1:1) == SYMBOL_CRET) then
          is_inverted = .true.
-         buf = buf(2:len(buf))
+         buf = buf(2:len(buf))  ! May this assignment be a problem?
       end if
 
       ! The variable siz stores the length of buf.
