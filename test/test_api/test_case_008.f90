@@ -16,6 +16,9 @@ program test_case_008
 
    call runner_match("[\[]", "[", .true. , res)
    call runner_match("[\[]+", "[[", .true. , res)
+   call runner_match("[\\]", "\", .true., res)
+   call runner_match("[\\\]]", "]", .true., res)
+   call runner_match("[\\\]]", "\", .true., res)
    call runner_match("[\[-\]]", "[", .true. , res)
    call runner_match("[\[-\]]", "\", .true. , res)
    call runner_match("[\]]", "]", .true. , res)
