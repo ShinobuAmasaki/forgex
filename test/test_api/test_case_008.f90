@@ -27,8 +27,16 @@ program test_case_008
    call runner_match("[\{-\}]", "|", .true. , res)
    call runner_match("[-\{-\}]*", "{|}", .true. , res)
    call runner_match("[\}]", "}", .true. , res)
-   ! call runner_match("", "", , res)
-   ! call runner_match("", "", , res)
+
+   call runner_match("(a*)*", "aaa", .true., res)
+   call runner_match("(.+)*", "xyz", .true., res)
+   call runner_match("(\d+)?", "", .true., res)
+   call runner_match("(\d{2,4}-\d{2,4}-\d{2,4})", "1234-567-890", .true., res)
+   call runner_match("(\d{2,4}-\d{2,4}-\d{2,4})", "1234--567", .false., res)
+   call runner_match("(\w+\s*)+", "Hi Alice", .true., res)
+   call runner_match("(\w+\s*)+", "123456", .true., res)
+   call runner_match("(\w+\s*)+", "123456 foo", .true., res)
+
    ! call runner_match("", "", , res)
    ! call runner_match("", "", , res)
    ! call runner_match("", "", , res)
