@@ -314,6 +314,8 @@ contains
    end function symbol_to_segment
 
 
+   !> This procedure registers given segment_t value to segment_t type array,
+   !> increments counter of the actual size of the array, and initializes temporary variable.
    pure subroutine register_segment_to_list(segment_list, segment, k, ierr)
       use :: forgex_parameters_m, only: SEGMENT_REGISTERED, SEGMENT_REJECTED
       implicit none
@@ -321,10 +323,14 @@ contains
       type(segment_t), intent(inout) :: segment
       integer, intent(inout) :: k
       integer, intent(inout) :: ierr
+
       if (segment%validate()) then
          k = k + 1
-         segment_list(k) = segment
-         segment = segment_t()
+
+         segment_list(k) = segment ! register
+         
+         segment = segment_t() ! initialze
+
          ierr = SEGMENT_REGISTERED
       else
          ierr = SEGMENT_REJECTED
