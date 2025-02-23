@@ -739,10 +739,11 @@ contains
    end subroutine tree_graph__range
 
 
+   !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, &
-         character_array_t, str2array => character_string_to_array, &
-         parse_backslash => parse_backslash_and_hyphen_in_char_array
+         character_array_t, character_string_to_array, &
+         parse_backslash_and_hyphen_in_char_array
       use :: forgex_parameters_m
       use :: forgex_segment_m, register => register_segment_to_list
       implicit none
@@ -755,23 +756,26 @@ contains
       integer :: i, j, siz, jerr
       type(segment_t) :: seg
       type(segment_t), allocatable :: list(:)
-      logical :: backslashed, prev_hyphened
+      logical :: backslashed
+      logical :: prev_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
-      character(:), allocatable :: c
+      character(:), allocatable :: c ! Temporary variable stores a character of interest.
 
+      ! Initialize
       is_valid = .true.
       backslashed = .false.
-
+      prev_hyphenated = .false.
       seg = segment_t()
       
-      c = EMPTY_CHAR
-      call str2array(str, ca)
+      ! Convert to an array from a pattern string.
+      call character_string_to_array(str, ca)
       if (.not. allocated(ca)) then
          is_valid = .false.
          return
       end if
 
-      call parse_backslash(ca)
+      ! Remove backslash and hyphen, and raise respective flag for each component.
+      call parse_backslash_and_hyphen_in_char_array(ca)
 
       siz = size(ca, dim=1)      
       if (siz < 1) then
@@ -780,13 +784,21 @@ contains
       end if
 
       allocate(list(siz))
-      j = 0
-      prev_hyphened = .false.
+
+      ! Initialize cache and counter variable.
+      j = 0 ! Couter of actual list size for `seglist`.
+      c = EMPTY_CHAR
+
+      ! Main loop
       outer: do i = 1, siz
          c = ca(i)%c
-         backslashed = ca(i)%is_escaped
+         backslashed = ca(i)%is_escaped  ! cache `is_escaped` flag
 
-         if (ca(i)%is_hyphened) then
+         ! Note that all branches require a `backslashed` conditional.
+
+         ! If the current character is hyphenated, store only the minimum value
+         ! in the `seg` variable.
+         if (ca(i)%is_hyphenated) then
             if (backslashed) then
                select case (c)
                case (SYMBOL_BSLH)
@@ -807,11 +819,15 @@ contains
             else
                seg%min = ichar_utf8(c)
             end if
-            prev_hyphened = .true.
+
+            ! Tell the next cycle that the previous character was hyphenated. 
+            prev_hyphenated = .true.
             cycle
+
          end if
 
-         if (prev_hyphened) then
+         ! If the flag is raised, store maximum code point in the component of segment.
+         if (prev_hyphenated) then
             if (backslashed) then
                select case (c)
                case (SYMBOL_BSLH)
@@ -832,16 +848,20 @@ contains
                seg%max = ichar_utf8(c)
             end if
 
+            ! Once the maximum value is determined, register `seg` in the `list`.
             call register(list, seg, j, jerr)
             if (jerr == SEGMENT_REJECTED) then
                is_valid = .false.
                return
             end if
 
-            prev_hyphened = .false.
+            ! Put down the flag.
+            prev_hyphenated = .false.
             cycle
          end if
 
+         ! If neither the current nor previous character is hyphenated,
+         ! minimum and maximum values store the same code point.
          if (backslashed) then
             select case (c)
             case (SYMBOL_BSLH)
@@ -875,9 +895,8 @@ contains
          end if
       end do outer
 
-
       allocate(seglist(j))
-      seglist(1:j) = list(1:j)
+      seglist(1:j) = list(1:j) ! copy local array into the argument array.
 
    end subroutine interpret_class_string
 
