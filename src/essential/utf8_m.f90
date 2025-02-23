@@ -16,6 +16,7 @@ module forgex_utf8_m
    type :: character_array_t
       character(:), allocatable :: c
       logical :: is_escaped = .false.
+      logical :: is_hyphened = .false.
    end type
 
    public :: character_array_t
@@ -30,7 +31,7 @@ module forgex_utf8_m
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
    public :: character_string_to_array
-   public :: parse_backslash_in_char_array
+   public :: parse_backslash_and_hyphen_in_char_array
 
 contains
 
@@ -545,7 +546,7 @@ contains
    end subroutine character_string_to_array
       
    
-   pure subroutine parse_backslash_in_char_array(array)
+   pure subroutine parse_backslash_and_hyphen_in_char_array(array)
       use :: forgex_parameters_m
       implicit none
       type(character_array_t), intent(inout), allocatable :: array(:)
@@ -561,6 +562,8 @@ contains
       do i = 1, size(array, dim=1)
          if (array(i)%c == SYMBOL_BSLH .and. .not. temp(k)%is_escaped) then
             temp(k)%is_escaped = .true.
+         else if (array(i)%c == SYMBOL_HYPN .and. .not. i == 1) then
+            temp(k-1)%is_hyphened = .true.
          else
             temp(k)%c = array(i)%c
             k = k + 1
@@ -573,7 +576,7 @@ contains
 
       array(:) = temp(1:siz)
       
-   end subroutine parse_backslash_in_char_array
+   end subroutine parse_backslash_and_hyphen_in_char_array
 
 
 end module forgex_utf8_m

@@ -742,7 +742,7 @@ contains
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, &
          character_array_t, str2array => character_string_to_array, &
-         parse_backslash => parse_backslash_in_char_array
+         parse_backslash => parse_backslash_and_hyphen_in_char_array
       use :: forgex_parameters_m
       use :: forgex_segment_m, register => register_segment_to_list
       implicit none
@@ -755,14 +755,13 @@ contains
       integer :: i, j, siz
       type(segment_t) :: seg
       type(segment_t), allocatable :: list(:)
-      logical :: backslashed, hyphened
+      logical :: backslashed, prev_hyphened
       type(character_array_t), allocatable :: ca(:) ! character array
       character(:), allocatable :: c, b, a, z
       character(:), allocatable :: prev
 
       is_valid = .true.
       backslashed = .false.
-      hyphened = .false.
 
       seg = segment_t()
       
@@ -785,159 +784,34 @@ contains
 
       allocate(list(siz))
       j = 0
-
+      prev_hyphened = .false.
       outer: do i = 1, siz
          c = ca(i)%c
+         backslashed = ca(i)%is_escaped
          if (i>1) b = ca(i-1)%c
          if (i>2) a = ca(i-2)%c
 
-         if (i == 1 .and. c == SYMBOL_HYPN) then
+         if (ca(i)%is_hyphened) then
             seg%min = ichar_utf8(c)
+            prev_hyphened = .true.
+            cycle
+         end if
+
+         if (prev_hyphened) then
             seg%max = ichar_utf8(c)
             call register(list, seg, j)
+            prev_hyphened = .false.
             cycle
-         end if
-
-         ! if (c == SYMBOL_BSLH) then
-         if (c == SYMBOL_BSLH .and. .not. backslashed) then
-            prev = b
-            backslashed = .true.
-            cycle
-         end if
-
-         if (c == SYMBOL_HYPN) then
-            prev = b
-            if (a == SYMBOL_HYPN .or. b == SYMBOL_HYPN) then
-               is_valid = .false.
-               return
-            else
-               hyphened = .true.
-            end if
-            cycle
-         end if
-
-         if (backslashed .and. .not. hyphened) then
-            select case (c)
-            case (SYMBOL_BSLH)
-               seg%min = ichar_utf8(SYMBOL_BSLH)
-            case (SYMBOL_LCRB)
-               seg%min = ichar_utf8(SYMBOL_LCRB)
-            case (SYMBOL_RCRB)
-               seg%min = ichar_utf8(SYMBOL_RCRB)
-            case (SYMBOL_LSBK)
-               seg%min = ichar_utf8(SYMBOL_LSBK)
-            case (SYMBOL_RSBK)
-               seg%min = ichar_utf8(SYMBOL_RSBK)
-            case default
-               ierr = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
-               is_valid = .false.
-               return
-            end select
-
-            backslashed = .false.
-            cycle
-
-         else if (backslashed .and. hyphened) then
-            select case (c)
-            case (SYMBOL_BSLH)
-               seg%max = ichar_utf8(SYMBOL_BSLH)
-            case (SYMBOL_LCRB)
-               seg%max = ichar_utf8(SYMBOL_LCRB)
-            case (SYMBOL_RCRB)
-               seg%max = ichar_utf8(SYMBOL_RCRB)
-            case (SYMBOL_LSBK)
-               seg%max = ichar_utf8(SYMBOL_LSBK)
-            case (SYMBOL_RSBK)
-               seg%max = ichar_utf8(SYMBOL_RSBK)
-            case default
-               ! write(0,*) "L848"
-               is_valid = .false.
-               return
-            end select
-
-            ! write(0,*) "L852", seg
-            if (seg%validate()) then
-               call register(list, seg, j)
-               
-            else
-               ! write(0,*) "L858"
-               is_valid = .false.
-               return
-            end if
-            hyphened = .false.
-            backslashed = .false.
-            cycle
-         end if
-
-         if (hyphened) then
-            if (c == SYMBOL_BSLH) cycle
-            if (c == SYMBOL_HYPN) cycle
-
-            hyphened = .false.
-            seg%min = ichar_utf8(prev)
-            seg%max = ichar_utf8(c)
-            ! write(0,*) "L873", prev, c, seg
-            if (.not. seg%validate()) then
-               ! write(0,*) "L874"
-               is_valid = .false.
-               return
-            end if
-
-            if (i == siz) then
-               seg%min = ichar_utf8(prev)
-               seg%max = ichar_utf8(c)
-
-               if (seg%validate()) then
-                  call register(list, seg, j)
-                  
-               else
-                  ! write(0,*) "L887"
-                  is_valid = .false.
-                  return
-               end if
-               exit outer
-            end if
-
-            if (b == SYMBOL_BSLH) then
-               seg%min = ichar_utf8(prev)
-            else
-               seg%min = ichar_utf8(a)
-            end if
-
-            seg%max = ichar_utf8(c)
-            if (seg%validate()) then
-               call register(list, seg, j)
-            else
-               ! write(0,*) "L904"
-               is_valid = .false.
-               return
-            end if
-
          end if
 
          seg%min = ichar_utf8(c)
          seg%max = ichar_utf8(c)
 
-         if (seg%validate()) call register(list, seg, j)
-
-      end do outer
-
-      ! write(0,*) "L928"
-
-      if (backslashed) then
-         is_valid = .false.
-         return
-      end if
-
-      if (hyphened) then
-         if (seg%min < ichar_utf8(c)) then
-            seg%max = ichar_utf8(c)
-            if (seg%validate()) call register(list, seg, j)
+         if (seg%validate()) then
+            call register(list, seg, j)
          end if
-         seg%min = ichar_utf8(SYMBOL_HYPN)
-         seg%max = ichar_utf8(SYMBOL_HYPN)
-         if (seg%validate()) call register(list, seg, j)
-      end if
+
+      end do outer   
 
       allocate(seglist(j))
       seglist(1:j) = list(1:j)
