@@ -64,6 +64,10 @@ program main
    call runner_validate("[\\\]]", .true., res)
    call runner_validate("[\\\]]", .true., res)
 
+   call runner_validate("[a-z]", .true., res)
+   call runner_validate("[\a]", .false., res)
+   call runner_validate("[z-a]", .false., res)
+
 
 !=====================================================================!
    if (res) then

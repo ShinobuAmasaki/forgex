@@ -314,14 +314,21 @@ contains
    end function symbol_to_segment
 
 
-   pure subroutine register_segment_to_list(segment_list, segment, k)
+   pure subroutine register_segment_to_list(segment_list, segment, k, ierr)
+      use :: forgex_parameters_m, only: SEGMENT_REGISTERED, SEGMENT_REJECTED
       implicit none
       type(segment_t), intent(inout) :: segment_list(:)
       type(segment_t), intent(inout) :: segment
       integer, intent(inout) :: k
-      k = k + 1
-      segment_list(k) = segment
-      segment = segment_t()
+      integer, intent(inout) :: ierr
+      if (segment%validate()) then
+         k = k + 1
+         segment_list(k) = segment
+         segment = segment_t()
+         ierr = SEGMENT_REGISTERED
+      else
+         ierr = SEGMENT_REJECTED
+      end if
    end subroutine register_segment_to_list
 
 

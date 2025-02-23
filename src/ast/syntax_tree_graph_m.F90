@@ -752,13 +752,12 @@ contains
       logical, intent(inout) :: is_valid
       integer, intent(inout) :: ierr
 
-      integer :: i, j, siz
+      integer :: i, j, siz, jerr
       type(segment_t) :: seg
       type(segment_t), allocatable :: list(:)
       logical :: backslashed, prev_hyphened
       type(character_array_t), allocatable :: ca(:) ! character array
-      character(:), allocatable :: c, b, a, z
-      character(:), allocatable :: prev
+      character(:), allocatable :: c
 
       is_valid = .true.
       backslashed = .false.
@@ -766,8 +765,6 @@ contains
       seg = segment_t()
       
       c = EMPTY_CHAR
-      b = EMPTY_CHAR
-      a = EMPTY_CHAR
       call str2array(str, ca)
       if (.not. allocated(ca)) then
          is_valid = .false.
@@ -788,30 +785,96 @@ contains
       outer: do i = 1, siz
          c = ca(i)%c
          backslashed = ca(i)%is_escaped
-         if (i>1) b = ca(i-1)%c
-         if (i>2) a = ca(i-2)%c
 
          if (ca(i)%is_hyphened) then
-            seg%min = ichar_utf8(c)
+            if (backslashed) then
+               select case (c)
+               case (SYMBOL_BSLH)
+                  seg%min = ichar_utf8(SYMBOL_BSLH)
+               case (SYMBOL_LCRB)
+                  seg%min = ichar_utf8(SYMBOL_LCRB)
+               case (SYMBOL_RCRB)
+                  seg%min = ichar_utf8(SYMBOL_RCRB)
+               case (SYMBOL_LSBK)
+                  seg%min = ichar_utf8(SYMBOL_LSBK)
+               case (SYMBOL_RSBK)
+                  seg%min = ichar_utf8(SYMBOL_RSBK)
+               case default
+                  ierr = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
+                  is_valid = .false.
+                  return
+               end select
+            else
+               seg%min = ichar_utf8(c)
+            end if
             prev_hyphened = .true.
             cycle
          end if
 
          if (prev_hyphened) then
-            seg%max = ichar_utf8(c)
-            call register(list, seg, j)
+            if (backslashed) then
+               select case (c)
+               case (SYMBOL_BSLH)
+                  seg%max = ichar_utf8(SYMBOL_BSLH)
+               case (SYMBOL_LCRB)
+                  seg%max = ichar_utf8(SYMBOL_LCRB)
+               case (SYMBOL_RCRB)
+                  seg%max = ichar_utf8(SYMBOL_RCRB)
+               case (SYMBOL_LSBK)
+                  seg%max = ichar_utf8(SYMBOL_LSBK)
+               case (SYMBOL_RSBK)
+                  seg%max = ichar_utf8(SYMBOL_RSBK)
+               case default
+                  is_valid = .false.
+                  return
+               end select
+            else
+               seg%max = ichar_utf8(c)
+            end if
+
+            call register(list, seg, j, jerr)
+            if (jerr == SEGMENT_REJECTED) then
+               is_valid = .false.
+               return
+            end if
+
             prev_hyphened = .false.
             cycle
          end if
 
-         seg%min = ichar_utf8(c)
-         seg%max = ichar_utf8(c)
-
-         if (seg%validate()) then
-            call register(list, seg, j)
+         if (backslashed) then
+            select case (c)
+            case (SYMBOL_BSLH)
+               seg%min = ichar_utf8(SYMBOL_BSLH)
+               seg%max = ichar_utf8(SYMBOL_BSLH)
+            case (SYMBOL_LCRB)
+               seg%min = ichar_utf8(SYMBOL_LCRB)
+               seg%max = ichar_utf8(SYMBOL_LCRB)
+            case (SYMBOL_RCRB)
+               seg%min = ichar_utf8(SYMBOL_RCRB)
+               seg%max = ichar_utf8(SYMBOL_RCRB)
+            case (SYMBOL_LSBK)
+               seg%min = ichar_utf8(SYMBOL_LSBK)
+               seg%max = ichar_utf8(SYMBOL_LSBK)
+            case (SYMBOL_RSBK)
+               seg%min = ichar_utf8(SYMBOL_RSBK)
+               seg%max = ichar_utf8(SYMBOL_RSBK)
+            case default
+               is_valid = .false.
+               return
+            end select
+         else
+            seg%min = ichar_utf8(c)
+            seg%max = ichar_utf8(c)
          end if
 
-      end do outer   
+         call register(list, seg, j, ierr)
+         if (jerr == SEGMENT_REJECTED) then
+            is_valid = .false.
+            return
+         end if
+      end do outer
+
 
       allocate(seglist(j))
       seglist(1:j) = list(1:j)

@@ -29,6 +29,9 @@ module forgex_parameters_m
    integer(int32), parameter :: INFINITE = -2
    integer, parameter, public :: INVALID_CHAR_INDEX = -9999
 
+   integer(int32), parameter :: SEGMENT_REGISTERED = 0
+   integer(int32), parameter :: SEGMENT_REJECTED = 1
+
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
    integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x20: white space
