@@ -1,9 +1,9 @@
 name = "forgex"
-version = "3.5.0"
+version = "4.2"
 license = "MIT"
 author = "Amasaki Shinobu"
 maintainer = "amasaki203@gmail.com"
-copyright = "Copyright 2023-2024, Amasaki Shinobu"
+copyright = "Copyright 2023-2025, Amasaki Shinobu"
 homepage = "https://github.com/shinobuamasaki/forgex"
 [build]
 auto-executables = true
