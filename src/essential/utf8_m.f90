@@ -526,7 +526,7 @@ contains
 
    !> This subroutine parses a pattern string for character class,
    !> and outputs `character_array_t` type array.
-   ! 
+   !> When it encounters invalid value along the way, it returns.
    pure subroutine character_string_to_array(str, array)
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
       implicit none
