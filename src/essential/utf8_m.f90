@@ -15,6 +15,7 @@ module forgex_utf8_m
 
    type :: character_array_t
       character(:), allocatable :: c
+      logical :: is_escaped = .false.
    end type
 
    public :: character_array_t
@@ -29,6 +30,7 @@ module forgex_utf8_m
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
    public :: character_string_to_array
+   public :: parse_backslash_in_char_array
 
 contains
 
@@ -542,5 +544,36 @@ contains
 
    end subroutine character_string_to_array
       
+   
+   pure subroutine parse_backslash_in_char_array(array)
+      use :: forgex_parameters_m
+      implicit none
+      type(character_array_t), intent(inout), allocatable :: array(:)
+      type(character_array_t), allocatable :: temp(:)
+      integer :: i, k, siz
+
+      if (.not. allocated(array)) return
+      if (size(array, dim=1) < 1) return 
+
+      allocate(temp(size(array, dim=1)))
+
+      k = 1
+      do i = 1, size(array, dim=1)
+         if (array(i)%c == SYMBOL_BSLH .and. .not. temp(k)%is_escaped) then
+            temp(k)%is_escaped = .true.
+         else
+            temp(k)%c = array(i)%c
+            k = k + 1
+         end if
+      end do
+
+      siz = k - 1
+      if (allocated(array)) deallocate(array)
+      allocate(array(siz))
+
+      array(:) = temp(1:siz)
+      
+   end subroutine parse_backslash_in_char_array
+
 
 end module forgex_utf8_m
