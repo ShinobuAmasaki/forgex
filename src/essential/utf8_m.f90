@@ -553,7 +553,8 @@ contains
    end subroutine character_string_to_array
       
    !> This subroutine processes a character array, and outputs the corresponding
-   !> flagged array. It removes backslash and hyphen characters, 
+   !> flagged array. It removes backslash and hyphen characters, and then flags 
+   !> the current element in `character_array_t` type array.
    pure subroutine parse_backslash_and_hyphen_in_char_array(array)
       use :: forgex_parameters_m
       implicit none

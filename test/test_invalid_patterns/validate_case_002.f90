@@ -52,6 +52,9 @@ program main
    call runner_validate("[--]", .false., res)
    call runner_validate("[---]", .false., res)
 
+   call runner_validate("[{]", .true., res)
+   call runner_validate("[}]", .true., res)
+
    call runner_validate("[+]", .true., res)
    call runner_validate("[\[-\]]", .true., res)
    call runner_validate("[\[-\\]", .true., res)
@@ -76,7 +79,7 @@ program main
    call runner_validate("(a*)*", .true., res)
 
    call runner_validate("(\w+\s*)+", .true., res)
-
+   
 !=====================================================================!
    if (res) then
       print *, "=== PATTRERN VALIDATE CASE 2 END ==="
