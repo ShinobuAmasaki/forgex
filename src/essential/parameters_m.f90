@@ -27,7 +27,10 @@ module forgex_parameters_m
 
    integer(int32), parameter :: INVALID_REPEAT_VAL = -1
    integer(int32), parameter :: INFINITE = -2
-   integer, parameter, public :: INVALID_CHAR_INDEX = -1
+   integer, parameter, public :: INVALID_CHAR_INDEX = -9999
+
+   integer(int32), parameter :: SEGMENT_REGISTERED = 0
+   integer(int32), parameter :: SEGMENT_REJECTED = 1
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
@@ -38,6 +41,7 @@ module forgex_parameters_m
 
    ! These character constants represent characters that have special
    ! meaning in regular expression parsing.
+   character(0), parameter, public :: EMPTY_CHAR  = ''
    character(1), parameter, public :: SYMBOL_VBAR = '|'  ! vartical bar
    character(1), parameter, public :: SYMBOL_LPAR = '('  ! left parentheses
    character(1), parameter, public :: SYMBOL_RPAR = ')'  ! right parentheses
@@ -65,7 +69,7 @@ module forgex_parameters_m
 
    !> This constant is used to indicate that the left and right destination
    !> have not yet been registered.
-   integer(int32), parameter, public :: INVALID_INDEX  = -1
+   integer(int32), parameter, public :: INVALID_INDEX  = -9999
 
    !> This constant is used to represent a terminal node in a syntax tree that
    !> has no destination nodes to the left or right.

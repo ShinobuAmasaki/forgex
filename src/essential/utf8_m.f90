@@ -13,7 +13,19 @@ module forgex_utf8_m
    implicit none
    private
 
+   type :: character_array_t
+   !! This derived-type contains single UTF-8 character and two flags.
+   !! It will be used to parse character class patterns enclosed in square brackets. 
+   !! `is_escaped` is true when the character has preceding backslash.
+   !! `is_hyphenated` is true when the character has following hyphen except for First character.
+      character(:), allocatable :: c
+      logical :: is_escaped = .false.
+      logical :: is_hyphenated = .false.
+   end type
+
+   public :: character_array_t
    public :: idxutf8
+   public :: next_idxutf8
    public :: char_utf8, ichar_utf8
    public :: count_token
    public :: is_first_byte_of_character
@@ -22,6 +34,8 @@ module forgex_utf8_m
    public :: is_valid_multiple_byte_character
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
+   public :: character_string_to_array
+   public :: parse_backslash_and_hyphen_in_char_array
 
 contains
 
@@ -40,6 +54,12 @@ contains
       integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7
          ! Shifted byte values.
 
+
+      ! If the index exceeds the length of str, return the invalid value.
+      if (curr > len(str)) then
+         tail = INVALID_CHAR_INDEX
+         return
+      end if
 
       tail = curr    ! Initialize tail to the current index.
 
@@ -89,6 +109,29 @@ contains
       end do
 
    end function idxutf8
+
+
+   !> This function returns the index of the next character,
+   !> given the string str and the current index curr.
+   !> If the current index is for the last character, it returns the invalid value.
+   pure function next_idxutf8(str, curr) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      character(*), intent(in) :: str
+      integer, intent(in) :: curr
+      
+      integer :: res
+      integer :: curr_end
+
+      curr_end = idxutf8(str, curr)
+
+      if (curr_end /= INVALID_CHAR_INDEX) then
+         res = curr_end + 1
+      else
+         res = INVALID_CHAR_INDEX
+      end if
+      
+   end function next_idxutf8
 
 
    pure function is_valid_multiple_byte_character(chara) result(res)
@@ -480,5 +523,79 @@ contains
       end if
    
    end function trim_invalid_utf8_byte
+
+   !> This subroutine parses a pattern string for character class,
+   !> and outputs `character_array_t` type array.
+   !> When it encounters invalid value along the way, it returns.
+   pure subroutine character_string_to_array(str, array)
+      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      implicit none
+      character(*), intent(in) :: str
+      type(character_array_t), intent(inout), allocatable :: array(:)
+
+      integer :: siz, ib, ie, j
+
+      siz = len_utf8(str)
+      if (siz < 1) return
+
+      if (allocated(array)) deallocate(array)
+      allocate(array(siz))
+
+      ib = 0
+      ie = 0
+      do j = 1, siz
+         ib = ie + 1
+         ie = idxutf8(str, ib)
+         if (ib == INVALID_CHAR_INDEX .or. ie == INVALID_CHAR_INDEX) return
+         array(j)%c = str(ib:ie)
+      end do
+
+   end subroutine character_string_to_array
+      
+   !> This subroutine processes a character array, and outputs the corresponding
+   !> flagged array. It removes backslash and hyphen characters, and then flags 
+   !> the current element in `character_array_t` type array.
+   pure subroutine parse_backslash_and_hyphen_in_char_array(array)
+      use :: forgex_parameters_m
+      implicit none
+      type(character_array_t), intent(inout), allocatable :: array(:)
+      type(character_array_t), allocatable :: temp(:)
+      integer :: i, k, siz
+
+      if (.not. allocated(array)) return
+      if (size(array, dim=1) < 1) return 
+
+      allocate(temp(size(array, dim=1)))
+
+      k = 1 ! actual size counter to output.
+
+      ! Main loop
+      do i = 1, size(array, dim=1) ! i is array's index
+
+         if (array(i)%c == SYMBOL_BSLH .and. .not. temp(k)%is_escaped) then
+            ! If the current character is backslash
+            ! except the `is_escaped` of `temp(k)` is true.
+            temp(k)%is_escaped = .true.
+         
+         else if (array(i)%c == SYMBOL_HYPN .and. .not. i == 1) then
+            ! If the current character is hyphen,
+            ! except for the first character. 
+            temp(k-1)%is_hyphenated = .true.
+         
+         else
+            ! For characters has no special meaning.
+            temp(k)%c = array(i)%c
+            k = k + 1
+         end if
+      end do
+
+      ! Copy from local array to the arguemnt array.
+      siz = k - 1
+      if (allocated(array)) deallocate(array)
+      allocate(array(siz))
+      array(:) = temp(1:siz)
+      
+   end subroutine parse_backslash_and_hyphen_in_char_array
+
 
 end module forgex_utf8_m

@@ -47,7 +47,39 @@ program main
    call runner_validate("a{1,b}", .false., res)
    call runner_validate("a{2,1}", .false., res)
 
+   call runner_validate("[]", .false., res)
+   call runner_validate("[-]", .true., res)
+   call runner_validate("[--]", .false., res)
+   call runner_validate("[---]", .false., res)
 
+   call runner_validate("[{]", .true., res)
+   call runner_validate("[}]", .true., res)
+
+   call runner_validate("[+]", .true., res)
+   call runner_validate("[\[-\]]", .true., res)
+   call runner_validate("[\[-\\]", .true., res)
+   call runner_validate("[a]{3,4}", .true., res)
+   call runner_validate("[--]", .false., res)
+   call runner_validate("\\\", .false., res)
+   call runner_validate("\\", .true., res)
+   call runner_validate("\", .false., res)
+   call runner_validate("[^]", .false., res)
+   call runner_validate("[\{]", .true., res)
+
+   call runner_validate("[\\]", .true., res)
+   call runner_validate("[\\\]]", .true., res)
+   call runner_validate("[\\\]]", .true., res)
+
+   call runner_validate("[a-z]", .true., res)
+   call runner_validate("[\a]", .false., res)
+   call runner_validate("[z-a]", .false., res)
+   call runner_validate("[a-]", .false., res)
+   call runner_validate("[\{-]", .false., res)
+   
+   call runner_validate("(a*)*", .true., res)
+
+   call runner_validate("(\w+\s*)+", .true., res)
+   
 !=====================================================================!
    if (res) then
       print *, "=== PATTRERN VALIDATE CASE 2 END ==="

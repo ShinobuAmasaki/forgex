@@ -23,6 +23,8 @@ module forgex_segment_m
 
    public :: sort_segment_by_min
    public :: merge_segments
+   public :: segment_is_valid
+   public :: register_segment_to_list
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -176,8 +178,10 @@ contains
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
+      type(segment_t) :: init
 
-      res = self%min <= self%max
+      res = self%min /= init%min .and. self%max /= init%max &
+      .and. self%min <= self%max
    end function segment_is_valid
 
 
@@ -308,6 +312,31 @@ contains
       ! Create a segment corresponding to the code, and return it.
       res = segment_t(code, code)
    end function symbol_to_segment
+
+
+   !> This procedure registers given segment_t value to segment_t type array,
+   !> increments counter of the actual size of the array, and initializes temporary variable.
+   pure subroutine register_segment_to_list(segment_list, segment, k, ierr)
+      use :: forgex_parameters_m, only: SEGMENT_REGISTERED, SEGMENT_REJECTED
+      implicit none
+      type(segment_t), intent(inout) :: segment_list(:)
+      type(segment_t), intent(inout) :: segment
+      integer, intent(inout) :: k
+      integer, intent(inout) :: ierr
+
+      if (segment%validate()) then
+         k = k + 1
+
+         segment_list(k) = segment ! register
+         
+         segment = segment_t() ! initialze
+
+         ierr = SEGMENT_REGISTERED
+      else
+         ierr = SEGMENT_REJECTED
+      end if
+   end subroutine register_segment_to_list
+
 
 !====================================================================-!
 !  Helper procedures
