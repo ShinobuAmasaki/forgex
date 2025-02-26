@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.7% of total for procedures.">62 statements</a>
+                 title=" 1.6% of total for procedures.">65 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -174,7 +174,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~12"></span>
+              <span class="anchor" id="variable-self~46"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -213,6 +213,7 @@
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">seg</span>
 <span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chara</span>
 
+
 <span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">current_token</span><span class="p">)</span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">tk_char</span><span class="p">)</span>
 <span class="w">         </span><span class="n">chara</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">token_char</span>
@@ -231,21 +232,24 @@
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">regex</span><span class="p">()</span>
 <span class="w">      </span>
 <span class="w">         </span><span class="c">! If regex fails, return immediately.</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
 
 <span class="w">         </span><span class="c">! If not a right parenthesis, throw an error.</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">tk_rpar</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_PARENTHESIS_MISSING</span>
-<span class="w">            </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">            </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="k">         end if</span>
 <span class="k">         call </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">get_token</span><span class="p">()</span>
 
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">tk_lsbracket</span><span class="p">)</span>
 <span class="w">         </span><span class="k">call </span><span class="n">self</span><span class="p">%</span><span class="n">char_class</span><span class="p">()</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">tk_rsbracket</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            return</span>
+<span class="k">         end if </span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">current_token</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">tk_rsbracket</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_BRACKET_MISSING</span>
-<span class="w">            </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">            </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">            </span><span class="k">return</span>
 <span class="k">         end if</span>
 <span class="k">         call </span><span class="n">self</span><span class="p">%</span><span class="n">tape</span><span class="p">%</span><span class="n">get_token</span><span class="p">()</span>
@@ -269,17 +273,17 @@
 <span class="w">      </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">tk_rsbracket</span><span class="p">)</span>
 <span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_BRACKET_UNEXPECTED</span>
-<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">         </span><span class="k">return</span>
 
 <span class="k">      case</span><span class="w"> </span><span class="p">(</span><span class="n">tk_rpar</span><span class="p">)</span>
 <span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_PARENTHESIS_UNEXPECTED</span>
-<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">         </span><span class="k">return</span>
 <span class="k">   </span>
 <span class="k">      case </span><span class="n">default</span>
-<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR</span>
-<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN</span>
+<span class="w">         </span><span class="n">self</span><span class="p">%</span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      end select</span>
 
@@ -307,7 +311,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-23 07:28 +0000             </p>
+ on 2025-02-26 11:36 +0000             </p>
           </div>
         </div>
         <br>

@@ -23,6 +23,11 @@ module forgex_segment_m
 
    public :: sort_segment_by_min
    public :: merge_segments
+   public :: segment_is_valid
+   public :: register_segment_to_list
+   public :: parse_segment_width_in_char_array
+   public :: join_two_segments
+
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -37,6 +42,7 @@ module forgex_segment_m
 
    ! See ASCII code set
    type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
+   type(segment_t), parameter, public :: SEG_ERROR = segment_t(-2, -2)
    type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
@@ -176,8 +182,10 @@ contains
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
+      type(segment_t) :: init
 
-      res = self%min <= self%max
+      res = self%min /= init%min .and. self%max /= init%max &
+      .and. self%min <= self%max
    end function segment_is_valid
 
 
@@ -309,8 +317,150 @@ contains
       res = segment_t(code, code)
    end function symbol_to_segment
 
+
+   !> This procedure registers given segment_t value to segment_t type array,
+   !> increments counter of the actual size of the array, and initializes temporary variable.
+   pure subroutine register_segment_to_list(segment_list, segment, k, ierr)
+      use :: forgex_parameters_m, only: SEGMENT_REGISTERED, SEGMENT_REJECTED
+      implicit none
+      type(segment_t), intent(inout) :: segment_list(:)
+      type(segment_t), intent(inout) :: segment
+      integer, intent(inout) :: k
+      integer, intent(inout) :: ierr
+
+      if (segment%validate() .and. k <= size(segment_list)-1) then
+         k = k + 1
+
+         segment_list(k) = segment ! register
+
+         ierr = SEGMENT_REGISTERED
+      else
+         ierr = SEGMENT_REJECTED
+      end if
+   end subroutine register_segment_to_list
+
+
+   !> This subroutine assigns the expected segment size from the character `c` of
+   !> the current array element to its `seg_size`.
+   pure subroutine parse_segment_width_in_char_array (array)
+      use :: forgex_parameters_m
+      use :: forgex_utf8_m
+      implicit none
+      type(character_array_t), intent(inout) :: array(:)
+      type(segment_t), allocatable :: seg(:)
+      integer :: k, n
+
+      n = 0
+      do k = 1, size(array, dim=1)
+         if (array(k)%is_escaped) then
+            select case(array(k)%c)
+            case (ESCAPE_T)
+               n = width_of_segment(SEG_TAB)
+            case (ESCAPE_N)
+               n = width_of_segment(SEG_LF) + width_of_segment(SEG_CR)
+            case (ESCAPE_R)
+               n = width_of_segment(SEG_CR)
+            case (ESCAPE_D)
+               n = width_of_segment(SEG_DIGIT)
+            case (ESCAPE_D_CAPITAL)
+               allocate(seg(1))
+               seg(1) = SEG_DIGIT
+               call invert_segment_list(seg)
+               n = total_width_of_segment(seg)
+
+            case (ESCAPE_W)
+               allocate(seg(4))
+               seg(1) = SEG_LOWERCASE
+               seg(2) = SEG_UPPERCASE
+               seg(3) = SEG_DIGIT
+               seg(4) = SEG_UNDERSCORE
+               n = total_width_of_segment(seg)
+
+            case (ESCAPE_W_CAPITAL)
+               allocate(seg(4))
+               seg(1) = SEG_LOWERCASE
+               seg(2) = SEG_UPPERCASE
+               seg(3) = SEG_DIGIT
+               seg(4) = SEG_UNDERSCORE
+               call invert_segment_list(seg)
+               n = total_width_of_segment(seg)
+
+            case (ESCAPE_S)
+               n = 6
+            case (ESCAPE_S_CAPITAL)
+               allocate(seg(6))
+               seg(1) = SEG_SPACE
+               seg(2) = SEG_TAB
+               seg(3) = SEG_CR
+               seg(4) = SEG_LF
+               seg(5) = SEG_FF
+               seg(6) = SEG_ZENKAKU_SPACE
+               call invert_segment_list(seg)
+               n = total_width_of_segment(seg)
+            case (SYMBOL_BSLH)
+               n = 1
+            case (SYMBOL_LCRB)
+               n = 1
+            case (SYMBOL_RCRB)
+               n = 1
+            case (SYMBOL_LSBK)
+               n = 1
+            case (SYMBOL_RSBK)
+               n = 1
+            case default
+               n = INVALID_SEGMENT_SIZE
+            end select
+         else
+            n = 1
+         end if
+         array(k)%seg_size = n
+      end do
+
+   end subroutine parse_segment_width_in_char_array
+
 !====================================================================-!
 !  Helper procedures
+
+   pure function width_of_segment(seg) result(res)
+      use :: forgex_parameters_m, only: INVALID_SEGMENT_SIZE
+      implicit none
+      type(segment_t), intent(in) :: seg
+      integer :: res
+
+      if (seg%validate()) then
+         res = seg%max - seg%min + 1
+      else
+         res = INVALID_SEGMENT_SIZE
+      end if
+   end function width_of_segment
+
+   pure function total_width_of_segment(seg_list) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      type(segment_t), intent(in) :: seg_list(:)
+      integer :: res, k
+      res = 0
+      do k = 1, size(seg_list)
+         res = res + width_of_segment(seg_list(k))
+      end do
+   end function total_width_of_segment
+
+   !> This function converts two isolated segments into single fused segment
+   !> and returns it.
+   pure function join_two_segments(segA, segB) result(res)
+      implicit none
+      type(segment_t), intent(in) :: segA, segB
+      type(segment_t) :: res
+
+      res = segment_t(segA%min, segB%max)
+
+      if (.not. res%validate()) then
+         res = SEG_INIT
+      end if
+   
+   end function join_two_segments
+
+
    pure subroutine sort_segment_by_min(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)

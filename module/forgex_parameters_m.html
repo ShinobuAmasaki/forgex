@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.6% of total for modules and submodules.">64 statements</a>
+                 title=" 1.5% of total for modules and submodules.">68 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -129,6 +129,7 @@
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-dfa_state_unit">DFA_STATE_UNIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-dfa_transition_base">DFA_TRANSITION_BASE</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-dfa_transition_unit">DFA_TRANSITION_UNIT</a>
+            <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-empty_char">EMPTY_CHAR</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-escape_d">ESCAPE_D</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-escape_d_capital">ESCAPE_D_CAPITAL</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-escape_n">ESCAPE_N</a>
@@ -142,6 +143,7 @@
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-invalid_char_index">INVALID_CHAR_INDEX</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-invalid_index">INVALID_INDEX</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-invalid_repeat_val">INVALID_REPEAT_VAL</a>
+            <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-invalid_segment_size">INVALID_SEGMENT_SIZE</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-lit_opts_index_unit">LIT_OPTS_INDEX_UNIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_c_size">NFA_C_SIZE</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_null_transition">NFA_NULL_TRANSITION</a>
@@ -149,6 +151,8 @@
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_state_limit">NFA_STATE_LIMIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_state_unit">NFA_STATE_UNIT</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-nfa_transition_unit">NFA_TRANSITION_UNIT</a>
+            <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-segment_registered">SEGMENT_REGISTERED</a>
+            <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-segment_rejected">SEGMENT_REJECTED</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-symbol_bslh">SYMBOL_BSLH</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-symbol_cret">SYMBOL_CRET</a>
             <a class="list-group-item" href="../module/forgex_parameters_m.html#variable-symbol_doll">SYMBOL_DOLL</a>
@@ -483,6 +487,23 @@ parameter
         </tr>
         <tr>
             <td>
+              <span class="anchor" id="variable-empty_char"></span>
+              character(len=0),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>EMPTY_CHAR</strong></td>
+<td> =</td>
+                <td>&#39;&#39;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
               <span class="anchor" id="variable-escape_d"></span>
               character(len=1),
             </td>
@@ -663,7 +684,7 @@ parameter
             <td>::</td>
             <td><strong>INVALID_CHAR_INDEX</strong></td>
 <td> =</td>
-                <td>-1</td>
+                <td>-9999</td>
             <td>
                 
             </td>
@@ -680,7 +701,7 @@ parameter
             <td>::</td>
             <td><strong>INVALID_INDEX</strong></td>
 <td> =</td>
-                <td>-1</td>
+                <td>-9999</td>
             <td>
                 <p>This constant is used to indicate that the left and right destination
 have not yet been registered.</p>
@@ -697,6 +718,23 @@ parameter
             </td>
             <td>::</td>
             <td><strong>INVALID_REPEAT_VAL</strong></td>
+<td> =</td>
+                <td>-1</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-invalid_segment_size"></span>
+              integer(kind=int32),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>INVALID_SEGMENT_SIZE</strong></td>
 <td> =</td>
                 <td>-1</td>
             <td>
@@ -821,6 +859,40 @@ parameter
                 <td>16</td>
             <td>
                 <p>Upper limit of NFA transition instance</p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-segment_registered"></span>
+              integer(kind=int32),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>SEGMENT_REGISTERED</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-segment_rejected"></span>
+              integer(kind=int32),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>SEGMENT_REJECTED</strong></td>
+<td> =</td>
+                <td>1</td>
+            <td>
+                
             </td>
         </tr>
         <tr>
@@ -1300,7 +1372,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-23 07:28 +0000             </p>
+ on 2025-02-26 11:36 +0000             </p>
           </div>
         </div>
         <br>

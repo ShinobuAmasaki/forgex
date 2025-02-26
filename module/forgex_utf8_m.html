@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 7.4% of total for modules and submodules.">306 statements</a>
+                 title=" 8.3% of total for modules and submodules.">378 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -117,7 +117,18 @@
   
   
   
-  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#types-0"
+         aria-expanded="false" aria-controls="types-0">
+         <h4 class="card-header bg-primary text-white">Derived Types</h4>
+      </a>
+      <div id="types-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_utf8_m.html#type-character_array_t">character_array_t</a>
+        </div>
+      </div>
+    </div>
+
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#funcs-0"
          aria-expanded="false" aria-controls="funcs-0">
@@ -134,6 +145,7 @@
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-is_valid_multiple_byte_character">is_valid_multiple_byte_character</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-len_trim_utf8">len_trim_utf8</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-len_utf8">len_utf8</a>
+            <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-next_idxutf8">next_idxutf8</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-trim_invalid_utf8_byte">trim_invalid_utf8_byte</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-set_continuation_byte">set_continuation_byte</a>
         </div>
@@ -147,7 +159,9 @@
       </a>
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-character_string_to_array">character_string_to_array</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-is_first_byte_of_character_array">is_first_byte_of_character_array</a>
+            <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-parse_backslash_and_hyphen_in_char_array">parse_backslash_and_hyphen_in_char_array</a>
         </div>
       </div>
     </div>
@@ -176,6 +190,115 @@
 
 
 
+        <section>
+          <h2>Derived Types</h2>
+              <div class="card">
+    <div class="card-header codesum">
+      <span class="anchor" id="type-character_array_t"></span>
+      <h3>
+        type, public&nbsp;::&nbsp;
+        <a href='../type/character_array_t.html'>character_array_t</a>
+        
+      </h3>
+    </div>
+    <div class="card-body">
+      <p>This derived-type contains single UTF-8 character and two flags.
+It will be used to parse character class patterns enclosed in square brackets. 
+<code>is_escaped</code> is true when the character has preceding backslash.
+<code>is_hyphenated</code> is true when the character has following hyphen except for First character.
+<code>seg_size</code> is the number of segments the component represents, which is 1 for normal characters
+and greater than 1 for most shorthand escape sequences.</p>
+
+        <h4>Components</h4>
+          <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Visibility</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+<th></th><th scope="col">Initial</th>        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-c~7"></span>
+              character(len=:),
+            </td>
+              <td>public,</td>
+            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>c</strong></td>
+                <td></td>
+                <td></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-is_escaped"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>is_escaped</strong></td>
+<td> =</td>
+                <td>.false.</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-is_hyphenated"></span>
+              logical,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>is_hyphenated</strong></td>
+<td> =</td>
+                <td>.false.</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-seg_size"></span>
+              integer,
+            </td>
+              <td>public</td>
+            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>seg_size</strong></td>
+<td> =</td>
+                <td>0</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+
+    </div>
+  </div>
+
+        </section>
+        <br>
 
         <section>
           <h2>Functions</h2>
@@ -199,7 +322,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~6"></span>
+              <span class="anchor" id="variable-chara~10"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -290,7 +413,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~16"></span>
+              <span class="anchor" id="variable-str~19"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -352,7 +475,7 @@ its UTF-8 binary string.</p><a href="../proc/ichar_utf8.html" class="pull-right"
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~4"></span>
+              <span class="anchor" id="variable-chara~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -398,7 +521,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~11"></span>
+              <span class="anchor" id="variable-str~13"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -413,7 +536,7 @@ given the string str and the current index curr.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~6"></span>
+              <span class="anchor" id="variable-curr~4"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -461,7 +584,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~5"></span>
+              <span class="anchor" id="variable-chara~9"></span>
               character(len=1),
             </td>
 <td>intent(in)</td>
@@ -506,7 +629,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~3"></span>
+              <span class="anchor" id="variable-chara~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -551,7 +674,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~13"></span>
+              <span class="anchor" id="variable-str~16"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -596,6 +719,53 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
+              <span class="anchor" id="variable-str~17"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-next_idxutf8"></span> <h3>public pure function <a href='../proc/next_idxutf8.html'>next_idxutf8</a>(str, curr) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This function returns the index of the next character,
+given the string str and the current index curr.
+If the current index is for the last character, it returns the invalid value.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
               <span class="anchor" id="variable-str~14"></span>
               character(len=*),
             </td>
@@ -605,6 +775,21 @@ an UTF-8 binary string.</p>
             </td>
             <td>::</td>
             <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-curr~5"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>curr</strong></td>
             <td>
 
             </td>
@@ -641,7 +826,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~7"></span>
+              <span class="anchor" id="variable-chara~11"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -718,6 +903,63 @@ returns one byte of the continuation part.</p>
         <section>
           <h2>Subroutines</h2>
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-character_string_to_array"></span> <h3>public pure subroutine <a href='../proc/character_string_to_array.html'>character_string_to_array</a>(str, array)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine parses a pattern string for character class,
+and outputs <code>character_array_t</code> type array.
+When it encounters invalid value along the way, it returns.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~20"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-array~2"></span>
+              type(<a href='../type/character_array_t.html'>character_array_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>array</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-is_first_byte_of_character_array"></span> <h3>public pure subroutine <a href='../proc/is_first_byte_of_character_array.html'>is_first_byte_of_character_array</a>(str, array, length)  
 </h3></div>
     <div class="card-body">
@@ -738,7 +980,7 @@ It takes a UTF-8 string and return a logical array indicating for each position 
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~15"></span>
+              <span class="anchor" id="variable-str~18"></span>
               character(len=length),
             </td>
 <td>intent(in)</td>
@@ -788,6 +1030,48 @@ It takes a UTF-8 string and return a logical array indicating for each position 
     </div>
   </div>
 
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-parse_backslash_and_hyphen_in_char_array"></span> <h3>public pure subroutine <a href='../proc/parse_backslash_and_hyphen_in_char_array.html'>parse_backslash_and_hyphen_in_char_array</a>(array)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine processes a character array, and outputs the corresponding
+flagged array. It removes backslash and hyphen characters, and then flags 
+the current element in <code>character_array_t</code> type array.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-array~3"></span>
+              type(<a href='../type/character_array_t.html'>character_array_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>array</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
         </section>
         <br>
 
@@ -811,7 +1095,7 @@ It takes a UTF-8 string and return a logical array indicating for each position 
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-23 07:28 +0000             </p>
+ on 2025-02-26 11:36 +0000             </p>
           </div>
         </div>
         <br>
