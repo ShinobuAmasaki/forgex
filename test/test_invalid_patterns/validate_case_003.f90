@@ -27,6 +27,7 @@ program main
    ! Below results will be changed after implementing character class subtraction.
    call runner_validate("[a-z--b]", .false., res)
    call runner_validate("[a-z--b-z]", .false., res)
+   call runner_validate("[a--a]", .false., res)
 
 !=====================================================================!
    if (res) then
