@@ -97,6 +97,23 @@ fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
 
 See also [https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
 
+#### CMake
+
+If you want to build this library with CMake, execute the following command:
+```shell
+cd forgex
+cmake -S . -B build
+cmake --build build
+```
+
+Then, you can use codes in `test/` directory to test the library with following command:
+```shell
+cd build
+ctest -C Debug
+```
+
+
+
 ### APIs
 
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.

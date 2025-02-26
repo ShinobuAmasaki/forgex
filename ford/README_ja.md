@@ -71,6 +71,8 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 
 ### 代替の選択肢
 
+#### MacPorts
+
 macOSを使用している場合、このライブラリはMacPortsを使用して、以下のコマンドを実行することによりインストールすることができます。
 
 ```shell
@@ -98,6 +100,25 @@ fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
 ```
 
 こちらも参照してください：[https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
+
+#### CMake
+
+CMakeを使ってビルドを行いたい場合には、次のコマンドを実行します：
+
+```shell
+cd forgex
+cmake -S . -B build
+cmake --build build
+```
+
+ビルドが完了したら、以下のようなコマンドで、このライブラリをテストすることができます。
+
+```shell
+cd build
+ctest -C Debug
+```
+
+
 
 ### APIの使い方
 
