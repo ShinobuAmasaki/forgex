@@ -26,6 +26,7 @@ module forgex_segment_m
    public :: segment_is_valid
    public :: register_segment_to_list
    public :: parse_segment_width_in_char_array
+   public :: join_two_segments
 
 
    !> This derived-type represents a contiguous range of the Unicode character set
@@ -330,8 +331,6 @@ contains
          k = k + 1
 
          segment_list(k) = segment ! register
-         
-         segment = segment_t() ! initialze
 
          ierr = SEGMENT_REGISTERED
       else
@@ -413,7 +412,7 @@ contains
          else
             n = 1
          end if
-            array(k)%seg_size = n
+         array(k)%seg_size = n
       end do
 
    end subroutine parse_segment_width_in_char_array
