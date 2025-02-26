@@ -927,6 +927,91 @@ contains
    end function update_next_utf8_char_index
 
 
+   !> This subroutine converts escaped character of the argument `chara` into segment `list`. 
+   pure subroutine convert_escaped_character_into_segments(chara, list)
+      use :: forgex_utf8_m, only: ichar_utf8
+      implicit none
+      character(*), intent(in) :: chara
+      type(segment_t), allocatable, intent(inout) :: list(:)
+
+      if (allocated(list)) deallocate(list)
+
+      select case (trim(chara))
+      case (ESCAPE_T)
+         allocate(list(1))
+         list(1) = SEG_TAB
+      case (ESCAPE_N)
+         allocate(list(2))
+         list(1) = SEG_LF
+         list(2) = SEG_CR
+      case (ESCAPE_R)
+         allocate(list(1))
+         list(1) = SEG_CR
+      case (ESCAPE_D)
+         allocate(list(1))
+         list(1) = SEG_DIGIT
+      case (ESCAPE_D_CAPITAL)
+         allocate(list(1))
+         list(1) = SEG_DIGIT
+         call invert_segment_list(list)
+      case (ESCAPE_W)
+         allocate(list(4))
+         list(1) = SEG_LOWERCASE
+         list(2) = SEG_UNDERSCORE
+         list(3) = SEG_DIGIT
+         list(4) = SEG_UNDERSCORE
+      case (ESCAPE_W_CAPITAL)
+         allocate(list(4))
+         list(1) = SEG_LOWERCASE
+         list(2) = SEG_UNDERSCORE
+         list(3) = SEG_DIGIT
+         list(4) = SEG_UNDERSCORE
+         call invert_segment_list(list)
+      case (ESCAPE_S)
+         allocate(list(6))
+         list(1) = SEG_SPACE
+         list(2) = SEG_TAB
+         list(3) = SEG_CR
+         list(4) = SEG_LF
+         list(5) = SEG_FF
+         list(6) = SEG_ZENKAKU_SPACE
+      case (ESCAPE_S_CAPITAL)
+         allocate(list(6))
+         list(1) = SEG_SPACE
+         list(2) = SEG_TAB
+         list(3) = SEG_CR
+         list(4) = SEG_LF
+         list(5) = SEG_FF
+         list(6) = SEG_ZENKAKU_SPACE
+         call invert_segment_list(list)
+      case (SYMBOL_BSLH)
+         allocate(list(1))
+         list(1)%min = ichar_utf8(SYMBOL_BSLH)
+         list(2)%max = ichar_utf8(SYMBOL_BSLH)
+      case (SYMBOL_LCRB)
+         allocate(list(1))
+         list(1)%min = ichar_utf8(SYMBOL_LCRB)
+         list(1)%max = ichar_utf8(SYMBOL_LCRB)
+      case (SYMBOL_RCRB)
+         allocate(list(1))
+         list(1)%min = ichar_utf8(SYMBOL_RCRB)
+         list(1)%max = ichar_utf8(SYMBOL_RCRB)
+      case (SYMBOL_LSBK)
+         allocate(list(1))
+         list(1)%min = ichar_utf8(SYMBOL_LSBK)
+         list(1)%max = ichar_utf8(SYMBOL_LSBK)
+      case (SYMBOL_RSBK)
+         allocate(list(1))
+         list(1)%min = ichar_utf8(SYMBOL_RSBK)
+         list(1)%max = ichar_utf8(SYMBOL_RSBK)
+      case default
+         allocate(list(1))
+         list(1) = SEG_INIT
+      end select
+
+   end subroutine convert_escaped_character_into_segments
+
+
 !=====================================================================!
   
    subroutine dump_tree_table(tree)
