@@ -25,6 +25,10 @@ module forgex_segment_m
    public :: merge_segments
    public :: segment_is_valid
    public :: register_segment_to_list
+   public :: join_two_segments
+   public :: width_of_segment
+   public :: total_width_of_segment
+
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -39,6 +43,7 @@ module forgex_segment_m
 
    ! See ASCII code set
    type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
+   type(segment_t), parameter, public :: SEG_ERROR = segment_t(-2, -2)
    type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
@@ -324,12 +329,10 @@ contains
       integer, intent(inout) :: k
       integer, intent(inout) :: ierr
 
-      if (segment%validate()) then
+      if (segment%validate() .and. k <= size(segment_list)-1) then
          k = k + 1
 
          segment_list(k) = segment ! register
-         
-         segment = segment_t() ! initialze
 
          ierr = SEGMENT_REGISTERED
       else
@@ -340,6 +343,47 @@ contains
 
 !====================================================================-!
 !  Helper procedures
+
+   pure function width_of_segment(seg) result(res)
+      use :: forgex_parameters_m, only: INVALID_SEGMENT_SIZE
+      implicit none
+      type(segment_t), intent(in) :: seg
+      integer :: res
+
+      if (seg%validate()) then
+         res = seg%max - seg%min + 1
+      else
+         res = INVALID_SEGMENT_SIZE
+      end if
+   end function width_of_segment
+
+   pure function total_width_of_segment(seg_list) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      type(segment_t), intent(in) :: seg_list(:)
+      integer :: res, k
+      res = 0
+      do k = 1, size(seg_list)
+         res = res + width_of_segment(seg_list(k))
+      end do
+   end function total_width_of_segment
+
+   !> This function converts two isolated segments into single fused segment
+   !> and returns it.
+   pure function join_two_segments(segA, segB) result(res)
+      implicit none
+      type(segment_t), intent(in) :: segA, segB
+      type(segment_t) :: res
+
+      res = segment_t(segA%min, segB%max)
+
+      if (.not. res%validate()) then
+         res = SEG_INIT
+      end if
+   
+   end function join_two_segments
+
+
    pure subroutine sort_segment_by_min(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)

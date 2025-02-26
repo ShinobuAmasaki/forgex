@@ -29,6 +29,8 @@ set(TEST_API_CASES
    test_case_005
    test_case_006
    test_case_007
+   test_case_008
+   test_case_009
 )
 
 set(TEST_AST_CASES
@@ -39,6 +41,7 @@ set(TEST_AST_CASES
 set(TEST_INVALID_CASES
    validate_case_001
    validate_case_002
+   validate_case_003
 )
 
 
