@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p>12.9% of total for derived types.</p>Including implementation: 228 statements, 15.8% of total for derived types.">21 statements</a>
+                 title="<p>13.4% of total for derived types.</p>Including implementation: 228 statements, 16.1% of total for derived types.">21 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -116,14 +116,14 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/automaton_t.html#variable-all_segments">all_segments</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-all_segments~2">all_segments</a>
             <a class="list-group-item" href="../type/automaton_t.html#variable-dfa">dfa</a>
             <a class="list-group-item" href="../type/automaton_t.html#variable-entry_set">entry_set</a>
             <a class="list-group-item" href="../type/automaton_t.html#variable-initial_index">initial_index</a>
-            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa">nfa</a>
-            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_entry">nfa_entry</a>
-            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_exit">nfa_exit</a>
-            <a class="list-group-item" href="../type/automaton_t.html#variable-tree">tree</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa~3">nfa</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_entry~2">nfa_entry</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-nfa_exit~2">nfa_exit</a>
+            <a class="list-group-item" href="../type/automaton_t.html#variable-tree~16">tree</a>
         </div>
       </div>
     </div>
@@ -153,12 +153,12 @@
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-construct">construct</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-destination">destination</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-epsilon_closure">epsilon_closure</a>
-            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-free~2">free</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-free~3">free</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-get_reachable">get_reachable</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-init">init</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-move">move</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-preprocess~2">preprocess</a>
-            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-print">print</a>
+            <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-print~3">print</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-print_dfa">print_dfa</a>
             <a class="list-group-item" href="../type/automaton_t.html#boundprocedure-register_state">register_state</a>
         </div>
@@ -199,7 +199,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-all_segments"></span>
+              <span class="anchor" id="variable-all_segments~2"></span>
               type(<a href='segment_t.html'>segment_t</a>),
             </td>
               <td>public,</td>
@@ -267,7 +267,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa"></span>
+              <span class="anchor" id="variable-nfa~3"></span>
               type(<a href='nfa_graph_t.html'>nfa_graph_t</a>),
             </td>
               <td>public</td>
@@ -284,7 +284,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa_entry"></span>
+              <span class="anchor" id="variable-nfa_entry~2"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -301,7 +301,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa_exit"></span>
+              <span class="anchor" id="variable-nfa_exit~2"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -318,7 +318,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree"></span>
+              <span class="anchor" id="variable-tree~16"></span>
               type(<a href='tree_t.html'>tree_t</a>),
             </td>
               <td>public</td>
@@ -645,7 +645,7 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-free~2"></span>
+      <span class="anchor" id="boundprocedure-free~3"></span>
       <h3>
           procedure, public ::
   <strong>free</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__deallocate.html'>automaton__deallocate</a>
@@ -1003,7 +1003,7 @@ and the corresponding set of transitionable NFA state.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-print"></span>
+      <span class="anchor" id="boundprocedure-print~3"></span>
       <h3>
           procedure, public ::
   <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/automaton__print_info.html'>automaton__print_info</a>
@@ -1256,7 +1256,7 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 11:36 +0000             </p>
+ on 2025-02-26 16:46 +0000             </p>
           </div>
         </div>
         <br>

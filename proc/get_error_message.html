@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.1% of total for procedures.">43 statements</a>
+                 title=" 0.7% of total for procedures.">25 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -145,7 +145,6 @@
 </h2>
     
 
-    <p>!</p>
 
 
     <h3>Arguments</h3>
@@ -161,7 +160,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code"></span>
+              <span class="anchor" id="variable-code~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -204,60 +203,28 @@
 <span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">msg</span>
 
 <span class="w">      </span><span class="k">select case</span><span class="w"> </span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_VALID</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_is_nothing</span>
-<span class="w">   </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_generic</span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_PARENTHESIS_MISSING</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_parenthesis_missing</span>
-
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_PARENTHESIS_UNEXPECTED</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_parenthesis_unexpected</span>
 
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_BRACKET_MISSING</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_bracket_missing</span>
-
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_BRACKET_UNEXPECTED</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_bracket_unexpected</span>
 
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_CURLYBRACE_MISSING</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_curlybrace_missing</span>
-<span class="w">   </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_CURLYBRACE_UNEXPECTED</span><span class="p">)</span>
 <span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_r_curlybrace_unexpected</span>
 
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_INVALID_TIMES</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_invalid_quantifier</span>
-
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_ESCAPED_SYMBOL_MISSING</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_escaped_symbol_missing</span>
-
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_ESCAPED_SYMBOL_INVALID</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_escaped_symbol_invalid</span>
-<span class="w">      </span>
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_EMPTY_CHARACTER_CLASS</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_empty_character_class</span>
-<span class="w">      </span>
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_range_with_escape_sequences</span>
-
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_misplaced_subtractio_operator</span>
-
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_INVALID_CHARACTER_RANGE</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_invalid_character_range</span>
-<span class="w">      </span>
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">ALLOCATION_ERR</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_allocation</span>
-
-<span class="w">      </span><span class="c">!!!</span>
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN</span><span class="p">)</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_this_should_not_happen</span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">SYNTAX_ERR_INVALID_RANGE</span><span class="p">)</span>
+<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_invalid_range</span>
 
 <span class="w">      </span><span class="k">case </span><span class="n">default</span>
-<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_this_should_not_happen</span>
-
+<span class="w">         </span><span class="n">msg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">err_is_nothing</span>
 <span class="w">      </span><span class="k">end select</span>
 
 <span class="k">   end function </span><span class="n">get_error_message</span>
@@ -284,7 +251,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 11:36 +0000             </p>
+ on 2025-02-26 16:46 +0000             </p>
           </div>
         </div>
         <br>

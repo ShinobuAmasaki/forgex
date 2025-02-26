@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 4.6% of total for source files.">210 statements</a>
+                 title=" 5.1% of total for source files.">210 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -221,7 +221,7 @@
 <a id="ln-66" name="ln-66" href="#ln-66"></a><span class="w">      </span><span class="n">buff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
 <a id="ln-67" name="ln-67" href="#ln-67"></a><span class="w">      </span><span class="k">call </span><span class="n">tree</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-68" name="ln-68" href="#ln-68"></a>
-<a id="ln-69" name="ln-69" href="#ln-69"></a><span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid</span>
+<a id="ln-69" name="ln-69" href="#ln-69"></a><span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid_pattern</span>
 <a id="ln-70" name="ln-70" href="#ln-70"></a><span class="w">   </span><span class="k">end function </span><span class="n">is_valid_regex_pattern</span>
 <a id="ln-71" name="ln-71" href="#ln-71"></a>
 <a id="ln-72" name="ln-72" href="#ln-72"></a>
@@ -252,7 +252,7 @@
 <a id="ln-97" name="ln-97" href="#ln-97"></a><span class="w">      </span><span class="k">call </span><span class="n">tree</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-98" name="ln-98" href="#ln-98"></a>
 <a id="ln-99" name="ln-99" href="#ln-99"></a><span class="w">      </span><span class="c">! Reterns .false. if the given pattern is invalid.</span>
-<a id="ln-100" name="ln-100" href="#ln-100"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-100" name="ln-100" href="#ln-100"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-101" name="ln-101" href="#ln-101"></a><span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <a id="ln-102" name="ln-102" href="#ln-102"></a><span class="w">         </span><span class="k">return</span>
 <a id="ln-103" name="ln-103" href="#ln-103"></a><span class="k">      end if</span>
@@ -347,7 +347,7 @@
 <a id="ln-192" name="ln-192" href="#ln-192"></a><span class="w">      </span><span class="k">call </span><span class="n">tree</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-193" name="ln-193" href="#ln-193"></a>
 <a id="ln-194" name="ln-194" href="#ln-194"></a><span class="w">      </span><span class="c">! Reterns .false. if the given pattern is invalid.</span>
-<a id="ln-195" name="ln-195" href="#ln-195"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-195" name="ln-195" href="#ln-195"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-196" name="ln-196" href="#ln-196"></a><span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <a id="ln-197" name="ln-197" href="#ln-197"></a><span class="w">         </span><span class="k">return</span>
 <a id="ln-198" name="ln-198" href="#ln-198"></a><span class="k">      end if</span>
@@ -414,7 +414,7 @@
 <a id="ln-259" name="ln-259" href="#ln-259"></a><span class="w">      </span><span class="k">call </span><span class="n">tree</span><span class="p">%</span><span class="n">build</span><span class="p">(</span><span class="n">buff</span><span class="p">)</span>
 <a id="ln-260" name="ln-260" href="#ln-260"></a>
 <a id="ln-261" name="ln-261" href="#ln-261"></a><span class="w">      </span><span class="c">! Assigns invalid value of arguments if the given pattern is invalid.</span>
-<a id="ln-262" name="ln-262" href="#ln-262"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<a id="ln-262" name="ln-262" href="#ln-262"></a><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">is_valid_pattern</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <a id="ln-263" name="ln-263" href="#ln-263"></a><span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;&quot;</span>
 <a id="ln-264" name="ln-264" href="#ln-264"></a><span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">length</span><span class="p">))</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
 <a id="ln-265" name="ln-265" href="#ln-265"></a><span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">present</span><span class="p">(</span><span class="n">from</span><span class="p">))</span><span class="w">   </span><span class="n">from</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span>
@@ -529,7 +529,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 11:36 +0000             </p>
+ on 2025-02-26 16:46 +0000             </p>
           </div>
         </div>
         <br>

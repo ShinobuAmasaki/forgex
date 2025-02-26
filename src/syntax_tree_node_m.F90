@@ -130,7 +130,7 @@ contains
    !  `current_token` component.
    !  This is a type-bound procedure of `tape_t`.
    pure subroutine get_token(self, class_flag)
-      use :: forgex_utf8_m, only: idxutf8, next_idxutf8
+      use :: forgex_utf8_m, only: idxutf8
       implicit none
       class(tape_t),     intent(inout) :: self
       logical, optional, intent(in)    :: class_flag
@@ -139,7 +139,7 @@ contains
       integer(int32)            :: ib, ie
 
       ib = self%idx
-      if (ib == INVALID_CHAR_INDEX .or. ib > len(self%str)) then
+      if (ib > len(self%str)) then
          self%current_token = tk_end
          self%token_char = ''
       else
@@ -153,12 +153,8 @@ contains
                select case (trim(c))
                case (SYMBOL_RSBK)
                   self%current_token = tk_rsbracket
-                  self%token_char = c
                case (SYMBOL_HYPN)
                   self%current_token = tk_hyphen
-                  self%token_char = c
-               case (SYMBOL_BSLH)
-                  self%current_token = tk_backslash
                   self%token_char = c
                case default
                   self%current_token = tk_char
@@ -181,10 +177,11 @@ contains
                self%current_token = tk_question
             case (SYMBOL_BSLH)
                self%current_token = tk_backslash
-               ib = next_idxutf8(self%str, ie)
-               ie = idxutf8(self%str, ib)
-               self%token_char = self%str(ib:ie)
 
+               ib = ie +1
+               ie = idxutf8(self%str, ib)
+
+               self%token_char = self%str(ib:ie)
             case (SYMBOL_LSBK)
                self%current_token = tk_lsbracket
             case (SYMBOL_RSBK)
@@ -205,7 +202,7 @@ contains
             end select
          end if
 
-         self%idx = next_idxutf8(self%str, ib)
+         self%idx = ie + 1
 
       end if
    end subroutine get_token

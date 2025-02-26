@@ -66,7 +66,7 @@ contains
       buff = trim(pattern)
       call tree%build(buff)
 
-      res = tree%is_valid
+      res = tree%is_valid_pattern
    end function is_valid_regex_pattern
 
 
@@ -97,7 +97,7 @@ contains
       call tree%build(buff)
 
       ! Reterns .false. if the given pattern is invalid.
-      if (.not. tree%is_valid) then
+      if (.not. tree%is_valid_pattern) then
          res = .false.
          return
       end if
@@ -192,7 +192,7 @@ contains
       call tree%build(buff)
 
       ! Reterns .false. if the given pattern is invalid.
-      if (.not. tree%is_valid) then
+      if (.not. tree%is_valid_pattern) then
          res = .false.
          return
       end if
@@ -259,7 +259,7 @@ contains
       call tree%build(buff)
 
       ! Assigns invalid value of arguments if the given pattern is invalid.
-      if (.not. tree%is_valid) then
+      if (.not. tree%is_valid_pattern) then
          res = ""
          if (present(length)) length = 0
          if (present(from))   from = INVALID_CHAR_INDEX

@@ -187,14 +187,6 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
 and returns the corresponding character as UTF-8 binary string.</p><a href="../proc/char_utf8.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/character_string_to_array.html'>character_string_to_array</a></td>
-                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine parses a pattern string for character class,
-and outputs <code>character_array_t</code> type array.
-When it encounters invalid value along the way, it returns.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/check_nfa_state.html'>check_nfa_state</a></td>
                  <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
                  <td>Function</td>
@@ -224,12 +216,6 @@ state set in an NFA.</p></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine convert an NFA into a fully compiled DFA.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/convert_escaped_character_into_segments.html'>convert_escaped_character_into_segments</a></td>
-                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine converts escaped character of the argument <code>chara</code> into segment <code>seg_list</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/copy_dfa_transition.html'>copy_dfa_transition</a></td>
@@ -422,7 +408,7 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><a href='../proc/get_error_message.html'>get_error_message</a></td>
                  <td><a href='../module/forgex_syntax_tree_error_m.html'>forgex_syntax_tree_error_m</a></td>
                  <td>Function</td>
-                 <td><p>!</p></td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_index_list_forward.html'>get_index_list_forward</a></td>
@@ -496,12 +482,6 @@ given the string str and the current index curr.</p></td>
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/interpret_class_string.html'>interpret_class_string</a></td>
-                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine parses a pattern string and outputs a list of <code>segment_t</code> type.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/invert_segment_list.html'>invert_segment_list</a></td>
@@ -631,13 +611,6 @@ for a given pattern.</p></td>
                  <td><p>The function validating a given regex patten.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/join_two_segments.html'>join_two_segments</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Function</td>
-                 <td><p>This function converts two isolated segments into single fused segment
-and returns it.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a></td>
                  <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
                  <td>Subroutine</td>
@@ -741,14 +714,6 @@ and stores the string index in the argument if it contains a match.</p></td>
 and the corresponding set of transitionable NFA state.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/next_idxutf8.html'>next_idxutf8</a></td>
-                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
-                 <td>Function</td>
-                 <td><p>This function returns the index of the next character,
-given the string str and the current index curr.
-If the current index is for the last character, it returns the invalid value.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/next_state_dense_dfa.html'>next_state_dense_dfa</a></td>
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td>Function</td>
@@ -823,17 +788,17 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
-                 <td>Interface</td>
-                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
 an integer and a segment, an integer and a list of segments, or a segment
 and a segment, is contained in the latter, respectively.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -864,21 +829,6 @@ and a segment, is contained in the latter, respectively.</p></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Function</td>
                  <td><p>The function implemented for the <code>.match.</code> operator.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/parse_backslash_and_hyphen_in_char_array.html'>parse_backslash_and_hyphen_in_char_array</a></td>
-                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine processes a character array, and outputs the corresponding
-flagged array. It removes backslash and hyphen characters, and then flags 
-the current element in <code>character_array_t</code> type array.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/parse_segment_width_in_char_array.html'>parse_segment_width_in_char_array</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine assigns the expected segment size from the character <code>c</code> of
-the current array element to its <code>seg_size</code>.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/print_class_simplify.html'>print_class_simplify</a></td>
@@ -933,13 +883,6 @@ the current array element to its <code>seg_size</code>.</p></td>
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Registers a new segment into a list if it is valid.</p><a href="../proc/register_seg_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/register_segment_to_list.html'>register_segment_to_list</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This procedure registers given segment_t value to segment_t type array,
-increments counter of the actual size of the array, and initializes temporary variable.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/runner_in.html'>runner_in</a></td>
@@ -1039,12 +982,6 @@ returns one byte of the continuation part.</p></td>
                  <td><p>This function convert an input symbol into the segment corresponding it.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/total_width_of_segment.html'>total_width_of_segment</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/tree_graph__build_syntax_tree.html'>tree_graph__build_syntax_tree</a></td>
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
@@ -1099,6 +1036,12 @@ returns one byte of the continuation part.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/tree_graph__range.html'>tree_graph__range</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
@@ -1142,12 +1085,6 @@ returns one byte of the continuation part.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/tree_graph__times.html'>tree_graph__times</a></td>
-                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/trim_invalid_utf8_byte.html'>trim_invalid_utf8_byte</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
@@ -1160,24 +1097,12 @@ returns one byte of the continuation part.</p></td>
                  <td><p>Update c_top, which has become outdated by disjoin, to new information.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/update_next_utf8_char_index.html'>update_next_utf8_char_index</a></td>
-                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/which_segment_symbol_belong.html'>which_segment_symbol_belong</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Function</td>
                  <td><p>This function takes an array of segments and a character as arguments,
 and returns the segment as rank=1 array to which symbol belongs
 (included in the segment interval).</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/width_of_segment.html'>width_of_segment</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
-                 <td>Function</td>
-                 <td></td>
                </tr>
 			 </tbody></table>
              
@@ -1198,7 +1123,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 11:36 +0000             </p>
+ on 2025-02-26 16:46 +0000             </p>
           </div>
         </div>
         <br>

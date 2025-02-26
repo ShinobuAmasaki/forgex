@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 9.0% of total for modules and submodules.">411 statements</a>
+                 title=" 7.1% of total for modules and submodules.">290 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -120,7 +120,6 @@
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_digit">SEG_DIGIT</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_empty">SEG_EMPTY</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_epsilon">SEG_EPSILON</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_error">SEG_ERROR</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_ff">SEG_FF</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_init">SEG_INIT</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#variable-seg_lf">SEG_LF</a>
@@ -148,7 +147,7 @@
       </a>
       <div id="inters-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28.in.%29~2">operator(.in.)</a>
+            <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28.in.%29">operator(.in.)</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28SLASH%3D%29">operator(/=)</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#interface-operator%28%3D%3D%29">operator(==)</a>
         </div>
@@ -175,8 +174,6 @@
       </a>
       <div id="funcs-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-join_two_segments">join_two_segments</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-segment_is_valid">segment_is_valid</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-symbol_to_segment">symbol_to_segment</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-which_segment_symbol_belong">which_segment_symbol_belong</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-arg_in_segment">arg_in_segment</a>
@@ -185,9 +182,8 @@
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-seg_in_segment_list">seg_in_segment_list</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-segment_equivalent">segment_equivalent</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-segment_for_print">segment_for_print</a>
+            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-segment_is_valid">segment_is_valid</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-segment_not_equiv">segment_not_equiv</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-total_width_of_segment">total_width_of_segment</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-width_of_segment">width_of_segment</a>
         </div>
       </div>
     </div>
@@ -201,8 +197,6 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-invert_segment_list">invert_segment_list</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-merge_segments">merge_segments</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-parse_segment_width_in_char_array">parse_segment_width_in_char_array</a>
-            <a class="list-group-item" href="../module/forgex_segment_m.html#proc-register_segment_to_list">register_segment_to_list</a>
             <a class="list-group-item" href="../module/forgex_segment_m.html#proc-sort_segment_by_min">sort_segment_by_min</a>
         </div>
       </div>
@@ -343,23 +337,6 @@ parameter
             <td><strong>SEG_EPSILON</strong></td>
 <td> =</td>
                 <td>segment_t(-1, -1)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-seg_error"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-              <td>public,</td>
-            <td>
-parameter               
-            </td>
-            <td>::</td>
-            <td><strong>SEG_ERROR</strong></td>
-<td> =</td>
-                <td>segment_t(-2, -2)</td>
             <td>
                 
             </td>
@@ -545,8 +522,8 @@ parameter
           <h2>Interfaces</h2>
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.in.%29~2"></span>
-      <h3>public        interface <a href='../interface/operator(.in.)~2.html'>operator(.in.)</a> 
+      <span class="anchor" id="interface-operator%28.in.%29"></span>
+      <h3>public        interface <a href='../interface/operator(.in.).html'>operator(.in.)</a> 
       </h3>
     </div>
       <div class="card-body">
@@ -578,7 +555,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~4"></span>
+              <span class="anchor" id="variable-a"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -593,7 +570,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~7"></span>
+              <span class="anchor" id="variable-seg~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -640,7 +617,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~5"></span>
+              <span class="anchor" id="variable-a~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -655,7 +632,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg_list~5"></span>
+              <span class="anchor" id="variable-seg_list~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -701,7 +678,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~6"></span>
+              <span class="anchor" id="variable-a~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -716,7 +693,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~4"></span>
+              <span class="anchor" id="variable-b"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -760,7 +737,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~8"></span>
+              <span class="anchor" id="variable-seg~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -775,7 +752,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~7"></span>
+              <span class="anchor" id="variable-list"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -834,7 +811,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~8"></span>
+              <span class="anchor" id="variable-a~5"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -849,7 +826,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~6"></span>
+              <span class="anchor" id="variable-b~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -908,7 +885,7 @@ and a segment, is contained in the latter, respectively.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~7"></span>
+              <span class="anchor" id="variable-a~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -923,7 +900,7 @@ and a segment, is contained in the latter, respectively.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~5"></span>
+              <span class="anchor" id="variable-b~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -982,7 +959,7 @@ when building automata where a range characters share the same transition destin
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-max~3"></span>
+              <span class="anchor" id="variable-max"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -999,7 +976,7 @@ when building automata where a range characters share the same transition destin
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-min~3"></span>
+              <span class="anchor" id="variable-min"></span>
               integer(kind=int32),
             </td>
               <td>public</td>
@@ -1025,7 +1002,7 @@ when building automata where a range characters share the same transition destin
           <tbody>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/segment_t.html#boundprocedure-print~4'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/segment_for_print.html'>segment_for_print</a></td>
+  <strong><a href='../type/segment_t.html#boundprocedure-print'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/segment_for_print.html'>segment_for_print</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -1043,112 +1020,6 @@ when building automata where a range characters share the same transition destin
 
         <section>
           <h2>Functions</h2>
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-join_two_segments"></span> <h3>public pure function <a href='../proc/join_two_segments.html'>join_two_segments</a>(segA, segB) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This function converts two isolated segments into single fused segment
-and returns it.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-sega"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>segA</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-segb"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>segB</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>type(<a href='../type/segment_t.html'>segment_t</a>)</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-segment_is_valid"></span> <h3>public pure elemental function <a href='../proc/segment_is_valid.html'>segment_is_valid</a>(self) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>Checks if a segment is valid.</p><a href="../proc/segment_is_valid.html" class="pull-right"><emph>Read more&hellip;</emph></a>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-self~53"></span>
-              class(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
               <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-symbol_to_segment"></span> <h3>public pure function <a href='../proc/symbol_to_segment.html'>symbol_to_segment</a>(symbol) result(res)  
 </h3></div>
@@ -1169,7 +1040,7 @@ and returns it.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~8"></span>
+              <span class="anchor" id="variable-symbol~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1231,7 +1102,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~7"></span>
+              <span class="anchor" id="variable-symbol"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1276,7 +1147,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~4"></span>
+              <span class="anchor" id="variable-a"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1291,7 +1162,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~7"></span>
+              <span class="anchor" id="variable-seg~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1336,7 +1207,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~5"></span>
+              <span class="anchor" id="variable-a~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -1351,7 +1222,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg_list~5"></span>
+              <span class="anchor" id="variable-seg_list~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1396,7 +1267,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~6"></span>
+              <span class="anchor" id="variable-a~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1411,7 +1282,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~4"></span>
+              <span class="anchor" id="variable-b"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1456,7 +1327,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~8"></span>
+              <span class="anchor" id="variable-seg~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1471,7 +1342,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~7"></span>
+              <span class="anchor" id="variable-list"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1516,7 +1387,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~7"></span>
+              <span class="anchor" id="variable-a~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1531,7 +1402,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~5"></span>
+              <span class="anchor" id="variable-b~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1576,7 +1447,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~11"></span>
+              <span class="anchor" id="variable-seg~5"></span>
               class(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1595,6 +1466,51 @@ and returns the segment as rank=1 array to which symbol belongs
     <h4>
     Return Value
     <small>character(len=:), allocatable</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-segment_is_valid"></span> <h3>private pure elemental function <a href='../proc/segment_is_valid.html'>segment_is_valid</a>(self) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>Checks if a segment is valid.</p><a href="../proc/segment_is_valid.html" class="pull-right"><emph>Read more&hellip;</emph></a>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~10"></span>
+              class(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
     </h4>
     
 
@@ -1621,7 +1537,7 @@ and returns the segment as rank=1 array to which symbol belongs
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-a~8"></span>
+              <span class="anchor" id="variable-a~5"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1636,7 +1552,7 @@ and returns the segment as rank=1 array to which symbol belongs
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-b~6"></span>
+              <span class="anchor" id="variable-b~3"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -1655,96 +1571,6 @@ and returns the segment as rank=1 array to which symbol belongs
     <h4>
     Return Value
     <small>logical</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-total_width_of_segment"></span> <h3>private pure function <a href='../proc/total_width_of_segment.html'>total_width_of_segment</a>(seg_list) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-seg_list~6"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>seg_list</strong>(:)</td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-width_of_segment"></span> <h3>private pure function <a href='../proc/width_of_segment.html'>width_of_segment</a>(seg) result(res)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-seg~10"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>seg</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>integer</small>
     </h4>
     
 
@@ -1777,7 +1603,7 @@ It compute the complement of the given ranges and modifies the list accordingly.
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-list~8"></span>
+              <span class="anchor" id="variable-list~2"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -1826,133 +1652,6 @@ It compute the complement of the given ranges and modifies the list accordingly.
             </td>
             <td>::</td>
             <td><strong>segments</strong>(:)</td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-parse_segment_width_in_char_array"></span> <h3>public pure subroutine <a href='../proc/parse_segment_width_in_char_array.html'>parse_segment_width_in_char_array</a>(array)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This subroutine assigns the expected segment size from the character <code>c</code> of
-the current array element to its <code>seg_size</code>.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-array~4"></span>
-              type(<a href='../type/character_array_t.html'>character_array_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>array</strong>(:)</td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-register_segment_to_list"></span> <h3>public pure subroutine <a href='../proc/register_segment_to_list.html'>register_segment_to_list</a>(segment_list, segment, k, ierr)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>This procedure registers given segment_t value to segment_t type array,
-increments counter of the actual size of the array, and initializes temporary variable.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-segment_list"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>segment_list</strong>(:)</td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-segment~2"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>segment</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-k~16"></span>
-              integer,
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>k</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-ierr~2"></span>
-              integer,
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>ierr</strong></td>
             <td>
 
             </td>
@@ -2027,7 +1726,7 @@ increments counter of the actual size of the array, and initializes temporary va
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 11:36 +0000             </p>
+ on 2025-02-26 16:46 +0000             </p>
           </div>
         </div>
         <br>
