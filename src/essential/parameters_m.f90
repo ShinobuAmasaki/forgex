@@ -29,6 +29,7 @@ module forgex_parameters_m
    integer(int32), parameter :: INFINITE = -2
    integer, parameter, public :: INVALID_CHAR_INDEX = -9999
 
+   integer(int32), parameter :: INVALID_SEGMENT_SIZE = -1
    integer(int32), parameter :: SEGMENT_REGISTERED = 0
    integer(int32), parameter :: SEGMENT_REJECTED = 1
 
