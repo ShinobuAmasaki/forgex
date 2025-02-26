@@ -751,8 +751,9 @@ contains
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
-      use :: forgex_segment_m, only: join_two_segments, parse_segment_width_in_char_array, &
+      use :: forgex_segment_m, only: join_two_segments, &
          register => register_segment_to_list
+      use :: forgex_character_array_m, only:parse_segment_width_in_char_array
       use :: forgex_character_array_m
       implicit none
 
@@ -768,7 +769,7 @@ contains
       logical :: backslashed
       logical :: prev_hyphenated, curr_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
-      integer :: siz ! total size of segment of `ca` array
+      integer :: siz ! total number of segment of `ca` array
       character(:), allocatable :: c ! Temporary variable stores a character of interest.
 
       ! Initialize
@@ -801,18 +802,22 @@ contains
          return
       end if
 
+      ! Each ca(:)%seg_size will be set by this procedure calling.
       call parse_segment_width_in_char_array(ca)
 
       ! If each of the array element is hyphenated,
       ! check that the range is not 1 and return invalid.
       siz = 0
       check: do i = 1, size(ca, dim=1)
+
+         ! If the former hypenated range is invalid, throw an error.
          if (ca(i)%is_hyphenated .and. ca(i)%seg_size /= 1) then
             ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
             is_valid = .false.
             return
          end if
 
+         ! If the range following hyphenataed is invalid, throw an error.
          if (i>1) then
             if (ca(i-1)%is_hyphenated .and. ca(i)%seg_size /= 1) then
                ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
@@ -821,12 +826,15 @@ contains
             end if
          end if
 
+         ! If a subtraction flag appear, throw an error at the moment.
          if (ca(i)%is_subtract) then
             ierr = SYNTAX_ERR_CHAR_CLASS_SUBTRANCTION_NOT_IMPLEMENTED
             is_valid = .false.
             return
          end if
 
+         ! If the loop reaches the end of `ca` array, cancel the hyphenated flag, and
+         ! then add a literal hyphen to the end.
          if (i> 1 .and. i == size(ca, dim=1)) then
             if (ca(i)%is_hyphenated) then
                ca(i)%is_hyphenated = .false.

@@ -25,8 +25,9 @@ module forgex_segment_m
    public :: merge_segments
    public :: segment_is_valid
    public :: register_segment_to_list
-   public :: parse_segment_width_in_char_array
    public :: join_two_segments
+   public :: width_of_segment
+   public :: total_width_of_segment
 
 
    !> This derived-type represents a contiguous range of the Unicode character set
@@ -339,85 +340,6 @@ contains
       end if
    end subroutine register_segment_to_list
 
-
-   !> This subroutine assigns the expected segment size from the character `c` of
-   !> the current array element to its `seg_size`.
-   pure subroutine parse_segment_width_in_char_array (array)
-      use :: forgex_parameters_m
-      use :: forgex_utf8_m
-      use :: forgex_character_array_m
-      implicit none
-      type(character_array_t), intent(inout) :: array(:)
-      type(segment_t), allocatable :: seg(:)
-      integer :: k, n
-
-      n = 0
-      do k = 1, size(array, dim=1)
-         if (array(k)%is_escaped) then
-            select case(array(k)%c)
-            case (ESCAPE_T)
-               n = width_of_segment(SEG_TAB)
-            case (ESCAPE_N)
-               n = width_of_segment(SEG_LF) + width_of_segment(SEG_CR)
-            case (ESCAPE_R)
-               n = width_of_segment(SEG_CR)
-            case (ESCAPE_D)
-               n = width_of_segment(SEG_DIGIT)
-            case (ESCAPE_D_CAPITAL)
-               allocate(seg(1))
-               seg(1) = SEG_DIGIT
-               call invert_segment_list(seg)
-               n = total_width_of_segment(seg)
-
-            case (ESCAPE_W)
-               allocate(seg(4))
-               seg(1) = SEG_LOWERCASE
-               seg(2) = SEG_UPPERCASE
-               seg(3) = SEG_DIGIT
-               seg(4) = SEG_UNDERSCORE
-               n = total_width_of_segment(seg)
-
-            case (ESCAPE_W_CAPITAL)
-               allocate(seg(4))
-               seg(1) = SEG_LOWERCASE
-               seg(2) = SEG_UPPERCASE
-               seg(3) = SEG_DIGIT
-               seg(4) = SEG_UNDERSCORE
-               call invert_segment_list(seg)
-               n = total_width_of_segment(seg)
-
-            case (ESCAPE_S)
-               n = 6
-            case (ESCAPE_S_CAPITAL)
-               allocate(seg(6))
-               seg(1) = SEG_SPACE
-               seg(2) = SEG_TAB
-               seg(3) = SEG_CR
-               seg(4) = SEG_LF
-               seg(5) = SEG_FF
-               seg(6) = SEG_ZENKAKU_SPACE
-               call invert_segment_list(seg)
-               n = total_width_of_segment(seg)
-            case (SYMBOL_BSLH)
-               n = 1
-            case (SYMBOL_LCRB)
-               n = 1
-            case (SYMBOL_RCRB)
-               n = 1
-            case (SYMBOL_LSBK)
-               n = 1
-            case (SYMBOL_RSBK)
-               n = 1
-            case default
-               n = INVALID_SEGMENT_SIZE
-            end select
-         else
-            n = 1
-         end if
-         array(k)%seg_size = n
-      end do
-
-   end subroutine parse_segment_width_in_char_array
 
 !====================================================================-!
 !  Helper procedures
