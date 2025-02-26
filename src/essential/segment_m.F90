@@ -42,6 +42,7 @@ module forgex_segment_m
 
    ! See ASCII code set
    type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
+   type(segment_t), parameter, public :: SEG_ERROR = segment_t(-2, -2)
    type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
@@ -451,7 +452,7 @@ contains
       type(segment_t), intent(in) :: segA, segB
       type(segment_t) :: res
 
-      res = segment_t(min(segA%min, segB%min), max(segA%max, segB%max))
+      res = segment_t(segA%min, segB%max)
 
       if (.not. res%validate()) then
          res = SEG_INIT
