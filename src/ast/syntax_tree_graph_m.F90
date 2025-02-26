@@ -403,6 +403,8 @@ contains
    end subroutine tree_graph__primary
       
 
+   !> This subroutine treats character class expression,
+   !> and does not call any other recursive procedures.
    pure subroutine tree_graph__char_class(self)
       use :: forgex_utf8_m, only: idxutf8, len_utf8, count_token, ichar_utf8
       use :: forgex_enums_m
@@ -567,6 +569,7 @@ contains
 
    !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`,
    !> `\w`, `\W`, `\s`, `\S`).
+   !> It does not call any other recursive procedures.
    pure subroutine tree_graph__shorthand(self)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
@@ -661,6 +664,8 @@ contains
    end subroutine tree_graph__shorthand
 
 
+   !> This subroutine handles a quantifier range, and
+   !> does not call any other recursive procedures.
    pure subroutine tree_graph__times(self)
       implicit none
       class(tree_t), intent(inout) :: self
