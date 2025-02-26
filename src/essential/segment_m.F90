@@ -328,7 +328,7 @@ contains
       integer, intent(inout) :: k
       integer, intent(inout) :: ierr
 
-      if (segment%validate()) then
+      if (segment%validate() .and. k <= size(segment_list)-1) then
          k = k + 1
 
          segment_list(k) = segment ! register

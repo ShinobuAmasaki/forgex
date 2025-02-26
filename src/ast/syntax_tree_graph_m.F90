@@ -754,12 +754,14 @@ contains
       logical, intent(inout) :: is_valid
       integer, intent(inout) :: ierr
 
-      integer :: i, j, k, siz, jerr
+      integer :: i, j, k
+      integer :: jerr
       type(segment_t) :: prev_seg, curr_seg
       type(segment_t), allocatable :: list(:), cache(:)
       logical :: backslashed
       logical :: prev_hyphenated, curr_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
+      integer :: siz ! total size of segment of `ca` array
       character(:), allocatable :: c ! Temporary variable stores a character of interest.
 
       ! Initialize
@@ -789,9 +791,9 @@ contains
       call parse_backslash_and_hyphen_in_char_array(ca)
       call parse_segment_width_in_char_array(ca)
 
-
       ! If each of the array element is hyphenated,
       ! check that the range is not 1 and return invalid.
+      siz = 0
       check: do i = 1, size(ca, dim=1)
          if (ca(i)%is_hyphenated .and. ca(i)%seg_size /= 1) then
             ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
@@ -814,23 +816,20 @@ contains
                exit check
             end if
          end if
+         siz = siz + ca(i)%seg_size
       end do check
 
-
-
-      siz = size(ca, dim=1)      
       if (siz < 1) then
          is_valid = .false.
          return
       end if
-
       allocate(list(siz))
 
       ! Initialize cache and counter variable.
       j = 0 ! Couter of actual list size for `seglist`.
       c = EMPTY_CHAR
 
-      outer: do i = 1, siz
+      outer: do i = 1, size(ca, dim=1)
          c = ca(i)%c
          backslashed = ca(i)%is_escaped  ! cache `is_escaped` flag
          curr_hyphenated = ca(i)%is_hyphenated
