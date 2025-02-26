@@ -8,7 +8,7 @@ program test_case_008
    character(:), allocatable :: c
 
    ! Corner cases
-   print *, "=== TEST CASE 8 BEGIN ==="
+   print *, "=== TEST CASE 9 BEGIN ==="
 !=====================================================================!
 
    call runner_match("[\t]", char(9), .true., res)
@@ -49,7 +49,7 @@ program test_case_008
 
 !=====================================================================!
    if (res) then
-      print *, "=== TEST CASE 8 END ==="
+      print *, "=== TEST CASE 9 END ==="
       stop
    else
       error stop "There are cases where the match fails."
