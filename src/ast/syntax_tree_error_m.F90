@@ -46,7 +46,7 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_escaped_symbol_invalid   = "ERROR: This token has no special meaning."
    character(*), parameter :: err_empty_character_class    = "ERROR: Given class has no character."
    character(*), parameter :: err_range_with_escape_sequences = "ERROR: Cannot create a range with shorthand escape sequence"
-   character(*), parameter :: err_misplaced_subtractio_operator = "ERROR: Subtraction operator is misplaced in the character class."
+   character(*), parameter :: err_misplaced_subtraction_operator = "ERROR: Subtraction operator is misplaced in the given character class."
    character(*), parameter :: err_invalid_character_range  = "ERROR: Given character range is invalid."
    character(*), parameter :: err_character_class_subtraction = "ERROR: Character class subtraction hasn't implemented yet."
 
@@ -103,7 +103,7 @@ contains
          msg = err_range_with_escape_sequences
 
       case (SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR)
-         msg = err_misplaced_subtractio_operator
+         msg = err_misplaced_subtraction_operator
 
       case (SYNTAX_ERR_INVALID_CHARACTER_RANGE)
          msg = err_invalid_character_range
