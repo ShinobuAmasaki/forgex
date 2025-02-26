@@ -44,7 +44,7 @@ module forgex_syntax_tree_graph_m
       procedure :: caret_dollar => tree_graph__make_tree_caret_dollar
       procedure :: crlf => tree_graph__make_tree_crlf
       procedure :: shorthand => tree_graph__shorthand
-      procedure :: range => tree_graph__range
+      procedure :: times => tree_graph__times
       procedure :: print => print_tree_wrap
    end type
 
@@ -306,9 +306,9 @@ contains
          call self%tape%get_token()
 
       case (tk_lcurlybrace)
-         call self%range()
+         call self%times()
          if (.not. self%is_valid_pattern) then
-            self%code = SYNTAX_ERR_INVALID_RANGE
+            self%code = SYNTAX_ERR_INVALID_TIMES
             return
          end if
          call self%tape%get_token()
@@ -658,7 +658,7 @@ contains
    end subroutine tree_graph__shorthand
 
 
-   pure subroutine tree_graph__range(self)
+   pure subroutine tree_graph__times(self)
       implicit none
       class(tree_t), intent(inout) :: self
       character(:), allocatable :: buf
@@ -736,7 +736,7 @@ contains
       
       call self%register_connector(node, left, terminal)
 
-   end subroutine tree_graph__range
+   end subroutine tree_graph__times
 
 
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
@@ -753,9 +753,9 @@ contains
       logical, intent(inout) :: is_valid
       integer, intent(inout) :: ierr
 
-      integer :: i, j, siz, jerr
+      integer :: i, j, k, siz, jerr
       type(segment_t) :: seg
-      type(segment_t), allocatable :: list(:)
+      type(segment_t), allocatable :: list(:), cache(:)
       logical :: backslashed
       logical :: prev_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
@@ -863,26 +863,10 @@ contains
          ! If neither the current nor previous character is hyphenated,
          ! minimum and maximum values store the same code point.
          if (backslashed) then
-            select case (c)
-            case (SYMBOL_BSLH)
-               seg%min = ichar_utf8(SYMBOL_BSLH)
-               seg%max = ichar_utf8(SYMBOL_BSLH)
-            case (SYMBOL_LCRB)
-               seg%min = ichar_utf8(SYMBOL_LCRB)
-               seg%max = ichar_utf8(SYMBOL_LCRB)
-            case (SYMBOL_RCRB)
-               seg%min = ichar_utf8(SYMBOL_RCRB)
-               seg%max = ichar_utf8(SYMBOL_RCRB)
-            case (SYMBOL_LSBK)
-               seg%min = ichar_utf8(SYMBOL_LSBK)
-               seg%max = ichar_utf8(SYMBOL_LSBK)
-            case (SYMBOL_RSBK)
-               seg%min = ichar_utf8(SYMBOL_RSBK)
-               seg%max = ichar_utf8(SYMBOL_RSBK)
-            case default
-               is_valid = .false.
-               return
-            end select
+            call convert_escaped_character_into_segments(c, cache)
+            do k = 1, size(cache)
+               call register(list, cache(k), j, ierr)
+            end do
          else
             seg%min = ichar_utf8(c)
             seg%max = ichar_utf8(c)
@@ -987,7 +971,7 @@ contains
       case (SYMBOL_BSLH)
          allocate(list(1))
          list(1)%min = ichar_utf8(SYMBOL_BSLH)
-         list(2)%max = ichar_utf8(SYMBOL_BSLH)
+         list(1)%max = ichar_utf8(SYMBOL_BSLH)
       case (SYMBOL_LCRB)
          allocate(list(1))
          list(1)%min = ichar_utf8(SYMBOL_LCRB)
