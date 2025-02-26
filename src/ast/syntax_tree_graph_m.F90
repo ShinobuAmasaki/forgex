@@ -887,7 +887,15 @@ contains
          prev_seg = curr_seg
       end do outer
 
+      if (j < 1) then
+         ! pattern '[+--]' causes this error for now.
+         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         is_valid = .false.
+         return
+      end if
+
       allocate(seglist(j))
+
       seglist(1:j) = list(1:j) ! copy local array into the argument array.
 
    end subroutine interpret_class_string
