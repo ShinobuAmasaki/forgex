@@ -47,6 +47,11 @@ program test_case_008
       call runner_match("[\r-a]", char(i), .true., res)
    end do
 
+   call runner_match("[a\d]", "a", .true., res)
+   call runner_match("[a\d]", "0", .true., res)
+   call runner_match("[a\d]", "9", .true., res)
+   call runner_match("[a\d]", "b", .false., res)
+
 !=====================================================================!
    if (res) then
       print *, "=== TEST CASE 9 END ==="
