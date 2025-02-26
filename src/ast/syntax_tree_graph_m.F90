@@ -24,7 +24,7 @@ module forgex_syntax_tree_graph_m
       integer :: top = INVALID_INDEX
       integer :: num_alloc = 0
       type(tape_t) :: tape
-      logical :: is_valid_pattern = .true.
+      logical :: is_valid = .true.
       integer :: code = SYNTAX_VALID
       integer :: paren_balance
    contains
@@ -76,14 +76,14 @@ contains
       call self%regex()
 
       ! Check the pattern is valid.
-      if (.not. self%is_valid_pattern) return
+      if (.not. self%is_valid) return
 
       ! Determine if parentheses are balanced.
       if (self%paren_balance > 0) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          self%code = SYNTAX_ERR_PARENTHESIS_MISSING
       else if (self%paren_balance < 0) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
       end if
       
@@ -203,7 +203,7 @@ contains
       call self%term()
 
       ! When term's analysis is valid,
-      if (self%is_valid_pattern) then
+      if (self%is_valid) then
 
          left = self%get_top()
 
@@ -211,7 +211,7 @@ contains
             call self%tape%get_token()
 
             call self%term()
-            if (.not. self%is_valid_pattern) exit
+            if (.not. self%is_valid) exit
 
             right = self%get_top()
 
@@ -243,7 +243,7 @@ contains
          call self%register_connector(node, terminal, terminal)
       else
          call self%suffix_op()
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid) return
 
          left = self%get_top()
 
@@ -252,7 +252,7 @@ contains
                      .and. self%tape%current_token /= tk_end)
             
             call self%suffix_op()
-            if (.not. self%is_valid_pattern) return
+            if (.not. self%is_valid) return
 
             right = self%get_top()
 
@@ -276,7 +276,7 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%primary()
-      if (.not. self%is_valid_pattern) return
+      if (.not. self%is_valid) return
 
       left = self%get_top()
 
@@ -307,7 +307,7 @@ contains
 
       case (tk_lcurlybrace)
          call self%times()
-         if (.not. self%is_valid_pattern) then
+         if (.not. self%is_valid) then
             self%code = SYNTAX_ERR_INVALID_TIMES
             return
          end if
@@ -345,24 +345,24 @@ contains
          call self%regex()
       
          ! If regex fails, return immediately.
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid) return
 
          ! If not a right parenthesis, throw an error.
          if (self%tape%current_token /= tk_rpar) then
             self%code = SYNTAX_ERR_PARENTHESIS_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
          call self%tape%get_token()
 
       case (tk_lsbracket)
          call self%char_class()
-         if (.not. self%is_valid_pattern) then
+         if (.not. self%is_valid) then
             return
          end if 
          if (self%tape%current_token /= tk_rsbracket) then
             self%code = SYNTAX_ERR_BRACKET_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
          call self%tape%get_token()
@@ -386,17 +386,17 @@ contains
       
       case (tk_rsbracket)
          self%code = SYNTAX_ERR_BRACKET_UNEXPECTED
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
 
       case (tk_rpar)
          self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
    
       case default
-         self%code = SYNTAX_ERR
-         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%is_valid = .false.
          return
       end select
 
@@ -413,12 +413,11 @@ contains
       character(:), allocatable :: buf
       type(tree_node_t) :: node
 
-      integer :: siz, ie, i, j, i_next, i_terminal, ierr
+      integer :: siz, ie, i, j, i_next, i_terminal
       logical :: is_inverted, backslashed
       character(:), allocatable :: prev, curr
 
       siz = 0
-      ierr = 0
 
       call self%tape%get_token(class_flag=.true.)
 
@@ -460,7 +459,7 @@ contains
       ! If the character class pattern is empty, return false. 
       if (len(buf) == 0) then
          self%code = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
       end if
 
@@ -475,22 +474,26 @@ contains
       siz = len_utf8(buf)
 
       if (siz < 1) then
-         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
+         self%is_valid = .false.
          return
       end if
 
-      call interpret_class_string(buf, seglist, self%is_valid_pattern, ierr)
+      call interpret_class_string(buf, seglist, self%is_valid, self%code)
 
-      if (.not. self%is_valid_pattern) then
-         self%code = ierr
+      if (.not. self%is_valid) then
          return
       end if
 
-      if (.not. allocated(seglist)) return
+      if (.not. allocated(seglist)) then
+         self%code = ALLOCATION_ERR
+         self%is_valid = .false.
+         return
+      end if
 
       if (size(seglist) < 1) then
-
-         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%is_valid = .false.
          return
       end if
 
@@ -634,7 +637,7 @@ contains
          call invert_segment_list(seglist)
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
       case default
          chara = self%tape%token_char
@@ -678,7 +681,7 @@ contains
 
          if (self%tape%current_token == tk_end) then
             self%code = SYNTAX_ERR_CURLYBRACE_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
       end do
@@ -697,7 +700,7 @@ contains
       !       - "Modern Fortran Explained--Incorporating Fortran 2018"
 
       if (ios > 0) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
       end if
 
@@ -727,7 +730,7 @@ contains
       end if
 
       if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
       end if
 
@@ -783,6 +786,7 @@ contains
       ! Convert to an array from a pattern string.
       call character_string_to_array(str, ca)
       if (.not. allocated(ca)) then
+         ierr = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
          is_valid = .false.
          return
       end if
@@ -813,6 +817,7 @@ contains
             if (ca(i)%is_hyphenated) then
                ca(i)%is_hyphenated = .false.
                ca = [ca(1:size(ca)), character_array_t(SYMBOL_HYPN, .false., .false., 1)]
+               siz = siz + 1
                exit check
             end if
          end if
@@ -820,6 +825,7 @@ contains
       end do check
 
       if (siz < 1) then
+         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
          is_valid = .false.
          return
       end if
@@ -863,7 +869,7 @@ contains
          if (prev_hyphenated) then
             curr_seg = join_two_segments(prev_seg, curr_seg)
             if (curr_seg == SEG_ERROR) then
-               ierr = SYNTAX_ERR
+               ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
                is_valid = .false.
                return
             end if
@@ -872,8 +878,8 @@ contains
          if (.not. curr_hyphenated) then
             call register(list, curr_seg, j, jerr)
             if (jerr == SEGMENT_REJECTED) then
+               ierr = SYNTAX_ERR_INVALID_CHARACTER_RANGE
                is_valid = .false.
-               ierr = SYNTAX_ERR
                return
             end if
          end if

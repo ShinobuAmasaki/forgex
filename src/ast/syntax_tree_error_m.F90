@@ -24,6 +24,10 @@ module forgex_syntax_tree_error_m
       enumerator :: SYNTAX_ERR_EMPTY_CHARACTER_CLASS
       enumerator :: SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
       enumerator :: SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
+      enumerator :: SYNTAX_ERR_INVALID_CHARACTER_RANGE
+      enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+      
+      enumerator :: ALLOCATION_ERR
    end enum
 
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
@@ -40,6 +44,12 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_empty_character_class    = "ERROR: Given class has no character."
    character(*), parameter :: err_range_with_escape_sequences = "ERROR: Cannot create a range with shorthand escape sequence"
    character(*), parameter :: err_misplaced_subtractio_operator = "ERROR: Subtraction operator is misplaced in character class."
+   character(*), parameter :: err_invalid_character_range  = "ERROR: Given character range is invalid."
+
+   character(*), parameter :: err_allocation               = "ERROR: Allocation is failed."
+   
+   character(*), parameter :: err_this_should_not_happen   = "ERROR: Fatal error is happened."
+   
 
 
 contains
@@ -50,6 +60,9 @@ contains
       character(:), allocatable :: msg
 
       select case (code)
+      case (SYNTAX_VALID)
+         msg = err_is_nothing
+   
       case (SYNTAX_ERR)
          msg = err_generic
       case (SYNTAX_ERR_PARENTHESIS_MISSING)
@@ -87,9 +100,20 @@ contains
 
       case (SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR)
          msg = err_misplaced_subtractio_operator
-         
+
+      case (SYNTAX_ERR_INVALID_CHARACTER_RANGE)
+         msg = err_invalid_character_range
+      
+      case (ALLOCATION_ERR)
+         msg = err_allocation
+
+      !!!
+      case (SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN)
+         msg = err_this_should_not_happen
+
       case default
-         msg = err_is_nothing
+         msg = err_this_should_not_happen
+
       end select
 
    end function get_error_message
