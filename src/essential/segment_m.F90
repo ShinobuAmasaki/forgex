@@ -25,7 +25,7 @@ module forgex_segment_m
    public :: merge_segments
    public :: segment_is_valid
    public :: register_segment_to_list
-   public :: parse_segment_size_in_char_array
+   public :: parse_segment_width_in_char_array
 
 
    !> This derived-type represents a contiguous range of the Unicode character set
@@ -342,7 +342,7 @@ contains
 
    !> This subroutine assigns the expected segment size from the character `c` of
    !> the current array element to its `seg_size`.
-   pure subroutine parse_segment_size_in_char_array (array)
+   pure subroutine parse_segment_width_in_char_array (array)
       use :: forgex_parameters_m
       use :: forgex_utf8_m
       implicit none
@@ -350,24 +350,32 @@ contains
       type(segment_t), allocatable :: seg(:)
       integer :: k, n
 
+      n = 0
       do k = 1, size(array, dim=1)
          if (array(k)%is_escaped) then
             select case(array(k)%c)
             case (ESCAPE_T)
-               n = 1
+               n = width_of_segment(SEG_TAB)
             case (ESCAPE_N)
-               n = 2
+               n = width_of_segment(SEG_LF) + width_of_segment(SEG_CR)
             case (ESCAPE_R)
-               n = 1
+               n = width_of_segment(SEG_CR)
             case (ESCAPE_D)
-               n = 1
+               n = width_of_segment(SEG_DIGIT)
             case (ESCAPE_D_CAPITAL)
                allocate(seg(1))
                seg(1) = SEG_DIGIT
                call invert_segment_list(seg)
-               n = size(seg, dim=1)
+               n = total_width_of_segment(seg)
+
             case (ESCAPE_W)
-               n = 4
+               allocate(seg(4))
+               seg(1) = SEG_LOWERCASE
+               seg(2) = SEG_UPPERCASE
+               seg(3) = SEG_DIGIT
+               seg(4) = SEG_UNDERSCORE
+               n = total_width_of_segment(seg)
+
             case (ESCAPE_W_CAPITAL)
                allocate(seg(4))
                seg(1) = SEG_LOWERCASE
@@ -375,7 +383,8 @@ contains
                seg(3) = SEG_DIGIT
                seg(4) = SEG_UNDERSCORE
                call invert_segment_list(seg)
-               n = size(seg, dim=1)
+               n = total_width_of_segment(seg)
+
             case (ESCAPE_S)
                n = 6
             case (ESCAPE_S_CAPITAL)
@@ -387,7 +396,7 @@ contains
                seg(5) = SEG_FF
                seg(6) = SEG_ZENKAKU_SPACE
                call invert_segment_list(seg)
-               n = size(seg, dim=1)
+               n = total_width_of_segment(seg)
             case (SYMBOL_BSLH)
                n = 1
             case (SYMBOL_LCRB)
@@ -407,10 +416,34 @@ contains
             array(k)%seg_size = n
       end do
 
-   end subroutine parse_segment_size_in_char_array
+   end subroutine parse_segment_width_in_char_array
 
 !====================================================================-!
 !  Helper procedures
+
+   pure function width_of_segment(seg) result(res)
+      use :: forgex_parameters_m, only: INVALID_SEGMENT_SIZE
+      implicit none
+      type(segment_t), intent(in) :: seg
+      integer :: res
+
+      if (seg%validate()) then
+         res = seg%max - seg%min + 1
+      else
+         res = INVALID_SEGMENT_SIZE
+      end if
+   end function width_of_segment
+
+   pure function total_width_of_segment(seg_list) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      type(segment_t), intent(in) :: seg_list(:)
+      integer :: res, k
+      res = 0
+      do k = 1, size(seg_list)
+         res = res + width_of_segment(seg_list(k))
+      end do
+   end function total_width_of_segment
 
    !> This function converts two isolated segments into single fused segment
    !> and returns it.
