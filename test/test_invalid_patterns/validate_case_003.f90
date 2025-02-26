@@ -22,7 +22,7 @@ program main
    call runner_validate("[^\t]", .true., res)
    call runner_validate("[\a]", .false., res)
    call runner_validate("[\あ]", .false., res)
-   
+   call runner_validate("[\r-a]", .true., res)
 
 
 !=====================================================================!

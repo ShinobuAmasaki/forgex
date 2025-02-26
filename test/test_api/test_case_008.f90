@@ -5,7 +5,7 @@ program test_case_008
    logical :: res = .true.
 
    ! Corner cases
-   print *, "=== TEST CASE 7 BEGIN ==="
+   print *, "=== TEST CASE 8 BEGIN ==="
 
    call runner_match("[]", "", .false., res)
    call runner_match("[-]", "-", .true., res)
@@ -48,7 +48,7 @@ program test_case_008
 
 
    if (res) then
-      print *, "=== TEST CASE 7 END ==="
+      print *, "=== TEST CASE 8 END ==="
       stop
    else
       error stop "There are cases where the match fails."
