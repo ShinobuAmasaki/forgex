@@ -24,6 +24,9 @@ program main
    call runner_validate("[\あ]", .false., res)
    call runner_validate("[\r-a]", .true., res)
 
+   ! Below results will be changed after implementing character class subtraction.
+   call runner_validate("[a-z--b]", .false., res)
+   call runner_validate("[a-z--b-z]", .false., res)
 
 !=====================================================================!
    if (res) then

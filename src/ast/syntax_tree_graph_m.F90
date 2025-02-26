@@ -780,7 +780,6 @@ contains
             is_valid = .false.
          end if
       end if
-         
 
       ! Convert to an array from a pattern string.
       call character_string_to_array(str, ca)
@@ -791,7 +790,12 @@ contains
       end if
 
       ! Remove backslash and hyphen, and raise respective flag for each component.
-      call parse_backslash_and_hyphen_in_char_array(ca)
+      call parse_backslash_and_hyphen_in_char_array(ca, ierr)
+      if (ierr == SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR) then
+         is_valid = .false.
+         return
+      end if
+
       call parse_segment_width_in_char_array(ca)
 
       ! If each of the array element is hyphenated,
@@ -812,10 +816,18 @@ contains
             end if
          end if
 
+         if (ca(i)%is_subtract) then
+            ierr = SYNTAX_ERR_CHAR_CLASS_SUBTRANCTION_NOT_IMPLEMENTED
+            is_valid = .false.
+            return
+         end if
+
          if (i> 1 .and. i == size(ca, dim=1)) then
             if (ca(i)%is_hyphenated) then
                ca(i)%is_hyphenated = .false.
-               ca = [ca(1:size(ca)), character_array_t(SYMBOL_HYPN, .false., .false., 1)]
+
+               ca = [ca(1:size(ca)), &
+                    character_array_t(SYMBOL_HYPN, .false., .false., ca(size(ca))%is_subtract, 1)]
                siz = siz + 1
                exit check
             end if

@@ -23,6 +23,7 @@ module forgex_character_array_m
       character(:), allocatable :: c
       logical :: is_escaped = .false.
       logical :: is_hyphenated = .false.
+      logical :: is_subtract = .false.
       integer :: seg_size = 0
    end type
 
@@ -67,12 +68,16 @@ contains
    !> This subroutine processes a character array, and outputs the corresponding
    !> flagged array. It removes backslash and hyphen characters, and then flags 
    !> the current element in `character_array_t` type array.
-   pure subroutine parse_backslash_and_hyphen_in_char_array(array)
+   pure subroutine parse_backslash_and_hyphen_in_char_array(array, ierr)
       use :: forgex_parameters_m
+      use :: forgex_syntax_tree_error_m
       implicit none
       type(character_array_t), intent(inout), allocatable :: array(:)
       type(character_array_t), allocatable :: temp(:)
-      integer :: i, k, siz
+      integer, intent(inout) :: ierr
+
+      integer :: i, k, siz, isub
+      logical :: is_already_subtraction_zone
 
       if (.not. allocated(array)) return
       if (size(array, dim=1) < 1) return 
@@ -80,9 +85,30 @@ contains
       allocate(temp(size(array, dim=1)))
 
       k = 1 ! actual size counter to output.
+      is_already_subtraction_zone = .false.
 
       ! Main loop
       do i = 1, size(array, dim=1) ! i is array's index
+         if (1 < i .and. i < size(array,dim=1)) then
+           
+            ! Handling subtract expression
+            if (.not. is_already_subtraction_zone) then
+               if (array(i)%c == SYMBOL_HYPN .and. array(i+1)%c == SYMBOL_HYPN) then
+                  temp(k:size(temp))%is_subtract = .true.
+                  is_already_subtraction_zone = .true.
+                  cycle
+               end if
+            else
+               if (array(i)%c == SYMBOL_HYPN .and. array(i+1)%c == SYMBOL_HYPN) then
+                  ierr = SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
+                  return
+               end if
+            end if
+
+            if (array(i-1)%c == SYMBOL_HYPN .and. array(i)%c == SYMBOL_HYPN) then
+               cycle
+            end if
+         end if
 
          if (array(i)%c == SYMBOL_BSLH .and. .not. temp(k)%is_escaped) then
             ! If the current character is backslash
@@ -116,15 +142,18 @@ contains
       use :: iso_fortran_env, only: stderr => error_unit
       implicit none
       type(character_array_t), intent(in) :: list(:)
-
+      
+      character(:), allocatable :: fmt
       integer :: i
 
-      write(stderr, *) '== character_array_t output ==' 
-      write(stderr, *) '====+====+====+====+====+====+====+' 
+      fmt = "('|', a6, 1x, '|', l8, 1x, '|', l11 ,1x, '|', l9, 1x, '|', i7, 1x, '|')"
+      write(stderr, '(a)') '+=========== character_array_t output ==============' 
+      write(stderr, '(a)') '| chara | escaped | hyphenated | subtract |  size  |' 
       do i = 1, size(list, dim=1)
-         write(stderr, *) list(i)%c, list(i)%is_escaped, list(i)%is_hyphenated, list(i)%seg_size
+         write(stderr, fmt) list(i)%c, list(i)%is_escaped, list(i)%is_hyphenated, &
+            list(i)%is_subtract, list(i)%seg_size
       end do
-      write(stderr, *) '====+====+====+====+====+====+====+' 
+      write(stderr, '(a)') '+=======+=========+============+==========+========+' 
 
    end subroutine dump_character_array_t_list
 #endif
