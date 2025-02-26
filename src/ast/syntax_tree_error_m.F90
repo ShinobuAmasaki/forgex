@@ -25,7 +25,10 @@ module forgex_syntax_tree_error_m
       enumerator :: SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
       enumerator :: SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
       enumerator :: SYNTAX_ERR_INVALID_CHARACTER_RANGE
+      enumerator :: SYNTAX_ERR_CHAR_CLASS_SUBTRANCTION_NOT_IMPLEMENTED
+      
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+      
       
       enumerator :: ALLOCATION_ERR
    end enum
@@ -45,6 +48,7 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_range_with_escape_sequences = "ERROR: Cannot create a range with shorthand escape sequence"
    character(*), parameter :: err_misplaced_subtractio_operator = "ERROR: Subtraction operator is misplaced in character class."
    character(*), parameter :: err_invalid_character_range  = "ERROR: Given character range is invalid."
+   character(*), parameter :: err_character_class_subtraction = "ERROR: Character class subtraction hasn't implemented yet."
 
    character(*), parameter :: err_allocation               = "ERROR: Allocation is failed."
    
@@ -103,6 +107,9 @@ contains
 
       case (SYNTAX_ERR_INVALID_CHARACTER_RANGE)
          msg = err_invalid_character_range
+      
+      case (SYNTAX_ERR_CHAR_CLASS_SUBTRANCTION_NOT_IMPLEMENTED)
+         msg = err_character_class_subtraction
       
       case (ALLOCATION_ERR)
          msg = err_allocation

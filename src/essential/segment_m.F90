@@ -345,6 +345,7 @@ contains
    pure subroutine parse_segment_width_in_char_array (array)
       use :: forgex_parameters_m
       use :: forgex_utf8_m
+      use :: forgex_character_array_m
       implicit none
       type(character_array_t), intent(inout) :: array(:)
       type(segment_t), allocatable :: seg(:)

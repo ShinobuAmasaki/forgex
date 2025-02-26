@@ -744,12 +744,11 @@ contains
 
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
-      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8, &
-         character_array_t, character_string_to_array, &
-         parse_backslash_and_hyphen_in_char_array
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
       use :: forgex_segment_m, only: join_two_segments, parse_segment_width_in_char_array, &
          register => register_segment_to_list
+      use :: forgex_character_array_m
       implicit none
 
       character(*), intent(in) :: str
