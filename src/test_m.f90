@@ -23,6 +23,7 @@ module forgex_test_m
    public :: is_valid__prefix
    public :: is_valid__suffix
    ! public :: is_valid__middle
+   public :: is_valid__error
 
 
    public :: runner_validate
@@ -32,6 +33,7 @@ module forgex_test_m
    public :: runner_prefix
    public :: runner_suffix
    ! public :: runner_middle
+   public :: runner_error
 
 
 contains
@@ -161,6 +163,26 @@ contains
    ! end function is_valid__middle
 
 
+   !> This function checks whether it returns the correct error for a given pattern and text.
+   function is_valid__error (pattern, text, expected_err_code, return_code) result(res)
+      use :: forgex_syntax_tree_error_m
+      implicit none
+      character(*), intent(in) :: pattern
+      character(*), intent(in) :: text
+      integer, intent(in)      :: expected_err_code
+      integer, intent(inout)   :: return_code
+
+      integer(int32)           :: status
+      character(256)           :: err_msg
+      character(:), allocatable :: substr
+      logical                  :: res
+
+      call regex(pattern, "", substr, status=status, err_msg=err_msg)
+      return_code = status
+
+      res = (status == expected_err_code) .and. (trim(err_msg) == trim(get_error_message(expected_err_code)))
+
+   end function is_valid__error
 
 !=====================================================================!
 
@@ -309,5 +331,36 @@ contains
    !    ! end if
    !    ! result = result .and. res
    ! end subroutine runner_middle
+
+
+   !> This subroutine runs `is_valid_error` function and prints its result.
+   subroutine runner_error(pattern, text, code, result)
+      use :: forgex_syntax_tree_error_m
+      implicit none
+      character(*), intent(in) :: pattern, text
+      integer, intent(in) :: code
+      logical, intent(inout) :: result
+      
+      character(10) :: cache
+      character(:), allocatable :: fmt
+      logical :: res
+      integer :: returned_code, width
+
+      cache = ''
+      width = max(len_trim(pattern), 15)
+      write(cache, '(i0)') width
+      fmt = '(a, a'//trim(adjustl(cache))//', a)'
+
+      res = is_valid__error(pattern, text, code, returned_code)
+
+      if (res) then
+         write(error_unit, fmt) 'result(error): Success: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
+      else
+         write(error_unit, fmt) 'result(error): FAILED: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
+      end if
+
+      result = result .and. res
+
+   end subroutine runner_error
 
 end module forgex_test_m
