@@ -340,6 +340,23 @@ contains
 
 !====================================================================-!
 !  Helper procedures
+
+   !> This function converts two isolated segments into single fused segment
+   !> and returns it.
+   pure function join_two_segments(segA, segB) result(res)
+      implicit none
+      type(segment_t), intent(in) :: segA, segB
+      type(segment_t) :: res
+
+      res = segment_t(min(segA%min, segB%min), max(segA%max, segB%max))
+
+      if (.not. res%validate()) then
+         res = SEG_INIT
+      end if
+   
+   end function join_two_segments
+
+
    pure subroutine sort_segment_by_min(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)
