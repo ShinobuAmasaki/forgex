@@ -745,7 +745,8 @@ contains
          character_array_t, character_string_to_array, &
          parse_backslash_and_hyphen_in_char_array
       use :: forgex_parameters_m
-      use :: forgex_segment_m, register => register_segment_to_list
+      use :: forgex_segment_m, only: join_two_segments, parse_segment_width_in_char_array, &
+         register => register_segment_to_list
       implicit none
 
       character(*), intent(in) :: str
@@ -754,10 +755,10 @@ contains
       integer, intent(inout) :: ierr
 
       integer :: i, j, k, siz, jerr
-      type(segment_t) :: seg
+      type(segment_t) :: prev_seg, curr_seg
       type(segment_t), allocatable :: list(:), cache(:)
       logical :: backslashed
-      logical :: prev_hyphenated
+      logical :: prev_hyphenated, curr_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
       character(:), allocatable :: c ! Temporary variable stores a character of interest.
 
@@ -765,8 +766,18 @@ contains
       is_valid = .true.
       backslashed = .false.
       prev_hyphenated = .false.
-      seg = segment_t()
+      curr_hyphenated = .false.
+      prev_seg = segment_t()
+      curr_seg = segment_t()
       
+      if (len(str) >= 2) then
+         if (str(1:2) == '--') then
+            ierr = SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
+            is_valid = .false.
+         end if
+      end if
+         
+
       ! Convert to an array from a pattern string.
       call character_string_to_array(str, ca)
       if (.not. allocated(ca)) then
@@ -776,6 +787,36 @@ contains
 
       ! Remove backslash and hyphen, and raise respective flag for each component.
       call parse_backslash_and_hyphen_in_char_array(ca)
+      call parse_segment_width_in_char_array(ca)
+
+
+      ! If each of the array element is hyphenated,
+      ! check that the range is not 1 and return invalid.
+      check: do i = 1, size(ca, dim=1)
+         if (ca(i)%is_hyphenated .and. ca(i)%seg_size /= 1) then
+            ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
+            is_valid = .false.
+            return
+         end if
+
+         if (i>1) then
+            if (ca(i-1)%is_hyphenated .and. ca(i)%seg_size /= 1) then
+               ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
+               is_valid = .false.
+               return
+            end if
+         end if
+
+         if (i> 1 .and. i == size(ca, dim=1)) then
+            if (ca(i)%is_hyphenated) then
+               ca(i)%is_hyphenated = .false.
+               ca = [ca(1:size(ca)), character_array_t(SYMBOL_HYPN, .false., .false., 1)]
+               exit check
+            end if
+         end if
+      end do check
+
+
 
       siz = size(ca, dim=1)      
       if (siz < 1) then
@@ -789,94 +830,56 @@ contains
       j = 0 ! Couter of actual list size for `seglist`.
       c = EMPTY_CHAR
 
-      ! Main loop
       outer: do i = 1, siz
          c = ca(i)%c
          backslashed = ca(i)%is_escaped  ! cache `is_escaped` flag
+         curr_hyphenated = ca(i)%is_hyphenated
+         if (i > 1) prev_hyphenated = ca(i-1)%is_hyphenated 
 
-         ! Note that all branches require a `backslashed` conditional.
+         curr_seg = segment_t(ichar_utf8(c), ichar_utf8(c))
+      
+         if (backslashed) then
 
-         ! If the current character is hyphenated, store only the minimum value
-         ! in the `seg` variable.
-         if (ca(i)%is_hyphenated) then
-            if (backslashed) then
-               select case (c)
-               case (SYMBOL_BSLH)
-                  seg%min = ichar_utf8(SYMBOL_BSLH)
-               case (SYMBOL_LCRB)
-                  seg%min = ichar_utf8(SYMBOL_LCRB)
-               case (SYMBOL_RCRB)
-                  seg%min = ichar_utf8(SYMBOL_RCRB)
-               case (SYMBOL_LSBK)
-                  seg%min = ichar_utf8(SYMBOL_LSBK)
-               case (SYMBOL_RSBK)
-                  seg%min = ichar_utf8(SYMBOL_RSBK)
-               case default
-                  ierr = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
-                  is_valid = .false.
-                  return
-               end select
-            else
-               seg%min = ichar_utf8(c)
-            end if
-
-            ! Tell the next cycle that the previous character was hyphenated. 
-            prev_hyphenated = .true.
-            cycle
-
-         end if
-
-         ! If the flag is raised, store maximum code point in the component of segment.
-         if (prev_hyphenated) then
-            if (backslashed) then
-               select case (c)
-               case (SYMBOL_BSLH)
-                  seg%max = ichar_utf8(SYMBOL_BSLH)
-               case (SYMBOL_LCRB)
-                  seg%max = ichar_utf8(SYMBOL_LCRB)
-               case (SYMBOL_RCRB)
-                  seg%max = ichar_utf8(SYMBOL_RCRB)
-               case (SYMBOL_LSBK)
-                  seg%max = ichar_utf8(SYMBOL_LSBK)
-               case (SYMBOL_RSBK)
-                  seg%max = ichar_utf8(SYMBOL_RSBK)
-               case default
-                  is_valid = .false.
-                  return
-               end select
-            else
-               seg%max = ichar_utf8(c)
-            end if
-
-            ! Once the maximum value is determined, register `seg` in the `list`.
-            call register(list, seg, j, jerr)
-            if (jerr == SEGMENT_REJECTED) then
+            call convert_escaped_character_into_segments(c, cache)
+            if (cache(1) == SEG_ERROR) then
+               ierr = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
                is_valid = .false.
                return
             end if
 
-            ! Put down the flag.
-            prev_hyphenated = .false.
-            cycle
+            ! If the number of segemnts is greater than 1, register them to the `list`.
+            if (size(cache, dim=1) > 1) then
+               do k = 1, size(cache)
+                  call register(list, cache(k), j, ierr)
+               end do
+               deallocate(cache)
+               prev_seg = segment_t()
+               cycle outer
+            end if 
+
+            curr_seg = cache(1)
          end if
 
-         ! If neither the current nor previous character is hyphenated,
-         ! minimum and maximum values store the same code point.
-         if (backslashed) then
-            call convert_escaped_character_into_segments(c, cache)
-            do k = 1, size(cache)
-               call register(list, cache(k), j, ierr)
-            end do
-         else
-            seg%min = ichar_utf8(c)
-            seg%max = ichar_utf8(c)
+
+         if (prev_hyphenated) then
+            curr_seg = join_two_segments(prev_seg, curr_seg)
+            if (curr_seg == SEG_ERROR) then
+               ierr = SYNTAX_ERR
+               is_valid = .false.
+               return
+            end if
+         end if
+      
+         if (.not. curr_hyphenated) then
+            call register(list, curr_seg, j, jerr)
+            if (jerr == SEGMENT_REJECTED) then
+               is_valid = .false.
+               ierr = SYNTAX_ERR
+               return
+            end if
          end if
 
-         call register(list, seg, j, ierr)
-         if (jerr == SEGMENT_REJECTED) then
-            is_valid = .false.
-            return
-         end if
+         prev_seg = curr_seg
       end do outer
 
       allocate(seglist(j))
@@ -911,86 +914,86 @@ contains
    end function update_next_utf8_char_index
 
 
-   !> This subroutine converts escaped character of the argument `chara` into segment `list`. 
-   pure subroutine convert_escaped_character_into_segments(chara, list)
+   !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 
+   pure subroutine convert_escaped_character_into_segments(chara, seg_list)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       character(*), intent(in) :: chara
-      type(segment_t), allocatable, intent(inout) :: list(:)
+      type(segment_t), allocatable, intent(inout) :: seg_list(:)
 
-      if (allocated(list)) deallocate(list)
+      if (allocated(seg_list)) deallocate(seg_list)
 
       select case (trim(chara))
       case (ESCAPE_T)
-         allocate(list(1))
-         list(1) = SEG_TAB
+         allocate(seg_list(1))
+         seg_list(1) = SEG_TAB
       case (ESCAPE_N)
-         allocate(list(2))
-         list(1) = SEG_LF
-         list(2) = SEG_CR
+         allocate(seg_list(2))
+         seg_list(1) = SEG_LF
+         seg_list(2) = SEG_CR
       case (ESCAPE_R)
-         allocate(list(1))
-         list(1) = SEG_CR
+         allocate(seg_list(1))
+         seg_list(1) = SEG_CR
       case (ESCAPE_D)
-         allocate(list(1))
-         list(1) = SEG_DIGIT
+         allocate(seg_list(1))
+         seg_list(1) = SEG_DIGIT
       case (ESCAPE_D_CAPITAL)
-         allocate(list(1))
-         list(1) = SEG_DIGIT
-         call invert_segment_list(list)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_DIGIT
+         call invert_segment_list(seg_list)
       case (ESCAPE_W)
-         allocate(list(4))
-         list(1) = SEG_LOWERCASE
-         list(2) = SEG_UNDERSCORE
-         list(3) = SEG_DIGIT
-         list(4) = SEG_UNDERSCORE
+         allocate(seg_list(4))
+         seg_list(1) = SEG_LOWERCASE
+         seg_list(2) = SEG_UPPERCASE
+         seg_list(3) = SEG_DIGIT
+         seg_list(4) = SEG_UNDERSCORE
       case (ESCAPE_W_CAPITAL)
-         allocate(list(4))
-         list(1) = SEG_LOWERCASE
-         list(2) = SEG_UNDERSCORE
-         list(3) = SEG_DIGIT
-         list(4) = SEG_UNDERSCORE
-         call invert_segment_list(list)
+         allocate(seg_list(4))
+         seg_list(1) = SEG_LOWERCASE
+         seg_list(2) = SEG_UPPERCASE
+         seg_list(3) = SEG_DIGIT
+         seg_list(4) = SEG_UNDERSCORE
+         call invert_segment_list(seg_list)
       case (ESCAPE_S)
-         allocate(list(6))
-         list(1) = SEG_SPACE
-         list(2) = SEG_TAB
-         list(3) = SEG_CR
-         list(4) = SEG_LF
-         list(5) = SEG_FF
-         list(6) = SEG_ZENKAKU_SPACE
+         allocate(seg_list(6))
+         seg_list(1) = SEG_SPACE
+         seg_list(2) = SEG_TAB
+         seg_list(3) = SEG_CR
+         seg_list(4) = SEG_LF
+         seg_list(5) = SEG_FF
+         seg_list(6) = SEG_ZENKAKU_SPACE
       case (ESCAPE_S_CAPITAL)
-         allocate(list(6))
-         list(1) = SEG_SPACE
-         list(2) = SEG_TAB
-         list(3) = SEG_CR
-         list(4) = SEG_LF
-         list(5) = SEG_FF
-         list(6) = SEG_ZENKAKU_SPACE
-         call invert_segment_list(list)
+         allocate(seg_list(6))
+         seg_list(1) = SEG_SPACE
+         seg_list(2) = SEG_TAB
+         seg_list(3) = SEG_CR
+         seg_list(4) = SEG_LF
+         seg_list(5) = SEG_FF
+         seg_list(6) = SEG_ZENKAKU_SPACE
+         call invert_segment_list(seg_list)
       case (SYMBOL_BSLH)
-         allocate(list(1))
-         list(1)%min = ichar_utf8(SYMBOL_BSLH)
-         list(1)%max = ichar_utf8(SYMBOL_BSLH)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_BSLH)
+         seg_list(1)%max = ichar_utf8(SYMBOL_BSLH)
       case (SYMBOL_LCRB)
-         allocate(list(1))
-         list(1)%min = ichar_utf8(SYMBOL_LCRB)
-         list(1)%max = ichar_utf8(SYMBOL_LCRB)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_LCRB)
+         seg_list(1)%max = ichar_utf8(SYMBOL_LCRB)
       case (SYMBOL_RCRB)
-         allocate(list(1))
-         list(1)%min = ichar_utf8(SYMBOL_RCRB)
-         list(1)%max = ichar_utf8(SYMBOL_RCRB)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_RCRB)
+         seg_list(1)%max = ichar_utf8(SYMBOL_RCRB)
       case (SYMBOL_LSBK)
-         allocate(list(1))
-         list(1)%min = ichar_utf8(SYMBOL_LSBK)
-         list(1)%max = ichar_utf8(SYMBOL_LSBK)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_LSBK)
+         seg_list(1)%max = ichar_utf8(SYMBOL_LSBK)
       case (SYMBOL_RSBK)
-         allocate(list(1))
-         list(1)%min = ichar_utf8(SYMBOL_RSBK)
-         list(1)%max = ichar_utf8(SYMBOL_RSBK)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_RSBK)
+         seg_list(1)%max = ichar_utf8(SYMBOL_RSBK)
       case default
-         allocate(list(1))
-         list(1) = SEG_INIT
+         allocate(seg_list(1))
+         seg_list(1) = SEG_ERROR
       end select
 
    end subroutine convert_escaped_character_into_segments

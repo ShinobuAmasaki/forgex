@@ -23,6 +23,7 @@ module forgex_syntax_tree_error_m
       enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
       enumerator :: SYNTAX_ERR_EMPTY_CHARACTER_CLASS
       enumerator :: SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
+      enumerator :: SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
    end enum
 
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
@@ -37,7 +38,8 @@ module forgex_syntax_tree_error_m
    character(*), parameter :: err_escaped_symbol_missing   = "ERROR: Pattern cannot end with a trailing unescaped backslash."
    character(*), parameter :: err_escaped_symbol_invalid   = "ERROR: This token has no special meaning."
    character(*), parameter :: err_empty_character_class    = "ERROR: Given class has no character."
-   character(*), parameter :: err_range_with_escape_sequences = "ERROR: Cannot create a range with shorthand sequence"
+   character(*), parameter :: err_range_with_escape_sequences = "ERROR: Cannot create a range with shorthand escape sequence"
+   character(*), parameter :: err_misplaced_subtractio_operator = "ERROR: Subtraction operator is misplaced in character class."
 
 
 contains
@@ -83,6 +85,9 @@ contains
       case (SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES)
          msg = err_range_with_escape_sequences
 
+      case (SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR)
+         msg = err_misplaced_subtractio_operator
+         
       case default
          msg = err_is_nothing
       end select
