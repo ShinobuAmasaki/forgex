@@ -19,6 +19,7 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 - character class `[a-z]`
 - inverted character class `[^a-z]`
 - character class on UTF-8 codeset `[α-ωぁ-ん]`
+- shorthands in character class `[\d]`
 
 Note that inverted class does not match the control characters.
 
@@ -28,6 +29,8 @@ Note that inverted class does not match the control characters.
 - `{min,}`,
 - `{min, max}`,
 where `num` and `max` must NOT be zero.
+
+To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 
 #### Anchor
 - `^`, matches the beginning of a line
@@ -44,6 +47,14 @@ where `num` and `max` must NOT be zero.
 - `\d`, digit character (`[0-9]`)
 - `\D`, non-digit character (`[^0-9]`)
 
+### Experimental Features
+
+#### Non-UTF-8 Input
+
+**Note: It is the user's responsibility to ensure that input text and the regular expression patterns passed to the API are composed of UTF-8 encoding.**
+
+Version 4.2 adds handling when non-UTF-8 characters are given as input strings. When the processor encounters a non-UTF-8 character, it replaces it byte by byte with U+FFFF and attempts to continue matching. Since this library is primarily focused on UTF-8 string processing, this feature should be considered experimental and preliminary. That is it is intended for simple purposes, such as searching for a pattern that matches ASCII and its class in a text file created with a character encoding that includes ASCII.
+
 ## Documentation
 The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
 
@@ -55,8 +66,6 @@ Operation has been confirmed with the following compilers:
 - GNU Fortran (`gfortran`) v13.2.1
 - Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
 
-
-
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 
 First of all, add the following to your project's `fpm.toml`:
@@ -67,6 +76,8 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 ```
 
 ### Alternative options
+
+#### MacPorts
 
 If you use macOS, you can install this library by using MacPorts with the following command:
 
@@ -111,8 +122,6 @@ Then, you can use codes in `test/` directory to test the library with following 
 cd build
 ctest -C Debug
 ```
-
-
 
 ### APIs
 
@@ -330,8 +339,10 @@ state    4A = ( 2 4 5 6 )
 
 ## To do
 
+- Character class subtraction: `[a-z--b-d]`
 - Add Unicode escape sequence `\p{...}`
-- Deal with invalid byte strings in UTF-8
+- Add 256 characters' escape sequence: `\x..`
+- ✅️ Deal with invalid byte strings in UTF-8
 - ✅️ Optimize by literal searching method
 - ✅️ Add a CLI tool for debugging and benchmarking
 - ✅️ Make all operators `pure elemental` attribute
