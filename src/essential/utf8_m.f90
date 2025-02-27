@@ -142,12 +142,12 @@ contains
    end function next_idxutf8
 
 
-   pure subroutine next_idxutf8_strict(str, curr, tail, is_valid)
+   pure subroutine next_idxutf8_strict(str, curr, next, is_valid)
       use :: forgex_parameters_m
       implicit none
       character(*), intent(in)    :: str
       integer,      intent(in)    :: curr
-      integer,      intent(inout) :: tail
+      integer,      intent(inout) :: next
       logical,      intent(inout) :: is_valid
 
       integer :: ib, ie
@@ -159,9 +159,9 @@ contains
 
       if (ie /= INVALID_CHAR_INDEX) then
          is_valid = is_valid_multiple_byte_character(str(ib:ie))
-         tail = ie + 1
+         next = ie + 1
       else
-         tail = curr
+         next = curr+1
          is_valid = .false.
       end if
 
@@ -190,7 +190,10 @@ contains
       shift_7 = ishft(byte, -7)  ! Right shift the byte by 7 bits
 
       ! 1st byte
-      if (shift_3 == 30) then
+      if (shift_3 == 31) then  ! 5-byte character (invalid)
+         res = .false.
+         return
+      else if (shift_3 == 30) then
          expected_siz = 4
       else if (shift_4 == 14)then
          expected_siz = 3 

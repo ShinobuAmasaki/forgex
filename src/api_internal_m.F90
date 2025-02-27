@@ -227,7 +227,6 @@ contains
       ! True if the prefix is empty or matches, and the suffix is empty or matches.
       runs_engine = (empty_pre .or. matches_pre) .and. (empty_post .or. matches_post)
 
-
       if (.not. runs_engine) then
          res = .false.
          return
@@ -264,19 +263,18 @@ contains
          end if
 
          if (ci > len(str)) exit
-
          ! Get the index of the next character and assign it to `next_ci`.
          ! next_ci = next_idxutf8(str, ci)
          call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
+
+         ! Lazy evaluation is performed by calling this procedure here.
+         ! The index of destination DFA node is stored in the `dst_i` variable.
          if (is_valid_utf8_char) then
             call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
          else
             call automaton%construct(cur_i, dst_i, make_replacement_char())
          end if
 
-         ! Lazy evaluation is performed by calling this procedure here.
-         ! The index of destination DFA node is stored in the `dst_i` variable.
-         call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
 
          ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
          if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
