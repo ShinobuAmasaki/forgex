@@ -4,9 +4,9 @@
 !
 ! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
-!     forgex_syntax_tree_error_m module is a part of Forgex.
+!     forgex_error_m module is a part of Forgex.
 !
-module forgex_syntax_tree_error_m
+module forgex_error_m
    implicit none
    
    enum, bind(c)
@@ -127,4 +127,4 @@ contains
    end function get_error_message
 
 
-end module forgex_syntax_tree_error_m
+end module forgex_error_m

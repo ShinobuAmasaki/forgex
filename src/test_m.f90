@@ -165,7 +165,7 @@ contains
 
    !> This function checks whether it returns the correct error for a given pattern and text.
    function is_valid__error (pattern, text, expected_err_code, return_code) result(res)
-      use :: forgex_syntax_tree_error_m
+      use :: forgex_error_m
       implicit none
       character(*), intent(in) :: pattern
       character(*), intent(in) :: text
@@ -335,7 +335,7 @@ contains
 
    !> This subroutine runs `is_valid_error` function and prints its result.
    subroutine runner_error(pattern, text, code, result)
-      use :: forgex_syntax_tree_error_m
+      use :: forgex_error_m
       implicit none
       character(*), intent(in) :: pattern, text
       integer, intent(in) :: code

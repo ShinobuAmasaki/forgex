@@ -72,7 +72,7 @@ contains
    !> the current element in `character_array_t` type array.
    pure subroutine parse_backslash_and_hyphen_in_char_array(array, ierr)
       use :: forgex_parameters_m
-      use :: forgex_syntax_tree_error_m
+      use :: forgex_error_m
       implicit none
       type(character_array_t), intent(inout), allocatable :: array(:)
       type(character_array_t), allocatable :: temp(:)

@@ -15,7 +15,7 @@ module forgex_syntax_tree_graph_m
    use :: forgex_segment_m
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
-   use :: forgex_syntax_tree_error_m
+   use :: forgex_error_m
    implicit none
    private
 
