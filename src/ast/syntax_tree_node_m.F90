@@ -191,8 +191,10 @@ contains
                self%current_token = tk_rsbracket
             case (SYMBOL_LCRB)
                self%current_token = tk_lcurlybrace
+               self%token_char = c
             case (SYMBOL_RCRB)
                self%current_token = tk_rcurlybrace
+               self%token_char = c
             case (SYMBOL_DOT)
                self%current_token = tk_dot
             case (SYMBOL_CRET)
@@ -204,6 +206,7 @@ contains
                self%token_char = c
             end select
          end if
+
 
          self%idx = next_idxutf8(self%str, ib)
 
