@@ -11,10 +11,13 @@
 !> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
    implicit none
+   private
 
    public :: idxutf8
-   public :: next_idxutf8
+   public :: next_idxutf8  ! for processing pattern
+   public :: next_idxutf8_strict  ! for processing text (Cannot be assumed to be UTF-8 character)
    public :: char_utf8, ichar_utf8
+   public :: make_replacement_char
    public :: count_token
    public :: is_first_byte_of_character
    public :: is_first_byte_of_character_array
@@ -49,7 +52,26 @@ contains
 
       tail = curr    ! Initialize tail to the current index.
 
+      !! Class of invalid UTF-8 characters
+      !! 1. invalid lead byte
+      !! 2. invalid trail byte
+      !! 3. overrun
+      !! 4. over long encoding
+      !! 5. incomplete multibyte sequence
+      !! 6. invalid character range (U+D800-U+DFFF)
+      !! 7. BOM appears in the middle
+      !! 8. isolated trail byte
+      !
+      !! In the above case, `idxutf8` will returns `curr`.
+      !! Then, you should call `is_valid_multiple_byte_character` at a higher level to validate the substring.
+
       do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character.
+
+         ! for terminated incomplete multibyte character
+         if (curr+i > len(str)) then
+            tail = curr
+            return
+         end if
 
          byte = int(ichar(str(curr+i:curr+i)), kind(byte))
             ! Get the byte value of the character at position `curr+1`.
@@ -120,6 +142,33 @@ contains
    end function next_idxutf8
 
 
+   pure subroutine next_idxutf8_strict(str, curr, next, is_valid)
+      use :: forgex_parameters_m
+      implicit none
+      character(*), intent(in)    :: str
+      integer,      intent(in)    :: curr
+      integer,      intent(inout) :: next
+      logical,      intent(inout) :: is_valid
+
+      integer :: ib, ie
+
+      ! initialize
+      is_valid = .false.
+      ib = curr
+      ie = idxutf8(str, ib)
+
+      if (ie /= INVALID_CHAR_INDEX) then
+         is_valid = is_valid_multiple_byte_character(str(ib:ie))
+         next = ie + 1
+      else
+         next = curr+1
+         is_valid = .false.
+      end if
+
+   end subroutine next_idxutf8_strict
+      
+
+
    pure function is_valid_multiple_byte_character(chara) result(res)
       use, intrinsic :: iso_fortran_env, only: int32, int8
       implicit none
@@ -141,7 +190,10 @@ contains
       shift_7 = ishft(byte, -7)  ! Right shift the byte by 7 bits
 
       ! 1st byte
-      if (shift_3 == 30) then
+      if (shift_3 == 31) then  ! 5-byte character (invalid)
+         res = .false.
+         return
+      else if (shift_3 == 30) then
          expected_siz = 4
       else if (shift_4 == 14)then
          expected_siz = 3 
@@ -354,6 +406,13 @@ contains
       end if
    end function ichar_utf8
 
+
+   pure function make_replacement_char() result(replace)
+      implicit none
+      character(3) :: replace
+
+      replace = char_utf8(65535)  ! U+FFFF
+   end function make_replacement_char
 
    !> This function calculates the length of a UTF-8 string excluding tailing spaces.
    !>

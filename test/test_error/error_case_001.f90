@@ -1,6 +1,6 @@
 program error_case_001
    use :: forgex_test_m
-   use :: forgex_syntax_tree_error_m
+   use :: forgex_error_m
    implicit none
 
    logical :: res = .true.

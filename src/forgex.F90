@@ -231,7 +231,7 @@ contains
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
-      use :: forgex_syntax_tree_error_m, only: get_error_message, SYNTAX_VALID
+      use :: forgex_error_m, only: get_error_message, SYNTAX_VALID
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
