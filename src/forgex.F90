@@ -252,7 +252,8 @@ contains
       entirely_fixed_string = ''
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
-
+      if (present(status)) status = SYNTAX_VALID
+      if (present(err_msg)) err_msg = ''
       buff = trim(pattern)
 
       ! Build tree from regex pattern in the buff variable.

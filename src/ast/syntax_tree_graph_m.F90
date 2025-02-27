@@ -394,6 +394,14 @@ contains
          self%is_valid = .false.
          return
    
+      ! Unescaped closing curly brace is allowed.
+      case (tk_rcurlybrace)
+         chara = self%tape%token_char
+         seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
+         node = make_atom(seg)
+         call self%register_connector(node, terminal, terminal)
+         call self%tape%get_token()
+
       case default
          self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
          self%is_valid = .false.
