@@ -231,7 +231,7 @@ contains
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
-      use :: forgex_syntax_tree_error_m, only: get_error_message
+      use :: forgex_syntax_tree_error_m, only: get_error_message, SYNTAX_VALID
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -252,7 +252,8 @@ contains
       entirely_fixed_string = ''
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
-
+      if (present(status)) status = SYNTAX_VALID
+      if (present(err_msg)) err_msg = ''
       buff = trim(pattern)
 
       ! Build tree from regex pattern in the buff variable.
