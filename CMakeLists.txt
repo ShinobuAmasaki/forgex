@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.5)
 
-enable_language(Fortran)
 
 project(forgex
    VERSION 4.1
    DESCRIPTION "Fortran Regular Expression"
    LANGUAGES Fortran
 )
+enable_language(Fortran)
 
 message("Project: ${PROJECT_NAME}")
 message("Description: ${PROJECT_DESCRIPTION}")
