@@ -10,7 +10,7 @@
 
 !> The `forgex_test_m` module provides helper procedures to unit testing for Forgex.
 module forgex_test_m
-   use, intrinsic :: iso_fortran_env, only: int32, error_unit
+   use, intrinsic :: iso_fortran_env, only: int8, int32, error_unit
    use :: forgex, only: operator(.in.), operator(.match.), regex, is_valid_regex
    use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
@@ -34,6 +34,7 @@ module forgex_test_m
    public :: runner_suffix
    ! public :: runner_middle
    public :: runner_error
+   public :: nchar         ! negative char
 
 
 contains
@@ -217,9 +218,9 @@ contains
       res = is_valid__in(pattern, str, answer)
 
       if (res) then
-         write(error_unit, '(a, a, a)') 'result(in   ): Success', ' '//trim(pattern)
+         write(error_unit, '(a, a, a)') 'result(in   ): Success', ' '//pattern
       else
-         write(error_unit, '(a, a, a)') 'result(in   ): FAILED ', ' '//trim(pattern), ' '//trim(str)
+         write(error_unit, '(a, a, a)') 'result(in   ): FAILED ', ' '//pattern, ' '//trim(str)
       end if
 
       result = result .and. res
@@ -362,5 +363,19 @@ contains
       result = result .and. res
 
    end subroutine runner_error
+
+   !> nchar means 'negative char'.
+   pure function nchar(i) result(chara)
+      implicit none
+      integer(int8), intent(in) :: i
+      character(1) :: chara
+
+      if (i < 0) then
+         chara = char(i+256)
+      else
+         chara = char(i)
+      end if
+   end function nchar
+
 
 end module forgex_test_m

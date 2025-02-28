@@ -10,6 +10,7 @@
 
 !> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
+   use :: iso_fortran_env, only: int8
    implicit none
    private
 
@@ -25,6 +26,13 @@ module forgex_utf8_m
    public :: is_valid_multiple_byte_character
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
+
+   integer(int8), parameter, public :: fullbit = -1                ! 11111111
+   integer(int8), parameter, public :: ascii_mask= 127             ! 01111111
+   integer(int8), parameter, public :: lead_2_mask = -33           ! 11011111
+   integer(int8), parameter, public :: lead_3_mask = -17           ! 11101111
+   integer(int8), parameter, public :: lead_4_mask= -9             ! 11110111
+   integer(int8), parameter, public :: continuation_mask = -65     ! 10111111
 
 contains
 
@@ -65,7 +73,7 @@ contains
       !! In the above case, `idxutf8` will returns `curr`.
       !! Then, you should call `is_valid_multiple_byte_character` at a higher level to validate the substring.
 
-      do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character.
+      outer: do i = 0, 3    ! Loop over the next four bytes to determine the byte-length of the character.
 
          ! for terminated incomplete multibyte character
          if (curr+i > len(str)) then
@@ -88,33 +96,44 @@ contains
 
             if (shift_3 == 30 ) then ! If the byte starts with 11110_2 (4-byte character).
                tail = curr + 4 - 1
-               return
+               exit outer
             end if
 
             if (shift_4 == 14) then ! If the byte starts witth 1110_2 (3-byte character).
                tail = curr + 3 - 1
-               return
+               exit outer
             end if
 
             if (shift_5 == 6) then  ! If the byte starts with 110_2 (2-byte character).
                tail = curr + 2 - 1
-               return
+               exit outer
             end if
 
             if (shift_7 == 0) then ! If then byte starts with 0_2 (1-byte character).
                tail = curr + 1 - 1
-               return
+               exit outer
             end if
 
          else     ! Check continuation byptes
 
             if (shift_3 == 30 .or. shift_4 == 14 .or. shift_5 == 6 .or. shift_7 == 0) then
                tail = curr + i - 1
-               return
+               exit outer
             end if
 
          end if
-      end do
+      end do outer
+
+      if (tail <= len(str)) then
+         if (.not. is_valid_multiple_byte_character(str(curr:tail))) then
+            tail = curr
+         else
+            return
+         end if
+      else
+         tail = curr
+      end if
+
 
    end function idxutf8
 
