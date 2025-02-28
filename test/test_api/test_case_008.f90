@@ -37,6 +37,8 @@ program test_case_008
    call runner_match("(\w+\s*)+", "123456", .true., res)
    call runner_match("(\w+\s*)+", "123456 foo", .true., res)
 
+   call runner_match("a{0}", "", .true., res)
+
    ! call runner_match("", "", , res)
    ! call runner_match("", "", , res)
    ! call runner_match("", "", , res)

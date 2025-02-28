@@ -343,7 +343,7 @@ contains
       logical, intent(inout) :: result
       
       character(10) :: cache
-      character(:), allocatable :: fmt
+      character(:), allocatable :: fmt, fmt_with_code
       logical :: res
       integer :: returned_code, width
 
@@ -351,13 +351,15 @@ contains
       width = max(len_trim(pattern), 15)
       write(cache, '(i0)') width
       fmt = '(a, a'//trim(adjustl(cache))//', a)'
+      fmt_with_code = '(a, a'//trim(adjustl(cache))//', a, i3)'
 
       res = is_valid__error(pattern, text, code, returned_code)
 
       if (res) then
          write(error_unit, fmt) 'result(error): Success: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
       else
-         write(error_unit, fmt) 'result(error): FAILED: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
+         write(error_unit, fmt_with_code) 'result(error): FAILED:  ', pattern, &
+             ': "'//trim(get_error_message(returned_code))//'" error code =', returned_code
       end if
 
       result = result .and. res

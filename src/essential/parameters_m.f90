@@ -25,8 +25,8 @@ module forgex_parameters_m
 
    integer(int32), parameter :: LIT_OPTS_INDEX_UNIT = 32
 
-   integer(int32), parameter :: INVALID_REPEAT_VAL = -1
-   integer(int32), parameter :: INFINITE = -2
+   integer(int32), parameter :: INVALID_REPEAT_VAL = -9999
+   integer(int32), parameter :: INFINITE = -9998
    integer, parameter, public :: INVALID_CHAR_INDEX = -9999
 
    integer(int32), parameter :: INVALID_SEGMENT_SIZE = -1

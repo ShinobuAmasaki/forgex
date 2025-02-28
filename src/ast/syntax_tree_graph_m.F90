@@ -308,11 +308,12 @@ contains
       case (tk_lcurlybrace)
          call self%times()
          if (.not. self%is_valid) then
-            self%code = SYNTAX_ERR_INVALID_TIMES
+            ! self%code = SYNTAX_ERR_INVALID_TIMES
             return
          end if
          call self%tape%get_token()
 
+      ! `case default` must NOT be placed.
       end select
    end subroutine tree_graph__suffix_op
 
@@ -401,6 +402,11 @@ contains
          node = make_atom(seg)
          call self%register_connector(node, terminal, terminal)
          call self%tape%get_token()
+
+      case (tk_lcurlybrace)
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         self%is_valid = .false.
+         return
 
       case default
          self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
@@ -699,8 +705,18 @@ contains
          end if
       end do
 
+      if (len(buf) == 0) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         return
+      end if
+
       if (buf(1:1) == ',') then
          buf = "0"//buf
+      end if
+
+      if (trim(buf) == '0') then
+         buf = "0,"//buf
       end if
 
       read(buf, fmt=*, iostat=ios) arg(:)
@@ -714,12 +730,23 @@ contains
 
       if (ios > 0) then
          self%is_valid = .false.
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         return
+      end if
+
+      if (arg(1) < 0) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
       buf = adjustl(buf)
 
-      if (arg(1) == 0) then   ! {,max}, {0,max}
+      if (arg(1) == 0 .and. arg(2) == 0) then
+         min = 0
+         max = 0
+
+      else if (arg(1) == 0) then   ! {,max}, {0,max}
 
          if (buf(len_trim(buf):len_trim(buf)) == ',') then
             min = arg(1)
@@ -728,6 +755,7 @@ contains
             min = 0
             max = arg(2)
          end if
+
       else if (arg(2) == INVALID_REPEAT_VAL) then ! {min,}, {num}
          if (buf(len_trim(buf):len_trim(buf)) == ',') then
             min = arg(1)
@@ -742,7 +770,10 @@ contains
          max = arg(2)
       end if
 
-      if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
+      if (min == 0 .and. max == 0) then
+         continue
+
+      else if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
          self%is_valid = .false.
          return
       end if

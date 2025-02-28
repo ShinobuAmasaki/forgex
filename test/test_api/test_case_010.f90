@@ -21,6 +21,14 @@ program test_010
    text = bad//'a'
    call runner_in("[a-z]+", text, .true., res)
 
+   ! Invalid Leader bytes
+   c1 = nchar(continuation_mask)
+   c2 = nchar(lead_4_mask)
+   c3 = nchar(lead_2_mask)
+   bad = c2//c3//c1
+   text = bad//'a'
+   call runner_in("[a-z]", text, .true., res)
+
    ! Contenuation bytes are shorter than indicated by the leader byte.
    c1 = nchar(continuation_mask)
    bad = nchar(lead_4_mask)//c1//c1

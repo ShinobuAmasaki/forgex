@@ -253,7 +253,7 @@ contains
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
       if (present(status)) status = SYNTAX_VALID
-      if (present(err_msg)) err_msg = ''
+      if (present(err_msg)) err_msg = get_error_message(SYNTAX_VALID)
       buff = trim(pattern)
 
       ! Build tree from regex pattern in the buff variable.
