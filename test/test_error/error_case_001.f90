@@ -25,14 +25,16 @@ program error_case_001
    call runner_error("a{0,a}", "", SYNTAX_ERR_INVALID_TIMES, res)
    call runner_error("a{-1,2}", "", SYNTAX_ERR_INVALID_TIMES, res)
    call runner_error("a{0,-2}", "", SYNTAX_ERR_INVALID_TIMES, res)
-   call runner_error("a{-9999,10}", "", SYNTAX_ERR_INVALID_TIMES, res)
-   call runner_error("a{0,-9999}", "", SYNTAX_ERR_INVALID_TIMES, res)
+  
+   call runner_error("a{-9999,10}", "", SYNTAX_ERR_INVALID_TIMES, res)  
    call runner_error("}?", "", SYNTAX_VALID, res)
    call runner_error("{0?","", SYNTAX_ERR_INVALID_TIMES, res)
    call runner_error("a{}", "",SYNTAX_ERR_INVALID_TIMES, res)
-   ! call runner_error("", res)
-   ! call runner_error("", res)
-   ! call runner_error("", res)
+
+   call runner_error("a{0,-9999}", "", SYNTAX_ERR_INVALID_TIMES, res) ! max = INVALID_REPEAT_VAL
+
+   ! Below tests cannot be passed. 
+   ! call runner_error("a{0,-9998}", "", SYNTAX_ERR_INVALID_TIMES, res) ! max = INFINITE
 
 !=====================================================================!
    if (res) then

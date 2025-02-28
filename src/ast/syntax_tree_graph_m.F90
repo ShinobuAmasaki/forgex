@@ -730,7 +730,7 @@ contains
 
       if (ios > 0) then
          self%is_valid = .false.
-         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
@@ -775,6 +775,11 @@ contains
 
       else if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
          self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         return
+      else if (max == INVALID_REPEAT_VAL) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
