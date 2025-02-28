@@ -32,9 +32,11 @@ program error_case_001
    call runner_error("a{}", "",SYNTAX_ERR_INVALID_TIMES, res)
 
    call runner_error("a{0,-9999}", "", SYNTAX_ERR_INVALID_TIMES, res) ! max = INVALID_REPEAT_VAL
-
-   ! Below tests cannot be passed. 
+   ! Below test cannot be passed. 
    ! call runner_error("a{0,-9998}", "", SYNTAX_ERR_INVALID_TIMES, res) ! max = INFINITE
+
+   call runner_error("\a", "", SYNTAX_ERR_ESCAPED_SYMBOL_INVALID, res)
+   call runner_error("\\\", "", SYNTAX_ERR_ESCAPED_SYMBOL_MISSING, res)
 
 !=====================================================================!
    if (res) then

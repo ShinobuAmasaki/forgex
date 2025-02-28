@@ -656,11 +656,27 @@ contains
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
          self%is_valid = .false.
          return
-      case default
+      case (SYMBOL_LSBK, SYMBOL_RSBK, &
+            SYMBOL_LCRB, SYMBOL_RCRB, &
+            SYMBOL_LPAR, SYMBOL_RPAR, &
+            SYMBOL_DOLL, SYMBOL_BSLH, &
+            SYMBOL_VBAR, SYMBOL_DOT, &
+            SYMBOL_QUES, SYMBOL_CRET, &
+            SYMBOL_STAR, SYMBOL_PLUS, &
+            SYMBOL_HYPN)
          chara = self%tape%token_char
          seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
          node = make_atom(seg)
          call self%register_connector(node, terminal, terminal)
+         return
+
+      case default
+         self%code = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
+         self%is_valid = .false.
+         ! chara = self%tape%token_char
+         ! seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
+         ! node = make_atom(seg)
+         ! call self%register_connector(node, terminal, terminal)
          return
       end select
 
