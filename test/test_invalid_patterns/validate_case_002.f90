@@ -88,7 +88,7 @@ program main
    
 !=====================================================================!
    if (res) then
-      print *, "=== PATTRERN VALIDATE CASE 2 END ==="
+      print *, "=== PATTERN VALIDATE CASE 2 END ==="
       stop
    else
       error stop

@@ -54,7 +54,7 @@ program main
 
 !=====================================================================!
    if (res) then
-      print *, "=== PATTRERN VALIDATE CASE 3 END ==="
+      print *, "=== PATTERN VALIDATE CASE 3 END ==="
       stop
    else
       error stop

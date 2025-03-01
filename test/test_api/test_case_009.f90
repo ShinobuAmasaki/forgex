@@ -52,6 +52,11 @@ program test_case_008
    call runner_match("[a\d]", "9", .true., res)
    call runner_match("[a\d]", "b", .false., res)
 
+   call runner_match("a b", "a b", .true., res)
+   call runner_match("a* bc*", "a bc", .true., res)
+   call runner_match("a* bc*", "a bc", .true., res)
+   call runner_in("a* bc*", " b", .true., res)
+
 !=====================================================================!
    if (res) then
       print *, "=== TEST CASE 9 END ==="
