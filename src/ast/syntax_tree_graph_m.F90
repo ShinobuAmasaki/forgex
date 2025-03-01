@@ -722,9 +722,17 @@ contains
       end do
 
       if (len(buf) == 0) then
+      ! for a{}
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
+      else if (len(buf) == 1) then
+      ! for a{,}
+         if (buf(1:1) == SYMBOL_COMMA) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_INVALID_TIMES
+            return
+         end if
       end if
 
       if (buf(1:1) == ',') then
