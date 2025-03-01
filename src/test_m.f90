@@ -199,7 +199,9 @@ contains
       res = is_valid__pattern(pattern, answer)
 
       if (res) then
+#ifndef FAILED
          write(error_unit, '(a,a,l1)') 'result(validate): Success', ' '//trim(pattern)//' ', answer
+#endif
       else
          write(error_unit, '(a,a,l1)') 'result(validate): FAILED ', ' '//trim(pattern)//' ', answer
       end if
@@ -218,7 +220,10 @@ contains
       res = is_valid__in(pattern, str, answer)
 
       if (res) then
+         continue
+#ifndef FAILED
          write(error_unit, '(a, a, a)') 'result(in   ): Success', ' '//pattern
+#endif
       else
          write(error_unit, '(a, a, a)') 'result(in   ): FAILED ', ' '//pattern, ' '//trim(str)
       end if
@@ -239,11 +244,13 @@ contains
 
 
       if (res) then
+#ifndef FAILED
          if (answer) then
             write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
          else
             write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern)
          end if
+#endif
       else
          write(error_unit, '(a, a, a)') 'result(match): FAILED ' , ' '//trim(pattern),' "'//trim(str)//'"'
       end if
@@ -266,11 +273,13 @@ contains
       res = is_valid__regex(pattern, str, answer, substr)
 
       if (res) then
+#ifndef FAILED
          if (answer == substr) then
             write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
          else
             write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
          end if
+#endif
       else
          write(error_unit, '(a, a, a)') 'result(regex): FAILED ', ' '//trim(pattern), ' "'//trim(substr)//'"'
       end if
@@ -289,7 +298,9 @@ contains
       res = is_valid__prefix(pattern, prefix)
 
       if (res) then
+#ifndef FAILED
          write(error_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+#endif
       else
          write(error_unit, '(a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), ' "'//trim(prefix)//'"'
       end if
@@ -307,7 +318,9 @@ contains
       res = is_valid__suffix(pattern, suffix)
 
       if (res) then
+#ifndef FAILED
          write(error_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
+#endif
       else
          write(error_unit, '(a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"'
       end if
@@ -356,7 +369,9 @@ contains
       res = is_valid__error(pattern, text, code, returned_code)
 
       if (res) then
+#ifndef FAILED
          write(error_unit, fmt) 'result(error): Success: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
+#endif
       else
          write(error_unit, fmt_with_code) 'result(error): FAILED:  ', pattern, &
              ': "'//trim(get_error_message(returned_code))//'" error code =', returned_code
