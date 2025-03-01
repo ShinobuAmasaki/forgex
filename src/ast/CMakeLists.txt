@@ -1,8 +1,8 @@
 add_library(ast STATIC
+   character_array_m.F90
    syntax_tree_node_m.F90
    syntax_tree_graph_m.F90
    syntax_tree_optimize_m.F90
-   syntax_tree_error_m.F90
 )
 
 set_target_properties(ast PROPERTIES

@@ -66,7 +66,7 @@ contains
       buff = trim(pattern)
       call tree%build(buff)
 
-      res = tree%is_valid_pattern
+      res = tree%is_valid
    end function is_valid_regex_pattern
 
 
@@ -97,7 +97,7 @@ contains
       call tree%build(buff)
 
       ! Reterns .false. if the given pattern is invalid.
-      if (.not. tree%is_valid_pattern) then
+      if (.not. tree%is_valid) then
          res = .false.
          return
       end if
@@ -192,7 +192,7 @@ contains
       call tree%build(buff)
 
       ! Reterns .false. if the given pattern is invalid.
-      if (.not. tree%is_valid_pattern) then
+      if (.not. tree%is_valid) then
          res = .false.
          return
       end if
@@ -231,7 +231,7 @@ contains
    !> The function implemented for the `regex` subroutine.
    pure subroutine subroutine__regex(pattern, text, res, length, from, to, status, err_msg)
       use :: forgex_parameters_m, only: ACCEPTED_EMPTY, INVALID_CHAR_INDEX
-      use :: forgex_syntax_tree_error_m, only: get_error_message
+      use :: forgex_error_m, only: get_error_message, SYNTAX_VALID
       implicit none
       character(*),              intent(in)    :: pattern, text
       character(:), allocatable, intent(inout) :: res
@@ -252,14 +252,15 @@ contains
       entirely_fixed_string = ''
       from_l = INVALID_CHAR_INDEX
       to_l = INVALID_CHAR_INDEX
-
+      if (present(status)) status = SYNTAX_VALID
+      if (present(err_msg)) err_msg = get_error_message(SYNTAX_VALID)
       buff = trim(pattern)
 
       ! Build tree from regex pattern in the buff variable.
       call tree%build(buff)
 
       ! Assigns invalid value of arguments if the given pattern is invalid.
-      if (.not. tree%is_valid_pattern) then
+      if (.not. tree%is_valid) then
          res = ""
          if (present(length)) length = 0
          if (present(from))   from = INVALID_CHAR_INDEX

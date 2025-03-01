@@ -17,7 +17,7 @@ module forgex_api_internal_m
    use, intrinsic :: iso_fortran_env, only: stderr => error_unit
    use :: forgex_parameters_m, only: DFA_NOT_INIT, DFA_INVALID_INDEX
    use :: forgex_automaton_m, only: automaton_t
-   use :: forgex_utf8_m, only: idxutf8
+   use :: forgex_utf8_m, only: next_idxutf8_strict, make_replacement_char
    implicit none
    private
 
@@ -47,7 +47,7 @@ contains
       integer :: suf_idx      ! right-most suffix index
       character(:), allocatable :: str
       integer, allocatable :: index_list(:)
-      logical :: do_brute_force
+      logical :: do_brute_force, is_valid_utf8_char
 
       do_brute_force = .false.
       runs_engine = .false.
@@ -124,10 +124,14 @@ contains
 
             if (ci > len(str)) exit
 
-            next_ci = idxutf8(str, ci) + 1
+            call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
 
-            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
-
+            if (is_valid_utf8_char) then
+               call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+            else
+               call automaton%construct(cur_i, dst_i, make_replacement_char())
+            end if
+            
             cur_i = dst_i
             ci = next_ci
          end do
@@ -145,7 +149,8 @@ contains
          end if
 
          if (do_brute_force) then
-            start = idxutf8(str, start) + 1 ! Bruteforce searching
+            call next_idxutf8_strict(str, start, start, is_valid_utf8_char)
+            ! start = next_idxutf8(str, start) ! Bruteforce searching
             cycle
          endif
 
@@ -181,6 +186,7 @@ contains
 
       integer :: len_pre, len_suf, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
+      logical :: is_valid_utf8_char
 
       runs_engine = .false.
 
@@ -221,7 +227,6 @@ contains
       ! True if the prefix is empty or matches, and the suffix is empty or matches.
       runs_engine = (empty_pre .or. matches_pre) .and. (empty_post .or. matches_post)
 
-
       if (.not. runs_engine) then
          res = .false.
          return
@@ -258,19 +263,29 @@ contains
          end if
 
          if (ci > len(str)) exit
-
          ! Get the index of the next character and assign it to `next_ci`.
-         next_ci = idxutf8(str, ci) + 1
+         ! next_ci = next_idxutf8(str, ci)
+         call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
 
          ! Lazy evaluation is performed by calling this procedure here.
          ! The index of destination DFA node is stored in the `dst_i` variable.
-         call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+         if (is_valid_utf8_char) then
+            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+         else
+            call automaton%construct(cur_i, dst_i, make_replacement_char())
+         end if
+
 
          ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
          if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
             ci = 2
-            next_ci = idxutf8(str, ci) + 1
-            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+            ! next_ci = next_idxutf8(str, ci)
+            call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
+            if (is_valid_utf8_char) then
+               call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+            else
+               call automaton%construct(cur_i, dst_i, make_replacement_char())
+            end if
          end if
 
          ! update counters
