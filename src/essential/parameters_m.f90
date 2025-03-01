@@ -58,6 +58,7 @@ module forgex_parameters_m
    character(1), parameter, public :: SYMBOL_CRET = '^'  ! caret
    character(1), parameter, public :: SYMBOL_DOT  = '.'  ! dot
    character(1), parameter, public :: SYMBOL_HYPN = '-'  ! hyphen
+   character(1), parameter, public :: SYMBOL_COMMA = ','
    character(1), parameter, public :: ESCAPE_T = 't'
    character(1), parameter, public :: ESCAPE_N = 'n'
    character(1), parameter, public :: ESCAPE_R = 'r'

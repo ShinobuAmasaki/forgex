@@ -13,6 +13,8 @@ module forgex_utility_m
    public :: is_there_caret_at_the_top
    public :: is_there_dollar_at_the_end
    public :: get_index_list_forward
+   public :: get_index_comma
+   public :: is_integer
 
 contains
 
@@ -113,5 +115,56 @@ contains
          if (suf_idx /= INVALID_CHAR_INDEX .and. offset > suf_idx) exit
       end do
    end subroutine get_index_list_forward
+
+
+   pure subroutine get_index_comma (str, i, count)
+      use :: iso_fortran_env, only: int32
+      use :: forgex_parameters_m, only: comma => SYMBOL_COMMA, EMPTY_CHAR
+      implicit none
+      character(*), intent(in) :: str
+      integer(int32), intent(inout) :: i, count
+
+      integer(int32) :: j
+      character(:), allocatable :: buf
+
+      i = 0
+      j = 1
+      count = 0
+      buf = str
+      do while (.true.)
+         j = index(buf, comma)
+         if (i == 0) i = j
+         if (j == 0) exit
+         buf = buf(1:j-1)//'.'//buf(j+1:len(buf))
+         count = count + 1
+      end do
+
+   end subroutine get_index_comma
+
+   pure function is_integer (chara) result(res)
+      use :: iso_fortran_env, only: int64
+      use :: forgex_parameters_m
+      implicit none
+      character(*), intent(in) :: chara
+
+      integer :: ios, i, count
+      integer(int64) :: val1
+      logical :: res
+
+      i = index(chara, SYMBOL_COMMA)
+
+      if (i /= 0) then
+         res = .false.
+         return
+      end if
+
+      read(chara, fmt='(1i19)', iostat=ios) val1
+      if (ios /= 0) then
+         res = .false.
+      else
+         res = .true.
+      end if
+   end function is_integer
    
+
 end module forgex_utility_m
