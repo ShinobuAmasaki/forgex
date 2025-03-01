@@ -429,7 +429,7 @@ contains
       character(:), allocatable :: buf
       type(tree_node_t) :: node
 
-      integer :: siz, ie, i, j, i_next, i_terminal
+      integer :: siz, ie
       logical :: is_inverted, backslashed
       character(:), allocatable :: prev, curr
 
@@ -997,31 +997,6 @@ contains
 
    end subroutine interpret_class_string
 
-
-   pure function update_next_utf8_char_index(str, idx) result(res)
-      use :: forgex_utf8_m, only: idxutf8
-      use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
-      implicit none
-      character(*), intent(in) :: str
-      integer, intent(in) :: idx
-      integer :: res
-
-      integer :: curr_end ! The index of the end of the multibyte character
-
-      curr_end = idxutf8(str, idx)
-
-      if (curr_end >= len(str)) then
-         res = INVALID_CHAR_INDEX
-
-      else if (curr_end == INVALID_CHAR_INDEX) then
-         res = INVALID_CHAR_INDEX
-      
-      else
-         ! curr_end is valid and is not the end of the string.
-         res = curr_end + 1
-      end if
-      
-   end function update_next_utf8_char_index
 
 
    !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 

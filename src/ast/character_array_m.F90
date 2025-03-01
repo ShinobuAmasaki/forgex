@@ -78,7 +78,7 @@ contains
       type(character_array_t), allocatable :: temp(:)
       integer, intent(inout) :: ierr
 
-      integer :: i, k, siz, isub
+      integer :: i, k, siz
       logical :: is_already_subtraction_zone
 
       if (.not. allocated(array)) return
