@@ -1,6 +1,6 @@
 add_library(essential STATIC
    enums_m.f90
-   error_m.f90
+   error_m.F90
    parameters_m.f90
    priority_queue_m.f90
    segment_m.F90
