@@ -152,6 +152,7 @@ contains
       logical :: res
 
       i = index(chara, SYMBOL_COMMA)
+      i = max(i, index(chara, SYMBOL_WS))
 
       if (i /= 0) then
          res = .false.
