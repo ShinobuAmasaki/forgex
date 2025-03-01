@@ -697,6 +697,7 @@ contains
    !> This subroutine handles a quantifier range, and
    !> does not call any other recursive procedures.
    pure subroutine tree_graph__times(self)
+      use :: forgex_utility_m, only: get_index_comma, is_integer
       implicit none
       class(tree_t), intent(inout) :: self
       character(:), allocatable :: buf
@@ -704,9 +705,18 @@ contains
 
       type(tree_node_t) :: left, node
 
+      integer :: i, num_comma
+      character(:), allocatable :: c1, c2
+      logical :: is_infinite
+
       ios = 0
       buf = ''
       arg(:) = INVALID_REPEAT_VAL
+      c1 = ''
+      c2 = ''
+      is_infinite = .false.
+      max = INVALID_REPEAT_VAL
+      min = INVALID_REPEAT_VAL
 
       call self%tape%get_token()
 
@@ -722,12 +732,12 @@ contains
       end do
 
       if (len(buf) == 0) then
-      ! for a{}
+      ! Error for a{}
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
       else if (len(buf) == 1) then
-      ! for a{,}
+      ! Error for a{,}
          if (buf(1:1) == SYMBOL_COMMA) then
             self%is_valid = .false.
             self%code = SYNTAX_ERR_INVALID_TIMES
@@ -736,14 +746,16 @@ contains
       end if
 
       if (buf(1:1) == ',') then
-         buf = "0"//buf
+         buf = "0"//buf ! e.g. {,2} =>{0,2}
       end if
 
-      if (trim(buf) == '0') then
-         buf = "0,"//buf
+
+      if (is_integer(buf)) then
+         buf = trim(buf)//","//trim(buf) ! e.g. {0} => {0,0}
       end if
 
-      read(buf, fmt=*, iostat=ios) arg(:)
+   !----------------
+      call get_index_comma(buf, i, num_comma)
 
       ! ios has a negative value if an end-of-record condition is encountered during non-advancing input,
       ! a different negative value if and endfile condition was detected on the input device, a positive value
@@ -752,43 +764,38 @@ contains
       ! cf. Michael Metcalf, John Reid and Malcolm Cohen (2018)
       !       - "Modern Fortran Explained--Incorporating Fortran 2018"
 
-      if (ios > 0) then
+      ! patterns like {1,2,3} are error.
+      if (num_comma > 1) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
-      if (arg(1) < 0) then
+      c1 = buf(1:i-1)
+      if (i+1 <= len_trim(buf)) c2 = buf(i+1:len_trim(buf))
+
+      read(c1, fmt=*, iostat=ios) arg(1)
+      if (ios > 0 .or. arg(1)< 0) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
-      buf = adjustl(buf)
-
-      if (arg(1) == 0 .and. arg(2) == 0) then
-         min = 0
-         max = 0
-
-      else if (arg(1) == 0) then   ! {,max}, {0,max}
-
-         if (buf(len_trim(buf):len_trim(buf)) == ',') then
-            min = arg(1)
-            max = INFINITE
-         else
-            min = 0
-            max = arg(2)
+      if (trim(c2) == EMPTY_CHAR) then
+         is_infinite = .true.
+      else
+         read(c2, fmt=*, iostat=ios) arg(2)
+         if (ios > 0 .or. arg(2) < 0) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_INVALID_TIMES
+            return
          end if
+      end if
 
-      else if (arg(2) == INVALID_REPEAT_VAL) then ! {min,}, {num}
-         if (buf(len_trim(buf):len_trim(buf)) == ',') then
-            min = arg(1)
-            max = INFINITE
-         else
-            min = arg(1)
-            max = arg(1)
-         end if
-
+      
+      if (is_infinite) then
+         min = arg(1)
+         max = INFINITE
       else
          min = arg(1)
          max = arg(2)
@@ -796,12 +803,11 @@ contains
 
       if (min == 0 .and. max == 0) then
          continue
-
-      else if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
+      else if (max /= INFINITE .and. min > max) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
-      else if (max == INVALID_REPEAT_VAL) then
+      else if (max == INVALID_REPEAT_VAL .and. min > max) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_TIMES
          return
@@ -809,7 +815,6 @@ contains
 
       node = make_repeat_node(min, max)
       left = self%get_top()
-      
       call self%register_connector(node, left, terminal)
 
    end subroutine tree_graph__times

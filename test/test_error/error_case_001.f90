@@ -30,6 +30,8 @@ program error_case_001
    call runner_error("}?", "", SYNTAX_VALID, res)
    call runner_error("{0?","", SYNTAX_ERR_INVALID_TIMES, res)
    call runner_error("a{}", "",SYNTAX_ERR_INVALID_TIMES, res)
+   call runner_error("a{,}", "",SYNTAX_ERR_INVALID_TIMES, res)
+   call runner_error("a{0,2,1}", "",SYNTAX_ERR_INVALID_TIMES, res)
 
    call runner_error("a{0,-9999}", "", SYNTAX_ERR_INVALID_TIMES, res) ! max = INVALID_REPEAT_VAL
    ! Below test cannot be passed. 
