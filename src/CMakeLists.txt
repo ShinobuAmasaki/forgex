@@ -13,6 +13,7 @@ add_library(${STATIC_LIB} STATIC
 )
 
 target_link_libraries(forgex PRIVATE essential ast nfa lazy_dfa)
+target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/essential)
 target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/ast)
 target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/nfa)
 target_link_directories(forgex PRIVATE ${CMAKE_BINARY_DIR}/src/lazy_dfa)

@@ -24,6 +24,7 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - 文字クラス（例： `[a-z]`）
 - 否定クラス（例: `[^a-z]`）
 - Unicode文字クラス（例: `[α-ωぁ-ん]`）
+- 文字クラスの中での略記法の展開（例: `[\d]`）
 
 否定クラスは制御文字にはマッチしないことに注意してください。
 
@@ -33,6 +34,8 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `{min,}`,
 - `{min, max}`,
 ここで `num`と`max`は0（ゼロ）以外の自然数を指定します。
+
+リテラルの左中括弧を使用する場合にはバックスラッシュでエスケープしてください: `\{`
 
 ### アンカー
 - `^`, 行頭にマッチ
@@ -71,6 +74,8 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex", tag="v2.0"}
 
 ### 代替の選択肢
 
+#### MacPorts
+
 macOSを使用している場合、このライブラリはMacPortsを使用して、以下のコマンドを実行することによりインストールすることができます。
 
 ```shell
@@ -98,6 +103,23 @@ fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
 ```
 
 こちらも参照してください：[https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
+
+#### CMake
+
+CMakeを使ってビルドを行いたい場合には、次のコマンドを実行します：
+
+```shell
+cd forgex
+cmake -S . -B build
+cmake --build build
+```
+
+ビルドが完了したら、以下のようなコマンドで、このライブラリをテストすることができます。
+
+```shell
+cd build
+ctest -C Debug
+```
 
 ### APIの使い方
 

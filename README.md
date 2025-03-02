@@ -1,6 +1,10 @@
-<!-- Readme[EN] version 4.0 -->
+<!-- Readme[EN] version 4.2 -->
 
 # Fortran Regular Expression
+
+[![Tested with LLVM Flang](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml)
+[![Tested with GFortran](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml)
+
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
@@ -21,6 +25,7 @@ The engine's core algorithm uses a deterministic finite automaton (DFA) approach
 - character class `[a-z]`
 - inverted character class `[^a-z]`
 - character class on UTF-8 code set `[α-ωぁ-ん]`
+- shorthands in character class `[\d]`
 
 Note that inverted character class does not match the control characters.
 
@@ -30,6 +35,8 @@ Note that inverted character class does not match the control characters.
 - `{min,}`,
 - `{min, max}`,
 where `num` and `max` must NOT be zero.
+
+To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 
 ### Anchor
 - `^`, matches the beginning of a line
@@ -45,6 +52,14 @@ where `num` and `max` must NOT be zero.
 - `\W` (`[^a-zA-Z0-9_]`)
 - `\d` digit character (`[0-9]`)
 - `\D` non-digit character (`[^0-9]`)
+
+### Experimental Features
+
+#### Non-UTF-8 Input
+
+**Note: It is the user's responsibility to ensure that input text and the regular expression patterns passed to the API are composed of UTF-8 encoding.**
+
+Version 4.2 adds handling when non-UTF-8 characters are given as input strings. When the processor encounters a non-UTF-8 character, it replaces it byte by byte with U+FFFF and attempts to continue matching. Since this library is primarily focused on UTF-8 string processing, this feature should be considered experimental and preliminary. That is it is intended for simple purposes, such as searching for a pattern that matches ASCII and its class in a text file created with a character encoding that includes ASCII.
 
 
 ## Documentation
@@ -69,6 +84,7 @@ forgex = {git = "https://github.com/shinobuamasaki/forgex"}
 
 ### Alternative options
 
+#### MacPorts
 If you use macOS, you can install this library by using MacPorts with the following command:
 
 ```shell
@@ -97,6 +113,22 @@ fpm build --flag "-I/opt/local/include/forgex" --link-flag "-L/opt/local/lib"
 ```
 
 See also [https://ports.macports.org/port/forgex/details](https://ports.macports.org/port/forgex/details)
+
+#### CMake
+
+If you want to build this library with CMake, execute the following command:
+
+```shell
+cd forgex
+cmake -S . -B build
+cmake --build build
+```
+
+Then, you can use codes in `test/` directory to test the library with following command:
+
+```shell
+ctest -C Debug --test-dir build
+```
 
 ### APIs
 When you write `use forgex` at the header on your program, `.in.` and `.match.` operators, `regex` subroutine, and `regex_f` function are introduced.
@@ -308,8 +340,10 @@ Starting with version 3.5, the command line tools are provided in a separate rep
 
 The following features are planned to be implemented in the future:
 
-- [ ] Add Unicode escape sequence `\p{...}`
-- [ ] Deal with invalid byte strings in UTF-8
+- [ ] Character class subtraction: `[a-z--b-d]`
+- [ ] Add Unicode escape sequence: `\p{...}`
+- [ ] Add 256 characters' escape sequence: `\x..`
+- [x] Deal with invalid byte strings in UTF-8
 - [x] Recovery from invalid patterns
 - [x] Optimize by literal searching method
 - [x] Add a CLI tool for debugging and benchmarking => [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)

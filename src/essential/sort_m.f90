@@ -2,7 +2,7 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_sort_m module is a part of Forgex.
 !
@@ -10,7 +10,6 @@
 
 !> The `forgex_sort_m` module provides an implementation of
 !> sorting algorithms for integer arrays.
-!>
 module forgex_sort_m
    use, intrinsic :: iso_fortran_env
    implicit none

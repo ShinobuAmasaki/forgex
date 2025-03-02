@@ -1,0 +1,70 @@
+name: Tested with GFortran on Ubuntu
+
+on: 
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  gfortran-test:
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-22.04", "ubuntu-24.04" ]
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Prepare Repos.
+      run: |
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+        sudo apt-add-repository -y "deb https://apt.kitware.com/ubuntu/ $(lsb_release -cs) main"
+        sudo apt update -y
+          
+    - name: Install packages
+      run: |
+        sudo apt install -y gcc gfortran cmake
+  
+    - name: Install FPM
+      uses: fortran-lang/setup-fpm@v5
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+  
+    - name: Installation Check
+      run: |
+        gcc --version
+        gfortran --version
+        cmake --version
+        fpm --version
+
+    - name: Forgex test with CMake (Debug profile)
+      run: |
+        cmake -S . -B build -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build
+        ctest -C Debug --test-dir build
+        fpm clean --all
+
+        
+    - name: Forgex test with CMake (Release profile)
+      run: |
+        cmake -S . -B build -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Release
+        cmake --build build
+        ctest -C Release --test-dir build
+        fpm clean --all
+
+    - name: Forgex test wiht FPM (Debug profile)
+      run: |
+        fpm test --profile debug --compiler gfortran --flag "-DFAILED"
+        fpm clean --all
+
+    - name: Forgex test wiht FPM (Release profile)
+      run: |
+        fpm test --profile release --compiler gfortran --flag "-DFAILED"
+

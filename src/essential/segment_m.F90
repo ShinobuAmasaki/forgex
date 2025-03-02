@@ -2,7 +2,7 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_segment_m module is a part of Forgex.
 !
@@ -23,6 +23,12 @@ module forgex_segment_m
 
    public :: sort_segment_by_min
    public :: merge_segments
+   public :: segment_is_valid
+   public :: register_segment_to_list
+   public :: join_two_segments
+   public :: width_of_segment
+   public :: total_width_of_segment
+
 
    !> This derived-type represents a contiguous range of the Unicode character set
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
@@ -37,6 +43,7 @@ module forgex_segment_m
 
    ! See ASCII code set
    type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
+   type(segment_t), parameter, public :: SEG_ERROR = segment_t(-2, -2)
    type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
@@ -176,8 +183,10 @@ contains
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
+      type(segment_t) :: init
 
-      res = self%min <= self%max
+      res = self%min /= init%min .and. self%max /= init%max &
+      .and. self%min <= self%max
    end function segment_is_valid
 
 
@@ -309,8 +318,72 @@ contains
       res = segment_t(code, code)
    end function symbol_to_segment
 
+
+   !> This procedure registers given segment_t value to segment_t type array,
+   !> increments counter of the actual size of the array, and initializes temporary variable.
+   pure subroutine register_segment_to_list(segment_list, segment, k, ierr)
+      use :: forgex_parameters_m, only: SEGMENT_REGISTERED, SEGMENT_REJECTED
+      implicit none
+      type(segment_t), intent(inout) :: segment_list(:)
+      type(segment_t), intent(inout) :: segment
+      integer, intent(inout) :: k
+      integer, intent(inout) :: ierr
+
+      if (segment%validate() .and. k <= size(segment_list)-1) then
+         k = k + 1
+
+         segment_list(k) = segment ! register
+
+         ierr = SEGMENT_REGISTERED
+      else
+         ierr = SEGMENT_REJECTED
+      end if
+   end subroutine register_segment_to_list
+
+
 !====================================================================-!
 !  Helper procedures
+
+   pure function width_of_segment(seg) result(res)
+      use :: forgex_parameters_m, only: INVALID_SEGMENT_SIZE
+      implicit none
+      type(segment_t), intent(in) :: seg
+      integer :: res
+
+      if (seg%validate()) then
+         res = seg%max - seg%min + 1
+      else
+         res = INVALID_SEGMENT_SIZE
+      end if
+   end function width_of_segment
+
+   pure function total_width_of_segment(seg_list) result(res)
+      use :: forgex_parameters_m
+      implicit none
+      type(segment_t), intent(in) :: seg_list(:)
+      integer :: res, k
+      res = 0
+      do k = 1, size(seg_list)
+         res = res + width_of_segment(seg_list(k))
+      end do
+   end function total_width_of_segment
+
+   !> This function converts two isolated segments into single fused segment
+   !> and returns it.
+   pure function join_two_segments(segA, segB) result(res)
+      implicit none
+      type(segment_t), intent(in) :: segA, segB
+      type(segment_t) :: res
+
+      res = segment_t(segA%min, segB%max)
+
+      if (.not. res%validate()) then
+         res = SEG_INIT
+      end if
+   
+   end function join_two_segments
+
+
    pure subroutine sort_segment_by_min(segments)
       implicit none
       type(segment_t), allocatable, intent(inout) :: segments(:)

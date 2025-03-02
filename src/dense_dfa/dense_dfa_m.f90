@@ -2,7 +2,7 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_dense_dfa_m module is a part of Forgex.
 !
@@ -198,7 +198,7 @@ contains
    !> This procedure reads a text, performs regular expression matching using compiled DFA,
    !> and returns `.true.` if it matches exactly.
    pure function match_dense_dfa_exactly(automaton, string) result(res)
-      use :: forgex_utf8_m, only: idxutf8
+      use :: forgex_utf8_m, only: next_idxutf8
       implicit none
       type(automaton_t), intent(in) :: automaton
       character(*), intent(in) :: string
@@ -229,7 +229,7 @@ contains
 
          if (ci > len(string)) exit
 
-         next_ci = idxutf8(string, ci) + 1
+         next_ci = next_idxutf8(string, ci)
 
          dst_i = next_state_dense_dfa(automaton, cur_i, string(ci:next_ci-1))
 
@@ -247,7 +247,7 @@ contains
    !> This procedure reads a text, performs regular expression matching using an automaton,
    !> and stores the string index in the argument if it contains a match.
    subroutine match_dense_dfa_including(automaton, string, from, to)
-      use :: forgex_utf8_m, only: idxutf8
+      use :: forgex_utf8_m, only: next_idxutf8
       implicit none
       type(automaton_t), intent(in) :: automaton
       character(*), intent(in) :: string
@@ -289,7 +289,7 @@ contains
 
             if (ci > len(string)) exit
 
-            next_ci = idxutf8(string, ci) + 1
+            next_ci = next_idxutf8(string, ci)
 
             dst_i = next_state_dense_dfa(automaton, cur_i, string(ci:next_ci-1))
             cur_i = dst_i
@@ -303,7 +303,7 @@ contains
             return
          end if
 
-         start = idxutf8(string, start) +1
+         start = next_idxutf8(string, start)
       end do
    end subroutine match_dense_dfa_including
 
