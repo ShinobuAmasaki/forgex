@@ -33,6 +33,8 @@ module forgex_error_m
       enumerator :: ALLOCATION_ERR
    end enum
 
+
+   ! Error message lines.
    character(*), parameter :: err_is_nothing    = "Given pattern is valid."
    character(*), parameter :: err_generic                  = "ERROR: Pattern includes some syntax error."
    character(*), parameter :: err_r_parenthesis_missing    = "ERROR: Closing parenthesis is expected."
@@ -59,6 +61,8 @@ module forgex_error_m
 
 contains
 
+   !> This function accepts integer error status code and then return error
+   !> messagge corresponding to it.
    pure function get_error_message(code) result(msg)
       implicit none
       integer, intent(in)       :: code

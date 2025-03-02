@@ -2,9 +2,10 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_parameters_m module is a part of Forgex.
+!> This module contains parameters and thier values used throughout Forgex.
 module forgex_parameters_m
    use, intrinsic :: iso_fortran_env, only: int32
    implicit none

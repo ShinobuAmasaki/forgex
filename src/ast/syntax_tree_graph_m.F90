@@ -20,6 +20,7 @@ module forgex_syntax_tree_graph_m
    private
 
    type, public :: tree_t
+   !! This derived-type contains all node of syntax-tree in the tree_node_t type array `nodes`.
       type(tree_node_t), allocatable :: nodes(:)
       integer :: top = INVALID_INDEX
       integer :: num_alloc = 0
@@ -54,6 +55,7 @@ module forgex_syntax_tree_graph_m
 
 contains
 
+   !> This procedure builds an AST corresponding to a given (regular expression) pattern from it.
    pure subroutine tree_graph__build_syntax_tree(self, pattern)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -91,6 +93,9 @@ contains
    end subroutine tree_graph__build_syntax_tree
 
 
+   !> This procedure handles the reallcation of the `tree_node_t` type array 
+   !> within the component of the `tree_t` object.
+   !> However, it is not be used in v4.2.
    pure subroutine tree_graph__reallocate(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -122,6 +127,7 @@ contains
    end subroutine tree_graph__reallocate
 
 
+   !> This procedure deallocates `nodes` of `tree_t`
    pure subroutine tree_graph__deallocate(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -129,7 +135,7 @@ contains
       deallocate(self%nodes)
    end subroutine tree_graph__deallocate
 
-   
+
    pure subroutine tree_graph__register_node(self, node)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -313,7 +319,7 @@ contains
          end if
          call self%tape%get_token()
 
-      ! `case default` must NOT be placed.
+      ! `case default` must NOT be placed here.
       end select
    end subroutine tree_graph__suffix_op
 
@@ -470,8 +476,6 @@ contains
 
       end do outer
 
-      ! write(0,*) "L455:                  ", buf
-
       ! If the character class pattern is empty, return false. 
       if (len(buf) == 0) then
          self%code = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
@@ -531,7 +535,7 @@ contains
 
    end subroutine tree_graph__char_class
 
-      
+   ! This procedure registers line feed and carriage return nodes into the AST　under costruced.
    pure subroutine tree_graph__make_tree_crlf(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -709,6 +713,7 @@ contains
       character(:), allocatable :: c1, c2
       logical :: is_infinite
 
+      ! Initialize
       ios = 0
       buf = ''
       arg(:) = INVALID_REPEAT_VAL
@@ -720,6 +725,8 @@ contains
 
       call self%tape%get_token()
 
+      ! Extract the part of the pattern that is the character class that
+      ! this procedure should process.
       do while (self%tape%current_token /= tk_rcurlybrace)
          buf= buf//trim(self%tape%token_char)
          call self%tape%get_token

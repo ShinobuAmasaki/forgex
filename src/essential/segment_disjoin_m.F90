@@ -2,11 +2,12 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_segment_disjoin_m module is a part of Forgex.
 !
-!! This file contains
+!> This file contains procedures to disjoin the overlapps of the segment range
+!> to successfully construct the power-set construction method.
 #ifdef IMPURE
 #define pure
 #endif

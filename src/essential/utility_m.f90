@@ -2,7 +2,7 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_utility_m module is a part of Forgex.
 !
@@ -117,6 +117,8 @@ contains
    end subroutine get_index_list_forward
 
 
+   !> This procedure find first comma and number of it in the given pattern.
+   !> It aims to parse repetation times of the expression.
    pure subroutine get_index_comma (str, i, count)
       use :: iso_fortran_env, only: int32
       use :: forgex_parameters_m, only: comma => SYMBOL_COMMA, EMPTY_CHAR
@@ -141,6 +143,8 @@ contains
 
    end subroutine get_index_comma
 
+   !> This function determines whether the input character string can be
+   !> parsed into an integer.
    pure function is_integer (chara) result(res)
       use :: iso_fortran_env, only: int64
       use :: forgex_parameters_m

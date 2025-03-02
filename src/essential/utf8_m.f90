@@ -2,7 +2,7 @@
 !
 ! MIT License
 !
-! (C) Amasaki Shinobu, 2023-2024
+! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
 !     forgex_utf8_m module is a part of Forgex.
 
@@ -161,6 +161,8 @@ contains
    end function next_idxutf8
 
 
+   !> This subroutine returns the index of the next UTF-8 character conteined in `str`.
+   !> This is used to handle strings that may not be encoded by UTF-8.
    pure subroutine next_idxutf8_strict(str, curr, next, is_valid)
       use :: forgex_parameters_m
       implicit none
@@ -187,7 +189,7 @@ contains
    end subroutine next_idxutf8_strict
       
 
-
+   !> This function checks the input byte string is valid as a single UTF-8 character.
    pure function is_valid_multiple_byte_character(chara) result(res)
       use, intrinsic :: iso_fortran_env, only: int32, int8
       implicit none
@@ -209,16 +211,16 @@ contains
       shift_7 = ishft(byte, -7)  ! Right shift the byte by 7 bits
 
       ! 1st byte
-      if (shift_3 == 31) then  ! 5-byte character (invalid)
+      if (shift_3 == 31) then  ! 5-byte character (invalid) 11111xxx_2
          res = .false.
          return
-      else if (shift_3 == 30) then
+      else if (shift_3 == 30) then  ! 4-byte character `11110xxx_2`
          expected_siz = 4
-      else if (shift_4 == 14)then
+      else if (shift_4 == 14)then   ! 3 byte character `1110xxxx_2`
          expected_siz = 3 
-      else if (shift_5 == 6) then
+      else if (shift_5 == 6) then   ! 2-byte character `110xxxxx_2`
          expected_siz = 2
-      else if (shift_7 == 0) then ! for 1-byte character
+      else if (shift_7 == 0) then   ! for 1-byte character `0xxxxxxx`
          expected_siz = 1         
       else
          res = .false.
@@ -232,7 +234,7 @@ contains
 
       do i = 2, expected_siz
          byte = ichar(chara(i:i), kind=int8)
-         shift_6 = ishft(byte, -6)  ! Right shift the byte by 6 bits
+         shift_6 = ishft(byte, -6)  ! Right shift the byte by 6 bits such as `10xxxxxx_2`
          if (shift_6 /= 2) then
             res = .false.
             return
