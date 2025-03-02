@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.2% of total for procedures.">44 statements</a>
+                 title=" 1.4% of total for procedures.">61 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -159,7 +159,18 @@
 
 
     <p>This function returns the index of the end of the (multibyte) character,
-given the string str and the current index curr.</p>
+given the string str and the current index curr.
+Class of invalid UTF-8 characters
+1. invalid lead byte
+2. invalid trail byte
+3. overrun
+4. over long encoding
+5. incomplete multibyte sequence
+6. invalid character range (U+D800-U+DFFF)
+7. BOM appears in the middle
+8. isolated trail byte</p>
+<p>In the above case, <code>idxutf8</code> will returns <code>curr</code>.
+Then, you should call <code>is_valid_multiple_byte_character</code> at a higher level to validate the substring.</p>
 
 
     <h3>Arguments</h3>
@@ -175,7 +186,7 @@ given the string str and the current index curr.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str"></span>
+              <span class="anchor" id="variable-str~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -190,7 +201,7 @@ given the string str and the current index curr.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr"></span>
+              <span class="anchor" id="variable-curr~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -240,11 +251,36 @@ given the string str and the current index curr.</p>
 <span class="w">         </span><span class="c">! Shifted byte values.</span>
 
 
-<span class="w">      </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w">    </span><span class="c">! Initialize tail to the current index.</span>
+<span class="w">      </span><span class="c">! If the index exceeds the length of str, return the invalid value.</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">curr</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span>
+<span class="w">         </span><span class="k">return</span>
+<span class="k">      end if</span>
 
-<span class="w">      </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w">    </span><span class="c">! Loop over the next four bytes to determine the byte-length of the character.</span>
+<span class="k">      </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w">    </span><span class="c">! Initialize tail to the current index.</span>
 
-<span class="w">         </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">ichar</span><span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="n">curr</span><span class="o">+</span><span class="n">i</span><span class="p">:</span><span class="n">curr</span><span class="o">+</span><span class="n">i</span><span class="p">)),</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span>
+<span class="w">      </span><span class="c">!! Class of invalid UTF-8 characters</span>
+<span class="w">      </span><span class="c">!! 1. invalid lead byte</span>
+<span class="w">      </span><span class="c">!! 2. invalid trail byte</span>
+<span class="w">      </span><span class="c">!! 3. overrun</span>
+<span class="w">      </span><span class="c">!! 4. over long encoding</span>
+<span class="w">      </span><span class="c">!! 5. incomplete multibyte sequence</span>
+<span class="w">      </span><span class="c">!! 6. invalid character range (U+D800-U+DFFF)</span>
+<span class="w">      </span><span class="c">!! 7. BOM appears in the middle</span>
+<span class="w">      </span><span class="c">!! 8. isolated trail byte</span>
+<span class="w">      </span><span class="c">!</span>
+<span class="w">      </span><span class="c">!! In the above case, `idxutf8` will returns `curr`.</span>
+<span class="w">      </span><span class="c">!! Then, you should call `is_valid_multiple_byte_character` at a higher level to validate the substring.</span>
+
+<span class="w">      </span><span class="n">outer</span><span class="p">:</span><span class="w"> </span><span class="k">do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="w">    </span><span class="c">! Loop over the next four bytes to determine the byte-length of the character.</span>
+
+<span class="w">         </span><span class="c">! for terminated incomplete multibyte character</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">curr</span><span class="o">+</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">         end if</span>
+
+<span class="k">         byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">int</span><span class="p">(</span><span class="nb">ichar</span><span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="n">curr</span><span class="o">+</span><span class="n">i</span><span class="p">:</span><span class="n">curr</span><span class="o">+</span><span class="n">i</span><span class="p">)),</span><span class="w"> </span><span class="nb">kind</span><span class="p">(</span><span class="k">byte</span><span class="p">))</span>
 <span class="w">            </span><span class="c">! Get the byte value of the character at position `curr+1`.</span>
 
 <span class="w">         </span><span class="n">shift_3</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 3 bits</span>
@@ -259,33 +295,44 @@ given the string str and the current index curr.</p>
 
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! If the byte starts with 11110_2 (4-byte character).</span>
 <span class="w">               </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">               </span><span class="k">return</span>
-<span class="k">            end if</span>
+<span class="w">               </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_4</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! If the byte starts witth 1110_2 (3-byte character).</span>
 <span class="w">               </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">               </span><span class="k">return</span>
-<span class="k">            end if</span>
+<span class="w">               </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_5</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">  </span><span class="c">! If the byte starts with 110_2 (2-byte character).</span>
 <span class="w">               </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">               </span><span class="k">return</span>
-<span class="k">            end if</span>
+<span class="w">               </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_7</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! If then byte starts with 0_2 (1-byte character).</span>
 <span class="w">               </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">               </span><span class="k">return</span>
-<span class="k">            end if</span>
+<span class="w">               </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="k">end if</span>
 
 <span class="k">         else</span><span class="w">     </span><span class="c">! Check continuation byptes</span>
 
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">shift_4</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">14</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">shift_5</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">shift_7</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">               </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">               </span><span class="k">return</span>
-<span class="k">            end if</span>
+<span class="w">               </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="k">end if</span>
 
 <span class="k">         end if</span>
-<span class="k">      end do</span>
+<span class="k">      end do </span><span class="n">outer</span>
+
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">tail</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">str</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="n">is_valid_multiple_byte_character</span><span class="p">(</span><span class="n">str</span><span class="p">(</span><span class="n">curr</span><span class="p">:</span><span class="n">tail</span><span class="p">)))</span><span class="w"> </span><span class="k">then</span>
+<span class="k">            </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span>
+<span class="w">         </span><span class="k">else</span>
+<span class="k">            return</span>
+<span class="k">         end if</span>
+<span class="k">      else</span>
+<span class="k">         </span><span class="n">tail</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">curr</span>
+<span class="w">      </span><span class="k">end if</span>
+
 
 <span class="k">   end function </span><span class="n">idxutf8</span>
 </pre></div>
@@ -311,7 +358,7 @@ given the string str and the current index curr.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

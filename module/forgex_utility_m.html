@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.7% of total for modules and submodules.">71 statements</a>
+                 title=" 2.4% of total for modules and submodules.">114 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -125,6 +125,7 @@
       </a>
       <div id="funcs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_utility_m.html#proc-is_integer">is_integer</a>
             <a class="list-group-item" href="../module/forgex_utility_m.html#proc-is_there_caret_at_the_top">is_there_caret_at_the_top</a>
             <a class="list-group-item" href="../module/forgex_utility_m.html#proc-is_there_dollar_at_the_end">is_there_dollar_at_the_end</a>
         </div>
@@ -138,6 +139,7 @@
       </a>
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_utility_m.html#proc-get_index_comma">get_index_comma</a>
             <a class="list-group-item" href="../module/forgex_utility_m.html#proc-get_index_list_forward">get_index_list_forward</a>
         </div>
       </div>
@@ -171,6 +173,52 @@
         <section>
           <h2>Functions</h2>
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-is_integer"></span> <h3>public pure function <a href='../proc/is_integer.html'>is_integer</a>(chara) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This function determines whether the input character string can be
+parsed into an integer.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chara"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chara</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-is_there_caret_at_the_top"></span> <h3>public pure function <a href='../proc/is_there_caret_at_the_top.html'>is_there_caret_at_the_top</a>(pattern) result(res)  
 </h3></div>
     <div class="card-body">
@@ -191,7 +239,7 @@ at the top that matches the beginning of a line.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~19"></span>
+              <span class="anchor" id="variable-pattern"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -237,7 +285,7 @@ at the end that matches the ending of a line.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~20"></span>
+              <span class="anchor" id="variable-pattern~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -268,6 +316,77 @@ at the end that matches the ending of a line.</p>
         <section>
           <h2>Subroutines</h2>
               <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-get_index_comma"></span> <h3>public pure subroutine <a href='../proc/get_index_comma.html'>get_index_comma</a>(str, i, count)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This procedure find first comma and number of it in the given pattern.
+It aims to parse repetation times of the expression.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-i~2"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>i</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-count"></span>
+              integer(kind=int32),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>count</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
     <div class="card-header codesum"><span class="anchor" id="proc-get_index_list_forward"></span> <h3>public pure subroutine <a href='../proc/get_index_list_forward.html'>get_index_list_forward</a>(text, prefix, suffix, index_array)  
 </h3></div>
     <div class="card-body">
@@ -288,7 +407,7 @@ at the end that matches the ending of a line.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-text~3"></span>
+              <span class="anchor" id="variable-text"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -303,7 +422,7 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~8"></span>
+              <span class="anchor" id="variable-prefix"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -318,7 +437,7 @@ at the end that matches the ending of a line.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-suffix~8"></span>
+              <span class="anchor" id="variable-suffix"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -376,7 +495,7 @@ at the end that matches the ending of a line.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

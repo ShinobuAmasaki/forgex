@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p>17.8% of total for derived types.</p>Including implementation: 499 statements, 35.3% of total for derived types.">28 statements</a>
+                 title="<p>17.1% of total for derived types.</p>Including implementation: 561 statements, 37.6% of total for derived types.">28 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -116,13 +116,13 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/tree_t.html#variable-code~3">code</a>
-            <a class="list-group-item" href="../type/tree_t.html#variable-is_valid_pattern">is_valid_pattern</a>
-            <a class="list-group-item" href="../type/tree_t.html#variable-nodes~3">nodes</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-code~4">code</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-is_valid~2">is_valid</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-nodes~2">nodes</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-num_alloc">num_alloc</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-paren_balance">paren_balance</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-tape">tape</a>
-            <a class="list-group-item" href="../type/tree_t.html#variable-top~4">top</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-top~2">top</a>
         </div>
       </div>
     </div>
@@ -158,15 +158,15 @@
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-deallocate">deallocate</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-get_top">get_top</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-primary">primary</a>
-            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-print~3">print</a>
-            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-range">range</a>
-            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-reallocate~2">reallocate</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-print~4">print</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-reallocate">reallocate</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-regex">regex</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-register">register</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-register_connector">register_connector</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-shorthand">shorthand</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-suffix_op">suffix_op</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-term">term</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-times">times</a>
         </div>
       </div>
     </div>
@@ -182,7 +182,7 @@
     <div class="col-md-9" id='text'>
       <h2 id="type-def-statement">
         type, public :: tree_t</h2>
-    
+    <p>This derived-type contains all node of syntax-tree in the tree_node_t type array <code>nodes</code>.</p>
     <br>
 
     <section>
@@ -199,7 +199,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code~3"></span>
+              <span class="anchor" id="variable-code~4"></span>
               integer,
             </td>
               <td>public</td>
@@ -216,7 +216,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_valid_pattern"></span>
+              <span class="anchor" id="variable-is_valid~2"></span>
               logical,
             </td>
               <td>public</td>
@@ -224,7 +224,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>is_valid_pattern</strong></td>
+            <td><strong>is_valid</strong></td>
 <td> =</td>
                 <td>.true.</td>
             <td>
@@ -233,7 +233,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes~3"></span>
+              <span class="anchor" id="variable-nodes~2"></span>
               type(<a href='tree_node_t.html'>tree_node_t</a>),
             </td>
               <td>public,</td>
@@ -301,7 +301,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-top~4"></span>
+              <span class="anchor" id="variable-top~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -343,7 +343,7 @@
 </h3>
     
 
-  
+  <p>This procedure builds an AST corresponding to a given (regular expression) pattern from it.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -466,7 +466,8 @@
 </h3>
     
 
-  
+  <p>This subroutine treats character class expression,
+and does not call any other recursive procedures.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -742,7 +743,7 @@
 </h3>
     
 
-  
+  <p>This procedure deallocates <code>nodes</code> of <code>tree_t</code></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -895,7 +896,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-print~3"></span>
+      <span class="anchor" id="boundprocedure-print~4"></span>
       <h3>
           procedure, public ::
   <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/print_tree_wrap.html'>print_tree_wrap</a>
@@ -964,61 +965,7 @@
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-range"></span>
-      <h3>
-          procedure, public ::
-  <strong>range</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__range.html'>tree_graph__range</a>
-        
-      </h3>
-    </div>
-    <ul class="list-group">
-        <li class="list-group-item">
-                  <h3>
-    private pure subroutine <a href='../proc/tree_graph__range.html'>tree_graph__range</a>(self)  
-</h3>
-    
-
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" ></span>
-              class(<a href='tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-        </li>
-    </ul>
-  </div>
-
-          </div>
-          <div class="row">
-              <div class="card mt-3">
-    <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-reallocate~2"></span>
+      <span class="anchor" id="boundprocedure-reallocate"></span>
       <h3>
           procedure, public ::
   <strong>reallocate</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a>
@@ -1032,7 +979,9 @@
 </h3>
     
 
-  
+  <p>This procedure handles the reallcation of the <code>tree_node_t</code> type array
+within the component of the <code>tree_t</code> object.
+However, it is not be used in v4.2.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1309,7 +1258,8 @@
     
 
   <p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
-<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p>
+<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).
+It does not call any other recursive procedures.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1454,6 +1404,61 @@
   </div>
 
           </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-times"></span>
+      <h3>
+          procedure, public ::
+  <strong>times</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__times.html'>tree_graph__times</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/tree_graph__times.html'>tree_graph__times</a>(self)  
+</h3>
+    
+
+  <p>This subroutine handles a quantifier range, and
+does not call any other recursive procedures.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
       </section>
 
     
@@ -1475,7 +1480,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

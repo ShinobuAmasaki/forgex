@@ -87,14 +87,24 @@ Currently, it contains two procedures: <code>do_matching_including</code> and <c
                  <td><p>The <code>forgex_automaton_m</code> module contains <code>automaton_t</code> definition and its type-bound procedures.</p></td>
                </tr>
 <!--active-->			   <tr class="">
+                 <td><a href='../module/forgex_character_array_m.html'>forgex_character_array_m</a></td>
+                 <td><a href='../sourcefile/character_array_m.f90.html'>character_array_m.F90</a></td>
+                 <td></td>
+               </tr>
+<!---->			   <tr class="active">
                  <td><a href='../module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></td>
                  <td><a href='../sourcefile/dense_dfa_m.f90.html'>dense_dfa_m.f90</a></td>
                  <td><p>This module defines procedures for building a fully compiled DFA for debugging and benchmarking.</p></td>
                </tr>
-<!---->			   <tr class="active">
+<!--active-->			   <tr class="">
                  <td><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></td>
                  <td><a href='../sourcefile/enums_m.f90.html'>enums_m.f90</a></td>
                  <td><p>The <code>forgex_enums_m</code> defines enumerators of tokens and operators for syntax-tree building.</p><a href="../module/forgex_enums_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+               </tr>
+<!---->			   <tr class="active">
+                 <td><a href='../module/forgex_error_m.html'>forgex_error_m</a></td>
+                 <td><a href='../sourcefile/error_m.f90.html'>error_m.F90</a></td>
+                 <td></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
@@ -126,7 +136,7 @@ The <code>nfa_t</code> is defined as a class representing NFA.</p></td>
 <!---->			   <tr class="active">
                  <td><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></td>
                  <td><a href='../sourcefile/parameters_m.f90.html'>parameters_m.f90</a></td>
-                 <td></td>
+                 <td><p>This module contains parameters and thier values used throughout Forgex.</p></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></td>
@@ -137,7 +147,8 @@ This implementation was originally provided by ue1221.</p></td>
 <!---->			   <tr class="active">
                  <td><a href='../module/forgex_segment_disjoin_m.html'>forgex_segment_disjoin_m</a></td>
                  <td><a href='../sourcefile/segment_disjoin_m.f90.html'>segment_disjoin_m.F90</a></td>
-                 <td></td>
+                 <td><p>This file contains procedures to disjoin the overlapps of the segment range
+to successfully construct the power-set construction method.</p></td>
                </tr>
 <!--active-->			   <tr class="">
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
@@ -149,45 +160,44 @@ available, but will be added in the future.</p><a href="../module/forgex_segment
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
                  <td><a href='../sourcefile/sort_m.f90.html'>sort_m.f90</a></td>
                  <td><p>The <code>forgex_sort_m</code> module provides an implementation of
-sorting algorithms for integer arrays.</p><a href="../module/forgex_sort_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+sorting algorithms for integer arrays.
+Currently, complex sorting algorithms are not required, only simple algorithms
+ are used, but this does not constrain future implementations.</p></td>
                </tr>
 <!--active-->			   <tr class="">
-                 <td><a href='../module/forgex_syntax_tree_error_m.html'>forgex_syntax_tree_error_m</a></td>
-                 <td><a href='../sourcefile/syntax_tree_error_m.f90.html'>syntax_tree_error_m.F90</a></td>
-                 <td></td>
-               </tr>
-<!---->			   <tr class="active">
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td><a href='../sourcefile/syntax_tree_graph_m.f90.html'>syntax_tree_graph_m.F90</a></td>
                  <td></td>
                </tr>
-<!--active-->			   <tr class="">
+<!---->			   <tr class="active">
                  <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td><a href='../sourcefile/syntax_tree_node_m.f90.html'>syntax_tree_node_m.F90</a></td>
                  <td><p>The<code>forgex_syntax_tree_m</code> module defines parsing and
-the <code>tree_node_t</code> derived-type for building syntax-tree.</p><a href="../module/forgex_syntax_tree_node_m.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+the <code>tree_node_t</code> derived-type for building syntax-tree.
+The regular expression parsing performed by this module
+is done using recursive descent parsing.</p></td>
                </tr>
-<!---->			   <tr class="active">
+<!--active-->			   <tr class="">
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td><a href='../sourcefile/syntax_tree_optimize_m.f90.html'>syntax_tree_optimize_m.F90</a></td>
                  <td></td>
                </tr>
-<!--active-->			   <tr class="">
+<!---->			   <tr class="active">
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
-                 <td><a href='../sourcefile/test_m.f90.html'>test_m.f90</a></td>
+                 <td><a href='../sourcefile/test_m.f90.html'>test_m.F90</a></td>
                  <td><p>The <code>forgex_test_m</code> module provides helper procedures to unit testing for Forgex.</p></td>
                </tr>
-<!---->			   <tr class="active">
+<!--active-->			   <tr class="">
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td><a href='../sourcefile/utf8_m.f90.html'>utf8_m.f90</a></td>
                  <td><p>The <code>forgex_utf8_m</code> module processes a byte-indexed character strings type as UTF-8 strings.</p></td>
                </tr>
-<!--active-->			   <tr class="">
+<!---->			   <tr class="active">
                  <td><a href='../module/forgex_utility_m.html'>forgex_utility_m</a></td>
                  <td><a href='../sourcefile/utility_m.f90.html'>utility_m.f90</a></td>
                  <td></td>
                </tr>
-<!---->			 </tbody></table>
+<!--active-->			 </tbody></table>
              
         </div>
       </div>
@@ -206,7 +216,7 @@ the <code>tree_node_t</code> derived-type for building syntax-tree.</p><a href="
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

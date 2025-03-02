@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 5.0% of total for source files.">206 statements</a>
+                 title=" 4.3% of total for source files.">206 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -157,7 +157,7 @@
 <a id="ln-2" name="ln-2" href="#ln-2"></a><span class="c">!</span>
 <a id="ln-3" name="ln-3" href="#ln-3"></a><span class="c">! MIT License</span>
 <a id="ln-4" name="ln-4" href="#ln-4"></a><span class="c">!</span>
-<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="c">! (C) Amasaki Shinobu, 2023-2024</span>
+<a id="ln-5" name="ln-5" href="#ln-5"></a><span class="c">! (C) Amasaki Shinobu, 2023-2025</span>
 <a id="ln-6" name="ln-6" href="#ln-6"></a><span class="c">!     A regular expression engine for Fortran.</span>
 <a id="ln-7" name="ln-7" href="#ln-7"></a><span class="c">!     forgex_dense_dfa_m module is a part of Forgex.</span>
 <a id="ln-8" name="ln-8" href="#ln-8"></a><span class="c">!</span>
@@ -353,7 +353,7 @@
 <a id="ln-198" name="ln-198" href="#ln-198"></a><span class="w">   </span><span class="c">!&gt; This procedure reads a text, performs regular expression matching using compiled DFA,</span>
 <a id="ln-199" name="ln-199" href="#ln-199"></a><span class="w">   </span><span class="c">!&gt; and returns `.true.` if it matches exactly.</span>
 <a id="ln-200" name="ln-200" href="#ln-200"></a><span class="w">   </span><span class="k">pure function </span><span class="n">match_dense_dfa_exactly</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
-<a id="ln-201" name="ln-201" href="#ln-201"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">idxutf8</span>
+<a id="ln-201" name="ln-201" href="#ln-201"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">next_idxutf8</span>
 <a id="ln-202" name="ln-202" href="#ln-202"></a><span class="w">      </span><span class="k">implicit none</span>
 <a id="ln-203" name="ln-203" href="#ln-203"></a><span class="k">      type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
 <a id="ln-204" name="ln-204" href="#ln-204"></a><span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">string</span>
@@ -384,7 +384,7 @@
 <a id="ln-229" name="ln-229" href="#ln-229"></a>
 <a id="ln-230" name="ln-230" href="#ln-230"></a><span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">ci</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
 <a id="ln-231" name="ln-231" href="#ln-231"></a>
-<a id="ln-232" name="ln-232" href="#ln-232"></a><span class="k">         </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-232" name="ln-232" href="#ln-232"></a><span class="k">         </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span>
 <a id="ln-233" name="ln-233" href="#ln-233"></a>
 <a id="ln-234" name="ln-234" href="#ln-234"></a><span class="w">         </span><span class="n">dst_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_state_dense_dfa</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <a id="ln-235" name="ln-235" href="#ln-235"></a>
@@ -402,7 +402,7 @@
 <a id="ln-247" name="ln-247" href="#ln-247"></a><span class="w">   </span><span class="c">!&gt; This procedure reads a text, performs regular expression matching using an automaton,</span>
 <a id="ln-248" name="ln-248" href="#ln-248"></a><span class="w">   </span><span class="c">!&gt; and stores the string index in the argument if it contains a match.</span>
 <a id="ln-249" name="ln-249" href="#ln-249"></a><span class="w">   </span><span class="k">subroutine </span><span class="n">match_dense_dfa_including</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">from</span><span class="p">,</span><span class="w"> </span><span class="n">to</span><span class="p">)</span>
-<a id="ln-250" name="ln-250" href="#ln-250"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">idxutf8</span>
+<a id="ln-250" name="ln-250" href="#ln-250"></a><span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_utf8_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">next_idxutf8</span>
 <a id="ln-251" name="ln-251" href="#ln-251"></a><span class="w">      </span><span class="k">implicit none</span>
 <a id="ln-252" name="ln-252" href="#ln-252"></a><span class="k">      type</span><span class="p">(</span><span class="n">automaton_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">automaton</span>
 <a id="ln-253" name="ln-253" href="#ln-253"></a><span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">string</span>
@@ -444,7 +444,7 @@
 <a id="ln-289" name="ln-289" href="#ln-289"></a>
 <a id="ln-290" name="ln-290" href="#ln-290"></a><span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">ci</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="w"> </span><span class="k">exit</span>
 <a id="ln-291" name="ln-291" href="#ln-291"></a>
-<a id="ln-292" name="ln-292" href="#ln-292"></a><span class="k">            </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<a id="ln-292" name="ln-292" href="#ln-292"></a><span class="k">            </span><span class="n">next_ci</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">ci</span><span class="p">)</span>
 <a id="ln-293" name="ln-293" href="#ln-293"></a>
 <a id="ln-294" name="ln-294" href="#ln-294"></a><span class="w">            </span><span class="n">dst_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_state_dense_dfa</span><span class="p">(</span><span class="n">automaton</span><span class="p">,</span><span class="w"> </span><span class="n">cur_i</span><span class="p">,</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="n">ci</span><span class="p">:</span><span class="n">next_ci</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 <a id="ln-295" name="ln-295" href="#ln-295"></a><span class="w">            </span><span class="n">cur_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dst_i</span>
@@ -458,7 +458,7 @@
 <a id="ln-303" name="ln-303" href="#ln-303"></a><span class="w">            </span><span class="k">return</span>
 <a id="ln-304" name="ln-304" href="#ln-304"></a><span class="k">         end if</span>
 <a id="ln-305" name="ln-305" href="#ln-305"></a>
-<a id="ln-306" name="ln-306" href="#ln-306"></a><span class="k">         </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="mi">1</span>
+<a id="ln-306" name="ln-306" href="#ln-306"></a><span class="k">         </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_idxutf8</span><span class="p">(</span><span class="n">string</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">)</span>
 <a id="ln-307" name="ln-307" href="#ln-307"></a><span class="w">      </span><span class="k">end do</span>
 <a id="ln-308" name="ln-308" href="#ln-308"></a><span class="k">   end subroutine </span><span class="n">match_dense_dfa_including</span>
 <a id="ln-309" name="ln-309" href="#ln-309"></a>
@@ -484,7 +484,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="15.3% of total for modules and submodules.">629 statements</a>
+                 title="18.7% of total for modules and submodules.">901 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -150,6 +150,8 @@
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-dump_tree_table">dump_tree_table</a>
+            <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-interpret_class_string">interpret_class_string</a>
+            <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-convert_escaped_character_into_segments">convert_escaped_character_into_segments</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-print_tree_internal">print_tree_internal</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-print_tree_wrap">print_tree_wrap</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__build_syntax_tree">tree_graph__build_syntax_tree</a>
@@ -160,7 +162,6 @@
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__make_tree_caret_dollar">tree_graph__make_tree_caret_dollar</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__make_tree_crlf">tree_graph__make_tree_crlf</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__primary">tree_graph__primary</a>
-            <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__range">tree_graph__range</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__reallocate">tree_graph__reallocate</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__regex">tree_graph__regex</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__register_connector">tree_graph__register_connector</a>
@@ -168,6 +169,7 @@
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__shorthand">tree_graph__shorthand</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__suffix_op">tree_graph__suffix_op</a>
             <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__term">tree_graph__term</a>
+            <a class="list-group-item" href="../module/forgex_syntax_tree_graph_m.html#proc-tree_graph__times">tree_graph__times</a>
         </div>
       </div>
     </div>
@@ -193,11 +195,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_syntax_tree_error_m.html'>forgex_syntax_tree_error_m</a></li>
                   <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></li>
                   <li class="list-inline-item"><a href='forgex_enums_m.html'>forgex_enums_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_error_m.html'>forgex_error_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></li>
               </ul>
             </li>
         </ul>
@@ -224,7 +226,7 @@
       </h3>
     </div>
     <div class="card-body">
-      
+      <p>This derived-type contains all node of syntax-tree in the tree_node_t type array <code>nodes</code>.</p>
 
         <h4>Components</h4>
           <table class="table table-striped varlist">
@@ -239,7 +241,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code~3"></span>
+              <span class="anchor" id="variable-code~4"></span>
               integer,
             </td>
               <td>public</td>
@@ -256,7 +258,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-is_valid_pattern"></span>
+              <span class="anchor" id="variable-is_valid~2"></span>
               logical,
             </td>
               <td>public</td>
@@ -264,7 +266,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>is_valid_pattern</strong></td>
+            <td><strong>is_valid</strong></td>
 <td> =</td>
                 <td>.true.</td>
             <td>
@@ -273,7 +275,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes~3"></span>
+              <span class="anchor" id="variable-nodes~2"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
               <td>public,</td>
@@ -341,7 +343,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-top~4"></span>
+              <span class="anchor" id="variable-top~2"></span>
               integer,
             </td>
               <td>public</td>
@@ -412,17 +414,12 @@
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/tree_t.html#boundprocedure-print~3'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/print_tree_wrap.html'>print_tree_wrap</a></td>
+  <strong><a href='../type/tree_t.html#boundprocedure-print~4'>print</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/print_tree_wrap.html'>print_tree_wrap</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/tree_t.html#boundprocedure-range'>range</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__range.html'>tree_graph__range</a></td>
-                <td></td>
-              </tr>
-              <tr>
-                <td>  procedure, public ::
-  <strong><a href='../type/tree_t.html#boundprocedure-reallocate~2'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
+  <strong><a href='../type/tree_t.html#boundprocedure-reallocate'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a></td>
                 <td></td>
               </tr>
               <tr>
@@ -455,6 +452,11 @@
   <strong><a href='../type/tree_t.html#boundprocedure-term'>term</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__term.html'>tree_graph__term</a></td>
                 <td></td>
               </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/tree_t.html#boundprocedure-times'>times</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__times.html'>tree_graph__times</a></td>
+                <td></td>
+              </tr>
           </tbody>
         </table>
     </div>
@@ -485,7 +487,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~21"></span>
+              <span class="anchor" id="variable-tree~17"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
 <td>intent(in)</td>
@@ -545,7 +547,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~41"></span>
+              <span class="anchor" id="variable-self~38"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -595,7 +597,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~19"></span>
+              <span class="anchor" id="variable-tree~15"></span>
               class(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
 <td>intent(in)</td>
@@ -604,6 +606,146 @@
             </td>
             <td>::</td>
             <td><strong>tree</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-interpret_class_string"></span> <h3>public pure subroutine <a href='../proc/interpret_class_string.html'>interpret_class_string</a>(str, seglist, is_valid, ierr)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine parses a pattern string and outputs a list of <code>segment_t</code> type.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~13"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-seglist~3"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>seglist</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-is_valid~3"></span>
+              logical,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>is_valid</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ierr~2"></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ierr</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-convert_escaped_character_into_segments"></span> <h3>private pure subroutine <a href='../proc/convert_escaped_character_into_segments.html'>convert_escaped_character_into_segments</a>(chara, seg_list)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine converts escaped character of the argument <code>chara</code> into segment <code>seg_list</code>.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chara~9"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chara</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-seg_list~5"></span>
+              type(<a href='../type/segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>seg_list</strong>(:)</td>
             <td>
 
             </td>
@@ -635,7 +777,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~20"></span>
+              <span class="anchor" id="variable-tree~16"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
 <td>intent(in)</td>
@@ -665,7 +807,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uni~5"></span>
+              <span class="anchor" id="variable-uni~4"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -705,7 +847,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~51"></span>
+              <span class="anchor" id="variable-self~48"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -720,7 +862,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-uni~4"></span>
+              <span class="anchor" id="variable-uni~3"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -745,7 +887,7 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This procedure builds an AST corresponding to a given (regular expression) pattern from it.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -760,7 +902,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~34"></span>
+              <span class="anchor" id="variable-self~31"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -775,7 +917,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~6"></span>
+              <span class="anchor" id="variable-pattern~8"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -800,7 +942,8 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This subroutine treats character class expression,
+and does not call any other recursive procedures.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -815,7 +958,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~46"></span>
+              <span class="anchor" id="variable-self~43"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -855,7 +998,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~39"></span>
+              <span class="anchor" id="variable-self~36"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -870,7 +1013,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-parent~2"></span>
+              <span class="anchor" id="variable-parent"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -925,7 +1068,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~40"></span>
+              <span class="anchor" id="variable-self~37"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -940,7 +1083,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-parent~3"></span>
+              <span class="anchor" id="variable-parent~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -980,7 +1123,7 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This procedure deallocates <code>nodes</code> of <code>tree_t</code></p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -995,7 +1138,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~36"></span>
+              <span class="anchor" id="variable-self~33"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1035,7 +1178,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~48"></span>
+              <span class="anchor" id="variable-self~45"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1075,7 +1218,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~47"></span>
+              <span class="anchor" id="variable-self~44"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1115,47 +1258,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~45"></span>
-              class(<a href='../type/tree_t.html'>tree_t</a>),
-            </td>
-<td>intent(inout)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>self</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-
-    </div>
-  </div>
-
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-tree_graph__range"></span> <h3>private pure subroutine <a href='../proc/tree_graph__range.html'>tree_graph__range</a>(self)  
-</h3></div>
-    <div class="card-body">
-          
-  
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-self~50"></span>
+              <span class="anchor" id="variable-self~42"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1180,7 +1283,9 @@
 </h3></div>
     <div class="card-body">
           
-  
+  <p>This procedure handles the reallcation of the <code>tree_node_t</code> type array
+within the component of the <code>tree_t</code> object.
+However, it is not be used in v4.2.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1195,7 +1300,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~35"></span>
+              <span class="anchor" id="variable-self~32"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1235,7 +1340,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~42"></span>
+              <span class="anchor" id="variable-self~39"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1275,7 +1380,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~38"></span>
+              <span class="anchor" id="variable-self~35"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1290,7 +1395,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~8"></span>
+              <span class="anchor" id="variable-node~6"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1360,7 +1465,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~37"></span>
+              <span class="anchor" id="variable-self~34"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1375,7 +1480,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-node~7"></span>
+              <span class="anchor" id="variable-node~5"></span>
               type(<a href='../type/tree_node_t.html'>tree_node_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1401,7 +1506,8 @@
     <div class="card-body">
           
   <p>This function handles shorthand escape sequences (<code>\t</code>, <code>\n</code>, <code>\r</code>, <code>\d</code>, <code>\D</code>,
-<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).</p>
+<code>\w</code>, <code>\W</code>, <code>\s</code>, <code>\S</code>).
+It does not call any other recursive procedures.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -1416,7 +1522,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~49"></span>
+              <span class="anchor" id="variable-self~46"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1456,7 +1562,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~44"></span>
+              <span class="anchor" id="variable-self~41"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1496,7 +1602,48 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~43"></span>
+              <span class="anchor" id="variable-self~40"></span>
+              class(<a href='../type/tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-tree_graph__times"></span> <h3>private pure subroutine <a href='../proc/tree_graph__times.html'>tree_graph__times</a>(self)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This subroutine handles a quantifier range, and
+does not call any other recursive procedures.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-self~47"></span>
               class(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -1539,7 +1686,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

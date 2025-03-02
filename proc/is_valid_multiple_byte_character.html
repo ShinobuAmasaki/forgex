@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.1% of total for procedures.">41 statements</a>
+                 title=" 1.0% of total for procedures.">44 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -157,6 +157,7 @@
     </div>
 
 
+    <p>This function checks the input byte string is valid as a single UTF-8 character.</p>
 
 
     <h3>Arguments</h3>
@@ -172,7 +173,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~4"></span>
+              <span class="anchor" id="variable-chara~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -190,7 +191,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-res~7"></span>
+          <span class="anchor" id="variable-res~28"></span>
           logical
         </small>
       </h3>
@@ -230,13 +231,16 @@
 <span class="w">      </span><span class="n">shift_7</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">7</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 7 bits</span>
 
 <span class="w">      </span><span class="c">! 1st byte</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
-<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_4</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="k">then</span>
-<span class="k">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span>
-<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_5</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
-<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_7</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w"> </span><span class="c">! for 1-byte character</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">31</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">  </span><span class="c">! 5-byte character (invalid) 11111xxx_2</span>
+<span class="w">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="k">return</span>
+<span class="k">      else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_3</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">30</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">  </span><span class="c">! 4-byte character `11110xxx_2`</span>
+<span class="w">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span>
+<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_4</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">14</span><span class="p">)</span><span class="k">then</span><span class="w">   </span><span class="c">! 3 byte character `1110xxxx_2`</span>
+<span class="w">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span>
+<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_5</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">6</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">   </span><span class="c">! 2-byte character `110xxxxx_2`</span>
+<span class="w">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span>
+<span class="w">      </span><span class="k">else if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_7</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span><span class="w">   </span><span class="c">! for 1-byte character `0xxxxxxx`</span>
 <span class="w">         </span><span class="n">expected_siz</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">         </span>
 <span class="w">      </span><span class="k">else</span>
 <span class="k">         </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
@@ -250,7 +254,7 @@
 
 <span class="k">      do </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="n">expected_siz</span>
 <span class="w">         </span><span class="k">byte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ichar</span><span class="p">(</span><span class="n">chara</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="p">),</span><span class="w"> </span><span class="nb">kind</span><span class="o">=</span><span class="n">int8</span><span class="p">)</span>
-<span class="w">         </span><span class="n">shift_6</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 6 bits</span>
+<span class="w">         </span><span class="n">shift_6</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">ishft</span><span class="p">(</span><span class="k">byte</span><span class="p">,</span><span class="w"> </span><span class="o">-</span><span class="mi">6</span><span class="p">)</span><span class="w">  </span><span class="c">! Right shift the byte by 6 bits such as `10xxxxxx_2`</span>
 <span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">shift_6</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
 <span class="w">            </span><span class="k">return</span>
@@ -281,7 +285,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-02-26 16:47 +0000             </p>
+ on 2025-03-02 08:00 +0000             </p>
           </div>
         </div>
         <br>

@@ -15,16 +15,17 @@ module forgex_syntax_tree_graph_m
    use :: forgex_segment_m
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
-   use :: forgex_syntax_tree_error_m
+   use :: forgex_error_m
    implicit none
    private
 
    type, public :: tree_t
+   !! This derived-type contains all node of syntax-tree in the tree_node_t type array `nodes`.
       type(tree_node_t), allocatable :: nodes(:)
       integer :: top = INVALID_INDEX
       integer :: num_alloc = 0
       type(tape_t) :: tape
-      logical :: is_valid_pattern = .true.
+      logical :: is_valid = .true.
       integer :: code = SYNTAX_VALID
       integer :: paren_balance
    contains
@@ -44,14 +45,17 @@ module forgex_syntax_tree_graph_m
       procedure :: caret_dollar => tree_graph__make_tree_caret_dollar
       procedure :: crlf => tree_graph__make_tree_crlf
       procedure :: shorthand => tree_graph__shorthand
-      procedure :: range => tree_graph__range
+      procedure :: times => tree_graph__times
       procedure :: print => print_tree_wrap
    end type
 
    public :: dump_tree_table
-      
+   public :: interpret_class_string
+
+
 contains
 
+   !> This procedure builds an AST corresponding to a given (regular expression) pattern from it.
    pure subroutine tree_graph__build_syntax_tree(self, pattern)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -74,14 +78,14 @@ contains
       call self%regex()
 
       ! Check the pattern is valid.
-      if (.not. self%is_valid_pattern) return
+      if (.not. self%is_valid) return
 
       ! Determine if parentheses are balanced.
       if (self%paren_balance > 0) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          self%code = SYNTAX_ERR_PARENTHESIS_MISSING
       else if (self%paren_balance < 0) then
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
       end if
       
@@ -89,6 +93,9 @@ contains
    end subroutine tree_graph__build_syntax_tree
 
 
+   !> This procedure handles the reallcation of the `tree_node_t` type array 
+   !> within the component of the `tree_t` object.
+   !> However, it is not be used in v4.2.
    pure subroutine tree_graph__reallocate(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -120,6 +127,7 @@ contains
    end subroutine tree_graph__reallocate
 
 
+   !> This procedure deallocates `nodes` of `tree_t`
    pure subroutine tree_graph__deallocate(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -127,7 +135,7 @@ contains
       deallocate(self%nodes)
    end subroutine tree_graph__deallocate
 
-   
+
    pure subroutine tree_graph__register_node(self, node)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -201,7 +209,7 @@ contains
       call self%term()
 
       ! When term's analysis is valid,
-      if (self%is_valid_pattern) then
+      if (self%is_valid) then
 
          left = self%get_top()
 
@@ -209,7 +217,7 @@ contains
             call self%tape%get_token()
 
             call self%term()
-            if (.not. self%is_valid_pattern) exit
+            if (.not. self%is_valid) exit
 
             right = self%get_top()
 
@@ -241,7 +249,7 @@ contains
          call self%register_connector(node, terminal, terminal)
       else
          call self%suffix_op()
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid) return
 
          left = self%get_top()
 
@@ -250,7 +258,7 @@ contains
                      .and. self%tape%current_token /= tk_end)
             
             call self%suffix_op()
-            if (.not. self%is_valid_pattern) return
+            if (.not. self%is_valid) return
 
             right = self%get_top()
 
@@ -274,7 +282,7 @@ contains
       type(tree_node_t) :: node, left, right
 
       call self%primary()
-      if (.not. self%is_valid_pattern) return
+      if (.not. self%is_valid) return
 
       left = self%get_top()
 
@@ -304,13 +312,14 @@ contains
          call self%tape%get_token()
 
       case (tk_lcurlybrace)
-         call self%range()
-         if (.not. self%is_valid_pattern) then
-            self%code = SYNTAX_ERR_INVALID_RANGE
+         call self%times()
+         if (.not. self%is_valid) then
+            ! self%code = SYNTAX_ERR_INVALID_TIMES
             return
          end if
          call self%tape%get_token()
 
+      ! `case default` must NOT be placed here.
       end select
    end subroutine tree_graph__suffix_op
 
@@ -323,6 +332,7 @@ contains
       type(tree_node_t) :: node
       type(segment_t) :: seg
       character(:), allocatable :: chara
+
 
       select case (self%tape%current_token)
       case (tk_char)
@@ -342,21 +352,24 @@ contains
          call self%regex()
       
          ! If regex fails, return immediately.
-         if (.not. self%is_valid_pattern) return
+         if (.not. self%is_valid) return
 
          ! If not a right parenthesis, throw an error.
          if (self%tape%current_token /= tk_rpar) then
             self%code = SYNTAX_ERR_PARENTHESIS_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
          call self%tape%get_token()
 
       case (tk_lsbracket)
          call self%char_class()
+         if (.not. self%is_valid) then
+            return
+         end if 
          if (self%tape%current_token /= tk_rsbracket) then
             self%code = SYNTAX_ERR_BRACKET_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
          call self%tape%get_token()
@@ -380,23 +393,38 @@ contains
       
       case (tk_rsbracket)
          self%code = SYNTAX_ERR_BRACKET_UNEXPECTED
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
 
       case (tk_rpar)
          self%code = SYNTAX_ERR_PARENTHESIS_UNEXPECTED
-         self%is_valid_pattern = .false.
+         self%is_valid = .false.
          return
    
+      ! Unescaped closing curly brace is allowed.
+      case (tk_rcurlybrace)
+         chara = self%tape%token_char
+         seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
+         node = make_atom(seg)
+         call self%register_connector(node, terminal, terminal)
+         call self%tape%get_token()
+
+      case (tk_lcurlybrace)
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         self%is_valid = .false.
+         return
+
       case default
-         self%code = SYNTAX_ERR
-         self%is_valid_pattern = .false.
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%is_valid = .false.
          return
       end select
 
    end subroutine tree_graph__primary
       
 
+   !> This subroutine treats character class expression,
+   !> and does not call any other recursive procedures.
    pure subroutine tree_graph__char_class(self)
       use :: forgex_utf8_m, only: idxutf8, len_utf8, count_token, ichar_utf8
       use :: forgex_enums_m
@@ -407,77 +435,87 @@ contains
       character(:), allocatable :: buf
       type(tree_node_t) :: node
 
-      integer :: siz, ie, i, j, i_next, i_terminal
-      logical :: is_inverted
+      integer :: siz, ie
+      logical :: is_inverted, backslashed
+      character(:), allocatable :: prev, curr
+
+      siz = 0
 
       call self%tape%get_token(class_flag=.true.)
 
+      ! The variable buf stores the string representing the character class.
       buf = ''
-      do while (self%tape%current_token /= tk_rsbracket)
+      prev = ''
+      curr = ''
+      backslashed = .false.
+      outer: do while (self%tape%current_token /= tk_rsbracket)
+         prev = curr
          if (self%tape%current_token == tk_end) then
             return
          end if
-         ie = idxutf8(self%tape%token_char, 1)
-         buf = buf// self%tape%token_char(1:ie)
-         call self%tape%get_token(class_flag=.true.)
-      end do
 
+         ie = idxutf8(self%tape%token_char, 1)
+         curr = self%tape%token_char(1:ie)
+         buf = buf//curr
+
+         if (self%tape%current_token == tk_backslash .and. .not. backslashed) then
+            backslashed = .true.
+         else
+            backslashed = .false.
+         end if
+
+         call self%tape%get_token(class_flag=.true.)
+         
+         ! for an escaped right square bracket 
+         if (self%tape%current_token == tk_rsbracket .and. backslashed) then
+            ie = idxutf8(self%tape%token_char, 1)
+            curr = self%tape%token_char(1:ie)
+            buf = buf//curr
+            call self%tape%get_token(class_flag=.true.)
+         end if
+
+      end do outer
+
+      ! If the character class pattern is empty, return false. 
+      if (len(buf) == 0) then
+         self%code = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
+         self%is_valid = .false.
+         return
+      end if
+
+      ! Handling a negative class case.
       is_inverted = .false.
       if (buf(1:1) == SYMBOL_CRET) then
          is_inverted = .true.
-         buf = buf(2:len(buf))
+         buf = buf(2:len(buf))  ! May this assignment be a problem?
       end if
 
+      ! The variable siz stores the length of buf.
       siz = len_utf8(buf)
 
-      siz = siz - 2*count_token(buf(2:len_trim(buf)-1), SYMBOL_HYPN)
+      if (siz < 1) then
+         self%code = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
+         self%is_valid = .false.
+         return
+      end if
 
-      if (buf(len_trim(buf):len_trim(buf)) == SYMBOL_HYPN) siz = siz -1
+      call interpret_class_string(buf, seglist, self%is_valid, self%code)
 
-      allocate(seglist(siz))
-      
-      i_terminal = len(buf)
-      i = 1
-      j = 1
-      buf = buf//char(0)
+      if (.not. self%is_valid) then
+         return
+      end if
 
-      do while (i <= i_terminal)
-         ie = idxutf8(buf, i)
-         i_next = ie + 1
+      if (.not. allocated(seglist)) then
+         self%code = ALLOCATION_ERR
+         self%is_valid = .false.
+         return
+      end if
 
-         ! 次の文字がハイフンでないならば
-         if (buf(i_next:i_next) /= SYMBOL_HYPN) then
-            seglist(j)%min = ichar_utf8(buf(i:ie))
-            seglist(j)%max = ichar_utf8(buf(i:ie))
-            j = j + 1
-         else
-            seglist(j)%min = ichar_utf8(buf(i:ie))
-
-            i = i_next + 1
-            ie = idxutf8(buf, i)
-            i_next = ie + 1
-
-            seglist(j)%max = ichar_utf8(buf(i:ie))
-            j = j + 1
-         end if
-
-         ! 先頭の記号がハイフンならば
-         if (j == 1 .and. buf(1:1) == SYMBOL_HYPN) then
-            seglist(1)%min = ichar_utf8(SYMBOL_HYPN)
-            seglist(1)%max = ichar_utf8(SYMBOL_HYPN)
-            i = i_next
-            j = j + 1
-            cycle
-         end if
-
-         ! 最後の記号がハイフンならば
-         if (i >= i_terminal .and. buf(i_terminal:i_terminal) == SYMBOL_HYPN) then
-            seglist(siz)%max = UTF8_CODE_MAX
-            exit
-         end if
-
-         i = i_next
-      end do
+      if (size(seglist) < 1) then
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%is_valid = .false.
+         return
+      end if
 
       ! the seglist array have been allocated near the L362.
       if (is_inverted) then
@@ -497,7 +535,7 @@ contains
 
    end subroutine tree_graph__char_class
 
-      
+   ! This procedure registers line feed and carriage return nodes into the AST　under costruced.
    pure subroutine tree_graph__make_tree_crlf(self)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -549,6 +587,7 @@ contains
 
    !> This function handles shorthand escape sequences (`\t`, `\n`, `\r`, `\d`, `\D`,
    !> `\w`, `\W`, `\s`, `\S`).
+   !> It does not call any other recursive procedures.
    pure subroutine tree_graph__shorthand(self)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
@@ -617,12 +656,31 @@ contains
          seglist(5) = SEG_FF
          seglist(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seglist)
-
-      case default
+      case (EMPTY_CHAR)
+         self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
+         self%is_valid = .false.
+         return
+      case (SYMBOL_LSBK, SYMBOL_RSBK, &
+            SYMBOL_LCRB, SYMBOL_RCRB, &
+            SYMBOL_LPAR, SYMBOL_RPAR, &
+            SYMBOL_DOLL, SYMBOL_BSLH, &
+            SYMBOL_VBAR, SYMBOL_DOT, &
+            SYMBOL_QUES, SYMBOL_CRET, &
+            SYMBOL_STAR, SYMBOL_PLUS, &
+            SYMBOL_HYPN)
          chara = self%tape%token_char
          seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
          node = make_atom(seg)
          call self%register_connector(node, terminal, terminal)
+         return
+
+      case default
+         self%code = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
+         self%is_valid = .false.
+         ! chara = self%tape%token_char
+         ! seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
+         ! node = make_atom(seg)
+         ! call self%register_connector(node, terminal, terminal)
          return
       end select
 
@@ -640,7 +698,10 @@ contains
    end subroutine tree_graph__shorthand
 
 
-   pure subroutine tree_graph__range(self)
+   !> This subroutine handles a quantifier range, and
+   !> does not call any other recursive procedures.
+   pure subroutine tree_graph__times(self)
+      use :: forgex_utility_m, only: get_index_comma, is_integer
       implicit none
       class(tree_t), intent(inout) :: self
       character(:), allocatable :: buf
@@ -648,28 +709,60 @@ contains
 
       type(tree_node_t) :: left, node
 
+      integer :: i, num_comma
+      character(:), allocatable :: c1, c2
+      logical :: is_infinite
+
+      ! Initialize
       ios = 0
       buf = ''
       arg(:) = INVALID_REPEAT_VAL
+      c1 = ''
+      c2 = ''
+      is_infinite = .false.
+      max = INVALID_REPEAT_VAL
+      min = INVALID_REPEAT_VAL
 
       call self%tape%get_token()
 
+      ! Extract the part of the pattern that is the character class that
+      ! this procedure should process.
       do while (self%tape%current_token /= tk_rcurlybrace)
          buf= buf//trim(self%tape%token_char)
          call self%tape%get_token
 
          if (self%tape%current_token == tk_end) then
             self%code = SYNTAX_ERR_CURLYBRACE_MISSING
-            self%is_valid_pattern = .false.
+            self%is_valid = .false.
             return
          end if
       end do
 
-      if (buf(1:1) == ',') then
-         buf = "0"//buf
+      if (len(buf) == 0) then
+      ! Error for a{}
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         return
+      else if (len(buf) == 1) then
+      ! Error for a{,}
+         if (buf(1:1) == SYMBOL_COMMA) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_INVALID_TIMES
+            return
+         end if
       end if
 
-      read(buf, fmt=*, iostat=ios) arg(:)
+      if (buf(1:1) == ',') then
+         buf = "0"//buf ! e.g. {,2} =>{0,2}
+      end if
+
+
+      if (is_integer(buf)) then
+         buf = trim(buf)//","//trim(buf) ! e.g. {0} => {0,0}
+      end if
+
+   !----------------
+      call get_index_comma(buf, i, num_comma)
 
       ! ios has a negative value if an end-of-record condition is encountered during non-advancing input,
       ! a different negative value if and endfile condition was detected on the input device, a positive value
@@ -678,51 +771,326 @@ contains
       ! cf. Michael Metcalf, John Reid and Malcolm Cohen (2018)
       !       - "Modern Fortran Explained--Incorporating Fortran 2018"
 
-      if (ios > 0) then
-         self%is_valid_pattern = .false.
+      ! patterns like {1,2,3} are error.
+      if (num_comma > 1) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
-      buf = adjustl(buf)
+      c1 = buf(1:i-1)
+      if (i+1 <= len_trim(buf)) c2 = buf(i+1:len_trim(buf))
 
-      if (arg(1) == 0) then   ! {,max}, {0,max}
+      read(c1, fmt=*, iostat=ios) arg(1)
+      if (ios > 0 .or. arg(1)< 0) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         return
+      end if
 
-         if (buf(len_trim(buf):len_trim(buf)) == ',') then
-            min = arg(1)
-            max = INFINITE
-         else
-            min = 0
-            max = arg(2)
+      if (trim(c2) == EMPTY_CHAR) then
+         is_infinite = .true.
+      else
+         read(c2, fmt=*, iostat=ios) arg(2)
+         if (ios > 0 .or. arg(2) < 0) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_INVALID_TIMES
+            return
          end if
-      else if (arg(2) == INVALID_REPEAT_VAL) then ! {min,}, {num}
-         if (buf(len_trim(buf):len_trim(buf)) == ',') then
-            min = arg(1)
-            max = INFINITE
-         else
-            min = arg(1)
-            max = arg(1)
-         end if
+      end if
 
+      
+      if (is_infinite) then
+         min = arg(1)
+         max = INFINITE
       else
          min = arg(1)
          max = arg(2)
       end if
 
-      if (max /= INVALID_REPEAT_VAL .and. max /= INFINITE .and. min > max) then
-         self%is_valid_pattern = .false.
+      if (min == 0 .and. max == 0) then
+         continue
+      else if (max /= INFINITE .and. min > max) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
+         return
+      else if (max == INVALID_REPEAT_VAL .and. min > max) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_INVALID_TIMES
          return
       end if
 
       node = make_repeat_node(min, max)
       left = self%get_top()
-      
       call self%register_connector(node, left, terminal)
 
-   end subroutine tree_graph__range
+   end subroutine tree_graph__times
 
 
+   !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
+   pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
+      use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
+      use :: forgex_parameters_m
+      use :: forgex_segment_m, only: join_two_segments, &
+         register => register_segment_to_list
+      use :: forgex_character_array_m, only:parse_segment_width_in_char_array
+      use :: forgex_character_array_m
+      implicit none
 
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      logical, intent(inout) :: is_valid
+      integer, intent(inout) :: ierr
+
+      integer :: i, j, k
+      integer :: jerr
+      type(segment_t) :: prev_seg, curr_seg
+      type(segment_t), allocatable :: list(:), cache(:)
+      logical :: backslashed
+      logical :: prev_hyphenated, curr_hyphenated
+      type(character_array_t), allocatable :: ca(:) ! character array
+      integer :: siz ! total number of segment of `ca` array
+      character(:), allocatable :: c ! Temporary variable stores a character of interest.
+
+      ! Initialize
+      is_valid = .true.
+      backslashed = .false.
+      prev_hyphenated = .false.
+      curr_hyphenated = .false.
+      prev_seg = segment_t()
+      curr_seg = segment_t()
       
+      if (len(str) >= 2) then
+         if (str(1:2) == '--') then
+            ierr = SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
+            is_valid = .false.
+         end if
+      end if
+
+      ! Convert to an array from a pattern string.
+      call character_string_to_array(str, ca)
+      if (.not. allocated(ca)) then
+         ierr = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
+         is_valid = .false.
+         return
+      end if
+
+      ! Remove backslash and hyphen, and raise respective flag for each component.
+      call parse_backslash_and_hyphen_in_char_array(ca, ierr)
+      if (ierr == SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR) then
+         is_valid = .false.
+         return
+      end if
+
+      ! Each ca(:)%seg_size will be set by this procedure calling.
+      call parse_segment_width_in_char_array(ca)
+
+      ! If each of the array element is hyphenated,
+      ! check that the range is not 1 and return invalid.
+      siz = 0
+      check: do i = 1, size(ca, dim=1)
+
+         ! If the former hypenated range is invalid, throw an error.
+         if (ca(i)%is_hyphenated .and. ca(i)%seg_size /= 1) then
+            ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
+            is_valid = .false.
+            return
+         end if
+
+         ! If the range following hyphenataed is invalid, throw an error.
+         if (i>1) then
+            if (ca(i-1)%is_hyphenated .and. ca(i)%seg_size /= 1) then
+               ierr = SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
+               is_valid = .false.
+               return
+            end if
+         end if
+
+         ! If a subtraction flag appear, throw an error at the moment.
+         if (ca(i)%is_subtract) then
+            ierr = SYNTAX_ERR_CHAR_CLASS_SUBTRANCTION_NOT_IMPLEMENTED
+            is_valid = .false.
+            return
+         end if
+
+         ! If the loop reaches the end of `ca` array, cancel the hyphenated flag, and
+         ! then add a literal hyphen to the end.
+         if (i> 1 .and. i == size(ca, dim=1)) then
+            if (ca(i)%is_hyphenated) then
+               ca(i)%is_hyphenated = .false.
+
+               ca = [ca(1:size(ca)), &
+                    character_array_t(SYMBOL_HYPN, .false., .false., ca(size(ca))%is_subtract, 1)]
+               siz = siz + 1
+               exit check
+            end if
+         end if
+         siz = siz + ca(i)%seg_size
+      end do check
+
+      if (siz < 1) then
+         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         is_valid = .false.
+         return
+      end if
+      allocate(list(siz))
+
+      ! Initialize cache and counter variable.
+      j = 0 ! Couter of actual list size for `seglist`.
+      c = EMPTY_CHAR
+
+      outer: do i = 1, size(ca, dim=1)
+         c = ca(i)%c
+         backslashed = ca(i)%is_escaped  ! cache `is_escaped` flag
+         curr_hyphenated = ca(i)%is_hyphenated
+         if (i > 1) prev_hyphenated = ca(i-1)%is_hyphenated 
+
+         curr_seg = segment_t(ichar_utf8(c), ichar_utf8(c))
+      
+         if (backslashed) then
+
+            call convert_escaped_character_into_segments(c, cache)
+            if (cache(1) == SEG_ERROR) then
+               ierr = SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
+               is_valid = .false.
+               return
+            end if
+
+            ! If the number of segemnts is greater than 1, register them to the `list`.
+            if (size(cache, dim=1) > 1) then
+               do k = 1, size(cache)
+                  call register(list, cache(k), j, ierr)
+               end do
+               deallocate(cache)
+               prev_seg = segment_t()
+               cycle outer
+            end if 
+
+            curr_seg = cache(1)
+         end if
+
+
+         if (prev_hyphenated) then
+            curr_seg = join_two_segments(prev_seg, curr_seg)
+            if (curr_seg == SEG_ERROR) then
+               ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+               is_valid = .false.
+               return
+            end if
+         end if
+      
+         if (.not. curr_hyphenated) then
+            call register(list, curr_seg, j, jerr)
+            if (jerr == SEGMENT_REJECTED) then
+               ierr = SYNTAX_ERR_INVALID_CHARACTER_RANGE
+               is_valid = .false.
+               return
+            end if
+         end if
+
+         prev_seg = curr_seg
+      end do outer
+
+      if (j < 1) then
+         ! pattern '[+--]' causes this error for now.
+         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         is_valid = .false.
+         return
+      end if
+
+      allocate(seglist(j))
+
+      seglist(1:j) = list(1:j) ! copy local array into the argument array.
+
+   end subroutine interpret_class_string
+
+
+
+   !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 
+   pure subroutine convert_escaped_character_into_segments(chara, seg_list)
+      use :: forgex_utf8_m, only: ichar_utf8
+      implicit none
+      character(*), intent(in) :: chara
+      type(segment_t), allocatable, intent(inout) :: seg_list(:)
+
+      if (allocated(seg_list)) deallocate(seg_list)
+
+      select case (trim(chara))
+      case (ESCAPE_T)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_TAB
+      case (ESCAPE_N)
+         allocate(seg_list(2))
+         seg_list(1) = SEG_LF
+         seg_list(2) = SEG_CR
+      case (ESCAPE_R)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_CR
+      case (ESCAPE_D)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_DIGIT
+      case (ESCAPE_D_CAPITAL)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_DIGIT
+         call invert_segment_list(seg_list)
+      case (ESCAPE_W)
+         allocate(seg_list(4))
+         seg_list(1) = SEG_LOWERCASE
+         seg_list(2) = SEG_UPPERCASE
+         seg_list(3) = SEG_DIGIT
+         seg_list(4) = SEG_UNDERSCORE
+      case (ESCAPE_W_CAPITAL)
+         allocate(seg_list(4))
+         seg_list(1) = SEG_LOWERCASE
+         seg_list(2) = SEG_UPPERCASE
+         seg_list(3) = SEG_DIGIT
+         seg_list(4) = SEG_UNDERSCORE
+         call invert_segment_list(seg_list)
+      case (ESCAPE_S)
+         allocate(seg_list(6))
+         seg_list(1) = SEG_SPACE
+         seg_list(2) = SEG_TAB
+         seg_list(3) = SEG_CR
+         seg_list(4) = SEG_LF
+         seg_list(5) = SEG_FF
+         seg_list(6) = SEG_ZENKAKU_SPACE
+      case (ESCAPE_S_CAPITAL)
+         allocate(seg_list(6))
+         seg_list(1) = SEG_SPACE
+         seg_list(2) = SEG_TAB
+         seg_list(3) = SEG_CR
+         seg_list(4) = SEG_LF
+         seg_list(5) = SEG_FF
+         seg_list(6) = SEG_ZENKAKU_SPACE
+         call invert_segment_list(seg_list)
+      case (SYMBOL_BSLH)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_BSLH)
+         seg_list(1)%max = ichar_utf8(SYMBOL_BSLH)
+      case (SYMBOL_LCRB)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_LCRB)
+         seg_list(1)%max = ichar_utf8(SYMBOL_LCRB)
+      case (SYMBOL_RCRB)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_RCRB)
+         seg_list(1)%max = ichar_utf8(SYMBOL_RCRB)
+      case (SYMBOL_LSBK)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_LSBK)
+         seg_list(1)%max = ichar_utf8(SYMBOL_LSBK)
+      case (SYMBOL_RSBK)
+         allocate(seg_list(1))
+         seg_list(1)%min = ichar_utf8(SYMBOL_RSBK)
+         seg_list(1)%max = ichar_utf8(SYMBOL_RSBK)
+      case default
+         allocate(seg_list(1))
+         seg_list(1) = SEG_ERROR
+      end select
+
+   end subroutine convert_escaped_character_into_segments
+
+
 !=====================================================================!
   
    subroutine dump_tree_table(tree)
