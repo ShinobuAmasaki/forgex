@@ -3,7 +3,8 @@ name: Tested with LLVM Flang on Ubuntu
 on:
   push:
     branches: [ "main" ]
-
+  pull_request:
+    branches: [ "main" ]
 jobs:
   flang-19:
     runs-on: ${{ matrix.os }}

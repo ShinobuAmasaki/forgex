@@ -3,9 +3,11 @@ name: Tested with GFortran on Ubuntu
 on: 
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  gfortran-11:
+  gfortran-test:
     runs-on: ${{ matrix.os }}
     permissions:
       contents: read

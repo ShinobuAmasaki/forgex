@@ -127,8 +127,7 @@ cmake --build build
 Then, you can use codes in `test/` directory to test the library with following command:
 
 ```shell
-cd build
-ctest -C Debug
+ctest -C Debug --test-dir build
 ```
 
 ### APIs
