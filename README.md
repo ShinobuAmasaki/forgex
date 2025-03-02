@@ -1,6 +1,10 @@
-<!-- Readme[EN] version 4.0 -->
+<!-- Readme[EN] version 4.2 -->
 
 # Fortran Regular Expression
+
+[![Tested with LLVM Flang](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml)
+[![Tested with GFortran](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml)
+
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
