@@ -1,4 +1,5 @@
 program test_003
+   use :: iso_fortran_env
    use :: forgex_test_m
    implicit none
 
@@ -28,7 +29,7 @@ program test_003
 
 
    if (res) then
-      print *, "=== TEST CASE 3 END ==="
+      write(error_unit, *) "=== TEST CASE 3 END ==="
       stop
    else
       error stop

@@ -61,7 +61,7 @@ program test_010
 
 !=====================================================================!
    if (res) then
-      print *, "=== TEST CASE 10 END ==="
+      write(error_unit, *) "=== TEST CASE 10 END ==="
       stop
    else
       error stop

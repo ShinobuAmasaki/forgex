@@ -1,4 +1,5 @@
 program error_case_001
+   use :: iso_fortran_env
    use :: forgex_test_m
    use :: forgex_error_m
    implicit none
@@ -42,7 +43,7 @@ program error_case_001
 
 !=====================================================================!
    if (res) then
-      print *, "=== ERROR MESSAGE CASE 1 END ==="
+      write(error_unit, *) "=== ERROR MESSAGE CASE 1 END ==="
       stop
    else
       error stop

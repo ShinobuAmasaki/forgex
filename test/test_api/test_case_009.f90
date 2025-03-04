@@ -1,4 +1,5 @@
 program test_case_008
+   use :: iso_fortran_env
    use :: forgex_utf8_m
    use :: forgex_test_m
    implicit none
@@ -59,7 +60,7 @@ program test_case_008
 
 !=====================================================================!
    if (res) then
-      print *, "=== TEST CASE 9 END ==="
+      write(error_unit, *) "=== TEST CASE 9 END ==="
       stop
    else
       error stop "There are cases where the match fails."

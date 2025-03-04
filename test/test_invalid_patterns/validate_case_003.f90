@@ -1,5 +1,6 @@
 !> This case covers shorthands in character classes.
 program main
+   use :: iso_fortran_env
    use :: forgex_test_m
    implicit none
 
@@ -54,7 +55,7 @@ program main
 
 !=====================================================================!
    if (res) then
-      print *, "=== PATTERN VALIDATE CASE 3 END ==="
+      write(error_unit, *) "=== PATTERN VALIDATE CASE 3 END ==="
       stop
    else
       error stop

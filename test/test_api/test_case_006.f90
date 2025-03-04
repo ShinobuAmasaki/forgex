@@ -93,7 +93,7 @@ program test_006
 
 
    if (res) then
-      print *, "=== TEST CASE 6 END ==="
+      write(error_unit, *) "=== TEST CASE 6 END ==="
       stop
    else
       error stop

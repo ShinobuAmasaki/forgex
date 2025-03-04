@@ -1,4 +1,5 @@
 program test_005
+   use :: iso_fortran_env
    use :: forgex_test_m
    implicit none
 
@@ -107,7 +108,7 @@ program test_005
    call runner_in("[ab]*a[ab]{20}", "cccbbbbbabbbbbbbbbbbbbbbbbbbbccc", .true., res)
 
    if (res) then
-      print *, "=== TEST CASE 5 END ==="
+      write(error_unit, *) "=== TEST CASE 5 END ==="
       stop
    else
       error stop

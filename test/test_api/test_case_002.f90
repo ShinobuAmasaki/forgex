@@ -69,7 +69,7 @@ program test_002
    call runner_match('\s*', '　　', .true., res)
 
    if (res) then
-      print *, "=== TEST CASE 2 END ===          "
+      write(error_unit, *) "=== TEST CASE 2 END ===          "
       stop
    else
       error stop
