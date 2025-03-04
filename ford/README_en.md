@@ -1,4 +1,7 @@
-<!-- Readme[EN] version 4.0 -->
+<!-- Readme[EN] version 4.2 -->
+[![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
+[![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
+
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
 This project is managed by [Fortran Package Manager (FPM)](https://fpm.fortran-lang.org/index.html), providing basic processing of regular expression, and as a freely available under the MIT license.

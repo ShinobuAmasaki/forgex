@@ -2,9 +2,8 @@
 
 # Fortran Regular Expression
 
-[![Tested with LLVM Flang](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml)
-[![Tested with GFortran](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortran.yml)
-
+[![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
+[![Tested with LLVM Flang](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yml)
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
