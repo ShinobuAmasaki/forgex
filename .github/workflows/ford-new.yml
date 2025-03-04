@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
   workflow_dispatch:
     inputs:
       logLevel:
@@ -60,6 +61,7 @@ jobs:
       run: ford ./gen-ford.yml
 
     - name: Deploy Documentation
+      if: ${{ github.event_name}} == 'push'
       uses: JamesIves/github-pages-deploy-action@v4.4.3
       with:
         branch: gh-pages
