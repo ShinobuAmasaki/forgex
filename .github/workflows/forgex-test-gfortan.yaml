@@ -3,9 +3,14 @@ name: Tested with GFortran on Ubuntu
 on: 
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - 'ford/**'
+      - 'README.md'
   pull_request:
     branches: [ "main" ]
-
+    paths-ignore:
+      - 'ford/**'
+      - 'README.md'
 jobs:
   gfortran-test:
     runs-on: ${{ matrix.os }}
