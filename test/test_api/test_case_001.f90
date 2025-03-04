@@ -170,7 +170,7 @@ program test_001
 
 
    if (res) then
-      print *, "=== TEST CASE 1 END ==="
+      write(error_unit, *) "=== TEST CASE 1 END ==="
       stop
    else
       error stop

@@ -1,5 +1,6 @@
 !> These test cases cover valid regex patterns.
 program main
+   use :: iso_fortran_env
    use :: forgex_test_m
    implicit none
 
@@ -125,7 +126,7 @@ program main
 
 !=====================================================================!
    if (res) then
-      print *, "=== PATTERN VALIDATE CASE 1 END ==="
+      write(error_unit, *) "=== PATTERN VALIDATE CASE 1 END ==="
       stop
    else
       error stop

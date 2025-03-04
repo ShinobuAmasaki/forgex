@@ -26,7 +26,7 @@ program test_004
    call runner_match("\.", ".", .true., res)
 
    if (res) then
-      print *, "=== TEST CASE 4 END ==="
+      write(error_unit, *) "=== TEST CASE 4 END ==="
       stop
    else
       error stop

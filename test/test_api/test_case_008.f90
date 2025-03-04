@@ -1,5 +1,6 @@
 program test_case_008
-   use ::forgex_test_m
+   use :: iso_fortran_env
+   use :: forgex_test_m
    implicit none
 
    logical :: res = .true.
@@ -50,7 +51,7 @@ program test_case_008
 
 
    if (res) then
-      print *, "=== TEST CASE 8 END ==="
+      write(error_unit, *)"=== TEST CASE 8 END ==="
       stop
    else
       error stop "There are cases where the match fails."

@@ -1,4 +1,5 @@
 program main
+   use :: iso_fortran_env
    use :: forgex_test_m
    implicit none
    
@@ -48,7 +49,7 @@ program main
    ! call runner_prefix(, , res)
    
    if (res) then
-      print *, "=== AST CASE 1 END ==="
+      write(error_unit, *) "=== AST CASE 1 END ==="
       stop
    else
       error stop
