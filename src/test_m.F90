@@ -10,7 +10,7 @@
 
 !> The `forgex_test_m` module provides helper procedures to unit testing for Forgex.
 module forgex_test_m
-   use, intrinsic :: iso_fortran_env, only: int8, int32, error_unit
+   use, intrinsic :: iso_fortran_env, only: int8, int32, error_unit, output_unit
    use :: forgex, only: operator(.in.), operator(.match.), regex, is_valid_regex
    use :: forgex_syntax_tree_graph_m, only: tree_t
    implicit none
@@ -200,7 +200,7 @@ contains
 
       if (res) then
 #ifndef FAILED
-         write(error_unit, '(a,a,l1)') 'result(validate): Success', ' '//trim(pattern)//' ', answer
+         write(output_unit, '(a,a,l1)') 'result(validate): Success', ' '//trim(pattern)//' ', answer
 #endif
       else
          write(error_unit, '(a,a,l1)') 'result(validate): FAILED ', ' '//trim(pattern)//' ', answer
@@ -222,7 +222,7 @@ contains
       if (res) then
          continue
 #ifndef FAILED
-         write(error_unit, '(a, a, a)') 'result(in   ): Success', ' '//pattern
+         write(output_unit, '(a, a, a)') 'result(in   ): Success', ' '//pattern
 #endif
       else
          write(error_unit, '(a, a, a)') 'result(in   ): FAILED ', ' '//pattern, ' '//trim(str)
@@ -246,9 +246,9 @@ contains
       if (res) then
 #ifndef FAILED
          if (answer) then
-            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
+            write(output_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern), ' "'//trim(str)//'"'
          else
-            write(error_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern)
+            write(output_unit, '(a, a, a)') 'result(match): Success', ' '//trim(pattern)
          end if
 #endif
       else
@@ -275,9 +275,9 @@ contains
       if (res) then
 #ifndef FAILED
          if (answer == substr) then
-            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
+            write(output_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
          else
-            write(error_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
+            write(output_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
          end if
 #endif
       else
@@ -299,7 +299,7 @@ contains
 
       if (res) then
 #ifndef FAILED
-         write(error_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+         write(output_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
 #endif
       else
          write(error_unit, '(a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), ' "'//trim(prefix)//'"'
@@ -319,7 +319,7 @@ contains
 
       if (res) then
 #ifndef FAILED
-         write(error_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
+         write(output_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
 #endif
       else
          write(error_unit, '(a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"'
@@ -338,7 +338,7 @@ contains
    !    ! res = is_valid__middle(pattern, middle, resulting)
 
    !    ! if (res) then
-   !    !    write(error_unit, '(a,a,a)') 'result(middle): Success', ' '//trim(pattern), ' "'//trim(middle)//'"'
+   !    !    write(output_unit, '(a,a,a)') 'result(middle): Success', ' '//trim(pattern), ' "'//trim(middle)//'"'
    !    ! else
    !    !    write(error_unit, '(a,a,a a)') 'result(middle): FAILED ', ' '//trim(pattern), ': got "'//resulting//'"', &
    !    !                                   ', "'//trim(middle)//'" is expected.'
@@ -370,7 +370,7 @@ contains
 
       if (res) then
 #ifndef FAILED
-         write(error_unit, fmt) 'result(error): Success: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
+         write(output_unit, fmt) 'result(error): Success: ', pattern, ': "'//trim(get_error_message(returned_code))//'" '
 #endif
       else
          write(error_unit, fmt_with_code) 'result(error): FAILED:  ', pattern, &
