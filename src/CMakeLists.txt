@@ -38,7 +38,8 @@ set_target_properties(${STATIC_LIB}
    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
    )
 
-install (TARGETS ${STATIC_LIB}
+install (TARGETS ${STATIC_LIB} essential ast nfa lazy_dfa
+   EXPORT "${STATIC_LIB}"
    LIBRARY DESTINATION lib
    PUBLIC_HEADER DESTINATION include
    )
@@ -46,4 +47,9 @@ install (TARGETS ${STATIC_LIB}
 install (FILES
    ${CMAKE_CURRENT_BINARY_DIR}/forgex.mod
    DESTINATION lib
+   )
+
+install (EXPORT ${STATIC_LIB}
+   NAMESPACE "${PROJECT_NAME}::"
+   DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}"
    )
