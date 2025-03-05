@@ -2,10 +2,13 @@ name: Tested with GFortran on Ubuntu
 
 on: 
   push:
-    branches: [ "main" ]
+    branches: [ "main", "exp" ]
     paths-ignore:
       - 'ford/**'
       - 'README.md'
+      - '**.yaml'
+      - '**.yml'
+      - '!.github/workflow/forgex-test-gfortran.yaml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:

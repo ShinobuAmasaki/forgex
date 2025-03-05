@@ -6,6 +6,9 @@ on:
     paths-ignore:
       - 'ford/**'
       - 'README.md'
+      - '**.yaml'
+      - '**.yml'
+      - '!.github/workflow/forgex-test-oneapi.yaml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
