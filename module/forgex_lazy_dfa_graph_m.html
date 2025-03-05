@@ -177,9 +177,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
               </ul>
             </li>
         </ul>
@@ -289,7 +289,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes~2"></span>
+              <span class="anchor" id="variable-nodes~3"></span>
               type(<a href='../type/dfa_state_node_t.html'>dfa_state_node_t</a>),
             </td>
               <td>public,</td>
@@ -315,27 +315,27 @@
           <tbody>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-add_transition~2'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-add_transition'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-free~4'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-free~2'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-preprocess~2'>preprocess</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__preprocess.html'>lazy_dfa__preprocess</a></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-preprocess'>preprocess</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__preprocess.html'>lazy_dfa__preprocess</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-reallocate'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__reallocate.html'>lazy_dfa__reallocate</a></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-reallocate~2'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__reallocate.html'>lazy_dfa__reallocate</a></td>
                 <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-registered~2'>registered</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__registered_index.html'>lazy_dfa__registered_index</a></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-registered'>registered</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__registered_index.html'>lazy_dfa__registered_index</a></td>
                 <td></td>
               </tr>
           </tbody>
@@ -384,7 +384,7 @@ or DFA_INVALID_INDEX if it is not registered.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-set~4"></span>
+              <span class="anchor" id="variable-set~2"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -450,7 +450,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state_set~9"></span>
+              <span class="anchor" id="variable-state_set~6"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -465,7 +465,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-src~2"></span>
+              <span class="anchor" id="variable-src"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -480,7 +480,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst~5"></span>
+              <span class="anchor" id="variable-dst~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -495,7 +495,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~7"></span>
+              <span class="anchor" id="variable-seg~4"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(in)</td>
@@ -660,7 +660,7 @@ and allocate the array.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-05 01:03 +0000             </p>
+ on 2025-03-05 05:47 +0000             </p>
           </div>
         </div>
         <br>
