@@ -35,6 +35,8 @@ module forgex_test_m
    ! public :: runner_middle
    public :: runner_error
    public :: nchar         ! negative char
+   public :: is_eqv_str    ! is equivalent character string?
+   public :: print_hex     ! print hexadecimal expression of character string
 
 
 contains
@@ -90,9 +92,10 @@ contains
       logical                   :: res
 
       call regex(pattern, str, local, length)
+      allocate(character(len(local)) :: substr)
       substr = local
 
-      res = local == answer
+      res = is_eqv_str(substr, answer)
 
    end function is_valid__regex
 
@@ -272,9 +275,10 @@ contains
 
       res = is_valid__regex(pattern, str, answer, substr)
 
+
       if (res) then
 #ifndef FAILED
-         if (answer == substr) then
+         if (is_eqv_str(answer,substr)) then
             write(output_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern), ' "'//trim(substr)//'"'
          else
             write(output_unit, '(a, a, a)') 'result(regex): Success', ' '//trim(pattern)
@@ -381,6 +385,8 @@ contains
 
    end subroutine runner_error
 
+!+-- Helper procedures --+ !
+
    !> nchar means 'negative char'.
    pure function nchar(i) result(chara)
       implicit none
@@ -393,6 +399,41 @@ contains
          chara = char(i)
       end if
    end function nchar
+
+
+   subroutine print_hex(str)
+      use :: iso_fortran_env
+      implicit none
+      character(*), intent(in) :: str
+
+      character(5) :: buf
+      character(:), allocatable :: form
+      integer :: j
+
+      write(buf,'(i0)') len(str)
+      form = trim(adjustl(buf))
+      write(output_unit, '(a, i7, a,'//trim(form)//'z2)')  'len = ', len(str),'; hex=', [(str(j:j), j=1, len(str))]
+      write(output_unit, '(a)') "+----------------------------------------------+"
+
+   end subroutine print_hex
+
+   
+   logical function is_eqv_str (str, ret)
+      implicit none
+      character(*), intent(in) :: str, ret
+      integer :: j
+
+      is_eqv_str = .false.
+      if (len(str) /= len(ret)) then
+         is_eqv_str = .false.
+      else
+         is_eqv_str = .true. 
+         do j = 1, len(str)
+            is_eqv_str = (str(j:j) == ret(j:j)) .and. is_eqv_str
+         end do
+      end if 
+
+   end function is_eqv_str
 
 
 end module forgex_test_m
