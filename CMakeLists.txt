@@ -32,6 +32,7 @@ set(TEST_API_CASES
    test_case_007
    test_case_008
    test_case_009
+   test_case_010
 )
 
 set(TEST_AST_CASES
@@ -47,6 +48,7 @@ set(TEST_INVALID_CASES
 
 set(TEST_ERR_MSG_CASES
    error_case_001
+   error_case_002
 )
 
 foreach(TEST ${TEST_API_CASES})

@@ -414,8 +414,23 @@ contains
          self%is_valid = .false.
          return
 
+      case (tk_star)
+         self%code = SYNTAX_ERR_STAR_INCOMPLETE
+         self%is_valid = .false.
+         return
+
+      case (tk_plus)
+         self%code = SYNTAX_ERR_PLUS_INCOMPLETE
+         self%is_valid = .false.
+         return
+
+      case (tk_question)
+         self%code = SYNTAX_ERR_QUESTION_INCOMPLETE
+         self%is_valid = .false.
+         return
+
       case default
-         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         self%code = SYNTAX_ERR
          self%is_valid = .false.
          return
       end select
