@@ -8,7 +8,7 @@ program test_case_008
    integer :: i
    character(:), allocatable :: c
 
-   ! Corner cases
+   ! Shorthands within character set.
    print *, "=== TEST CASE 9 BEGIN ==="
 !=====================================================================!
 
