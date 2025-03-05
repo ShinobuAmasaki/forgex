@@ -73,7 +73,7 @@ program test_010
    ! Valid encoding: 0x2F, Overlong: 0xC0 0xAF
    bad = char(192) // char(175)  ! Overlong for '/'
    text = bad//'a'
-   call runner_in("[a-z]+", text, .true., res)
+   call runner_in("/", text, .false., res)
    call print_hex(text)
 
    !=== Invalid UTF-16 surrogate pair (U+D800, 0xED 0xA0 0x80)
@@ -114,7 +114,7 @@ program test_010
 
    !=== Invalid sequence between ASCII and 2-byte character boundary
    ! ASCII "a" (0x61) followed by an invalid 2-byte leader (0xC2)
-   bad = char(97) // char(194)  ! "a" + invalid leader
+   bad = char(97) // nchar(lead_2_mask)  ! "a" + invalid leader
    text = bad//'b'
    call runner_in("[a-z]+", text, .true., res)  ! Expected: Match "ab"
    call print_hex(text)
@@ -160,6 +160,7 @@ program test_010
    call runner_regex(pattern, text, ans, res)
    call print_hex(text)
 
+   ! Invalid leader byte with not enough continuation byte
    pattern = '[a-z]+'
    ans = 'a'
    bad = nchar(lead_3_mask) // nchar(continuation_mask)
