@@ -1,14 +1,8 @@
-name: Tested with Intel oneAPI ifx on Linux
+name: Tested with Intel oneAPI
 
 on:
   push:
     branches: [ "main", "exp" ]
-    paths-ignore:
-      - 'ford/**'
-      - 'README.md'
-      - '**.yaml'
-      - '**.yml'
-      - '!.github/workflow/forgex-test-oneapi.yaml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:

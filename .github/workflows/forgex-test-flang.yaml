@@ -3,12 +3,6 @@ name: Tested with LLVM Flang on Ubuntu
 on:
   push:
     branches: [ "main", "exp" ]
-    paths-ignore:
-      - 'ford/**'
-      - 'README.md'
-      - '**.yaml'
-      - '**.yml'
-      - '!.github/workflow/forgex-test-flang.yaml'
   pull_request:
     branches: [ "main" ]
     paths-ignore:
