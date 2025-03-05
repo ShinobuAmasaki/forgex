@@ -43,7 +43,7 @@ program error_case_001
    call runner_error('(*)', '', SYNTAX_ERR_STAR_INCOMPLETE, res)
    call runner_error('(+)', '', SYNTAX_ERR_PLUS_INCOMPLETE, res)
    call runner_error('(?)', '', SYNTAX_ERR_QUESTION_INCOMPLETE, res)
-   call runner_error('(\)', '', SYNTAX_ERR_PARENTHESIS_MISSING, res)
+   call runner_error('(\)', '', SYNTAX_ERR_PARENTHESIS_MISSING, res) ! \) means escaped right-parenthesis by backslash
    call runner_error('({)', '', SYNTAX_ERR_INVALID_TIMES, res)
    call runner_error('(})', '', SYNTAX_VALID, res)
    call runner_error('($)', '', SYNTAX_VALID, res)
