@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main", "exp" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "exp" ]
     paths-ignore:
       - 'ford/**'
       - 'README.md'
