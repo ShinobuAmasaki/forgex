@@ -4,6 +4,7 @@
 
 [![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
 [![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
+[![Tested with Intel oneAPI](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml/badge.svg?branch=main)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml)
 
 Forgex—Fortran Regular Expression—is a regular expression engine written entirely in Fortran.
 
@@ -65,12 +66,16 @@ Version 4.2 adds handling when non-UTF-8 characters are given as input strings. 
 The documentation is available in English and Japanese at [https://shinobuamasaki.github.io/forgex](https://shinobuamasaki.github.io/forgex).
 
 ## Usage
+
 ### Build
 
 Operation has been confirmed with the following compilers:
 
-- GNU Fortran (`gfortran`) v13.2.1
-- Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
+- GNU Fortran (`gfortran`) v11.4.0, v12.2.0, v13.2.1
+- Intel Fortran Compiler (`ifx`) 2024.2.1 20240711
+- LLVM Flang (`flang-19`, `flang-20`) v19.1.7, v20.1.0
+
+Note: Not available for Flang 18 and earlier
 
 It is assumed that you will use the Fortran Package Manager(`fpm`).
 

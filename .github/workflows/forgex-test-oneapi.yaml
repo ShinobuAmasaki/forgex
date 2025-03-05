@@ -1,0 +1,76 @@
+name: Tested with Intel oneAPI
+
+on:
+  push:
+    branches: [ "main", "exp" ]
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'ford/**'
+      - 'README.md'
+  
+jobs:
+  ifx-linux:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest" ]
+    container:
+      image: intel/hpckit:latest
+      options: --privileged
+    env:
+      FPM_FC: ifx
+      FPM_CC: icx
+      FPM_CXX: icpx
+      CMAKE_FC: ifx
+      CMAKE_CC: icx
+      CMAKE_CXX: icpx
+      FPM_VERSION: '0.10.1'
+      # CMAKE_Fortran_COMPILER is a CMake variable, not an environemntal variable.
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+  
+      - name: Installation check
+        run: |
+          uname -a
+          ifx --version
+          icx --version
+          icpx --version
+          curl -sSJL -o /usr/local/bin/fpm https://github.com/fortran-lang/fpm/releases/download/v${{ env.FPM_VERSION }}/fpm-${{ env.FPM_VERSION }}-linux-x86_64
+          chmod +x /usr/local/bin/fpm
+          fpm --version
+          cmake --version
+
+      - name: Forgex test with FPM (Debug profile)
+        run: |
+          fpm test --profile debug > /dev/null
+          fpm clean --all  2>&1 > /dev/null
+
+      - name: Forgex test with FPM (Release profile)
+        run: |
+          fpm test --profile release > /dev/null
+          fpm clean --all 2>&1 > /dev/null
+
+      - name: Forgex test with CMake (Debug profile)
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_FC }} 2>&1 > /dev/null
+          cmake --build build  > /dev/null
+          ctest -C Debug --test-dir build
+          fpm clean --all  2>&1 > /dev/null
+
+      - name: Forgex test with CMake (Release profile)
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_Fortran_COMPILER=${{ env.CMAKE_FC }} 2>&1 > /dev/null
+          cmake --build build  > /dev/null
+          ctest -C Release --test-dir build
+          fpm clean --all  2>1 > /dev/null
+

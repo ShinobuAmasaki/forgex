@@ -1,6 +1,7 @@
 <!-- Readme[JA] version 4.2 -->
 [![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
 [![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
+[![Tested with Intel oneAPI](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml/badge.svg?branch=main)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml)
 
 Forgexは、すべてFortranで書かれた正規表現エンジンです。
 
@@ -61,8 +62,11 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 ## 使用方法
 動作確認は以下のコンパイラーで行っています。
 
-- GNU Fortran (`gfortran`) v13.2.1
-- Intel Fortran Compiler (`ifx`) 2024.0.0 20231017
+- GNU Fortran (`gfortran`) v11.4.0, v12.2.0, v13.2.1
+- Intel Fortran Compiler (`ifx`) 2024.2.1 20240711
+- LLVM Flang (`flang-19`, `flang-20`) v19.1.7, v20.1.0
+
+注：Flang 18以前ではビルドできません。
 
 以下では、ビルドとAPIの使い方について解説しますが、Fortranパッケージマネージャー（`fpm`）を利用することを前提とします。
 

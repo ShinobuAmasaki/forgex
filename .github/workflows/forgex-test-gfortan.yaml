@@ -2,10 +2,7 @@ name: Tested with GFortran on Ubuntu
 
 on: 
   push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'ford/**'
-      - 'README.md'
+    branches: [ "main", "exp" ]
   pull_request:
     branches: [ "main" ]
     paths-ignore:
