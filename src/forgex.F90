@@ -131,7 +131,7 @@ contains
 
       ! Extract a prefix and a suffix from the tree.
       prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      suffix = ''
 
       ! Initialize automaton with tree.
       call automaton%preprocess(tree)
@@ -213,7 +213,7 @@ contains
       
       ! Get the prefix contained in the AST.
       prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      suffix = ''
 
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
@@ -306,7 +306,7 @@ contains
 
       ! Extract a prefix and a suffix from the tree.
       prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      suffix = ''
 
       ! Initialize automaton
       call automaton%preprocess(tree)
