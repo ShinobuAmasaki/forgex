@@ -7,7 +7,7 @@ program test_005
 
    ! Stress-test cases
 
-   print *, '=== TEST CASE 5 BEGIN ==='
+   print *, '=== TEST CASE 11 BEGIN ==='
 
    call runner_match('a{1001}', repeat('a', 1000), .false., res)
    call runner_match('a{1000}', repeat('a', 1000), .true., res)
@@ -70,7 +70,7 @@ program test_005
 
 !=====================================================================!
    if (res) then
-      write(error_unit, *) '=== TEST CASE 5 END ==='
+      write(error_unit, *) '=== TEST CASE 11 END ==='
       stop
    else
       error stop
