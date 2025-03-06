@@ -44,7 +44,7 @@ module forgex_syntax_tree_node_m
       integer(int32) :: min_repeat
       integer(int32) :: max_repeat
       logical        :: is_registered = .false.
-      logical        :: has_closure_left = .false.
+      logical        :: has_closure_left = .false. ! Whether the nodes immediately below the tree node is a closure or not.
       logical        :: has_closure_right = .false.
    end type
 
