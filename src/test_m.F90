@@ -387,6 +387,23 @@ contains
 
 !+-- Helper procedures --+ !
 
+   !> This function generates a string by repeating a given pattern a specified number of times.
+   function repeat(chara, num) result(txt)
+      implicit none
+      character(*), intent(in) :: chara
+      integer, intent(in) :: num
+      character(:), allocatable :: txt
+      character(:), allocatable :: buf
+      
+      integer :: i
+      buf = ''
+      do i = 1, num
+         buf = buf//chara
+      end do
+
+      txt = buf
+   end function repeat
+
    !> nchar means 'negative char'.
    pure function nchar(i) result(chara)
       implicit none
