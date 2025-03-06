@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "main", "exp" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "exp" ]
     paths-ignore:
       - 'ford/**'
       - 'README.md'
@@ -63,10 +63,10 @@ jobs:
 
     - name: Forgex test wiht FPM (Debug profile)
       run: |
-        fpm test --profile debug --compiler gfortran --flag "-DFAILED"
+        fpm test --profile debug --compiler gfortran --flag "-DFAILED" > /dev/null
         fpm clean --all
 
     - name: Forgex test wiht FPM (Release profile)
       run: |
-        fpm test --profile release --compiler gfortran --flag "-DFAILED"
+        fpm test --profile release --compiler gfortran --flag "-DFAILED" > /dev/null
 

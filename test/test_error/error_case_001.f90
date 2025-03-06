@@ -40,6 +40,10 @@ program error_case_001
    call runner_error("\a", "", SYNTAX_ERR_ESCAPED_SYMBOL_INVALID, res)
    call runner_error("\\\", "", SYNTAX_ERR_ESCAPED_SYMBOL_MISSING, res)
 
+   call runner_error("\{\}", "", SYNTAX_VALID, res)
+   call runner_error("\{}", "", SYNTAX_VALID, res)
+
+
 !=====================================================================!
    if (res) then
       write(error_unit, *) "=== ERROR MESSAGE CASE 1 END ==="
