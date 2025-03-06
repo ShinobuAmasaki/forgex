@@ -101,6 +101,8 @@ program main
    call runner_suffix("((a|b)+c)+", "c", res)
    call runner_suffix("a((ac|bc)+){3}", "c", res)
 
+   call runner_suffix('(a*cc){2}', 'cc', res)  ! Failed in v4.3
+
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)
