@@ -4,7 +4,7 @@
 !
 ! (C) Amasaki Shinobu, 2023-2025
 !     A regular expression engine for Fortran.
-!     forgex_nfa_m module is a part of Forgex.
+!     forgex_nfa_node_m module is a part of Forgex.
 !
 !! This file contains `nfa_t` class and its type-bound procedures.
 
