@@ -12,7 +12,7 @@
 module forgex_syntax_tree_optimize_exp_m
    use :: forgex_syntax_tree_node_m, only: tree_node_t
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_utf8_m, only: char_utf8
+   use :: forgex_utf8_m, only: char_utf8, reverse_utf8
    use :: forgex_enums_m
    use :: forgex_parameters_m
    use :: forgex_segment_m
@@ -32,6 +32,8 @@ module forgex_syntax_tree_optimize_exp_m
    character(0), parameter :: theta = ''
 
    public :: extract_literal
+
+   public :: same_part_of_suffix
 
 contains
 
@@ -220,5 +222,22 @@ contains
       
    end function same_part_of_prefix
 
+
+   pure function same_part_of_suffix(c1,c2) result(retval)
+      character(*), intent(in) :: c1, c2
+      character(:), allocatable :: retval
+
+      character(:), allocatable :: rc1, rc2
+      integer :: n, i
+      n = max(len_trim(c1), len_trim(c2))
+
+      allocate(character(n):: rc1, rc2)
+
+      rc1 = reverse_utf8(c1)   
+      rc2 = reverse_utf8(c2)
+      retval = same_part_of_prefix(rc1, rc2)
+      retval = reverse_utf8(retval)
+      
+   end function same_part_of_suffix
 
 end module forgex_syntax_tree_optimize_exp_m
