@@ -59,7 +59,7 @@ contains
       type(literal_t) :: literal
 
       call best_factor(tree%nodes, tree%top, literal)
-   
+
    end function get_literal
 
    pure recursive subroutine best_factor(nodes, idx, lit)
@@ -79,7 +79,7 @@ contains
       lit%pref%c = theta
       lit%suff%c = theta
       lit%fact%c = theta
-      
+
 
       if (curr%op == op_union .or. curr%op == op_concat) then
          call best_factor(nodes, curr%left_i, lit_l)
@@ -90,12 +90,13 @@ contains
 
       case(op_union)
          lit%pref%c = same_part_of_prefix(lit_l%pref%c, lit_r%pref%c)
-         lit%suff%c = same_part_of_suffix(lit_l%suff%c, lit_r%suff%c) !!
+         lit%suff%c = same_part_of_suffix(lit_l%suff%c, lit_r%suff%c)
          lit%flag_closure = .true.
 
       case(op_concat)
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          if (lit_l%flag_class .or. lit_r%flag_class) then
+
             if (lit_l%flag_class .and. lit_r%flag_class) then
                continue
             else if (lit_l%flag_class) then
@@ -107,6 +108,7 @@ contains
                lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
                lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
             end if 
+
          else
 
             if (lit_l%flag_closure .and. lit_r%flag_closure) then 
@@ -119,7 +121,8 @@ contains
                lit%flag_closure = .true.
             else if (lit_r%flag_closure) then
                lit%pref%c = best(lit_l%all%c//lit_r%pref%c, lit_l%pref%c)
-               lit%suff%c = lit_r%suff%c
+               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+               ! lit%suff%c = lit_r%suff%c
                lit%flag_closure = .true.
             else
                if(.not.lit%flag_class) lit%all%c = lit_l%all%c//lit_r%all%c
@@ -179,7 +182,7 @@ contains
          lit%flag_closure = .true.
       end select
    end subroutine best_factor
-      
+
 
    pure function best(c1, c2) result(res)
       implicit none
@@ -224,7 +227,7 @@ contains
 
          i = next_idxutf8(c1, i)
       end do
-      
+
    end function same_part_of_prefix
 
 
@@ -242,7 +245,7 @@ contains
       rc2 = reverse_utf8(c2)
       retval = same_part_of_prefix(rc1, rc2)
       retval = reverse_utf8(retval)
-      
+
    end function same_part_of_suffix
 
 end module forgex_syntax_tree_optimize_exp_m
