@@ -33,6 +33,7 @@ set(TEST_API_CASES
    test_case_008
    test_case_009
    test_case_010
+   test_case_011
 )
 
 set(TEST_AST_CASES
