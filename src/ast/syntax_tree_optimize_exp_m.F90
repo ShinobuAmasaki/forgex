@@ -15,6 +15,7 @@ module forgex_syntax_tree_optimize_exp_m
    use :: forgex_utf8_m, only: char_utf8
    use :: forgex_enums_m
    use :: forgex_parameters_m
+   use :: forgex_segment_m
    implicit none
    private
 
@@ -126,17 +127,27 @@ contains
          lit%flag_closure = .true.
 
       case (op_char)
-         lit%all%c = char_utf8(curr%c(1)%min)
-         lit%pref%c = char_utf8(curr%c(1)%min)
-         lit%suff%c =  char_utf8(curr%c(1)%min)
-         lit%fact%c =  char_utf8(curr%c(1)%min)
-
+         if (allocated(curr%c)) then
+            if (width_of_segment(curr%c(1)) == 1) then
+               lit%all%c = char_utf8(curr%c(1)%min)
+               lit%pref%c = char_utf8(curr%c(1)%min)
+               lit%suff%c =  char_utf8(curr%c(1)%min)
+               lit%fact%c =  char_utf8(curr%c(1)%min)
+            else
+               lit%all%c = theta
+               lit%pref%c = theta
+               lit%suff%c = theta
+               lit%fact%c = theta
+            end if
+         end if
       case (op_repeat)
+         !== STUB CODE
          lit%all%c =  theta
          lit%pref%c = theta
          lit%suff%c = theta
          lit%fact%c = theta
          lit%flag_closure = .true.
+         !== END OF STUB
       case default
          lit%all%c =  theta
          lit%pref%c = theta
