@@ -8,7 +8,7 @@ program main
    print *, "=== AST CASE 1 BEGIN ==="
 
    call runner_prefix("[a]{3,4}", "aaa", res)
-   call runner_prefix("(b+)a*(ab){3,4}", "b", res)
+   call runner_prefix("(b+)a*(ab){3,4}", "ababab", res)
    call runner_prefix("(ab|ac|a+){3,4}", "a", res)
    call runner_prefix("(ab|ac){3,4}", "a", res)
    call runner_prefix("(ab){3,4}", "ababab", res)

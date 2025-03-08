@@ -90,7 +90,7 @@ contains
 
       case(op_union)
          lit%pref%c = same_part_of_prefix(lit_l%pref%c, lit_r%pref%c)
-         lit%suff%c = theta !!
+         lit%suff%c = same_part_of_suffix(lit_l%suff%c, lit_r%suff%c) !!
          lit%flag_closure = .true.
 
       case(op_concat)
@@ -136,14 +136,19 @@ contains
 
       case (op_char)
          if (allocated(curr%c)) then
-            if (width_of_segment(curr%c(1)) == 1) then
-               lit%all%c = char_utf8(curr%c(1)%min)
-               lit%pref%c = char_utf8(curr%c(1)%min)
-               lit%suff%c =  char_utf8(curr%c(1)%min)
-               lit%fact%c =  char_utf8(curr%c(1)%min)
+            if (size(curr%c) == 1) then
+               if (width_of_segment(curr%c(1)) == 1) then
+                  lit%all%c = char_utf8(curr%c(1)%min)
+                  lit%pref%c = char_utf8(curr%c(1)%min)
+                  lit%suff%c =  char_utf8(curr%c(1)%min)
+                  lit%fact%c =  char_utf8(curr%c(1)%min)
+               else
+                  lit%flag_class = .true.
+               end if
             else
                lit%flag_class = .true.
             end if
+
          end if
       case (op_repeat)
 
