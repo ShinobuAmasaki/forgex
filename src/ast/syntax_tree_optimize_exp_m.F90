@@ -67,20 +67,16 @@ contains
       type(literal_t), intent(inout) :: lit
 
       type(literal_t) :: lit_l, lit_r
-      type(tree_node_t) :: curr
+      type(tree_node_t) :: curr, next_l
       integer :: i
 
       curr = nodes(idx)
+      if (curr%left_i /= INVALID_INDEX) next_l = nodes(curr%left_i)
 
-      lit_l%all%c = theta
-      lit_l%pref%c = theta
-      lit_l%suff%c = theta
-      lit_l%fact%c = theta
-
-      lit_r%all%c = theta
-      lit_r%pref%c = theta
-      lit_r%suff%c = theta
-      lit_r%fact%c = theta
+      lit%all%c = theta
+      lit%pref%c = theta
+      lit%suff%c = theta
+      lit%fact%c = theta
       
 
       if (curr%op == op_union .or. curr%op == op_concat) then
@@ -89,51 +85,52 @@ contains
       end if
 
       select case (curr%op)
+
       case(op_union)
-         lit%all%c =  theta 
+
          lit%pref%c = same_part_of_prefix(lit_l%pref%c, lit_r%pref%c)
          lit%suff%c = theta !!
-         lit%fact%c = theta
          lit%flag_closure = .true.
+
       case(op_concat)
 
          if (lit_l%flag_class .or. lit_r%flag_class) then
-            lit%all%c = theta
-            lit%pref%c = theta
-            lit%suff%c = theta
-            lit%fact%c = theta
-            return
+            if (lit_l%flag_class .and. lit_r%flag_class) then
+               continue
+            else if (lit_l%flag_class) then
+               lit%suff = lit_r%suff
+               lit%fact = lit_r%fact
+            else if (lit_r%flag_class) then
+               lit%pref = lit_l%pref
+               lit%fact = lit_l%fact
+            end if 
+         else
+
+            if (lit_l%flag_closure .and. lit_r%flag_closure) then 
+               lit%pref%c = lit_l%pref%c
+               lit%suff%c = lit_r%suff%c
+               lit%flag_closure = .true.
+            else if (lit_l%flag_closure) then
+               lit%pref%c = lit_l%pref%c
+               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+               lit%flag_closure = .true.
+            else if (lit_r%flag_closure) then
+               lit%pref%c = best(lit_l%all%c//lit_r%pref%c, lit_l%pref%c)
+               lit%suff%c = lit_r%suff%c
+               lit%flag_closure = .true.
+            else
+               lit%all%c = lit_l%all%c//lit_r%all%c
+               lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+               lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
+            end if 
+
          end if
 
-         if (lit_l%flag_closure .and. lit_r%flag_closure) then 
-            lit%all%c = theta
-            lit%pref%c = lit_l%pref%c
-            lit%suff%c = lit_r%suff%c
-            lit%flag_closure = .true.
-         else if (lit_l%flag_closure) then
-            lit%all%c =  theta
-            lit%pref%c = lit_l%pref%c
-            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-            lit%flag_closure = .true.
-         else if (lit_r%flag_closure) then
-            lit%all%c = theta
-            lit%pref%c = best(lit_l%all%c//lit_r%pref%c, lit_l%pref%c)
-            lit%suff%c = lit_r%suff%c
-            lit%flag_closure = .true.
-         else
-            lit%all%c = lit_l%all%c//lit_r%all%c
-            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
-            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-            lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
-         end if 
-
          lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
+         ! write(0,*) "L131: ", lit%all%c
 
       case (op_closure)
-         lit%all%c = theta
-         lit%pref%c = theta
-         lit%suff%c = theta
-         lit%fact%c = theta
          lit%flag_closure = .true.
 
       case (op_char)
@@ -144,46 +141,35 @@ contains
                lit%suff%c =  char_utf8(curr%c(1)%min)
                lit%fact%c =  char_utf8(curr%c(1)%min)
             else
-               lit%all%c = theta
-               lit%pref%c = theta
-               lit%suff%c = theta
-               lit%fact%c = theta
                lit%flag_class = .true.
             end if
-         else
-            lit%all%c = theta
-            lit%pref%c = theta
-            lit%suff%c = theta
-            lit%fact%c = theta
          end if
       case (op_repeat)
 
-         do i = 1, curr%min_repeat
-            if (lit%flag_class .or. lit_r%flag_class) then
-               lit%all%c = theta
-               lit%pref%c = theta
-               lit%suff%c = theta
-               lit%fact%c = theta
-               exit
+         lit%flag_class = .false.
+         if (allocated(next_l%c)) then
+            if (all(width_of_segment(next_l%c(:)) == 1)) then
+               lit%flag_class = .false.
             else
-               call best_factor(nodes, curr%left_i, lit_l)
-               lit%all%c = lit%all%c//lit_l%all%c
-               lit%pref%c = lit%pref%c//lit_l%pref%c
-               lit%suff%c = lit%suff%c//lit_l%suff%c
-               lit%fact%c = lit%fact%c//lit_l%fact%c
+               lit%flag_class = .true.
             end if
-            if (lit_l%flag_closure) exit
+         end if
 
+         ! write(0,*) "L163", lit%flag_class, curr%min_repeat
+ 
+         do i = 1, curr%min_repeat       
+            call best_factor(nodes, curr%left_i, lit_l)
+            lit%all%c = lit%all%c//lit_l%all%c
+            lit%pref%c = lit%pref%c//lit_l%pref%c
+            lit%suff%c = lit%suff%c//lit_l%suff%c
+            lit%fact%c = lit%fact%c//lit_l%fact%c
+            if (lit_l%flag_closure) exit
          end do
 
          lit%flag_closure = curr%min_repeat /= curr%max_repeat
-         lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure .or. lit_r%flag_closure
-      
+         lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
+      ! write(0,*) "L170: ", lit%all%c
       case default
-         lit%all%c =  theta
-         lit%pref%c = theta
-         lit%suff%c = theta
-         lit%fact%c = theta
          lit%flag_closure = .true.
       end select
    end subroutine best_factor
