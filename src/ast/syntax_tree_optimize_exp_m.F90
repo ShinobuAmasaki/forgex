@@ -27,6 +27,7 @@ module forgex_syntax_tree_optimize_exp_m
       type(character_array_element_t) :: all, pref, suff, fact
       logical :: flag_closure = .false.
       logical :: flag_class = .false.
+      logical :: flag_repeat = .false.
    end type literal_t
 
    character(0), parameter :: theta = ''
@@ -69,17 +70,17 @@ contains
       type(literal_t), intent(inout) :: lit
 
       type(literal_t) :: lit_l, lit_r
-      type(tree_node_t) :: curr, next_l
+      type(tree_node_t) :: curr, next_l, next_r
+      logical :: is_L_child_repeat, is_R_child_repeat
       integer :: i
 
       curr = nodes(idx)
       if (curr%left_i /= INVALID_INDEX) next_l = nodes(curr%left_i)
-
+      if (curr%right_i/= INVALID_INDEX) next_r = nodes(curr%right_i)
       lit%all%c = theta
       lit%pref%c = theta
       lit%suff%c = theta
       lit%fact%c = theta
-
 
       if (curr%op == op_union .or. curr%op == op_concat) then
          call best_factor(nodes, curr%left_i, lit_l)
@@ -94,46 +95,75 @@ contains
          lit%flag_closure = .true.
 
       case(op_concat)
+
+         lit%flag_repeat = lit_l%flag_repeat .or. lit_r%flag_repeat
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
-         if (lit_l%flag_class .or. lit_r%flag_class) then
+         lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
 
-            if (lit_l%flag_class .and. lit_r%flag_class) then
-               continue
-            else if (lit_l%flag_class) then
-               lit%pref = lit_l%pref
-               lit%suff = lit_r%suff
-               lit%fact = lit_r%fact
-            else if (lit_r%flag_class) then
+         ! write(0,*) lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
+         select case (return_class_closure(lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure))
+         case (lt_N_class_N_closure)
+            lit%all%c = lit_l%all%c//lit_r%all%c
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
 
-               lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
-               lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-            end if 
+         case (lt_N_class_R_closure)
+            lit%pref%c = lit_l%all%c//lit_r%pref%c
+            lit%suff%c = lit_r%suff%c           
 
-         else
+         case (lt_N_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_l%suff%c//lit_r%all%c
 
-            if (lit_l%flag_closure .and. lit_r%flag_closure) then 
-               lit%pref%c = lit_l%pref%c
-               lit%suff%c = lit_r%suff%c
-               lit%flag_closure = .true.
-            else if (lit_l%flag_closure) then
-               lit%pref%c = lit_l%pref%c
-               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-               lit%flag_closure = .true.
-            else if (lit_r%flag_closure) then
-               lit%pref%c = best(lit_l%all%c//lit_r%pref%c, lit_l%pref%c)
-               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-               ! lit%suff%c = lit_r%suff%c
-               lit%flag_closure = .true.
-            else
-               if(.not.lit%flag_class) lit%all%c = lit_l%all%c//lit_r%all%c
-               lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
-               lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-               lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
-            end if 
+         case (lt_N_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+         !===========================================================================!
+         
+         case (lt_R_class_N_closure)
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+         case (lt_R_class_R_closure)
 
-         end if
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%suff%c = lit_r%suff%c
+            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+         case (lt_R_class_L_closure)
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+         case (lt_R_class_LR_closure)
+            lit%pref%c = lit_l%pref%c!!!
+            lit%suff%c = lit_r%suff%c!!!
+
+         case (lt_L_class_N_closure)
+            lit%pref = lit_l%pref
+            lit%suff = lit_r%suff
+            lit%fact = lit_r%fact
+         case (lt_L_class_R_closure)
+            lit%pref = lit_l%pref
+            lit%suff = lit_r%suff
+            lit%fact = lit_r%fact
+         case (lt_L_class_L_closure)
+            lit%pref = lit_l%pref
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            lit%fact = lit_r%fact
+         case (lt_L_class_LR_closure)
+            lit%pref = lit_l%pref
+            lit%suff = lit_r%suff
+            lit%fact = lit_r%fact
+
+         case (lt_LR_class_N_closure)
+            continue
+         case (lt_LR_class_R_closure)
+            continue
+         case (lt_LR_class_L_closure)
+            continue
+         case (lt_LR_class_LR_closure)
+            continue
+         end select
 
          lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
+
       case (op_closure)
          lit%flag_closure = .true.
 
@@ -154,7 +184,7 @@ contains
 
          end if
       case (op_repeat)
-
+         
          lit%flag_class = .false.
          if (allocated(next_l%c)) then
             if (all(width_of_segment(next_l%c(:)) == 1)) then
@@ -165,7 +195,7 @@ contains
          else
             lit%flag_class = .true.
          end if
-
+         
          do i = 1, curr%min_repeat       
             call best_factor(nodes, curr%left_i, lit_l)
             if(.not.  lit%flag_class) lit%all%c = lit%all%c//lit_l%all%c
@@ -176,6 +206,9 @@ contains
             if (lit_l%flag_closure) exit
          end do
 
+         ! write(0,*) "L213 ", lit%suff%c
+
+         lit%flag_repeat = curr%min_repeat /= 1
          lit%flag_closure = curr%min_repeat /= curr%max_repeat
          lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
       case default
@@ -247,5 +280,88 @@ contains
       retval = reverse_utf8(retval)
 
    end function same_part_of_suffix
+
+
+   pure function return_class_closure(f_L_class, f_R_class, f_L_closure, f_R_closure) result(retval)
+      implicit none
+      logical, intent(in) :: f_L_class, f_r_class, f_l_closure, f_r_closure
+      integer :: retval
+
+      if (.not. f_L_class) then
+
+         if (.not. f_r_class) then
+
+            if (.not. f_l_closure) then
+
+               if (.not. f_r_closure) then
+                  retval = lt_N_class_N_closure
+               else
+                  retval = lt_N_class_R_closure
+               end if
+
+            else
+            
+               if (.not. f_r_closure) then
+                  retval = lt_N_class_L_closure
+               else
+                  retval = lt_N_class_LR_closure
+               end if
+            
+            end if
+         else
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_R_class_N_closure
+               else
+                  retval = lt_R_class_R_closure
+               endif
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_R_class_L_closure
+               else
+                  retval = lt_R_class_LR_closure
+               end if
+            end if
+         end if
+
+
+      else
+
+
+         if (.not. f_r_class) then
+            if (.not. f_l_closure) then
+
+               if (.not. f_r_closure) then
+                  retval = lt_L_class_N_closure
+               else
+                  retval = lt_L_class_R_closure
+               end if
+
+            else
+            
+               if (.not. f_r_closure) then
+                  retval = lt_L_class_L_closure
+               else
+                  retval = lt_L_class_LR_closure
+               end if
+            
+            end if
+         else
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_LR_class_N_closure
+               else
+                  retval = lt_LR_class_R_closure
+               endif
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_LR_class_L_closure
+               else
+                  retval = lt_LR_class_LR_closure
+               end if
+            end if
+         end if   
+      end if
+   end function return_class_closure
 
 end module forgex_syntax_tree_optimize_exp_m
