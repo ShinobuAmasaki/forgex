@@ -29,9 +29,25 @@ module forgex_syntax_tree_optimize_exp_m
 
    character(0), parameter :: theta = ''
 
-   public :: get_literal, literal_t
+   public :: extract_literal
 
 contains
+
+   pure subroutine extract_literal(tree, all, prefix, suffix, factor)
+      implicit none
+      type(tree_t), intent(in) :: tree
+      character(:), allocatable, intent(inout) :: all, prefix, suffix, factor
+
+      type(literal_t) :: literal
+
+      literal = get_literal(tree)
+
+      all = literal%all%c
+      prefix = literal%pref%c
+      suffix = literal%suff%c
+      factor = literal%fact%c
+   end subroutine extract_literal
+
 
    pure function get_literal(tree) result(literal)
       implicit none
@@ -116,9 +132,17 @@ contains
          lit%fact%c =  char_utf8(curr%c(1)%min)
 
       case (op_repeat)
-
+         lit%all%c =  theta
+         lit%pref%c = theta
+         lit%suff%c = theta
+         lit%fact%c = theta
+         lit%flag_closure = .true.
       case default
- 
+         lit%all%c =  theta
+         lit%pref%c = theta
+         lit%suff%c = theta
+         lit%fact%c = theta
+         lit%flag_closure = .true.
       end select
    end subroutine best_factor
       
