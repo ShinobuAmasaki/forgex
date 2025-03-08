@@ -87,22 +87,23 @@ contains
       select case (curr%op)
 
       case(op_union)
-
          lit%pref%c = same_part_of_prefix(lit_l%pref%c, lit_r%pref%c)
          lit%suff%c = theta !!
          lit%flag_closure = .true.
 
       case(op_concat)
-
+         lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          if (lit_l%flag_class .or. lit_r%flag_class) then
             if (lit_l%flag_class .and. lit_r%flag_class) then
                continue
             else if (lit_l%flag_class) then
+               lit%pref = lit_l%pref
                lit%suff = lit_r%suff
                lit%fact = lit_r%fact
             else if (lit_r%flag_class) then
-               lit%pref = lit_l%pref
-               lit%fact = lit_l%fact
+
+               lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+               lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
             end if 
          else
 
@@ -119,7 +120,7 @@ contains
                lit%suff%c = lit_r%suff%c
                lit%flag_closure = .true.
             else
-               lit%all%c = lit_l%all%c//lit_r%all%c
+               if(.not.lit%flag_class) lit%all%c = lit_l%all%c//lit_r%all%c
                lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
                lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
                lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
@@ -128,8 +129,6 @@ contains
          end if
 
          lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
-         ! write(0,*) "L131: ", lit%all%c
-
       case (op_closure)
          lit%flag_closure = .true.
 
@@ -153,22 +152,22 @@ contains
             else
                lit%flag_class = .true.
             end if
+         else
+            lit%flag_class = .true.
          end if
 
-         ! write(0,*) "L163", lit%flag_class, curr%min_repeat
- 
          do i = 1, curr%min_repeat       
             call best_factor(nodes, curr%left_i, lit_l)
-            lit%all%c = lit%all%c//lit_l%all%c
+            if(.not.  lit%flag_class) lit%all%c = lit%all%c//lit_l%all%c
             lit%pref%c = lit%pref%c//lit_l%pref%c
             lit%suff%c = lit%suff%c//lit_l%suff%c
             lit%fact%c = lit%fact%c//lit_l%fact%c
+            lit%flag_class = lit%flag_class .or. lit_l%flag_class
             if (lit_l%flag_closure) exit
          end do
 
          lit%flag_closure = curr%min_repeat /= curr%max_repeat
          lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
-      ! write(0,*) "L170: ", lit%all%c
       case default
          lit%flag_closure = .true.
       end select

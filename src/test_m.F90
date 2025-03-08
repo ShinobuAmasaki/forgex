@@ -101,14 +101,15 @@ contains
 
    !> This function checks whether the correct prefix is extracted
    !> for a given pattern.
-   function is_valid__prefix(pattern, expected_prefix) result(res)
+   function is_valid__prefix(pattern, expected_prefix, resulting) result(res)
       use :: forgex_syntax_tree_optimize_exp_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_prefix
+      character(:), allocatable :: resulting
       logical :: res
 
-      character(:), allocatable :: resulting, unused_1, unused_2, unused_3 
+      character(:), allocatable :: unused_1, unused_2, unused_3 
       type(tree_t) :: tree
 
       call tree%build(pattern)
@@ -125,14 +126,15 @@ contains
 
    !> This function checks whether the correct suffix is extracted
    !> for a given pattern.
-   function is_valid__suffix(pattern, expected_suffix) result(res)
+   function is_valid__suffix(pattern, expected_suffix, resulting) result(res)
       use :: forgex_syntax_tree_optimize_exp_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_suffix
       logical :: res
+      character(:), allocatable, intent(inout) :: resulting
 
-      character(:), allocatable :: resulting, unused_1, unused_2, unused_3 
+      character(:), allocatable :: unused_1, unused_2, unused_3 
       type(tree_t) :: tree
 
       call tree%build(pattern)
@@ -301,15 +303,17 @@ contains
       character(*), intent(in) :: pattern, prefix
       logical, intent(inout) :: result
       logical :: res
+      character(:), allocatable :: resulting
 
-      res = is_valid__prefix(pattern, prefix)
+      res = is_valid__prefix(pattern, prefix, resulting)
 
       if (res) then
 #ifndef FAILED
          write(output_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
 #endif
       else
-         write(error_unit, '(a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+         write(error_unit, '(a,a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), &
+               ' "'//trim(prefix)//'", but ... ', trim(resulting)
       end if
       result = result .and. res
    end subroutine runner_prefix
@@ -322,14 +326,16 @@ contains
       logical, intent(inout) :: result
       logical :: res
 
-      res = is_valid__suffix(pattern, suffix)
+      character(:), allocatable :: resulting
+      res = is_valid__suffix(pattern, suffix, resulting)
 
       if (res) then
 #ifndef FAILED
          write(output_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
 #endif
       else
-         write(error_unit, '(a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"'
+         write(error_unit, '(a,a,a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"', &
+            ', but ..."', trim(resulting)//'"'
       end if
       result = result .and. res
    end subroutine runner_suffix
