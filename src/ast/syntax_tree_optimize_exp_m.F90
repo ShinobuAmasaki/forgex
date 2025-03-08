@@ -13,16 +13,19 @@ module forgex_syntax_tree_optimize_exp_m
    use :: forgex_syntax_tree_node_m, only: tree_node_t
    use :: forgex_syntax_tree_graph_m, only: tree_t
    use :: forgex_utf8_m, only: char_utf8, reverse_utf8
+   use :: forgex_parameters_m, only: INVALID_INDEX, INVALID_CHAR_INDEX
+   use :: forgex_segment_m, only: width_of_segment
    use :: forgex_enums_m
-   use :: forgex_parameters_m
-   use :: forgex_segment_m
    implicit none
    private
 
+   !> This type is wrapper to make a allocatable character array with variable length.
    type character_array_element_t
       character(:), allocatable :: c
    end type character_array_element_t
 
+   !> This type contains a character variables that represents each literal:
+   !> all, pref, suff, and fact.
    type literal_t
       type(character_array_element_t) :: all, pref, suff, fact
       logical :: flag_closure = .false.
@@ -34,10 +37,10 @@ module forgex_syntax_tree_optimize_exp_m
 
    public :: extract_literal
 
-   public :: same_part_of_suffix
 
 contains
 
+   !> This is the public procedure of this module to obtain each literal from AST.
    pure subroutine extract_literal(tree, all, prefix, suffix, factor)
       implicit none
       type(tree_t), intent(in) :: tree
@@ -54,15 +57,19 @@ contains
    end subroutine extract_literal
 
 
+   !> Wrapping function to retrieve literals: all, prefix, suffix, factor.
    pure function get_literal(tree) result(literal)
       implicit none
       type(tree_t), intent(in) :: tree
       type(literal_t) :: literal
 
+      ! Recursive procedure calls start here.
       call best_factor(tree%nodes, tree%top, literal)
 
    end function get_literal
 
+
+   !> This is recursive procedure to tour a given syntax tree.
    pure recursive subroutine best_factor(nodes, idx, lit)
       implicit none
       type(tree_node_t), intent(in) :: nodes(:)
@@ -70,13 +77,10 @@ contains
       type(literal_t), intent(inout) :: lit
 
       type(literal_t) :: lit_l, lit_r
-      type(tree_node_t) :: curr, next_l, next_r
-      logical :: is_L_child_repeat, is_R_child_repeat
+      type(tree_node_t) :: curr
       integer :: i
 
       curr = nodes(idx)
-      if (curr%left_i /= INVALID_INDEX) next_l = nodes(curr%left_i)
-      if (curr%right_i/= INVALID_INDEX) next_r = nodes(curr%right_i)
       lit%all%c = theta
       lit%pref%c = theta
       lit%suff%c = theta
@@ -95,12 +99,9 @@ contains
          lit%flag_closure = .true.
 
       case(op_concat)
-
-         lit%flag_repeat = lit_l%flag_repeat .or. lit_r%flag_repeat
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
 
-         ! write(0,*) lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
          select case (return_class_closure(lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure))
          case (lt_N_class_N_closure)
             lit%all%c = lit_l%all%c//lit_r%all%c
@@ -118,23 +119,23 @@ contains
          case (lt_N_class_LR_closure)
             lit%pref%c = lit_l%pref%c
             lit%suff%c = lit_r%suff%c
+
+         ! following 12 cases are not tested enough.
          !===========================================================================!
-         
          case (lt_R_class_N_closure)
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
             lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
          case (lt_R_class_R_closure)
-
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
             lit%suff%c = lit_r%suff%c
-            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
          case (lt_R_class_L_closure)
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
             lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
          case (lt_R_class_LR_closure)
-            lit%pref%c = lit_l%pref%c!!!
-            lit%suff%c = lit_r%suff%c!!!
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
 
+         !===========================================================================!
          case (lt_L_class_N_closure)
             lit%pref = lit_l%pref
             lit%suff = lit_r%suff
@@ -152,6 +153,7 @@ contains
             lit%suff = lit_r%suff
             lit%fact = lit_r%fact
 
+         !===========================================================================!
          case (lt_LR_class_N_closure)
             continue
          case (lt_LR_class_R_closure)
@@ -162,6 +164,8 @@ contains
             continue
          end select
 
+         !== Intermediate literals (factors) are not implemented and tested yet.
+         !
          lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
 
       case (op_closure)
@@ -184,33 +188,36 @@ contains
 
          end if
       case (op_repeat)
-         
-         lit%flag_class = .false.
-         if (allocated(next_l%c)) then
-            if (all(width_of_segment(next_l%c(:)) == 1)) then
-               lit%flag_class = .false.
+         block
+            type(tree_node_t) :: next_l
+
+            if (curr%left_i /= INVALID_INDEX) next_l = nodes(curr%left_i)
+       
+            lit%flag_class = .false.
+            if (allocated(next_l%c)) then
+               if (all(width_of_segment(next_l%c(:)) == 1)) then
+                  lit%flag_class = .false.
+               else
+                  lit%flag_class = .true.
+               end if
             else
                lit%flag_class = .true.
             end if
-         else
-            lit%flag_class = .true.
-         end if
-         
-         do i = 1, curr%min_repeat       
-            call best_factor(nodes, curr%left_i, lit_l)
-            if(.not.  lit%flag_class) lit%all%c = lit%all%c//lit_l%all%c
-            lit%pref%c = lit%pref%c//lit_l%pref%c
-            lit%suff%c = lit%suff%c//lit_l%suff%c
-            lit%fact%c = lit%fact%c//lit_l%fact%c
-            lit%flag_class = lit%flag_class .or. lit_l%flag_class
-            if (lit_l%flag_closure) exit
-         end do
+            
+            do i = 1, curr%min_repeat       
+               call best_factor(nodes, curr%left_i, lit_l)
+               if(.not.  lit%flag_class) lit%all%c = lit%all%c//lit_l%all%c
+               lit%pref%c = lit%pref%c//lit_l%pref%c
+               lit%suff%c = lit%suff%c//lit_l%suff%c
+               lit%fact%c = lit%fact%c//lit_l%fact%c
+               lit%flag_class = lit%flag_class .or. lit_l%flag_class
+               if (lit_l%flag_closure) exit
+            end do
 
-         ! write(0,*) "L213 ", lit%suff%c
+            lit%flag_closure = curr%min_repeat /= curr%max_repeat
+            lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
+         end block
 
-         lit%flag_repeat = curr%min_repeat /= 1
-         lit%flag_closure = curr%min_repeat /= curr%max_repeat
-         lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
       case default
          lit%flag_closure = .true.
       end select
