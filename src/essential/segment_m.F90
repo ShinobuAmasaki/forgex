@@ -344,7 +344,7 @@ contains
 !====================================================================-!
 !  Helper procedures
 
-   pure function width_of_segment(seg) result(res)
+   pure elemental function width_of_segment(seg) result(res)
       use :: forgex_parameters_m, only: INVALID_SEGMENT_SIZE
       implicit none
       type(segment_t), intent(in) :: seg
