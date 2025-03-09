@@ -29,10 +29,9 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_STAR_INCOMPLETE
       enumerator :: SYNTAX_ERR_PLUS_INCOMPLETE
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
+      enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
-            
       enumerator :: ALLOCATION_ERR
-
    end enum
 
 
@@ -94,6 +93,9 @@ module forgex_error_m
    ! SYNTAX_ERR_QUESTION_INCOMPLETE
    character(*), parameter :: err_question_incomplete = "ERROR: Not quantifiable; question '?' operator is missing operand."
    
+   ! SYNTAX_ERR_INVALID_HEXADECIMAL
+   character(*), parameter :: err_invalid_hexadecimal_value = "ERROR: The value is given in hexadecimal."
+
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = "ERROR: Fatal error is happened."
    
@@ -168,6 +170,9 @@ contains
       case (SYNTAX_ERR_QUESTION_INCOMPLETE)
          msg = err_question_incomplete
 
+      case (SYNTAX_ERR_INVALID_HEXADECIMAL)
+         msg = err_invalid_hexadecimal_value
+      
       case (ALLOCATION_ERR)
          msg = err_allocation
 

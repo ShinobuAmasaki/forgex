@@ -70,6 +70,7 @@ module forgex_parameters_m
    character(1), parameter, public :: ESCAPE_D_CAPITAL = 'D'
    character(1), parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1), parameter, public :: ESCAPE_S_CAPITAL = 'S'
+   character(1), parameter, public :: ESCAPE_X = 'x'
 
    !> This constant is used to indicate that the left and right destination
    !> have not yet been registered.

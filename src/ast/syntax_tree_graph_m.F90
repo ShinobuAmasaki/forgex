@@ -45,6 +45,7 @@ module forgex_syntax_tree_graph_m
       procedure :: caret_dollar => tree_graph__make_tree_caret_dollar
       procedure :: crlf => tree_graph__make_tree_crlf
       procedure :: shorthand => tree_graph__shorthand
+      procedure :: hex2seg => tree_graph__hexadecimal_to_segment
       procedure :: times => tree_graph__times
       procedure :: print => print_tree_wrap
    end type
@@ -671,6 +672,12 @@ contains
          seglist(5) = SEG_FF
          seglist(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seglist)
+
+      case (ESCAPE_X)
+         ! Error handling for x escape sequence is handled by hex2seg.
+         call self%hex2seg(seglist)
+         if (.not. self%is_valid) return
+
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
          self%is_valid = .false.
@@ -711,6 +718,23 @@ contains
       deallocate(seglist)
 
    end subroutine tree_graph__shorthand
+
+   !> This procedure handles a escape sequence of '\x'.
+   pure subroutine tree_graph__hexadecimal_to_segment(self, seglist)
+      implicit none
+      class(tree_t), intent(inout) :: self
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      
+      character(:), allocatable :: char, buff
+      integer :: i
+
+      char = ''
+      buff = ''
+      outer: do while (self%tape%current_token /= tk_rcurlybrace)
+
+      end do outer
+
+   end subroutine tree_graph__hexadecimal_to_segment
 
 
    !> This subroutine handles a quantifier range, and
@@ -1022,7 +1046,7 @@ contains
 
 
    !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 
-   pure subroutine convert_escaped_character_into_segments(chara, seg_list)
+   pure subroutine convert_escaped_character_into_segments(chara, seg_list)!, hexcode)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       character(*), intent(in) :: chara
@@ -1078,6 +1102,9 @@ contains
          seg_list(5) = SEG_FF
          seg_list(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seg_list)
+      case (ESCAPE_X)
+
+         continue
       case (SYMBOL_BSLH)
          allocate(seg_list(1))
          seg_list(1)%min = ichar_utf8(SYMBOL_BSLH)
