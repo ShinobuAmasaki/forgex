@@ -742,11 +742,12 @@ contains
       is_two_digit = .not. is_longer_digit
 
       if (is_longer_digit) call self%tape%get_token()
-      i = 1
-      hex = hex//self%tape%token_char(1:1)
+
+      hex = hex//self%tape%token_char(1:1) ! First, get the second digit.
+      i = 2
 
       reader: do while(.true.)
-         if (is_two_digit .and. i > 3) exit reader
+         if (is_two_digit .and. i >= 3) exit reader
          call self%tape%get_token()
 
          if (self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
