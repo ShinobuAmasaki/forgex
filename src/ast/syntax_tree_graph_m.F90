@@ -730,73 +730,48 @@ contains
       class(tree_t), intent(inout) :: self
       type(segment_t), intent(inout), allocatable :: seglist(:)
       
-      character(:), allocatable :: buf
-      character(2) :: c_hex_2
-      character(6) :: c_hex_6
-      logical :: is_two_digits, is_hex_valid
-      integer :: i, ios, codepoint
+      character(:), allocatable :: hex
+      integer :: i
+      logical :: is_two_digit, is_longer_digit
 
-      buf = ''
-      c_hex_2 = ''
-      c_hex_6 = ''
+      hex = ''
 
       call self%tape%get_token()
-      ! Will the second hex digit come or will the left curlybrace come?
-      is_two_digits = .not. self%tape%current_token == tk_lcurlybrace
-      
-      is_hex_valid = .false.
-      outer: if (is_two_digits) then
-      
-         buf = buf//self%tape%token_char(1:1)
-         if (.not.(ichar(buf(1:1)) .in. SEG_HEX)) exit outer
 
+      is_longer_digit = self%tape%current_token == tk_lcurlybrace
+      is_two_digit = .not. is_longer_digit
+
+      if (is_longer_digit) call self%tape%get_token()
+      i = 1
+      hex = hex//self%tape%token_char(1:1)
+
+      reader: do while(.true.)
+         if (is_two_digit .and. i > 3) exit reader
          call self%tape%get_token()
-         buf = buf//self%tape%token_char(1:1)
-         if (.not.(ichar(buf(2:2)) .in. SEG_HEX)) exit outer
 
-         c_hex_2 = trim(adjustl(buf))
-         read(c_hex_2,'(z2)', iostat=ios) codepoint
-         if (ios == 0) is_hex_valid = .true.
-      else
-         ! do loop to read hex value.
-         reader: do i = 1, 6
-            call self%tape%get_token()
-            if (self%tape%current_token == tk_rcurlybrace) exit reader
-            buf = buf//self%tape%token_char(1:1)
-            if (.not.(ichar(buf(i:i)) .in. SEG_HEX)) exit outer
-         end do reader
-
-         if (self%tape%current_token /= tk_rcurlybrace) then
+         if (self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
             self%is_valid = .false.
             self%code = SYNTAX_ERR_CURLYBRACE_MISSING
             return
          end if
 
-         c_hex_6 = trim(adjustl(buf))
-         read(c_hex_6,'(z6)', iostat=ios) codepoint
-         if (ios == 0) is_hex_valid = .true.
-      end if outer
-
-      ! Error handlers 
-      if (self%tape%current_token == tk_end) then
-         self%is_valid = .false.
-         self%code = SYNTAX_ERR_CURLYBRACE_MISSING
-         return
-      else if (ios /= 0 .or. .not. is_hex_valid) then
-         self%is_valid = .false.
-         self%code = SYNTAX_ERR_INVALID_HEXADECIMAL
-         return
-      end if
-   
-      ! Reject if codepoint valud is invalid as Unicode.
-      if (.not.(codepoint .in. SEG_WHOLE)) then
-         self%is_valid = .false.
-         self%code = SYNTAX_ERR_UNICODE_EXCEED
-         return
-      end if
+         if (self%tape%current_token == tk_rcurlybrace) exit reader
+         hex = hex//self%tape%token_char(1:1)
+         i = i + 1
+      end do reader
 
       allocate(seglist(1))
-      seglist(1) = segment_t(codepoint, codepoint) 
+      call hex2seg(hex, seglist(1), self%code)
+
+      if (self%code /= SYNTAX_VALID) then
+         self%is_valid = .false.
+         return
+      end if
+
+      self%is_valid = seglist(1) .in. SEG_WHOLE
+
+      if (.not. self%is_valid) self%code  = SYNTAX_ERR_UNICODE_EXCEED
+
 
    end subroutine tree_graph__hexadecimal_to_segment
 
@@ -938,48 +913,39 @@ contains
       type(segment_t), intent(inout) :: seg
       integer, intent(inout) :: ierr
 
-      character(:), allocatable :: buf
-      character(2) :: c_hex_2
-      character(6) :: c_hex_6
+      character(:), allocatable :: buf, fmt
+      character(8) :: c_len
+
       integer :: i, ios, code
       logical :: is_two_digits, is_longer_digit, is_hex_valid
       
-      buf = ''
-      c_hex_2 = ''
-      c_hex_6 = ''
+      fmt = ''
+      c_len = ''
       code = UTF8_CODE_INVALID
       seg = segment_t(code, code)
-      ierr = SYNTAX_VALID
 
       is_two_digits = len(str) == 2
-      is_longer_digit = 2 < len(str) .and. len(str) <= 6
+      is_longer_digit = 2 < len(str)
 
-      is_hex_valid = .false.
-      outer: if (is_two_digits) then
+      if (str == '') then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
 
-         buf = str(1:1)
-         if (.not.(ichar(buf(1:1)) .in. SEG_HEX)) exit outer
+      ! Get the string lenght as a character type.
+      write(c_len, '(i0)', iostat=ios) len(str)
+      if (ios/= 0) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+      fmt = '(z'//trim(c_len)//')'
 
-         buf = buf // str(2:2)
-         if (.not.(ichar(buf(2:2)) .in. SEG_HEX)) exit outer
-         c_hex_2 = buf
-         read(c_hex_2, '(z2)', iostat=ios) code
-         is_hex_valid = .true.
-
-      else if (is_longer_digit) then
-
-         reader: do i = 1, len(str)
-            buf = buf//str(i:i)
-            if (.not. (ichar(buf(i:i)) .in. SEG_HEX)) exit outer
-         end do reader
-         c_hex_6 = buf
-         read(c_hex_6, '(z6)', iostat=ios) code
-         is_hex_valid = .true.
-   
-      end if outer
+      ! Get the code point as a integer.
+      read(str, fmt=fmt, iostat=ios) code
+      is_hex_valid = ios == 0
 
       ! Error handlers
-      if (ios /= 0 .or. .not. is_hex_valid) then
+      if (.not. is_hex_valid) then
          ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
          return
       end if
@@ -991,6 +957,7 @@ contains
       end if
 
       seg = segment_t(code, code)
+      ierr = SYNTAX_VALID
 
    end subroutine hex2seg
       
