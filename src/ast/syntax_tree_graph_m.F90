@@ -12,7 +12,7 @@
 module forgex_syntax_tree_graph_m
    use :: forgex_parameters_m
    use :: forgex_enums_m
-   use :: forgex_segment_m
+   use :: forgex_segment_m, register => register_segment_to_list
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
    use :: forgex_error_m
@@ -53,6 +53,7 @@ module forgex_syntax_tree_graph_m
    public :: dump_tree_table
    public :: interpret_class_string
 
+   public :: hex2seg
 
 contains
 
@@ -786,6 +787,8 @@ contains
          self%code = SYNTAX_ERR_INVALID_HEXADECIMAL
          return
       end if
+   
+      ! Reject if codepoint valud is invalid as Unicode.
       if (.not.(codepoint .in. SEG_WHOLE)) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_UNICODE_EXCEED
@@ -927,12 +930,77 @@ contains
    end subroutine tree_graph__times
 
 
+   !> This subroutine converts character string that represents hexadecimal value to
+   !> the segment corresponding its integer type.
+   pure subroutine hex2seg (str, seg, ierr)
+      implicit none
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout) :: seg
+      integer, intent(inout) :: ierr
+
+      character(:), allocatable :: buf
+      character(2) :: c_hex_2
+      character(6) :: c_hex_6
+      integer :: i, ios, code
+      logical :: is_two_digits, is_longer_digit, is_hex_valid
+      
+      buf = ''
+      c_hex_2 = ''
+      c_hex_6 = ''
+      code = UTF8_CODE_INVALID
+      seg = segment_t(code, code)
+      ierr = SYNTAX_VALID
+
+      is_two_digits = len(str) == 2
+      is_longer_digit = 2 < len(str) .and. len(str) <= 6
+
+      is_hex_valid = .false.
+      outer: if (is_two_digits) then
+
+         buf = str(1:1)
+         if (.not.(ichar(buf(1:1)) .in. SEG_HEX)) exit outer
+
+         buf = buf // str(2:2)
+         if (.not.(ichar(buf(2:2)) .in. SEG_HEX)) exit outer
+         c_hex_2 = buf
+         read(c_hex_2, '(z2)', iostat=ios) code
+         is_hex_valid = .true.
+
+      else if (is_longer_digit) then
+
+         reader: do i = 1, len(str)
+            buf = buf//str(i:i)
+            if (.not. (ichar(buf(i:i)) .in. SEG_HEX)) exit outer
+         end do reader
+         c_hex_6 = buf
+         read(c_hex_6, '(z6)', iostat=ios) code
+         is_hex_valid = .true.
+   
+      end if outer
+
+      ! Error handlers
+      if (ios /= 0 .or. .not. is_hex_valid) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+   
+      ! Reject if codepoint valud is invalid as Unicode.
+      if (.not.(code .in. SEG_WHOLE)) then
+         ierr = SYNTAX_ERR_UNICODE_EXCEED
+         return
+      end if
+
+      seg = segment_t(code, code)
+
+   end subroutine hex2seg
+      
+
+
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
-      use :: forgex_segment_m, only: join_two_segments, &
-         register => register_segment_to_list
+      use :: forgex_segment_m, register => register_segment_to_list  
       use :: forgex_character_array_m, only:parse_segment_width_in_char_array
       use :: forgex_character_array_m
       implicit none
