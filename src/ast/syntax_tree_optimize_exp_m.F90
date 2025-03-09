@@ -30,13 +30,11 @@ module forgex_syntax_tree_optimize_exp_m
       type(character_array_element_t) :: all, pref, suff, fact
       logical :: flag_closure = .false.
       logical :: flag_class = .false.
-      logical :: flag_repeat = .false.
    end type literal_t
 
    character(0), parameter :: theta = ''
 
    public :: extract_literal
-
 
 contains
 
@@ -99,11 +97,9 @@ contains
          lit%flag_closure = .true.
 
       case(op_concat)
-
 ! #ifdef IMPURE
 ! write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
 ! #endif
-
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
 
@@ -125,7 +121,7 @@ contains
             lit%pref%c = lit_l%pref%c
             lit%suff%c = lit_r%suff%c
 
-         ! following 12 cases a re not tested enough.
+         ! following 12 cases are not tested enough.
          !===========================================================================!
          case (lt_R_class_N_closure)
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
@@ -181,7 +177,6 @@ contains
          end select
 
          !== Intermediate literals (factors) are not implemented and tested yet.
-         !
          ! lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
 
       case (op_closure)
@@ -302,25 +297,19 @@ contains
       integer :: retval
 
       if (.not. f_L_class) then
-
          if (.not. f_r_class) then
-
             if (.not. f_l_closure) then
-
                if (.not. f_r_closure) then
                   retval = lt_N_class_N_closure
                else
                   retval = lt_N_class_R_closure
                end if
-
             else
-            
                if (.not. f_r_closure) then
                   retval = lt_N_class_L_closure
                else
                   retval = lt_N_class_LR_closure
                end if
-            
             end if
          else
             if (.not. f_l_closure) then
@@ -337,28 +326,20 @@ contains
                end if
             end if
          end if
-
-
       else
-
-
          if (.not. f_r_class) then
             if (.not. f_l_closure) then
-
                if (.not. f_r_closure) then
                   retval = lt_L_class_N_closure
                else
                   retval = lt_L_class_R_closure
                end if
-
             else
-            
                if (.not. f_r_closure) then
                   retval = lt_L_class_L_closure
                else
                   retval = lt_L_class_LR_closure
                end if
-            
             end if
          else
             if (.not. f_l_closure) then
