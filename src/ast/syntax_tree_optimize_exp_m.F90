@@ -99,9 +99,11 @@ contains
          lit%flag_closure = .true.
 
       case(op_concat)
-#ifdef IMPURE
-write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
-#endif
+
+! #ifdef IMPURE
+! write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
+! #endif
+
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
 
@@ -126,7 +128,6 @@ write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit
          ! following 12 cases a re not tested enough.
          !===========================================================================!
          case (lt_R_class_N_closure)
-            lit%all%c = lit_l%all%c//lit_r%all%c
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
             lit%suff%c = lit_r%suff%c
 
@@ -136,8 +137,8 @@ write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit
 
          case (lt_R_class_L_closure)
             lit%pref%c = lit_l%pref%c
-            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
             lit%suff%c = lit_r%suff%c
+            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
 
          case (lt_R_class_LR_closure)
             lit%pref%c = lit_l%pref%c
@@ -145,7 +146,6 @@ write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit
 
          !===========================================================================!
          case (lt_L_class_N_closure)
-            lit%all%c = lit_l%all%c//lit_r%all%c
             lit%pref%c = lit_l%pref%c
             lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
 
@@ -163,7 +163,6 @@ write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit
             continue
          !===========================================================================!
          case (lt_LR_class_N_closure)
-            lit%all%c = lit_l%all%c//lit_r%all%c
             lit%pref%c = lit_l%pref%c
             lit%suff%c = lit_r%suff%c
             continue
@@ -208,19 +207,10 @@ write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit
          block
             type(tree_node_t) :: next_l
 
-            if (curr%left_i /= INVALID_INDEX) next_l = nodes(curr%left_i)
-       
-            lit%flag_class = .false.
-            if (allocated(next_l%c)) then
-               if (all(width_of_segment(next_l%c(:)) == 1)) then
-                  lit%flag_class = .false.
-               else
-                  lit%flag_class = .true.
-               end if
-            else
-               lit%flag_class = .true.
-            end if
-            
+            ! Is the flag_class of the next node flagged? 
+            call best_factor(nodes, curr%left_i, lit_l)
+            lit%flag_class = lit_l%flag_class
+
             do i = 1, curr%min_repeat       
                call best_factor(nodes, curr%left_i, lit_l)
                lit%all%c = lit%all%c//lit_l%all%c
