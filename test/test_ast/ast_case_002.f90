@@ -83,9 +83,7 @@ program main
    call runner_suffix('(a*cc){2}', 'cc', res)  ! passed in v4.4
 
 goto 100
-   !! If the + operator is not processed on op_closure handling in get_suffix_literal_internal,
-   !! no suffix is ​​obtained.   
-   !! The implementation of op_closure handling in get_suffix_literal_internal has weak test coverage.
+   !! Currently, in v4.4, it is not possible to extract a suffix from a '+' closure.
    call runner_suffix("(たちつ)+", "たちつ", res)
    call runner_suffix("(ab|bb|cb)+", "b", res)
    call runner_suffix("((ab)+){2}", "ab", res) !! abab is expected.
@@ -94,10 +92,45 @@ goto 100
    call runner_suffix("((ab)?c+){2,3}", "c", res)
    call runner_suffix("((a|b)+c)+", "c", res)
    call runner_suffix("a((ac|bc)+){3}", "c", res)
-
+   call runner_suffix('x+', 'x', res)
+   call runner_suffix('a([b-d]*)x+', 'x', res)
 100 continue
-   ! call runner_suffix(, , res)
-   ! call runner_suffix(, , res)
+
+   call runner_suffix('\t', char(9), res)
+   call runner_suffix('\n', char(10), res)
+   call runner_suffix('\r', char(13), res)
+   call runner_suffix('\s', '', res)
+   call runner_suffix('\S', '', res)
+   call runner_suffix('\w', '', res)
+   call runner_suffix('\W', '', res)
+   call runner_suffix('\d', '', res)
+   call runner_suffix('\D', '', res)
+   call runner_suffix('\d', '', res)
+
+   call runner_suffix('a[b-d]*x', 'x', res)
+   call runner_suffix('(a[b-d]+)x*', '', res)
+   call runner_suffix('(a[b-d]+)x*', '', res)
+   call runner_suffix('\dabc', 'abc', res)
+
+   call runner_suffix('v[ab]w[cd]x[ef]y[gh]z', 'z', res)
+   call runner_suffix('\dabc', 'abc', res)
+   call runner_suffix('abc\d+', '', res)
+   call runner_suffix('\d+abc\d*', '', res)
+   call runner_suffix('a(ac|bc|cc){3}', 'c', res)
+   call runner_suffix('[ab]*(ab|bb|cb)', 'b', res)
+   call runner_suffix('(z[ab]d)', 'd', res)
+   call runner_suffix('([ab]*)((ab|bb|cb))', 'b', res)
+   call runner_suffix('(z[ab]*ab)((ab|bb|cb))', 'b', res)
+   call runner_suffix("(z[ab]*a[ab]{20}b)((ab|bb|cb))", 'b', res)
+   call runner_suffix('x[a-z]+y[a-z]+z', 'z', res)
+
+   call runner_suffix('(b+)(ab){3,4}', 'ababab', res)
+   call runner_suffix('(b+)a*(ab){3,4}', 'ababab', res)
+   call runner_suffix('x[a-z]+y[a-z]+z', 'z', res)
+   call runner_suffix('(b+)(ab){3,4}','ababab', res)
+   call runner_suffix('(b+)a*(ab){3,4}','ababab', res)
+   call runner_suffix('[a-z]+ab','ab', res)
+   call runner_suffix('(a[a-z]+)([A-Z]b)','b', res)
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)
    ! call runner_suffix(, , res)

@@ -99,6 +99,9 @@ contains
          lit%flag_closure = .true.
 
       case(op_concat)
+#ifdef IMPURE
+write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
+#endif
          lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
          lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
 
@@ -120,53 +123,67 @@ contains
             lit%pref%c = lit_l%pref%c
             lit%suff%c = lit_r%suff%c
 
-         ! following 12 cases are not tested enough.
+         ! following 12 cases a re not tested enough.
          !===========================================================================!
          case (lt_R_class_N_closure)
+            lit%all%c = lit_l%all%c//lit_r%all%c
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
-            lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            lit%suff%c = lit_r%suff%c
+
          case (lt_R_class_R_closure)
             lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
             lit%suff%c = lit_r%suff%c
+
          case (lt_R_class_L_closure)
-            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
-            lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            lit%pref%c = lit_l%pref%c
+            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            lit%suff%c = lit_r%suff%c
+
          case (lt_R_class_LR_closure)
             lit%pref%c = lit_l%pref%c
             lit%suff%c = lit_r%suff%c
 
          !===========================================================================!
          case (lt_L_class_N_closure)
-            lit%pref = lit_l%pref
-            lit%suff = lit_r%suff
-            lit%fact = lit_r%fact
-         case (lt_L_class_R_closure)
-            lit%pref = lit_l%pref
-            lit%suff = lit_r%suff
-            lit%fact = lit_r%fact
-         case (lt_L_class_L_closure)
-            lit%pref = lit_l%pref
+            lit%all%c = lit_l%all%c//lit_r%all%c
+            lit%pref%c = lit_l%pref%c
             lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
-            lit%fact = lit_r%fact
-         case (lt_L_class_LR_closure)
-            lit%pref = lit_l%pref
-            lit%suff = lit_r%suff
-            lit%fact = lit_r%fact
 
+         case (lt_L_class_R_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         case (lt_L_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            continue
+         case (lt_L_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
          !===========================================================================!
          case (lt_LR_class_N_closure)
+            lit%all%c = lit_l%all%c//lit_r%all%c
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
             continue
          case (lt_LR_class_R_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%pref%c = lit_l%pref%c
             continue
          case (lt_LR_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
             continue
          case (lt_LR_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
             continue
          end select
 
          !== Intermediate literals (factors) are not implemented and tested yet.
          !
-         lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
+         ! lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
 
       case (op_closure)
          lit%flag_closure = .true.
@@ -206,7 +223,7 @@ contains
             
             do i = 1, curr%min_repeat       
                call best_factor(nodes, curr%left_i, lit_l)
-               if(.not.  lit%flag_class) lit%all%c = lit%all%c//lit_l%all%c
+               lit%all%c = lit%all%c//lit_l%all%c
                lit%pref%c = lit%pref%c//lit_l%pref%c
                lit%suff%c = lit%suff%c//lit_l%suff%c
                lit%fact%c = lit%fact%c//lit_l%fact%c
