@@ -679,9 +679,8 @@ contains
       case (ESCAPE_X)
          ! Error handling for x escape sequence is handled by hex2seg.
          call self%hex2seg(seglist)
-         if (.not. self%is_valid) then
-            return
-         end if
+         if (.not. self%is_valid) return
+         ! It is not necessary to call self%tape%get_token() procedure.
 
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
@@ -731,16 +730,17 @@ contains
       type(segment_t), intent(inout), allocatable :: seglist(:)
       
       character(:), allocatable :: buf
-      character(2) :: hex_2
-      character(6) :: hex_6
+      character(2) :: c_hex_2
+      character(6) :: c_hex_6
       logical :: is_two_digits, is_hex_valid
       integer :: i, ios, codepoint
 
       buf = ''
-      hex_2 = ''
-      hex_6 = ''
+      c_hex_2 = ''
+      c_hex_6 = ''
 
-      call self%tape%get_token() ! 16進数2桁目が来るかカーリーブレイスが来るか
+      call self%tape%get_token()
+      ! Will the second hex digit come or will the left curlybrace come?
       is_two_digits = .not. self%tape%current_token == tk_lcurlybrace
       
       is_hex_valid = .false.
@@ -753,27 +753,35 @@ contains
          buf = buf//self%tape%token_char(1:1)
          if (.not.(ichar(buf(2:2)) .in. SEG_HEX)) exit outer
 
-         hex_2 = trim(adjustl(buf))
-         read(hex_2,'(z2)', iostat=ios) codepoint
+         c_hex_2 = trim(adjustl(buf))
+         read(c_hex_2,'(z2)', iostat=ios) codepoint
          if (ios == 0) is_hex_valid = .true.
       else
          ! do loop to read hex value.
-         reader: do i = 1, 7
-            if (i > 7) exit outer
+         reader: do i = 1, 6
             call self%tape%get_token()
             if (self%tape%current_token == tk_rcurlybrace) exit reader
             buf = buf//self%tape%token_char(1:1)
             if (.not.(ichar(buf(i:i)) .in. SEG_HEX)) exit outer
-
          end do reader
 
-         hex_6 = trim(adjustl(buf))
-         read(hex_6,'(z6)', iostat=ios) codepoint
+         if (self%tape%current_token /= tk_rcurlybrace) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_CURLYBRACE_MISSING
+            return
+         end if
+
+         c_hex_6 = trim(adjustl(buf))
+         read(c_hex_6,'(z6)', iostat=ios) codepoint
          if (ios == 0) is_hex_valid = .true.
       end if outer
 
       ! Error handlers 
-      if (ios /= 0 .or. .not. is_hex_valid) then
+      if (self%tape%current_token == tk_end) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_CURLYBRACE_MISSING
+         return
+      else if (ios /= 0 .or. .not. is_hex_valid) then
          self%is_valid = .false.
          self%code = SYNTAX_ERR_INVALID_HEXADECIMAL
          return
@@ -786,10 +794,6 @@ contains
 
       allocate(seglist(1))
       seglist(1) = segment_t(codepoint, codepoint) 
-
-      ! self%is_valid = .false.
-      ! return
-      ! error stop
 
    end subroutine tree_graph__hexadecimal_to_segment
 
