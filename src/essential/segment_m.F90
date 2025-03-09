@@ -58,6 +58,8 @@ module forgex_segment_m
    type(segment_t), parameter, public :: SEG_LOWERCASE = segment_t(97, 122)  ! a-z
    type(segment_t), parameter, public :: SEG_ZENKAKU_SPACE = segment_t(12288, 12288) ! '　' U+3000 全角スペース
    type(segment_t), parameter, public :: SEG_UPPER = segment_t(UTF8_CODE_MAX+1, UTF8_CODE_MAX+1)
+   type(segment_t), parameter, public :: SEG_WHOLE = segment_t(0, UTF8_CODE_MAX)
+   type(segment_t), parameter, public, dimension(3) :: SEG_HEX = [SEG_DIGIT, segment_t(65,70), segment_t(97,102)] 
 
    interface operator(==)
       !! This interface block provides a equal operator for comparing segments.

@@ -30,6 +30,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_PLUS_INCOMPLETE
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
       enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
+      enumerator :: SYNTAX_ERR_UNICODE_EXCEED
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
       enumerator :: ALLOCATION_ERR
    end enum
@@ -93,8 +94,14 @@ module forgex_error_m
    ! SYNTAX_ERR_QUESTION_INCOMPLETE
    character(*), parameter :: err_question_incomplete = "ERROR: Not quantifiable; question '?' operator is missing operand."
    
+   ! SYNTAX_ERR_TOKEN_INCOMPLETE
+   character(*), parameter :: err_token_incomplete = "ERROR: The token is incomplete."
+
    ! SYNTAX_ERR_INVALID_HEXADECIMAL
-   character(*), parameter :: err_invalid_hexadecimal_value = "ERROR: The value is given in hexadecimal."
+   character(*), parameter :: err_invalid_hexadecimal_value = "ERROR: Cannot convert to hexadecimal value."
+
+   ! SYNTAX_ERR_UNICODE_EXCEED
+   character(*), parameter :: err_exceed_unicode_limit = "ERROR: Given hex number exceeds the range of unicode codepoint."
 
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = "ERROR: Fatal error is happened."
@@ -172,6 +179,9 @@ contains
 
       case (SYNTAX_ERR_INVALID_HEXADECIMAL)
          msg = err_invalid_hexadecimal_value
+
+      case (SYNTAX_ERR_UNICODE_EXCEED)
+         msg = err_exceed_unicode_limit
       
       case (ALLOCATION_ERR)
          msg = err_allocation
