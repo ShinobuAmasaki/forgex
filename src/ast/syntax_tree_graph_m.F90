@@ -724,7 +724,7 @@ contains
 
    end subroutine tree_graph__shorthand
 
-   !> This procedure handles a escape sequence of '\x'.
+   !> This procedure handles a escape sequence with '\x'.
    pure subroutine tree_graph__hexadecimal_to_segment(self, seglist)
       implicit none
       class(tree_t), intent(inout) :: self
@@ -750,7 +750,7 @@ contains
          if (is_two_digit .and. i >= 3) exit reader
          call self%tape%get_token()
 
-         if (self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
+         if (is_longer_digit .and. self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
             self%is_valid = .false.
             self%code = SYNTAX_ERR_CURLYBRACE_MISSING
             return
