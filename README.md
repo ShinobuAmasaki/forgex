@@ -1,4 +1,4 @@
-<!-- Readme[EN] version 4.2 -->
+<!-- Readme[EN] version 4.4 -->
 
 # Fortran Regular Expression
 
@@ -52,6 +52,7 @@ To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 - `\W` (`[^a-zA-Z0-9_]`)
 - `\d` digit character (`[0-9]`)
 - `\D` non-digit character (`[^0-9]`)
+- `\x..`, `\x{...}` hexadecimal escape sequences, for instance, `\x63` matches `c`.
 
 ### Experimental Features
 
@@ -345,8 +346,8 @@ Starting with version 3.5, the command line tools are provided in a separate rep
 The following features are planned to be implemented in the future:
 
 - [ ] Character class subtraction: `[a-z--b-d]`
-- [ ] Add Unicode escape sequence: `\p{...}`
-- [ ] Add 256 characters' escape sequence: `\x..`
+- [ ] Add Unicode character class escape sequence: `\p{...}`
+- [x] Add hexadecimal escape sequence of Unicode: `\x..`
 - [x] Deal with invalid byte strings in UTF-8
 - [x] Recovery from invalid patterns
 - [x] Optimize by literal searching method
@@ -366,6 +367,7 @@ All code contained herein shall be written with a three-space indentation.
 ## Acknowledgements
 
 For the algorithm of the power set construction method and syntax analysis, I referred to Russ Cox's article and Yoshiyuki Kondo's book.
+For the algorithm of extracting literals, I refferred to the book of Navarro and Raffinot (2002).
 The implementation of the priority queue was based on [the code written by ue1221](https://github.com/ue1221/fortran-utilities).
 The idea of applying the `.in.` operator to strings was inspired by kazulagi's one.
 The command-line interface design of `forgex-cli` was inspired in part by the package `regex-cli` of Rust language.
@@ -379,6 +381,7 @@ The MacPorts package of `forgex` are maintained by [@barracuda156](https://githu
 4. Haruka Tomobe (kazulagi), [https://github.com/kazulagi](https://github.com/kazulagi),
 [his article in Japanese](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91)
 5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
+6. Gonzalo Navarro and Mathieu Raffinot, "Flexible Pattern Matching in Strings -- Practical On-Line Search Algorithms for Texts and Biological Sequences", 2002, Cambridge University Press
 
 ## License
 Forgex is as a freely available under the MIT license. See [LICENSE](https://github.com/ShinobuAmasaki/forgex/blob/main/LICENSE).

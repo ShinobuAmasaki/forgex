@@ -10,416 +10,353 @@
 #define pure
 #endif
 module forgex_syntax_tree_optimize_m
-   use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_syntax_tree_node_m, only: tree_node_t
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_utf8_m
+   use :: forgex_utf8_m, only: char_utf8, reverse_utf8
+   use :: forgex_parameters_m, only: INVALID_INDEX, INVALID_CHAR_INDEX
+   use :: forgex_segment_m, only: width_of_segment
    use :: forgex_enums_m
    implicit none
    private
 
-   public :: get_prefix_literal
-   public :: get_suffix_literal
-   public :: get_entire_literal
+   !> This type is wrapper to make a allocatable character array with variable length.
+   type character_array_element_t
+      character(:), allocatable :: c
+   end type character_array_element_t
+
+   !> This type contains a character variables that represents each literal:
+   !> all, pref, suff, and fact.
+   type literal_t
+      type(character_array_element_t) :: all, pref, suff, fact
+      logical :: flag_closure = .false.
+      logical :: flag_class = .false.
+   end type literal_t
+
+   character(0), parameter :: theta = ''
+
+   public :: extract_literal
 
 contains
 
-   pure function get_prefix_literal(tree) result(chara)
+   !> This is the public procedure of this module to obtain each literal from AST.
+   pure subroutine extract_literal(tree, all, prefix, suffix, factor)
       implicit none
       type(tree_t), intent(in) :: tree
-      character(:), allocatable :: chara
-      logical :: each_res
+      character(:), allocatable, intent(inout) :: all, prefix, suffix, factor
 
-      chara = ''
+      type(literal_t) :: literal
 
-      call get_prefix_literal_internal(tree%nodes, tree%top, chara, each_res)
+      literal = get_literal(tree)
 
-   end function get_prefix_literal
+      all = literal%all%c
+      prefix = literal%pref%c
+      suffix = literal%suff%c
+      factor = literal%fact%c
+   end subroutine extract_literal
 
-   
-   pure function get_suffix_literal(tree) result(chara)
+
+   !> Wrapping function to retrieve literals: all, prefix, suffix, factor.
+   pure function get_literal(tree) result(literal)
       implicit none
       type(tree_t), intent(in) :: tree
-      character(:), allocatable :: chara
-      logical :: has_or, has_closure
+      type(literal_t) :: literal
 
-      chara = ''
-      has_or = .false.
-      has_closure = .false.
+      ! Recursive procedure calls start here.
+      call best_factor(tree%nodes, tree%top, literal)
 
-      call get_suffix_literal_internal(tree%nodes, tree%top, chara, has_or, has_closure)
-
-   end function get_suffix_literal
+   end function get_literal
 
 
-   pure function get_entire_literal(tree) result(chara)
+   !> This is recursive procedure to tour a given syntax tree.
+   pure recursive subroutine best_factor(nodes, idx, lit)
       implicit none
-      type(tree_t), intent(in) :: tree 
-      character(:),allocatable :: chara
-      logical :: each_res
-      chara = ''
+      type(tree_node_t), intent(in) :: nodes(:)
+      integer, intent(in) :: idx
+      type(literal_t), intent(inout) :: lit
 
-      call get_entire_literal_internal(tree%nodes, tree%top, chara, each_res)
-   end function get_entire_literal
-
- 
-   pure function is_literal_tree_node(node) result(res)
-      implicit none
-      type(tree_node_t), intent(in) :: node
-      logical :: res
-
-      res = .false.
-
-      if (.not. allocated(node%c)) return
-
-      if (node%op == op_char .and. size(node%c) == 1) then
-         if (node%c(1)%min == node%c(1)%max) then
-            res = .true.
-         end if
-      end if
-   end function is_literal_tree_node
-
-
-   pure function is_char_class_tree_node(node) result(res)
-      implicit none
-      type(tree_node_t), intent(in) :: node
-      logical :: res
-
-      res = .false.
-      if (node%op == op_char) res = .true.
-
-   end function is_char_class_tree_node
-
-
-   pure recursive subroutine get_entire_literal_internal(tree, idx, literal, res)
-      use :: forgex_syntax_tree_node_m
-      implicit none
-      type(tree_node_t), intent(in) :: tree(:)
-      integer(int32), intent(in) :: idx
-      character(:), allocatable, intent(inout) :: literal
-      logical, intent(inout) :: res
-
-      type(tree_node_t) :: node
+      type(literal_t) :: lit_l, lit_r
+      type(tree_node_t) :: curr
       integer :: i
-      node = tree(idx)
 
-      if (node%op == op_concat) then
-         call get_entire_literal_internal(tree, node%left_i, literal, res)
-         if (literal == '') return
-         if (res) then
-            call get_entire_literal_internal(tree, node%right_i, literal, res)
-         else
-            literal = ''
-         end if
-         if (literal == '') return
+      curr = nodes(idx)
+      lit%all%c = theta
+      lit%pref%c = theta
+      lit%suff%c = theta
+      lit%fact%c = theta
 
-      else if (node%op == op_repeat) then
-         if (node%max_repeat == node%min_repeat) then
-            do i = 1, node%min_repeat
-               call get_entire_literal_internal(tree, node%left_i, literal, res)
-            end do
-         else
-            res = .false.
-            literal = ''
-         end if
-
-      else if (is_literal_tree_node(node)) then
-
-         ! This size function is safe because is_literal_function returns false
-         ! if the node%c is not allocated. 
-         if (size(node%c, dim=1) == 1) then
-
-            if (node%c(1)%min == node%c(1)%max) then
-               literal = literal//char_utf8(node%c(1)%min)
-               res = .true.
-               return
-            end if
-         end if
-         res = .false.
-         literal = ''
-
-      else
-         res = .false.
-         literal = ''
-
+      if (curr%op == op_union .or. curr%op == op_concat) then
+         call best_factor(nodes, curr%left_i, lit_l)
+         call best_factor(nodes, curr%right_i, lit_r)
       end if
 
-   end subroutine get_entire_literal_internal
-   
-
-   pure recursive subroutine get_prefix_literal_internal(tree, idx, prefix, res)
-      use :: forgex_parameters_m
-      implicit none
-      type(tree_node_t), intent(in) :: tree(:)
-      integer(int32), intent(in) :: idx
-      character(:), allocatable, intent(inout) :: prefix
-      logical, intent(inout) :: res
-
-      logical :: res_left, res_right, unused
-      type(tree_node_t) :: node
-      character(:), allocatable :: candidate1, candidate2
-      integer :: j, n
-      
-      if (idx < 1) return
-      node = tree(idx)
-      res_left = .false.
-      res_right = .false.
-      candidate1 = ''
-      candidate2 = ''
-
-      select case (node%op)
-      case (op_concat)
-         call get_prefix_literal_internal(tree, node%left_i, candidate1, res_left)
-
-         if (res_left) then
-            call get_prefix_literal_internal(tree, node%right_i, candidate2, res_right)
-         end if
-
-         prefix = prefix//candidate1//candidate2
-
-         res = res_left .and. res_right
+      select case (curr%op)
 
       case(op_union)
-         call get_prefix_literal_internal(tree, node%left_i, candidate1, unused)
-         call get_prefix_literal_internal(tree, node%right_i, candidate2, unused)
-         prefix = extract_same_part_prefix(candidate1, candidate2)
-         res = .false.
-      case(op_repeat)
-         n = node%min_repeat
-         do j = 1, n
-            call get_prefix_literal_internal(tree, node%left_i, prefix, res_left)
-         end do
-         res = res_left
+         lit%pref%c = same_part_of_prefix(lit_l%pref%c, lit_r%pref%c)
+         lit%suff%c = same_part_of_suffix(lit_l%suff%c, lit_r%suff%c)
+         lit%flag_closure = .true.
+
+      case(op_concat)
+! #ifdef IMPURE
+! write(0,*) "L103: ", lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure
+! #endif
+         lit%flag_class = lit_l%flag_class .or. lit_r%flag_class
+         lit%flag_closure = lit_l%flag_closure .or. lit_r%flag_closure
+
+         select case (return_class_closure(lit_l%flag_class, lit_r%flag_class, lit_l%flag_closure, lit_r%flag_closure))
+         case (lt_N_class_N_closure)
+            lit%all%c = lit_l%all%c//lit_r%all%c
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+
+         case (lt_N_class_R_closure)
+            lit%pref%c = lit_l%all%c//lit_r%pref%c
+            lit%suff%c = lit_r%suff%c           
+
+         case (lt_N_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_l%suff%c//lit_r%all%c
+
+         case (lt_N_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+
+         ! following 12 cases are not tested enough.
+         !===========================================================================!
+         case (lt_R_class_N_closure)
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%suff%c = lit_r%suff%c
+
+         case (lt_R_class_R_closure)
+            lit%pref%c = best(lit_l%pref%c, lit_l%all%c//lit_r%pref%c)
+            lit%suff%c = lit_r%suff%c
+
+         case (lt_R_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            ! lit%fact%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+
+         case (lt_R_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+
+         !===========================================================================!
+         case (lt_L_class_N_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+
+         case (lt_L_class_R_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         case (lt_L_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = best(lit_r%suff%c, lit_l%suff%c//lit_r%all%c)
+            continue
+         case (lt_L_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         !===========================================================================!
+         case (lt_LR_class_N_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         case (lt_LR_class_R_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%pref%c = lit_l%pref%c
+            continue
+         case (lt_LR_class_L_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         case (lt_LR_class_LR_closure)
+            lit%pref%c = lit_l%pref%c
+            lit%suff%c = lit_r%suff%c
+            continue
+         end select
+
+         !== Intermediate literals (factors) are not implemented and tested yet.
+         ! lit%fact%c = best(best(lit_l%fact%c, lit_r%fact%c), lit_l%suff%c//lit_r%pref%c)
+
+      case (op_closure)
+         lit%flag_closure = .true.
+
       case (op_char)
-         if (is_literal_tree_node(node)) then
-            if (node%c(1)%min == node%c(1)%max) then
-               prefix = prefix//adjustl_multi_byte(char_utf8(node%c(1)%min))
-               res = .true.
-               return
-            end if
-         end if
-         res = .false.
-      case default
-         res = .false.
-      end select
-   end subroutine get_prefix_literal_internal
-
-
-   pure recursive subroutine get_suffix_literal_internal(tree, idx, suffix,  has_or, has_closure)
-      implicit none
-      type(tree_node_t), intent(in) :: tree(:)
-      integer(int32), intent(in) :: idx
-      character(:), allocatable, intent(inout) :: suffix
-      logical, intent(inout) :: has_or, has_closure
-      
-      logical :: or_r, or_l, closure_r, closure_l
-      type(tree_node_t) :: node, parent
-      character(:), allocatable :: candidate1, candidate2
-      integer :: n, j
-
-      if (idx < 1) return
-      node = tree(idx)
-      candidate1 = ''
-      candidate2 = ''
-      or_l = .false.
-      or_r = .false.
-      closure_l = .false.
-      closure_r = .false.
-
-      if (idx < 1) return
-
-      select case (node%op)
-      case (op_concat)
-         call get_suffix_literal_internal(tree, node%right_i, suffix, or_r, closure_r)
-
-         if(.not. or_r) call get_suffix_literal_internal(tree, node%left_i, candidate1, or_l, closure_l)
-
-         has_or = or_l .or. or_r
-         has_closure =  closure_r
-         if (or_r .and. or_l) then
-            return
-         else if (or_r) then
-            return
-         else if (closure_l) then
-            return
-         else if (closure_r) then
-            suffix = suffix
-         else
-            suffix = candidate1//suffix
-            return
-         end if
-   
-      case (op_union) !OR
-         call get_suffix_literal_internal(tree, node%left_i, candidate1, or_l, has_closure)
-         call get_suffix_literal_internal(tree, node%right_i, candidate2, or_r, has_closure)
-
-         suffix = extract_same_part_suffix(candidate1, candidate2)
-
-         has_or = .true.
-
-      case(op_repeat)
-         n = node%min_repeat
-         do j = 1, n
-            call get_suffix_literal_internal(tree, node%left_i, suffix, or_l, has_closure)
-            has_or = or_l .or. has_or
-         end do
-
-         if (node%min_repeat /= node%max_repeat) has_closure = .true.
-
-      case(op_closure)
-         has_closure = .true.
-         if(node%parent_i == 0) return
-         parent = tree(node%parent_i)
-
-         ! Processing the + operator
-         ! Get the left of the parent node, and if it has the same suffix as the current node, return it.
-         if (parent%own_i /= 0) then
-            if (parent%op == op_concat) then
-               if (parent%right_i == node%own_i) then
-                  call get_suffix_literal_internal(tree, parent%left_i, candidate1, or_l, closure_l)
-                  call get_suffix_literal_internal(tree, node%left_i, candidate2, or_r, closure_r)
-                  if (candidate1 == candidate2) then
-                     suffix = candidate1
-                  end if
+         if (allocated(curr%c)) then
+            if (size(curr%c) == 1) then
+               if (width_of_segment(curr%c(1)) == 1) then
+                  lit%all%c = char_utf8(curr%c(1)%min)
+                  lit%pref%c = char_utf8(curr%c(1)%min)
+                  lit%suff%c =  char_utf8(curr%c(1)%min)
+                  lit%fact%c =  char_utf8(curr%c(1)%min)
+               else
+                  lit%flag_class = .true.
                end if
+            else
+               lit%flag_class = .true.
             end if
+
          end if
-         has_or = or_l .or. or_r
+      case (op_repeat)
+         block
+            type(tree_node_t) :: next_l
+
+            ! Is the flag_class of the next node flagged? 
+            call best_factor(nodes, curr%left_i, lit_l)
+            lit%flag_class = lit_l%flag_class
+
+            do i = 1, curr%min_repeat       
+               call best_factor(nodes, curr%left_i, lit_l)
+               lit%all%c = lit%all%c//lit_l%all%c
+               lit%pref%c = lit%pref%c//lit_l%pref%c
+               lit%suff%c = lit%suff%c//lit_l%suff%c
+               lit%fact%c = lit%fact%c//lit_l%fact%c
+               lit%flag_class = lit%flag_class .or. lit_l%flag_class
+               if (lit_l%flag_closure) exit
+            end do
+
+            lit%flag_closure = curr%min_repeat /= curr%max_repeat
+            lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure
+         end block
 
       case default
-         if (is_literal_tree_node(node)) then
-            suffix = char_utf8(node%c(1)%min)//suffix
-         else if (is_char_class_tree_node(node)) then
-            has_or = .true.
-         end if
+         lit%flag_closure = .true.
       end select
-   end subroutine get_suffix_literal_internal
+   end subroutine best_factor
 
 
-!=====================================================================!
-
-
-   pure function extract_same_part_prefix (a, b) result(res)
-      use :: forgex_utf8_m
+   pure function best(c1, c2) result(res)
       implicit none
-      character(*), intent(in) :: a, b
+      character(*), intent(in) :: c1, c2
       character(:), allocatable :: res
 
-      character(:), allocatable :: buf
-      integer :: i, ie, n
-      res = ''
-      buf = ''
-      n = min(len(a), len(b))
-      do i = 1, n
-         if (a(i:i) == b(i:i)) then
-            buf = buf//a(i:i)
-         else
-            exit
-         end if
-      end do
-
-      ! Handling UTF8 fragment bytes
-      n = len(buf)
-      i = 1
-      do while (i <= n)
-         ie = idxutf8(buf, i)
-         if (n < ie) exit
-
-         if (is_valid_multiple_byte_character(buf(i:ie))) then
-            res = res//adjustl_multi_byte(buf(i:ie))
-         end if
-         i = ie + 1
-      end do
-
-   end function extract_same_part_prefix
-
-
-   pure function extract_same_part_suffix (a, b) result(res)
-      use :: forgex_utf8_m
-      implicit none
-      character(*), intent(in) :: a, b
-      character(:), allocatable :: res
-      
-      character(:), allocatable :: buf
-      integer :: i, ii, n, diff, ie
-      character(:), allocatable :: short_s, long_s
-      
-      res = ''
-      buf = ''
-
-      if (len(a) < len(b)) then
-         short_s = a 
-         long_s = b
+      integer :: max_len
+      res = theta
+      if (len_trim(c1) > len_trim(c2)) then
+         res = trim(adjustl(c1))
       else
-         short_s = b
-         long_s = a
+         res = trim(adjustl(c2))
       end if
- 
-      n = min(len(a), len(b))
-      diff = max(len(a), len(b)) - n
+   end function best
 
-      do i = n, 1, -1
-         ii = i + diff
-         if (short_s(i:i) == long_s(ii:ii)) then
-            buf = a(i:i)//buf
+
+   pure function same_part_of_prefix (c1, c2) result(res)
+      use :: forgex_utf8_m
+      implicit none
+      character(*), intent(in) :: c1, c2
+
+      character(:), allocatable :: res, part1, part2
+      logical :: flag_return
+      integer :: i
+      res = ''
+
+      i = 1
+      flag_return = .false.
+      do while(.not. flag_return)
+
+         part1 = c1(i:idxutf8(c1, i))
+         part2 = c2(i:idxutf8(c2, i))
+         flag_return = next_idxutf8(c1, i) == INVALID_CHAR_INDEX .or. next_idxutf8(c2,i) == INVALID_CHAR_INDEX
+
+         if (flag_return) return
+
+         if (part1 == part2) then
+            res = res//part1
          else
             exit
          end if
+
+         i = next_idxutf8(c1, i)
       end do
 
-      n = len(buf)
-      i= 1
-      do while (i <= n)
-         ie = idxutf8(buf, i)
-         if (n < ie) exit
-         
-         if (is_valid_multiple_byte_character(buf(i:ie))) then
-            res = res//adjustl_multi_byte(buf(i:ie))
-         end if
-         i = ie + 1
-      end do
-   end function extract_same_part_suffix
+   end function same_part_of_prefix
 
 
-   pure function extract_same_part_middle(left_middle, right_middle) result(middle)
-      use :: forgex_utf8_m
+   pure function same_part_of_suffix(c1,c2) result(retval)
+      character(*), intent(in) :: c1, c2
+      character(:), allocatable :: retval
+
+      character(:), allocatable :: rc1, rc2
+      integer :: n, i
+      n = max(len_trim(c1), len_trim(c2))
+
+      allocate(character(n):: rc1, rc2)
+
+      rc1 = reverse_utf8(c1)   
+      rc2 = reverse_utf8(c2)
+      retval = same_part_of_prefix(rc1, rc2)
+      retval = reverse_utf8(retval)
+
+   end function same_part_of_suffix
+
+
+   pure function return_class_closure(f_L_class, f_R_class, f_L_closure, f_R_closure) result(retval)
       implicit none
-      character(*), intent(in) :: left_middle, right_middle
-      character(:), allocatable :: middle
-      
-      integer :: i, j, max_len, len_left, len_right, len_tmp
-      character(:), allocatable :: tmp_middle
+      logical, intent(in) :: f_L_class, f_r_class, f_l_closure, f_r_closure
+      integer :: retval
 
-      len_left = len(left_middle)
-      len_right = len(right_middle)
-      max_len = 0
-      middle = ''
-
-      ! Compare all substring
-      do i = 1, len_left
-         do j = 1, len_right
-            if (left_middle(i:i) == right_middle(j:j)) then
-               tmp_middle = ''
-               len_tmp = 0
-
-               ! Check whether match strings or not.
-               do while (i+len_tmp <= len_left .and. j+len_tmp <= len_right)
-                  if (left_middle(i:i+len_tmp) == right_middle(j:j+len_tmp)) then
-                     tmp_middle = left_middle(i:i+len_tmp)
-                     len_tmp = len(tmp_middle)
-                  else
-                     exit
-                  end if
-               end do
-
-               ! Store the longest common part.
-               if (len_tmp > max_len) then
-                  max_len = len(tmp_middle)
-                  middle = tmp_middle
+      if (.not. f_L_class) then
+         if (.not. f_r_class) then
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_N_class_N_closure
+               else
+                  retval = lt_N_class_R_closure
+               end if
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_N_class_L_closure
+               else
+                  retval = lt_N_class_LR_closure
                end if
             end if
-         end do
-      end do
-   end function extract_same_part_middle
-      
+         else
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_R_class_N_closure
+               else
+                  retval = lt_R_class_R_closure
+               endif
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_R_class_L_closure
+               else
+                  retval = lt_R_class_LR_closure
+               end if
+            end if
+         end if
+      else
+         if (.not. f_r_class) then
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_L_class_N_closure
+               else
+                  retval = lt_L_class_R_closure
+               end if
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_L_class_L_closure
+               else
+                  retval = lt_L_class_LR_closure
+               end if
+            end if
+         else
+            if (.not. f_l_closure) then
+               if (.not. f_r_closure) then
+                  retval = lt_LR_class_N_closure
+               else
+                  retval = lt_LR_class_R_closure
+               endif
+            else
+               if (.not. f_r_closure) then
+                  retval = lt_LR_class_L_closure
+               else
+                  retval = lt_LR_class_LR_closure
+               end if
+            end if
+         end if   
+      end if
+   end function return_class_closure
+
 end module forgex_syntax_tree_optimize_m

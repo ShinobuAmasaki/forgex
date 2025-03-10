@@ -12,7 +12,7 @@
 module forgex_syntax_tree_graph_m
    use :: forgex_parameters_m
    use :: forgex_enums_m
-   use :: forgex_segment_m
+   use :: forgex_segment_m, register => register_segment_to_list
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
    use :: forgex_error_m
@@ -45,6 +45,7 @@ module forgex_syntax_tree_graph_m
       procedure :: caret_dollar => tree_graph__make_tree_caret_dollar
       procedure :: crlf => tree_graph__make_tree_crlf
       procedure :: shorthand => tree_graph__shorthand
+      procedure :: hex2seg => tree_graph__hexadecimal_to_segment
       procedure :: times => tree_graph__times
       procedure :: print => print_tree_wrap
    end type
@@ -52,6 +53,7 @@ module forgex_syntax_tree_graph_m
    public :: dump_tree_table
    public :: interpret_class_string
 
+   public :: hex2seg
 
 contains
 
@@ -376,6 +378,9 @@ contains
 
       case (tk_backslash)
          call self%shorthand()
+         if (.not. self%is_valid) then
+            return
+         end if
          call self%tape%get_token()
       
       case (tk_dot)
@@ -671,6 +676,13 @@ contains
          seglist(5) = SEG_FF
          seglist(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seglist)
+
+      case (ESCAPE_X)
+         ! Error handling for x escape sequence is handled by hex2seg.
+         call self%hex2seg(seglist)
+         if (.not. self%is_valid) return
+         ! It is not necessary to call self%tape%get_token() procedure.
+
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
          self%is_valid = .false.
@@ -711,6 +723,58 @@ contains
       deallocate(seglist)
 
    end subroutine tree_graph__shorthand
+
+   !> This procedure handles a escape sequence with '\x'.
+   pure subroutine tree_graph__hexadecimal_to_segment(self, seglist)
+      implicit none
+      class(tree_t), intent(inout) :: self
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      
+      character(:), allocatable :: hex
+      integer :: i
+      logical :: is_two_digit, is_longer_digit
+
+      hex = ''
+
+      call self%tape%get_token()
+
+      is_longer_digit = self%tape%current_token == tk_lcurlybrace
+      is_two_digit = .not. is_longer_digit
+
+      if (is_longer_digit) call self%tape%get_token()
+
+      hex = hex//self%tape%token_char(1:1) ! First, get the second digit.
+      i = 2
+
+      reader: do while(.true.)
+         if (is_two_digit .and. i >= 3) exit reader
+         call self%tape%get_token()
+
+         if (is_longer_digit .and. self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_CURLYBRACE_MISSING
+            return
+         end if
+
+         if (self%tape%current_token == tk_rcurlybrace) exit reader
+         hex = hex//self%tape%token_char(1:1)
+         i = i + 1
+      end do reader
+
+      allocate(seglist(1))
+      call hex2seg(hex, seglist(1), self%code)
+
+      if (self%code /= SYNTAX_VALID) then
+         self%is_valid = .false.
+         return
+      end if
+
+      self%is_valid = seglist(1) .in. SEG_WHOLE
+
+      if (.not. self%is_valid) self%code  = SYNTAX_ERR_UNICODE_EXCEED
+
+
+   end subroutine tree_graph__hexadecimal_to_segment
 
 
    !> This subroutine handles a quantifier range, and
@@ -842,12 +906,69 @@ contains
    end subroutine tree_graph__times
 
 
+   !> This subroutine converts character string that represents hexadecimal value to
+   !> the segment corresponding its integer type.
+   pure subroutine hex2seg (str, seg, ierr)
+      implicit none
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout) :: seg
+      integer, intent(inout) :: ierr
+
+      character(:), allocatable :: buf, fmt
+      character(8) :: c_len
+
+      integer :: i, ios, code
+      logical :: is_two_digits, is_longer_digit, is_hex_valid
+      
+      fmt = ''
+      c_len = ''
+      code = UTF8_CODE_INVALID
+      seg = segment_t(code, code)
+
+      is_two_digits = len(str) == 2
+      is_longer_digit = 2 < len(str)
+
+      if (str == '') then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+
+      ! Get the string lenght as a character type.
+      write(c_len, '(i0)', iostat=ios) len(str)
+      if (ios/= 0) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+      fmt = '(z'//trim(c_len)//')'
+
+      ! Get the code point as a integer.
+      read(str, fmt=fmt, iostat=ios) code
+      is_hex_valid = ios == 0
+
+      ! Error handlers
+      if (.not. is_hex_valid) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+   
+      ! Reject if codepoint valud is invalid as Unicode.
+      if (.not.(code .in. SEG_WHOLE)) then
+         ierr = SYNTAX_ERR_UNICODE_EXCEED
+         return
+      end if
+
+      seg = segment_t(code, code)
+      ierr = SYNTAX_VALID
+
+   end subroutine hex2seg
+      
+
+
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
-      use :: forgex_segment_m, only: join_two_segments, &
-         register => register_segment_to_list
+      use :: forgex_segment_m, register => register_segment_to_list  
       use :: forgex_character_array_m, only:parse_segment_width_in_char_array
       use :: forgex_character_array_m
       implicit none
@@ -1022,7 +1143,7 @@ contains
 
 
    !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 
-   pure subroutine convert_escaped_character_into_segments(chara, seg_list)
+   pure subroutine convert_escaped_character_into_segments(chara, seg_list)!, hexcode)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       character(*), intent(in) :: chara
@@ -1078,6 +1199,9 @@ contains
          seg_list(5) = SEG_FF
          seg_list(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seg_list)
+      case (ESCAPE_X)
+
+         continue
       case (SYMBOL_BSLH)
          allocate(seg_list(1))
          seg_list(1)%min = ichar_utf8(SYMBOL_BSLH)

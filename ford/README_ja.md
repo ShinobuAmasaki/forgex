@@ -1,4 +1,4 @@
-<!-- Readme[JA] version 4.2 -->
+<!-- Readme[JA] version 4.4 -->
 [![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
 [![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
 [![Tested with Intel oneAPI](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml/badge.svg?branch=main)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml)
@@ -54,6 +54,7 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `\W`, `\w`の否定クラス(`[^a-zA-Z0-9_]`)
 - `\d`, 半角数字 (`[0-9]`)
 - `\D`, 非半角数字 (`[^0-9]`)
+- `\x..`, Unicode16進数エスケープシーケンス（例：`\x63`は`c`に、`\x{1f5ff}`は`🗿`にマッチする）
 
 ## ドキュメント
 ドキュメントは英語と日本語で次のリンクから利用可能です。
@@ -349,8 +350,10 @@ state    4A = ( 2 4 5 6 )
 - `is_valid_regex`関数の追加に関わるAPIの内部的な変更として、`.in.`と`.match.`の演算子は無効なパターンの入力に対してFalseを返すようになりました（バージョン3.5以前では`error stop`文を実行して処理を終了します）。
 
 ## To Do
-- Unicodeエスケープシーケンス`\p{...}`の追加
-- UTF-8において無効なバイトストリームへの対処
+- 文字クラスのサブトラクション（例`[a-z--b-d]`）を追加
+- Unicode文字クラス`\p{...}`の追加
+- ✅ 16進数エスケープシーケンス`\x..`の追加
+- ✅ UTF-8において無効なバイトストリームへの対処
 - ✅ 無効なパターンの処理
 - ✅️ リテラル検索によるマッチングの最適化
 - ✅️ デバッグおよびベンチマーク用のCLIツールを追加 -> [ShinobuAmasaki/forgex-cli](https://github.com/ShinobuAmasaki/forgex-cli)
@@ -367,6 +370,7 @@ state    4A = ( 2 4 5 6 )
 
 ## 謝辞
 冪集合構成法のアルゴリズムと構文解析については、Russ Cox氏の論文と近藤嘉雪氏の本を参考にしました。
+リテラル抽出のアルゴリズムの実装には、Navarro and Raffnot(2002)の本を参考にしました。
 優先度付きキューの実装は、[ue1221さんのコード](https://github.com/ue1221/fortran-utilities)に基づいています。
 文字列に対して`.in.`演算子を適用するというアイデアは、soybeanさんのものにインスパイアされました。
 `forgex-cli`のコマンドラインインターフェイスの設計については、Rust言語の`regex-cli`を参考にしました。
@@ -377,6 +381,7 @@ state    4A = ( 2 4 5 6 )
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. [kazulagi, @soybean](https://github.com/kazulagi), [Fortranでユーザー定義演算子.in.を作る - Qiita.com](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91), 2022年
 5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
+6. Gonzalo Navarro and Mathieu Raffnot, "Flexible Pattern Matching in Strings -- Practical On-Line Search Algorithms for Texts and Biological Sequences", 2000年, Cambridge University Press
 
 ## ライセンス
 このプロジェクトはMITライセンスで提供されるフリーソフトウェアです

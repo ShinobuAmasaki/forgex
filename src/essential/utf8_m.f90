@@ -11,6 +11,7 @@
 !> The `forgex_utf8_m` module processes a byte-indexed character strings type as UTF-8 strings.
 module forgex_utf8_m
    use :: iso_fortran_env, only: int8
+   use :: iso_c_binding
    implicit none
    private
 
@@ -26,6 +27,7 @@ module forgex_utf8_m
    public :: is_valid_multiple_byte_character
    public :: adjustl_multi_byte
    public :: trim_invalid_utf8_byte
+   public :: reverse_utf8
 
    integer(int8), parameter, public :: fullbit = -1                ! 11111111
    integer(int8), parameter, public :: ascii_mask= 127             ! 01111111
@@ -589,6 +591,26 @@ contains
       end if
    
    end function trim_invalid_utf8_byte
+
+
+   pure function reverse_utf8(str) result(retval)
+      use :: forgex_parameters_m
+      implicit none
+      character(*), intent(in) :: str
+      character(:), allocatable :: retval
+
+      integer :: i, ie
+
+      ! Initialize
+      ie = 1
+      i = 1
+      retval = ''
+      do while (i /= INVALID_CHAR_INDEX)
+         ie = idxutf8(str, i)
+         retval = str(i:ie)//retval
+         i = next_idxutf8(str, i)
+      end do 
+   end function reverse_utf8
 
 
 end module forgex_utf8_m

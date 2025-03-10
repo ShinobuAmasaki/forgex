@@ -44,6 +44,25 @@ module forgex_enums_m
    end enum
 
    enum, bind(c)
+      enumerator :: lt_N_class_N_closure
+      enumerator :: lt_N_class_R_closure
+      enumerator :: lt_N_class_L_closure
+      enumerator :: lt_N_class_LR_closure
+      enumerator :: lt_R_class_N_closure
+      enumerator :: lt_R_class_R_closure
+      enumerator :: lt_R_class_L_closure
+      enumerator :: lt_R_class_LR_closure
+      enumerator :: lt_L_class_N_closure
+      enumerator :: lt_L_class_R_closure
+      enumerator :: lt_L_class_L_closure
+      enumerator :: lt_L_class_LR_closure
+      enumerator :: lt_LR_class_N_closure
+      enumerator :: lt_LR_class_R_closure
+      enumerator :: lt_LR_class_L_closure
+      enumerator :: lt_LR_class_LR_closure
+   end enum
+
+   enum, bind(c)
       enumerator :: FLAG_INVALID = 0
       enumerator :: FLAG_HELP
       enumerator :: FLAG_VERBOSE
