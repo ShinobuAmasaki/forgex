@@ -370,7 +370,7 @@ state    4A = ( 2 4 5 6 )
 
 ## 謝辞
 冪集合構成法のアルゴリズムと構文解析については、Russ Cox氏の論文と近藤嘉雪氏の本を参考にしました。
-リテラル抽出のアルゴリズムの実装には、Navarro and Raffinot(2002)の本を参考にしました。
+リテラル抽出のアルゴリズムの実装には、Navarro and Raffinot (2002) の本を参考にしました。
 優先度付きキューの実装は、[ue1221さんのコード](https://github.com/ue1221/fortran-utilities)に基づいています。
 文字列に対して`.in.`演算子を適用するというアイデアは、soybeanさんのものにインスパイアされました。
 `forgex-cli`のコマンドラインインターフェイスの設計については、Rust言語の`regex-cli`を参考にしました。
@@ -381,7 +381,7 @@ state    4A = ( 2 4 5 6 )
 3. [ue1221/fortran-utilities](https://github.com/ue1221/fortran-utilities)
 4. [kazulagi, @soybean](https://github.com/kazulagi), [Fortranでユーザー定義演算子.in.を作る - Qiita.com](https://qiita.com/soybean/items/7cdd2156a9d8843c0d91), 2022年
 5. [rust-lang/regex/regex-cli](https://github.com/rust-lang/regex/tree/master/regex-cli)
-6. Gonzalo Navarro and Mathieu Raffinot, "Flexible Pattern Matching in Strings -- Practical On-Line Search Algorithms for Texts and Biological Sequences", 2000年, Cambridge University Press
+6. Gonzalo Navarro and Mathieu Raffinot, "Flexible Pattern Matching in Strings -- Practical On-Line Search Algorithms for Texts and Biological Sequences", 2002年, Cambridge University Press
 
 ## ライセンス
 このプロジェクトはMITライセンスで提供されるフリーソフトウェアです
