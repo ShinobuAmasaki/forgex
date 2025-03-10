@@ -38,6 +38,7 @@ jobs:
       uses: fortran-lang/setup-fpm@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
+        fpm-version: v0.10.1
   
     - name: Installation Check
       run: |
