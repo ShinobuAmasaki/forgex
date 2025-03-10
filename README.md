@@ -1,4 +1,4 @@
-<!-- Readme[EN] version 4.2 -->
+<!-- Readme[EN] version 4.4 -->
 
 # Fortran Regular Expression
 
@@ -52,6 +52,7 @@ To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 - `\W` (`[^a-zA-Z0-9_]`)
 - `\d` digit character (`[0-9]`)
 - `\D` non-digit character (`[^0-9]`)
+- `\x..`, `\x{...}` hexadecimal escape sequences, for instance, `\x63` matches `c`.
 
 ### Experimental Features
 
@@ -345,8 +346,8 @@ Starting with version 3.5, the command line tools are provided in a separate rep
 The following features are planned to be implemented in the future:
 
 - [ ] Character class subtraction: `[a-z--b-d]`
-- [ ] Add Unicode escape sequence: `\p{...}`
-- [ ] Add 256 characters' escape sequence: `\x..`
+- [ ] Add Unicode character class escape sequence: `\p{...}`
+- [x] Add hexadecimal escape sequence of Unicode: `\x..`
 - [x] Deal with invalid byte strings in UTF-8
 - [x] Recovery from invalid patterns
 - [x] Optimize by literal searching method

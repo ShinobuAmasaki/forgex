@@ -1,4 +1,4 @@
-<!-- Readme[EN] version 4.2 -->
+<!-- Readme[EN] version 4.4 -->
 [![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
 [![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
 [![Tested with Intel oneAPI](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml/badge.svg?branch=main)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml)
@@ -50,6 +50,7 @@ To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 - `\W`, (`[^a-zA-Z0-9_]`)
 - `\d`, digit character (`[0-9]`)
 - `\D`, non-digit character (`[^0-9]`)
+- `\x..`, `\x{...}` hexadecimal escape sequences, for instance, `\x63` matches `c`.
 
 ### Experimental Features
 
@@ -344,8 +345,8 @@ state    4A = ( 2 4 5 6 )
 ## To do
 
 - Character class subtraction: `[a-z--b-d]`
-- Add Unicode escape sequence `\p{...}`
-- Add 256 characters' escape sequence: `\x..`
+- Add Unicode character class escape sequence: `\p{...}`
+- ✅️ Add hexadecimal escape sequence of Unicode: `\x..`
 - ✅️ Deal with invalid byte strings in UTF-8
 - ✅️ Optimize by literal searching method
 - ✅️ Add a CLI tool for debugging and benchmarking

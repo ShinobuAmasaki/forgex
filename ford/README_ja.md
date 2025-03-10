@@ -1,4 +1,4 @@
-<!-- Readme[JA] version 4.2 -->
+<!-- Readme[JA] version 4.4 -->
 [![Tested with GFortran on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-gfortan.yaml)
 [![Tested with LLVM Flang on Ubuntu](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml/badge.svg?branch=main&event=push)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-flang.yaml)
 [![Tested with Intel oneAPI](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml/badge.svg?branch=main)](https://github.com/ShinobuAmasaki/forgex/actions/workflows/forgex-test-oneapi.yaml)
@@ -54,6 +54,7 @@ Forgexが処理を受け付ける正規表現の記法は以下の通りです�
 - `\W`, `\w`の否定クラス(`[^a-zA-Z0-9_]`)
 - `\d`, 半角数字 (`[0-9]`)
 - `\D`, 非半角数字 (`[^0-9]`)
+- `\x..`, Unicode16進数エスケープシーケンス（例：`\x63`は`c`に、`\x{1f5ff}`は`🗿`にマッチする）
 
 ## ドキュメント
 ドキュメントは英語と日本語で次のリンクから利用可能です。
@@ -350,8 +351,8 @@ state    4A = ( 2 4 5 6 )
 
 ## To Do
 - 文字クラスのサブトラクション（例`[a-z--b-d]`）を追加
-- Unicodeエスケープシーケンス`\p{...}`の追加
-- ASCIIエスケープシーケンス`\x..`の追加
+- Unicode文字クラス`\p{...}`の追加
+- ✅ 16進数エスケープシーケンス`\x..`の追加
 - ✅ UTF-8において無効なバイトストリームへの対処
 - ✅ 無効なパターンの処理
 - ✅️ リテラル検索によるマッチングの最適化
