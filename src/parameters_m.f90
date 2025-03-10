@@ -35,7 +35,8 @@ module forgex_parameters_m
    integer(int32), parameter :: SEGMENT_REJECTED = 1
 
    ! For handling UTF-8
-   integer(int32), parameter, public :: UTF8_CODE_MAX     = 2**21-1 !
+   integer(int32), parameter, public :: UTF8_CODE_MAX     = 1114111 ! = 0x10ffff
+   ! integer(int32), parameter, public :: UTF8_CODE_UPPER_BOUND = 2**21-1 ! = 0x1fffff
    integer(int32), parameter, public :: UTF8_CODE_MIN     = 32 ! = 0x20: white space
    integer(int32), parameter, public :: UTF8_CODE_EMPTY   = 0
    integer(int32), parameter, public :: UTF8_CODE_INVALID = -1
@@ -70,6 +71,7 @@ module forgex_parameters_m
    character(1), parameter, public :: ESCAPE_D_CAPITAL = 'D'
    character(1), parameter, public :: ESCAPE_W_CAPITAL = 'W'
    character(1), parameter, public :: ESCAPE_S_CAPITAL = 'S'
+   character(1), parameter, public :: ESCAPE_X = 'x'
 
    !> This constant is used to indicate that the left and right destination
    !> have not yet been registered.

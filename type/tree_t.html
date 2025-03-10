@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title="<p>17.1% of total for derived types.</p>Including implementation: 573 statements, 38.1% of total for derived types.">28 statements</a>
+                 title="<p>16.6% of total for derived types.</p>Including implementation: 615 statements, 39.5% of total for derived types.">29 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -116,13 +116,13 @@
       </a>
       <div id="vars-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../type/tree_t.html#variable-code~2">code</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-code~3">code</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-is_valid~2">is_valid</a>
-            <a class="list-group-item" href="../type/tree_t.html#variable-nodes">nodes</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-nodes~3">nodes</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-num_alloc">num_alloc</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-paren_balance">paren_balance</a>
             <a class="list-group-item" href="../type/tree_t.html#variable-tape">tape</a>
-            <a class="list-group-item" href="../type/tree_t.html#variable-top">top</a>
+            <a class="list-group-item" href="../type/tree_t.html#variable-top~3">top</a>
         </div>
       </div>
     </div>
@@ -157,9 +157,10 @@
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-crlf">crlf</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-deallocate">deallocate</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-get_top">get_top</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-hex2seg">hex2seg</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-primary">primary</a>
-            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-print">print</a>
-            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-reallocate">reallocate</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-print~2">print</a>
+            <a class="list-group-item" href="../type/tree_t.html#boundprocedure-reallocate~2">reallocate</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-regex">regex</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-register">register</a>
             <a class="list-group-item" href="../type/tree_t.html#boundprocedure-register_connector">register_connector</a>
@@ -199,7 +200,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code~2"></span>
+              <span class="anchor" id="variable-code~3"></span>
               integer,
             </td>
               <td>public</td>
@@ -233,7 +234,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes"></span>
+              <span class="anchor" id="variable-nodes~3"></span>
               type(<a href='tree_node_t.html'>tree_node_t</a>),
             </td>
               <td>public,</td>
@@ -301,7 +302,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-top"></span>
+              <span class="anchor" id="variable-top~3"></span>
               integer,
             </td>
               <td>public</td>
@@ -842,6 +843,75 @@ and does not call any other recursive procedures.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
+      <span class="anchor" id="boundprocedure-hex2seg"></span>
+      <h3>
+          procedure, public ::
+  <strong>hex2seg</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__hexadecimal_to_segment.html'>tree_graph__hexadecimal_to_segment</a>
+        
+      </h3>
+    </div>
+    <ul class="list-group">
+        <li class="list-group-item">
+                  <h3>
+    private pure subroutine <a href='../proc/tree_graph__hexadecimal_to_segment.html'>tree_graph__hexadecimal_to_segment</a>(self, seglist)  
+</h3>
+    
+
+  <p>This procedure handles a escape sequence with '\x'.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              class(<a href='tree_t.html'>tree_t</a>),
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" ></span>
+              type(<a href='segment_t.html'>segment_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>seglist</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+        </li>
+    </ul>
+  </div>
+
+          </div>
+          <div class="row">
+              <div class="card mt-3">
+    <div class="card-header codesum">
       <span class="anchor" id="boundprocedure-primary"></span>
       <h3>
           procedure, public ::
@@ -896,7 +966,7 @@ and does not call any other recursive procedures.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-print"></span>
+      <span class="anchor" id="boundprocedure-print~2"></span>
       <h3>
           procedure, public ::
   <strong>print</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/print_tree_wrap.html'>print_tree_wrap</a>
@@ -965,7 +1035,7 @@ and does not call any other recursive procedures.</p>
           <div class="row">
               <div class="card mt-3">
     <div class="card-header codesum">
-      <span class="anchor" id="boundprocedure-reallocate"></span>
+      <span class="anchor" id="boundprocedure-reallocate~2"></span>
       <h3>
           procedure, public ::
   <strong>reallocate</strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/tree_graph__reallocate.html'>tree_graph__reallocate</a>
@@ -1480,7 +1550,7 @@ does not call any other recursive procedures.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

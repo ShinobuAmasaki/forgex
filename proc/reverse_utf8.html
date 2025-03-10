@@ -10,7 +10,7 @@
     <meta name="author" content="Amasaki Shinobu" >
     <link rel="icon" href="../favicon.png">
 
-    <title>get_entire_literal &ndash; Forgex—Fortran Regular Expression</title>
+    <title>reverse_utf8 &ndash; Forgex—Fortran Regular Expression</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -64,7 +64,7 @@
 
     <div class="container">
   <div class="row">
-    <h1>get_entire_literal
+    <h1>reverse_utf8
       <small>Function</small>
       
     </h1>
@@ -76,21 +76,21 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.2% of total for procedures.">8 statements</a>
+                 title=" 0.3% of total for procedures.">15 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/syntax_tree_optimize_m.F90"> Source File</a>
+              <a href="../src/utf8_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/syntax_tree_optimize_m.f90.html'>syntax_tree_optimize_m.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></li>
-            <li class="breadcrumb-item active" aria-current="page">get_entire_literal</li>
+                <li class="breadcrumb-item"><a href='../sourcefile/utf8_m.f90.html'>utf8_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></li>
+            <li class="breadcrumb-item active" aria-current="page">reverse_utf8</li>
           </ol>
         </nav>
       </div>
@@ -131,7 +131,7 @@
     <div class="card card-primary">
       <div class="card-header text-left"><h3 class="card-title">Source Code</h3></div>
       <div class="list-group">
-        <a class="list-group-item" href="../proc/get_entire_literal.html#src">get_entire_literal</a>
+        <a class="list-group-item" href="../proc/reverse_utf8.html#src">reverse_utf8</a>
       </div>
     </div>
 
@@ -141,9 +141,21 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public pure function get_entire_literal(tree) result(chara)  
+    <h2>public pure function reverse_utf8(str) result(retval)  
 </h2>
-    
+        <div class="card mb-4">
+      <h3 class="card-header card-title bg-light">Uses</h3>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
+              </ul>
+            </li>
+        </ul>
+      </div>
+    </div>
+
 
 
 
@@ -160,15 +172,15 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~3"></span>
-              type(<a href='../type/tree_t.html'>tree_t</a>),
+              <span class="anchor" id="variable-str~13"></span>
+              character(len=*),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>tree</strong></td>
+            <td><strong>str</strong></td>
             <td>
                 
             </td>
@@ -178,7 +190,7 @@
 
       <h3>Return Value
         <small>
-          <span class="anchor" id="variable-chara~3"></span>
+          <span class="anchor" id="variable-retval~3"></span>
           character(len=:), allocatable
         </small>
       </h3>
@@ -197,15 +209,24 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure function </span><span class="n">get_entire_literal</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">chara</span><span class="p">)</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure function </span><span class="n">reverse_utf8</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="w"> </span><span class="k">result</span><span class="p">(</span><span class="n">retval</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_parameters_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span><span class="w"> </span>
-<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">chara</span>
-<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">each_res</span>
-<span class="w">      </span><span class="n">chara</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
+<span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">str</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">retval</span>
 
-<span class="w">      </span><span class="k">call </span><span class="n">get_entire_literal_internal</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">top</span><span class="p">,</span><span class="w"> </span><span class="n">chara</span><span class="p">,</span><span class="w"> </span><span class="n">each_res</span><span class="p">)</span>
-<span class="w">   </span><span class="k">end function </span><span class="n">get_entire_literal</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">ie</span>
+
+<span class="w">      </span><span class="c">! Initialize</span>
+<span class="w">      </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="n">retval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;&#39;</span>
+<span class="w">      </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">INVALID_CHAR_INDEX</span><span class="p">)</span>
+<span class="w">         </span><span class="n">ie</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+<span class="w">         </span><span class="n">retval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">i</span><span class="p">:</span><span class="n">ie</span><span class="p">)</span><span class="o">//</span><span class="n">retval</span>
+<span class="w">         </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">next_idxutf8</span><span class="p">(</span><span class="n">str</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">)</span>
+<span class="w">      </span><span class="k">end do </span>
+<span class="k">   end function </span><span class="n">reverse_utf8</span>
 </pre></div>
 
     </section>
@@ -229,7 +250,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

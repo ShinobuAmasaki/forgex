@@ -168,6 +168,18 @@ and the corresponding set of transitionable NFA state.</p></td>
 the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__register_state.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/best.html'>best</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/best_factor.html'>best_factor</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This is recursive procedure to tour a given syntax tree.</p></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/bubble_sort.html'>bubble_sort</a></td>
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
                  <td>Subroutine</td>
@@ -365,22 +377,10 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td><p>This function determines if two NFA state sets (logical vectors) are equivalent.</p><a href="../proc/equivalent_nfa_state_set.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/extract_same_part_middle.html'>extract_same_part_middle</a></td>
+                 <td><a href='../proc/extract_literal.html'>extract_literal</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/extract_same_part_prefix.html'>extract_same_part_prefix</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/extract_same_part_suffix.html'>extract_same_part_suffix</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
+                 <td>Subroutine</td>
+                 <td><p>This is the public procedure of this module to obtain each literal from AST.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/function__regex.html'>function__regex</a></td>
@@ -407,18 +407,6 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/get_entire_literal.html'>get_entire_literal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/get_entire_literal_internal.html'>get_entire_literal_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/get_error_message.html'>get_error_message</a></td>
                  <td><a href='../module/forgex_error_m.html'>forgex_error_m</a></td>
                  <td>Function</td>
@@ -441,28 +429,10 @@ It aims to parse repetation times of the expression.</p></td>
 <code>prefix</code>es that exist in the <code>text</code></p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/get_prefix_literal.html'>get_prefix_literal</a></td>
+                 <td><a href='../proc/get_literal.html'>get_literal</a></td>
                  <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
                  <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/get_prefix_literal_internal.html'>get_prefix_literal_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/get_suffix_literal.html'>get_suffix_literal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/get_suffix_literal_internal.html'>get_suffix_literal_internal</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
+                 <td><p>Wrapping function to retrieve literals: all, prefix, suffix, factor.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/get_token.html'>get_token</a></td>
@@ -472,6 +442,13 @@ It aims to parse repetation times of the expression.</p></td>
  the <code>type_t</code> derived-type, and store the enumerator's numeric value in the
  <code>current_token</code> component.
  This is a type-bound procedure of <code>tape_t</code>.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/hex2seg.html'>hex2seg</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This subroutine converts character string that represents hexadecimal value to
+the segment corresponding its integer type.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/ichar_utf8.html'>ichar_utf8</a></td>
@@ -529,12 +506,6 @@ Class of invalid UTF-8 characters
 It compute the complement of the given ranges and modifies the list accordingly.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/is_char_class_tree_node.html'>is_char_class_tree_node</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/is_eqv_str.html'>is_eqv_str</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Function</td>
@@ -568,12 +539,6 @@ It takes a UTF-8 string and return a logical array indicating for each position 
                  <td>Function</td>
                  <td><p>This function determines whether the input character string can be
 parsed into an integer.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/is_literal_tree_node.html'>is_literal_tree_node</a></td>
-                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
-                 <td>Function</td>
-                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/is_overlap_to_seg_list.html'>is_overlap_to_seg_list</a></td>
@@ -879,17 +844,17 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex.html'>forgex</a></td>
+                 <td>Interface</td>
+                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
 an integer and a segment, an integer and a list of segments, or a segment
 and a segment, is contained in the latter, respectively.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex.html'>forgex</a></td>
-                 <td>Interface</td>
-                 <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -1004,6 +969,24 @@ the current array element to its <code>seg_size</code>.</p></td>
 increments counter of the actual size of the array, and initializes temporary variable.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/repeat.html'>repeat</a></td>
+                 <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
+                 <td>Function</td>
+                 <td><p>This function generates a string by repeating a given pattern a specified number of times.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/return_class_closure.html'>return_class_closure</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/reverse_utf8.html'>reverse_utf8</a></td>
+                 <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/runner_error.html'>runner_error</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
@@ -1044,6 +1027,18 @@ increments counter of the actual size of the array, and initializes temporary va
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine runs the <code>is_valid__pattern</code> function and prints the result.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/same_part_of_prefix.html'>same_part_of_prefix</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/same_part_of_suffix.html'>same_part_of_suffix</a></td>
+                 <td><a href='../module/forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></td>
+                 <td>Function</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/seg_in_segment.html'>seg_in_segment</a></td>
@@ -1148,6 +1143,12 @@ and does not call any other recursive procedures.</p></td>
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Function</td>
                  <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/tree_graph__hexadecimal_to_segment.html'>tree_graph__hexadecimal_to_segment</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td><p>This procedure handles a escape sequence with '\x'.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/tree_graph__make_tree_caret_dollar.html'>tree_graph__make_tree_caret_dollar</a></td>
@@ -1265,7 +1266,7 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

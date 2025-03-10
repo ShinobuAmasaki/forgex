@@ -101,18 +101,20 @@ contains
 
    !> This function checks whether the correct prefix is extracted
    !> for a given pattern.
-   function is_valid__prefix(pattern, expected_prefix) result(res)
-      use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal
+   function is_valid__prefix(pattern, expected_prefix, resulting) result(res)
+      use :: forgex_syntax_tree_optimize_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_prefix
+      character(:), allocatable :: resulting
       logical :: res
 
-      character(:), allocatable :: resulting
+      character(:), allocatable :: unused_1, unused_2, unused_3 
       type(tree_t) :: tree
 
       call tree%build(pattern)
-      resulting = get_prefix_literal(tree)
+      ! resulting = get_prefix_literal(tree)
+      call extract_literal(tree, unused_1, resulting, unused_2, unused_3)
 
       if (len_utf8(expected_prefix) == len_utf8(resulting)) then
          res = expected_prefix == resulting
@@ -124,18 +126,21 @@ contains
 
    !> This function checks whether the correct suffix is extracted
    !> for a given pattern.
-   function is_valid__suffix(pattern, expected_suffix) result(res)
-      use :: forgex_syntax_tree_optimize_m, only: get_suffix_literal
+   function is_valid__suffix(pattern, expected_suffix, resulting) result(res)
+      use :: forgex_syntax_tree_optimize_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_suffix
       logical :: res
+      character(:), allocatable, intent(inout) :: resulting
 
-      character(:), allocatable :: resulting
+      character(:), allocatable :: unused_1, unused_2, unused_3 
       type(tree_t) :: tree
 
       call tree%build(pattern)
-      resulting = get_suffix_literal(tree)
+      ! resulting = get_suffix_literal(tree)
+      call extract_literal(tree, unused_1, unused_2, resulting, unused_3)
+      
 
       if (len_utf8(expected_suffix) == len_utf8(resulting)) then
          res = expected_suffix == resulting
@@ -298,15 +303,17 @@ contains
       character(*), intent(in) :: pattern, prefix
       logical, intent(inout) :: result
       logical :: res
+      character(:), allocatable :: resulting
 
-      res = is_valid__prefix(pattern, prefix)
+      res = is_valid__prefix(pattern, prefix, resulting)
 
       if (res) then
 #ifndef FAILED
          write(output_unit, '(a,a,a)') 'result(prefix): Success', ' '//trim(pattern), ' "'//trim(prefix)//'"'
 #endif
       else
-         write(error_unit, '(a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), ' "'//trim(prefix)//'"'
+         write(error_unit, '(a,a,a,a)') 'result(prefix): FAILED ', ' '//trim(pattern), &
+               ' "'//trim(prefix)//'", but ... ', trim(resulting)
       end if
       result = result .and. res
    end subroutine runner_prefix
@@ -319,14 +326,16 @@ contains
       logical, intent(inout) :: result
       logical :: res
 
-      res = is_valid__suffix(pattern, suffix)
+      character(:), allocatable :: resulting
+      res = is_valid__suffix(pattern, suffix, resulting)
 
       if (res) then
 #ifndef FAILED
          write(output_unit, '(a,a,a)') 'result(suffix): Success', ' '//trim(pattern), ' "'//trim(suffix)//'"'
 #endif
       else
-         write(error_unit, '(a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"'
+         write(error_unit, '(a,a,a,a,a)') 'result(suffix): FAILED ', ' '//trim(pattern), ' "'//trim(suffix)//'"', &
+            ', but ..."', trim(resulting)//'"'
       end if
       result = result .and. res
    end subroutine runner_suffix
@@ -386,6 +395,23 @@ contains
    end subroutine runner_error
 
 !+-- Helper procedures --+ !
+
+   !> This function generates a string by repeating a given pattern a specified number of times.
+   function repeat(chara, num) result(txt)
+      implicit none
+      character(*), intent(in) :: chara
+      integer, intent(in) :: num
+      character(:), allocatable :: txt
+      character(:), allocatable :: buf
+      
+      integer :: i
+      buf = ''
+      do i = 1, num
+         buf = buf//chara
+      end do
+
+      txt = buf
+   end function repeat
 
    !> nchar means 'negative char'.
    pure function nchar(i) result(chara)

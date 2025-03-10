@@ -13,7 +13,8 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_suffix_literal, get_entire_literal
+   use :: forgex_syntax_tree_optimize_m
+   ! use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_suffix_literal, get_entire_literal
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
    use :: forgex_utility_m, only: is_there_caret_at_the_top, is_there_dollar_at_the_end
@@ -82,7 +83,7 @@ contains
       type(automaton_t)         :: automaton
       integer                   :: from, to
 
-      character(:), allocatable :: prefix, suffix, entirely_fixed_string
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string, factor_unused
       logical :: unused
 
       prefix = ''
@@ -103,7 +104,8 @@ contains
       end if
 
       ! If the whole pattern is a fixed string, get it.
-      entirely_fixed_string = get_entire_literal(tree)
+      ! entirely_fixed_string = get_entire_literal(tree)
+      call extract_literal(tree, entirely_fixed_string, prefix, suffix, factor_unused)
       
       ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
@@ -130,8 +132,8 @@ contains
     != From here on, we will deal with cases where an entire pattern is not a fixed string.
 
       ! Extract a prefix and a suffix from the tree.
-      prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      ! prefix = get_prefix_literal(tree)
+      ! suffix = get_suffix_literal(tree)
 
       ! Initialize automaton with tree.
       call automaton%preprocess(tree)
@@ -167,7 +169,7 @@ contains
       character(:), allocatable :: buff
       type(tree_t)              :: tree
       type(automaton_t)         :: automaton
-      character(:), allocatable :: prefix, suffix, entirely_fixed_string
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string, factor_unused
       logical :: unused
 
       ! Initalize
@@ -198,7 +200,8 @@ contains
       end if
 
       ! If the whole pattern is a fixed string, get it.
-      entirely_fixed_string = get_entire_literal(tree)
+      ! entirely_fixed_string = get_entire_literal(tree)
+      call extract_literal(tree, entirely_fixed_string, prefix, suffix, factor_unused)
 
       ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
@@ -212,8 +215,8 @@ contains
    != From here on, we will deal with cases where an entire pattern is not a fixed string.
       
       ! Get the prefix contained in the AST.
-      prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      ! prefix = get_prefix_literal(tree)
+      ! suffix = get_suffix_literal(tree)
 
       ! Initialize automaton with tree and root.
       call automaton%preprocess(tree)
@@ -243,7 +246,7 @@ contains
       type(automaton_t)              :: automaton
       integer                        :: from_l, to_l
 
-      character(:), allocatable :: prefix, suffix, entirely_fixed_string
+      character(:), allocatable :: prefix, suffix, entirely_fixed_string, factor_unused
       logical :: unused
 
       ! Initialize
@@ -271,7 +274,8 @@ contains
       end if
 
       ! If the whole pattern is a fixed string, get it.
-      entirely_fixed_string = get_entire_literal(tree)
+      ! entirely_fixed_string = get_entire_literal(tree)
+      call extract_literal(tree, entirely_fixed_string, prefix, suffix, factor_unused)
 
       ! If the pattern consists only of fixed character string,
       if (entirely_fixed_string /= '') then
@@ -305,8 +309,8 @@ contains
    != From here on, we will deal with cases where an entire pattern is not a fixed string.
 
       ! Extract a prefix and a suffix from the tree.
-      prefix = get_prefix_literal(tree)
-      suffix = get_suffix_literal(tree)
+      ! prefix = get_prefix_literal(tree)
+      ! suffix = get_suffix_literal(tree)
 
       ! Initialize automaton
       call automaton%preprocess(tree)

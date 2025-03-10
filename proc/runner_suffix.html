@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.3% of total for procedures.">13 statements</a>
+                 title=" 0.3% of total for procedures.">14 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -227,14 +227,16 @@
 <span class="w">      </span><span class="kt">logical</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">result</span>
 <span class="k">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">res</span>
 
-<span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_valid__suffix</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">)</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">resulting</span>
+<span class="w">      </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">is_valid__suffix</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span><span class="w"> </span><span class="n">suffix</span><span class="p">,</span><span class="w"> </span><span class="n">resulting</span><span class="p">)</span>
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">res</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="cp">#ifndef FAILED</span>
 <span class="w">         </span><span class="k">write</span><span class="p">(</span><span class="n">output_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a,a,a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(suffix): Success&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
 <span class="cp">#endif</span>
 <span class="w">      </span><span class="k">else</span>
-<span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a,a,a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(suffix): FAILED &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
+<span class="k">         write</span><span class="p">(</span><span class="n">error_unit</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;(a,a,a,a,a)&#39;</span><span class="p">)</span><span class="w"> </span><span class="s1">&#39;result(suffix): FAILED &#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39; &#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">pattern</span><span class="p">),</span><span class="w"> </span><span class="s1">&#39; &quot;&#39;</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="p">&amp;</span>
+<span class="w">            </span><span class="s1">&#39;, but ...&quot;&#39;</span><span class="p">,</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">resulting</span><span class="p">)</span><span class="o">//</span><span class="s1">&#39;&quot;&#39;</span>
 <span class="w">      </span><span class="k">end if</span>
 <span class="k">      result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">result</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">res</span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">runner_suffix</span>
@@ -261,7 +263,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 7.7% of total for modules and submodules.">374 statements</a>
+                 title=" 7.9% of total for modules and submodules.">391 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -152,6 +152,7 @@
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-len_utf8">len_utf8</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-make_replacement_char">make_replacement_char</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-next_idxutf8">next_idxutf8</a>
+            <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-reverse_utf8">reverse_utf8</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-trim_invalid_utf8_byte">trim_invalid_utf8_byte</a>
             <a class="list-group-item" href="../module/forgex_utf8_m.html#proc-set_continuation_byte">set_continuation_byte</a>
         </div>
@@ -193,6 +194,7 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_c_binding'>iso_c_binding</a></li>
               </ul>
             </li>
         </ul>
@@ -349,7 +351,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~7"></span>
+              <span class="anchor" id="variable-chara~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -395,7 +397,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code"></span>
+              <span class="anchor" id="variable-code~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -440,7 +442,7 @@ and returns the corresponding character as UTF-8 binary string.</p><a href="../p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~8"></span>
+              <span class="anchor" id="variable-str~12"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -502,7 +504,7 @@ its UTF-8 binary string.</p><a href="../proc/ichar_utf8.html" class="pull-right"
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~5"></span>
+              <span class="anchor" id="variable-chara~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -557,7 +559,7 @@ Class of invalid UTF-8 characters
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str"></span>
+              <span class="anchor" id="variable-str~5"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -572,7 +574,7 @@ Class of invalid UTF-8 characters
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr"></span>
+              <span class="anchor" id="variable-curr~7"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -620,7 +622,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~6"></span>
+              <span class="anchor" id="variable-chara~4"></span>
               character(len=1),
             </td>
 <td>intent(in)</td>
@@ -665,7 +667,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~4"></span>
+              <span class="anchor" id="variable-chara~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -710,7 +712,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~5"></span>
+              <span class="anchor" id="variable-str~9"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -755,7 +757,7 @@ an UTF-8 binary string.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~6"></span>
+              <span class="anchor" id="variable-str~10"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -820,7 +822,7 @@ If the current index is for the last character, it returns the invalid value.</p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~2"></span>
+              <span class="anchor" id="variable-str~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -835,7 +837,7 @@ If the current index is for the last character, it returns the invalid value.</p
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~2"></span>
+              <span class="anchor" id="variable-curr~8"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -854,6 +856,51 @@ If the current index is for the last character, it returns the invalid value.</p
     <h4>
     Return Value
     <small>integer</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-reverse_utf8"></span> <h3>public pure function <a href='../proc/reverse_utf8.html'>reverse_utf8</a>(str) result(retval)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~13"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
     </h4>
     
 
@@ -880,7 +927,7 @@ If the current index is for the last character, it returns the invalid value.</p
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-chara~8"></span>
+              <span class="anchor" id="variable-chara~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -977,7 +1024,7 @@ It takes a UTF-8 string and return a logical array indicating for each position 
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~7"></span>
+              <span class="anchor" id="variable-str~11"></span>
               character(len=length),
             </td>
 <td>intent(in)</td>
@@ -1048,7 +1095,7 @@ This is used to handle strings that may not be encoded by UTF-8.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~3"></span>
+              <span class="anchor" id="variable-str~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1063,7 +1110,7 @@ This is used to handle strings that may not be encoded by UTF-8.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~3"></span>
+              <span class="anchor" id="variable-curr~9"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -1078,7 +1125,7 @@ This is used to handle strings that may not be encoded by UTF-8.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-next"></span>
+              <span class="anchor" id="variable-next~5"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -1136,7 +1183,7 @@ This is used to handle strings that may not be encoded by UTF-8.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

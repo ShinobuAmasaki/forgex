@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 4.4% of total for modules and submodules.">212 statements</a>
+                 title=" 4.2% of total for modules and submodules.">206 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -123,7 +123,7 @@
       <div id="inters-0" class="collapse">
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex.html#interface-is_valid_regex">is_valid_regex</a>
-            <a class="list-group-item" href="../module/forgex.html#interface-operator%28.in.%29~2">operator(.in.)</a>
+            <a class="list-group-item" href="../module/forgex.html#interface-operator%28.in.%29">operator(.in.)</a>
             <a class="list-group-item" href="../module/forgex.html#interface-operator%28.match.%29">operator(.match.)</a>
             <a class="list-group-item" href="../module/forgex.html#interface-regex">regex</a>
             <a class="list-group-item" href="../module/forgex.html#interface-regex_f">regex_f</a>
@@ -181,11 +181,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_api_internal_m.html'>forgex_api_internal_m</a></li>
                   <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
                   <li class="list-inline-item"><a href='forgex_utility_m.html'>forgex_utility_m</a></li>
-                  <li class="list-inline-item"><a href='forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_api_internal_m.html'>forgex_api_internal_m</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_optimize_m.html'>forgex_syntax_tree_optimize_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
               </ul>
             </li>
         </ul>
@@ -231,7 +231,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~4"></span>
+              <span class="anchor" id="variable-pattern~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -259,8 +259,8 @@
 
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.in.%29~2"></span>
-      <h3>public        interface <a href='../interface/operator(.in.)~2.html'>operator(.in.)</a> 
+      <span class="anchor" id="interface-operator%28.in.%29"></span>
+      <h3>public        interface <a href='../interface/operator(.in.).html'>operator(.in.)</a> 
       </h3>
     </div>
       <div class="card-body">
@@ -274,6 +274,78 @@
     </h3>
     
   <p>The function implemented for the <code>.in.</code> operator.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~14"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+          </li>
+    </ul>
+  </div>
+
+              <div class="card">
+    <div class="card-header bg-light codesum">
+      <span class="anchor" id="interface-operator%28.match.%29"></span>
+      <h3>public        interface <a href='../interface/operator(.match.).html'>operator(.match.)</a> 
+      </h3>
+    </div>
+      <div class="card-body">
+        <p>Interface for user-defined operator of <code>.match.</code></p>
+      </div>
+    <ul class="list-group">
+          <li class="list-group-item">
+                <h3>
+    private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
+
+    </h3>
+    
+  <p>The function implemented for the <code>.match.</code> operator.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -331,78 +403,6 @@
 
               <div class="card">
     <div class="card-header bg-light codesum">
-      <span class="anchor" id="interface-operator%28.match.%29"></span>
-      <h3>public        interface <a href='../interface/operator(.match.).html'>operator(.match.)</a> 
-      </h3>
-    </div>
-      <div class="card-body">
-        <p>Interface for user-defined operator of <code>.match.</code></p>
-      </div>
-    <ul class="list-group">
-          <li class="list-group-item">
-                <h3>
-    private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
-
-    </h3>
-    
-  <p>The function implemented for the <code>.match.</code> operator.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pattern~6"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>pattern</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-str~16"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>str</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-          </li>
-    </ul>
-  </div>
-
-              <div class="card">
-    <div class="card-header bg-light codesum">
       <span class="anchor" id="interface-regex"></span>
       <h3>public        interface <a href='../interface/regex.html'>regex</a> 
       </h3>
@@ -432,7 +432,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~7"></span>
+              <span class="anchor" id="variable-pattern~6"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -462,7 +462,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~42"></span>
+              <span class="anchor" id="variable-res~28"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -492,7 +492,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~3"></span>
+              <span class="anchor" id="variable-from~4"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -507,7 +507,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
+              <span class="anchor" id="variable-to~4"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -522,7 +522,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-status~2"></span>
+              <span class="anchor" id="variable-status"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -589,7 +589,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~8"></span>
+              <span class="anchor" id="variable-pattern~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -657,7 +657,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~8"></span>
+              <span class="anchor" id="variable-pattern~7"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -717,7 +717,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-pattern~4"></span>
+              <span class="anchor" id="variable-pattern~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -748,6 +748,66 @@
     <div class="card-body">
           
   <p>The function implemented for the <code>.in.</code> operator.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-pattern~4"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>pattern</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-str~14"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>str</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>logical</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-operator__match"></span> <h3>private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>The function implemented for the <code>.match.</code> operator.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -802,12 +862,17 @@
     </div>
   </div>
 
+        </section>
+        <br>
+
+        <section>
+          <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-operator__match"></span> <h3>private pure elemental function <a href='../proc/operator__match.html'>operator__match</a>(pattern, str) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-subroutine__regex"></span> <h3>private pure subroutine <a href='../proc/subroutine__regex.html'>subroutine__regex</a>(pattern, text, res, length, from, to, status, err_msg)  
 </h3></div>
     <div class="card-body">
           
-  <p>The function implemented for the <code>.match.</code> operator.</p>
+  <p>The function implemented for the <code>regex</code> subroutine.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -837,71 +902,6 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~16"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>str</strong></td>
-            <td>
-
-            </td>
-        </tr>
-    </tbody>
-  </table>
-
-    <h4>
-    Return Value
-    <small>logical</small>
-    </h4>
-    
-
-    </div>
-  </div>
-
-        </section>
-        <br>
-
-        <section>
-          <h2>Subroutines</h2>
-              <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-subroutine__regex"></span> <h3>private pure subroutine <a href='../proc/subroutine__regex.html'>subroutine__regex</a>(pattern, text, res, length, from, to, status, err_msg)  
-</h3></div>
-    <div class="card-body">
-          
-  <p>The function implemented for the <code>regex</code> subroutine.</p>
-
-  <h4>Arguments</h4>
-      <table class="table table-striped varlist">
-    <thead>
-      <tr>
-        <th scope="col">Type</th>
-<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
-        <th scope="col"></th>
-        <th scope="col">Name</th>
-        <th scope="col"></th>
-    </thead>
-    <tbody>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-pattern~7"></span>
-              character(len=*),
-            </td>
-<td>intent(in)</td>
-              <td></td>            <td>
-              
-            </td>
-            <td>::</td>
-            <td><strong>pattern</strong></td>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
               <span class="anchor" id="variable-text~2"></span>
               character(len=*),
             </td>
@@ -917,7 +917,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~42"></span>
+              <span class="anchor" id="variable-res~28"></span>
               character(len=:),
             </td>
 <td>intent(inout),</td>
@@ -947,7 +947,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~3"></span>
+              <span class="anchor" id="variable-from~4"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -962,7 +962,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~3"></span>
+              <span class="anchor" id="variable-to~4"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -977,7 +977,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-status~2"></span>
+              <span class="anchor" id="variable-status"></span>
               integer,
             </td>
 <td>intent(inout),</td>
@@ -1035,7 +1035,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>

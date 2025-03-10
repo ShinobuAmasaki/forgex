@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 5.3% of total for modules and submodules.">257 statements</a>
+                 title=" 5.5% of total for modules and submodules.">274 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -134,6 +134,7 @@
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__regex">is_valid__regex</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-is_valid__suffix">is_valid__suffix</a>
             <a class="list-group-item" href="../module/forgex_test_m.html#proc-nchar">nchar</a>
+            <a class="list-group-item" href="../module/forgex_test_m.html#proc-repeat">repeat</a>
         </div>
       </div>
     </div>
@@ -178,8 +179,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex.html'>forgex</a></li>
                   <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
+                  <li class="list-inline-item"><a href='forgex.html'>forgex</a></li>
                   <li class="list-inline-item"><a href='forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></li>
               </ul>
             </li>
@@ -218,7 +219,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~25"></span>
+              <span class="anchor" id="variable-str~26"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -384,7 +385,7 @@ compares the result to the <code>correct_answer</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~18"></span>
+              <span class="anchor" id="variable-str~19"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -460,7 +461,7 @@ compares the result to the correct answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~19"></span>
+              <span class="anchor" id="variable-str~20"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -562,7 +563,7 @@ and compares the result to the <code>correct_answer</code>.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_valid__prefix"></span> <h3>public  function <a href='../proc/is_valid__prefix.html'>is_valid__prefix</a>(pattern, expected_prefix) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_valid__prefix"></span> <h3>public  function <a href='../proc/is_valid__prefix.html'>is_valid__prefix</a>(pattern, expected_prefix, resulting) result(res)  
 </h3></div>
     <div class="card-body">
           
@@ -606,6 +607,21 @@ for a given pattern.</p>
             </td>
             <td>::</td>
             <td><strong>expected_prefix</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-resulting"></span>
+              character(len=:),
+            </td>
+<td></td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>resulting</strong></td>
             <td>
 
             </td>
@@ -658,7 +674,7 @@ function and compares the result to the expected answer.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~20"></span>
+              <span class="anchor" id="variable-str~21"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -714,7 +730,7 @@ function and compares the result to the expected answer.</p>
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-is_valid__suffix"></span> <h3>public  function <a href='../proc/is_valid__suffix.html'>is_valid__suffix</a>(pattern, expected_suffix) result(res)  
+    <div class="card-header codesum"><span class="anchor" id="proc-is_valid__suffix"></span> <h3>public  function <a href='../proc/is_valid__suffix.html'>is_valid__suffix</a>(pattern, expected_suffix, resulting) result(res)  
 </h3></div>
     <div class="card-body">
           
@@ -762,6 +778,21 @@ for a given pattern.</p>
 
             </td>
         </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-resulting~2"></span>
+              character(len=:),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>resulting</strong></td>
+            <td>
+
+            </td>
+        </tr>
     </tbody>
   </table>
 
@@ -794,7 +825,7 @@ for a given pattern.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-i~52"></span>
+              <span class="anchor" id="variable-i~49"></span>
               integer(kind=int8),
             </td>
 <td>intent(in)</td>
@@ -813,6 +844,66 @@ for a given pattern.</p>
     <h4>
     Return Value
     <small>character(len=1)</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-repeat"></span> <h3>private  function <a href='../proc/repeat.html'>repeat</a>(chara, num) result(txt)  
+</h3></div>
+    <div class="card-body">
+          
+  <p>This function generates a string by repeating a given pattern a specified number of times.</p>
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chara~10"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chara</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-num"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>num</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>character(len=:), allocatable</small>
     </h4>
     
 
@@ -844,7 +935,7 @@ for a given pattern.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~24"></span>
+              <span class="anchor" id="variable-str~25"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -984,7 +1075,7 @@ for a given pattern.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~21"></span>
+              <span class="anchor" id="variable-str~22"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1069,7 +1160,7 @@ for a given pattern.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~22"></span>
+              <span class="anchor" id="variable-str~23"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1224,7 +1315,7 @@ for a given pattern.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~23"></span>
+              <span class="anchor" id="variable-str~24"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -1437,7 +1528,7 @@ for a given pattern.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-06 00:12 +0000             </p>
+ on 2025-03-10 02:17 +0000             </p>
           </div>
         </div>
         <br>
