@@ -3,11 +3,14 @@ name: Tested with LLVM Flang on Ubuntu
 on:
   push:
     branches: [ "main", "exp" ]
+    paths-ignore:
+      - 'ford/**'
+      - 'README**.md'
   pull_request:
     branches: [ "main", "exp" ]
     paths-ignore:
       - 'ford/**'
-      - 'README.md'
+      - 'README**.md'
 jobs:
   flang:
     runs-on: ${{ matrix.os }}
