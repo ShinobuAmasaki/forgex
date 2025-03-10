@@ -7,7 +7,7 @@ on:
     branches: [ "main", "exp" ]
     paths-ignore:
       - 'ford/**'
-      - 'README.md'
+      - 'README**.md'
 jobs:
   gfortran-test:
     runs-on: ${{ matrix.os }}
