@@ -906,70 +906,11 @@ contains
    end subroutine tree_graph__times
 
 
-   !> This subroutine converts character string that represents hexadecimal value to
-   !> the segment corresponding its integer type.
-   pure subroutine hex2seg (str, seg, ierr)
-      implicit none
-      character(*), intent(in) :: str
-      type(segment_t), intent(inout) :: seg
-      integer, intent(inout) :: ierr
-
-      character(:), allocatable :: buf, fmt
-      character(8) :: c_len
-
-      integer :: i, ios, code
-      logical :: is_two_digits, is_longer_digit, is_hex_valid
-      
-      fmt = ''
-      c_len = ''
-      code = UTF8_CODE_INVALID
-      seg = segment_t(code, code)
-
-      is_two_digits = len(str) == 2
-      is_longer_digit = 2 < len(str)
-
-      if (str == '') then
-         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
-         return
-      end if
-
-      ! Get the string lenght as a character type.
-      write(c_len, '(i0)', iostat=ios) len(str)
-      if (ios/= 0) then
-         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
-         return
-      end if
-      fmt = '(z'//trim(c_len)//')'
-
-      ! Get the code point as a integer.
-      read(str, fmt=fmt, iostat=ios) code
-      is_hex_valid = ios == 0
-
-      ! Error handlers
-      if (.not. is_hex_valid) then
-         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
-         return
-      end if
-   
-      ! Reject if codepoint valud is invalid as Unicode.
-      if (.not.(code .in. SEG_WHOLE)) then
-         ierr = SYNTAX_ERR_UNICODE_EXCEED
-         return
-      end if
-
-      seg = segment_t(code, code)
-      ierr = SYNTAX_VALID
-
-   end subroutine hex2seg
-      
-
-
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
    pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
-      use :: forgex_segment_m, register => register_segment_to_list  
-      use :: forgex_character_array_m, only:parse_segment_width_in_char_array
+      use :: forgex_segment_m, register => register_segment_to_list
       use :: forgex_character_array_m
       implicit none
 
@@ -1007,6 +948,13 @@ contains
       call character_string_to_array(str, ca)
       if (.not. allocated(ca)) then
          ierr = SYNTAX_ERR_EMPTY_CHARACTER_CLASS
+         is_valid = .false.
+         return
+      end if
+
+      ! for escape sequences such as \x, \x{...}, \p{...}.
+      call parse_escape_sequence_with_argument(ca, ierr)
+      if (ierr /= SYNTAX_VALID) then
          is_valid = .false.
          return
       end if
@@ -1074,15 +1022,37 @@ contains
       ! Initialize cache and counter variable.
       j = 0 ! Couter of actual list size for `seglist`.
       c = EMPTY_CHAR
-
-      outer: do i = 1, size(ca, dim=1)
+      i = 1
+      outer: do while(i <= size(ca, dim=1))
          c = ca(i)%c
          backslashed = ca(i)%is_escaped  ! cache `is_escaped` flag
          curr_hyphenated = ca(i)%is_hyphenated
          if (i > 1) prev_hyphenated = ca(i-1)%is_hyphenated 
 
-         curr_seg = segment_t(ichar_utf8(c), ichar_utf8(c))
-      
+         ! For escape sequences that take arguments.
+         if (backslashed .and. c == ESCAPE_X) then
+            i = i + 1
+            if (i> size(ca, dim=1)) then
+               ierr = SYNTAX_ERR
+               is_valid = .false.
+               return
+            end if
+            c = ca(i)%c
+            backslashed = ca(i)%is_escaped
+            call hex2seg(c, curr_seg, ierr)
+            if (ierr /= SYNTAX_VALID) then
+               is_valid = .false.
+               return
+            end if
+         else if (backslashed .and. c == ESCAPE_P) then
+            ierr = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+            is_valid = .false.
+            return
+         else
+            curr_seg = segment_t(ichar_utf8(c), ichar_utf8(c))
+         end if
+
+         ! For escape sequences that do not take arguments
          if (backslashed) then
 
             call convert_escaped_character_into_segments(c, cache)
@@ -1099,6 +1069,7 @@ contains
                end do
                deallocate(cache)
                prev_seg = segment_t()
+               i = i + 1
                cycle outer
             end if 
 
@@ -1125,11 +1096,13 @@ contains
          end if
 
          prev_seg = curr_seg
+         i = i + 1
       end do outer
 
       if (j < 1) then
          ! pattern '[+--]' causes this error for now.
-         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         ! ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+         ierr = SYNTAX_ERR
          is_valid = .false.
          return
       end if
@@ -1143,11 +1116,13 @@ contains
 
 
    !> This subroutine converts escaped character of the argument `chara` into segment `seg_list`. 
-   pure subroutine convert_escaped_character_into_segments(chara, seg_list)!, hexcode)
+   pure subroutine convert_escaped_character_into_segments(chara, seg_list) !, hexcode)
       use :: forgex_utf8_m, only: ichar_utf8
       implicit none
       character(*), intent(in) :: chara
       type(segment_t), allocatable, intent(inout) :: seg_list(:)
+
+      integer :: unused
 
       if (allocated(seg_list)) deallocate(seg_list)
 
@@ -1200,7 +1175,11 @@ contains
          seg_list(6) = SEG_ZENKAKU_SPACE
          call invert_segment_list(seg_list)
       case (ESCAPE_X)
-
+         allocate(seg_list(1))
+         call hex2seg(chara, seg_list(1), unused)
+      case (ESCAPE_P)
+         allocate(seg_list(1))
+         seg_list(1) = SEG_ERROR
          continue
       case (SYMBOL_BSLH)
          allocate(seg_list(1))
