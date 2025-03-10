@@ -102,7 +102,7 @@ contains
    !> This function checks whether the correct prefix is extracted
    !> for a given pattern.
    function is_valid__prefix(pattern, expected_prefix, resulting) result(res)
-      use :: forgex_syntax_tree_optimize_exp_m, only: extract_literal
+      use :: forgex_syntax_tree_optimize_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_prefix
@@ -127,7 +127,7 @@ contains
    !> This function checks whether the correct suffix is extracted
    !> for a given pattern.
    function is_valid__suffix(pattern, expected_suffix, resulting) result(res)
-      use :: forgex_syntax_tree_optimize_exp_m, only: extract_literal
+      use :: forgex_syntax_tree_optimize_m, only: extract_literal
       use :: forgex_utf8_m, only: len_utf8
       implicit none
       character(*), intent(in) :: pattern, expected_suffix

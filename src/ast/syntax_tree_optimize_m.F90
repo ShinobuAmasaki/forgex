@@ -9,7 +9,7 @@
 #ifdef IMPURE
 #define pure
 #endif
-module forgex_syntax_tree_optimize_exp_m
+module forgex_syntax_tree_optimize_m
    use :: forgex_syntax_tree_node_m, only: tree_node_t
    use :: forgex_syntax_tree_graph_m, only: tree_t
    use :: forgex_utf8_m, only: char_utf8, reverse_utf8
@@ -359,4 +359,4 @@ contains
       end if
    end function return_class_closure
 
-end module forgex_syntax_tree_optimize_exp_m
+end module forgex_syntax_tree_optimize_m

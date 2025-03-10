@@ -13,7 +13,7 @@
 #endif
 module forgex
    use :: forgex_syntax_tree_graph_m, only: tree_t
-   use :: forgex_syntax_tree_optimize_exp_m
+   use :: forgex_syntax_tree_optimize_m
    ! use :: forgex_syntax_tree_optimize_m, only: get_prefix_literal, get_suffix_literal, get_entire_literal
    use :: forgex_automaton_m, only: automaton_t
    use :: forgex_api_internal_m, only: do_matching_exactly, do_matching_including
