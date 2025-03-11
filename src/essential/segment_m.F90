@@ -28,6 +28,7 @@ module forgex_segment_m
    public :: join_two_segments
    public :: width_of_segment
    public :: total_width_of_segment
+   public :: hex2seg
 
 
    !> This derived-type represents a contiguous range of the Unicode character set
@@ -341,6 +342,66 @@ contains
          ierr = SEGMENT_REJECTED
       end if
    end subroutine register_segment_to_list
+
+
+   !> This subroutine converts character string that represents hexadecimal value to
+   !> the segment corresponding its integer type.
+   pure subroutine hex2seg (str, seg, ierr)
+      use :: forgex_parameters_m
+      use :: forgex_utf8_m
+      use :: forgex_error_m
+      implicit none
+      character(*), intent(in) :: str
+      type(segment_t), intent(inout) :: seg
+      integer, intent(inout) :: ierr
+
+      character(:), allocatable :: buf, fmt
+      character(8) :: c_len
+
+      integer :: i, ios, code
+      logical :: is_two_digits, is_longer_digit, is_hex_valid
+      
+      fmt = ''
+      c_len = ''
+      code = UTF8_CODE_INVALID
+      seg = segment_t(code, code)
+
+      is_two_digits = len(str) == 2
+      is_longer_digit = 2 < len(str)
+
+      if (str == '') then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+
+      ! Get the string lenght as a character type.
+      write(c_len, '(i0)', iostat=ios) len(str)
+      if (ios/= 0) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+      fmt = '(z'//trim(c_len)//')'
+
+      ! Get the code point as a integer.
+      read(str, fmt=fmt, iostat=ios) code
+      is_hex_valid = ios == 0
+
+      ! Error handlers
+      if (.not. is_hex_valid) then
+         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+   
+      ! Reject if codepoint valud is invalid as Unicode.
+      if (.not.(code .in. SEG_WHOLE)) then
+         ierr = SYNTAX_ERR_UNICODE_EXCEED
+         return
+      end if
+
+      seg = segment_t(code, code)
+      ierr = SYNTAX_VALID
+
+   end subroutine hex2seg
 
 
 !====================================================================-!

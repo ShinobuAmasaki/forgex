@@ -56,8 +56,6 @@ program test_013
    call runner_match('\x{1F780}','�', .false., res) !  undefined
 
 
-
-
    if (res) then
       write(error_unit, *) '=== TEST CASE 13 END ==='
       stop

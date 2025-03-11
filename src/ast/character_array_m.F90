@@ -31,6 +31,7 @@ module forgex_character_array_m
    public :: character_string_to_array
    public :: parse_backslash_and_hyphen_in_char_array
    public :: parse_segment_width_in_char_array
+   public :: parse_escape_sequence_with_argument
 
 #ifdef IMPURE
    public :: dump_character_array_t_list
@@ -43,6 +44,7 @@ contains
    !> When it encounters invalid value along the way, it returns.
    pure subroutine character_string_to_array(str, array)
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX
+      use :: forgex_error_m
       use :: forgex_utf8_m, only: len_utf8, idxutf8
       implicit none
       character(*), intent(in) :: str
@@ -196,6 +198,8 @@ contains
                seg(6) = SEG_ZENKAKU_SPACE
                call invert_segment_list(seg)
                n = total_width_of_segment(seg)
+            case (ESCAPE_X)
+               n = 1
             case (SYMBOL_BSLH)
                n = 1
             case (SYMBOL_LCRB)
@@ -216,6 +220,115 @@ contains
       end do
 
    end subroutine parse_segment_width_in_char_array
+
+
+   pure subroutine parse_escape_sequence_with_argument(ca, ierr)
+      use :: forgex_segment_m
+      use :: forgex_parameters_m
+      use :: forgex_utf8_m
+      use :: forgex_error_m
+      implicit none
+      type(character_array_t), intent(inout), allocatable :: ca(:)
+      integer, intent(inout) :: ierr
+
+      type(character_array_t), allocatable :: tmp(:)
+      character(2) :: hex_two_digit
+      character(:), allocatable :: hex_long
+      integer :: i, j, k, siz, ib, ie
+
+      ierr = SYNTAX_VALID
+      if (.not. allocated(ca)) then
+         ierr = ALLOCATION_ERR
+         return
+      end if
+
+
+      hex_two_digit = ''
+      hex_long = ''
+
+      siz = size(ca, dim=1)
+      allocate(tmp(siz))
+
+      k = 1
+      j = 1
+      outer: do while (j <= siz)
+         if (ca(j)%c == ESCAPE_X) then
+            tmp(k)%c = ESCAPE_X
+            
+            j = j + 1
+            if (j > siz) exit
+            k = k + 1
+
+            if ((ichar_utf8(ca(j)%c) .in. SEG_HEX) .and. (ichar_utf8(ca(j+1)%c) .in. SEG_HEX) )then
+               hex_two_digit = trim(ca(j)%c)//trim(ca(j+1)%c)
+               tmp(k)%c = trim(adjustl(hex_two_digit))
+               
+               j = j + 2
+               if (j > siz) exit outer
+               k = k + 1
+               hex_two_digit =''
+               cycle
+
+            else if (ca(j)%c == SYMBOL_LCRB) then
+               i = j + 1
+               reader: do while (.true.)
+                  if (ca(i)%c /= SYMBOL_RCRB .and. .not. (ichar_utf8(ca(i)%c) .in. SEG_HEX)) then
+                     ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+                     return
+                  else if (ca(i)%c == SYMBOL_RCRB) then
+                     exit reader
+                  end if
+                  hex_long = trim(adjustl(hex_long))//ca(i)%c
+                  i = i + 1
+               end do reader
+
+               tmp(k)%c = trim(adjustl(hex_long))
+               
+               j = i + 1
+               if (j > siz) exit outer
+               k = k + 1
+               
+               hex_long = ''
+               cycle
+            else
+               ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+               return
+            end if
+         else if (ca(j)%c == ESCAPE_P) then
+            ierr = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+            return
+         end if
+
+         tmp(k) = ca(j)
+         
+         j = j + 1
+         if (j > siz) exit
+         k = k + 1
+      end do outer
+
+      deallocate(ca)
+      allocate(ca(k))
+      ca(:) = tmp(1:k)
+      
+   end subroutine parse_escape_sequence_with_argument
+
+
+   pure function index_ca(ca, chara) result(idx)
+      use :: forgex_parameters_m
+      implicit none
+      type(character_array_t), intent(in) :: ca(:)
+      character(*), intent(in) :: chara
+      integer :: idx
+      integer :: i, siz
+      idx = 0
+      siz = size(ca, dim=1)
+      do i = 1, siz
+         if (ca(i)%c == chara) then
+            idx = i
+            return
+         end if
+      end do
+   end function index_ca
 
 !=====================================================================!
 
