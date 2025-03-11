@@ -259,41 +259,55 @@ contains
             if (j > siz) exit
             k = k + 1
 
-            if ((ichar_utf8(ca(j)%c) .in. SEG_HEX) .and. (ichar_utf8(ca(j+1)%c) .in. SEG_HEX) )then
-               hex_two_digit = trim(ca(j)%c)//trim(ca(j+1)%c)
-               tmp(k)%c = trim(adjustl(hex_two_digit))
-               
-               j = j + 2
-               if (j > siz) exit outer
-               k = k + 1
-               hex_two_digit =''
-               cycle
+            if (j+1 <= siz) then
 
-            else if (ca(j)%c == SYMBOL_LCRB) then
-               i = j + 1
-               reader: do while (.true.)
-                  if (ca(i)%c /= SYMBOL_RCRB .and. .not. (ichar_utf8(ca(i)%c) .in. SEG_HEX)) then
-                     ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
-                     return
-                  else if (ca(i)%c == SYMBOL_RCRB) then
-                     exit reader
-                  end if
-                  hex_long = trim(adjustl(hex_long))//ca(i)%c
-                  i = i + 1
-               end do reader
+               if ((ichar_utf8(ca(j)%c) .in. SEG_HEX) .and. (ichar_utf8(ca(j+1)%c) .in. SEG_HEX) )then
+                  hex_two_digit = trim(ca(j)%c)//trim(ca(j+1)%c)
+                  tmp(k)%c = trim(adjustl(hex_two_digit))
+                  
+                  j = j + 2
+                  if (j > siz) exit outer
+                  k = k + 1
+                  hex_two_digit =''
+                  cycle
+   
+               else if (ca(j)%c == SYMBOL_LCRB) then
+                  i = j + 1
+                  reader: do while (.true.)
 
-               tmp(k)%c = trim(adjustl(hex_long))
-               
-               j = i + 1
-               if (j > siz) exit outer
-               k = k + 1
-               
-               hex_long = ''
-               cycle
+                     if (i > siz) then
+                        ierr = SYNTAX_ERR_CURLYBRACE_MISSING
+                        return
+                     end if
+
+                     if (ca(i)%c /= SYMBOL_RCRB .and. .not. (ichar_utf8(ca(i)%c) .in. SEG_HEX)) then
+                        ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+                        return
+                     else if (ca(i)%c == SYMBOL_RCRB) then
+                        exit reader
+                     end if
+                     hex_long = trim(adjustl(hex_long))//ca(i)%c
+                     i = i + 1
+                  end do reader
+   
+                  tmp(k)%c = trim(adjustl(hex_long))
+                  
+                  j = i + 1
+                  if (j > siz) exit outer
+                  k = k + 1
+                  
+                  hex_long = ''
+                  cycle
+               else
+                  ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+                  return
+               end if
+
             else
-               ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+               ierr = SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
                return
             end if
+
          else if (ca(j)%c == ESCAPE_P) then
             ierr = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
             return

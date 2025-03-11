@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.2% of total for modules and submodules.">110 statements</a>
+                 title=" 2.2% of total for modules and submodules.">114 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -122,6 +122,7 @@
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_escaped_symbol_missing">err_escaped_symbol_missing</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_exceed_unicode_limit">err_exceed_unicode_limit</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_generic">err_generic</a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_hex_is_not_enought_digit">err_hex_is_not_enought_digit</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_invalid_character_range">err_invalid_character_range</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_invalid_hexadecimal_value">err_invalid_hexadecimal_value</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_invalid_quantifier">err_invalid_quantifier</a>
@@ -151,7 +152,7 @@
       </a>
       <div id="enums-0" class="collapse">
         <div class="list-group list-group-flush">
-            <a class="list-group-item" href="../module/forgex_error_m.html#enum-__unnamed__"><em>unnamed</em></a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#enum-__unnamed__~6"><em>unnamed</em></a>
         </div>
       </div>
     </div>
@@ -330,6 +331,23 @@ parameter
         </tr>
         <tr>
             <td>
+              <span class="anchor" id="variable-err_hex_is_not_enought_digit"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>err_hex_is_not_enought_digit</strong></td>
+<td> =</td>
+                <td>&#34;ERROR: At least 2 hexadecimal digits are required (e.g., &#39;0A&#39; instead of &#39;A&#39;).&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
               <span class="anchor" id="variable-err_invalid_character_range"></span>
               character(len=*),
             </td>
@@ -357,7 +375,7 @@ parameter
             <td>::</td>
             <td><strong>err_invalid_hexadecimal_value</strong></td>
 <td> =</td>
-                <td>&#34;ERROR: Cannot convert to hexadecimal value.&#34;</td>
+                <td>&#34;ERROR: Invalid characters detected. Ensure all characters are 0-9, A-F/a-f.&#34;</td>
             <td>
                 
             </td>
@@ -643,7 +661,7 @@ parameter
         <section>
           <h2>Enumerations</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="enum-__unnamed__"></span><h3>enum, bind(c)</h3></div>
+    <div class="card-header codesum"><span class="anchor" id="enum-__unnamed__~6"></span><h3>enum, bind(c)</h3></div>
     <div class="card-body">
       <h4>Enumerators</h4>
       <table class="table table-striped varlist">
@@ -730,19 +748,23 @@ parameter
             </tr>
             <tr>
               <td>enumerator</td><td>::</td>
-              <td><strong>SYNTAX_ERR_UNICODE_EXCEED</strong></td><td> = </td><td>20</td><td></td>
+              <td><strong>SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH</strong></td><td> = </td><td>20</td><td></td>
             </tr>
             <tr>
               <td>enumerator</td><td>::</td>
-              <td><strong>SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED</strong></td><td> = </td><td>21</td><td></td>
+              <td><strong>SYNTAX_ERR_UNICODE_EXCEED</strong></td><td> = </td><td>21</td><td></td>
             </tr>
             <tr>
               <td>enumerator</td><td>::</td>
-              <td><strong>SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN</strong></td><td> = </td><td>22</td><td></td>
+              <td><strong>SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED</strong></td><td> = </td><td>22</td><td></td>
             </tr>
             <tr>
               <td>enumerator</td><td>::</td>
-              <td><strong>ALLOCATION_ERR</strong></td><td> = </td><td>23</td><td></td>
+              <td><strong>SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN</strong></td><td> = </td><td>23</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>ALLOCATION_ERR</strong></td><td> = </td><td>24</td><td></td>
             </tr>
         </tbody>
       </table>
@@ -779,7 +801,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code~5"></span>
+              <span class="anchor" id="variable-code~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -828,7 +850,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-11 00:42 +0000             </p>
+ on 2025-03-11 02:11 +0000             </p>
           </div>
         </div>
         <br>
