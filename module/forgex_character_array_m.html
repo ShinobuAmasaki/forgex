@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 3.1% of total for modules and submodules.">153 statements</a>
+                 title=" 4.8% of total for modules and submodules.">245 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -129,7 +129,18 @@
       </div>
     </div>
 
-  
+      <div class="card mb-4">
+      <a data-bs-toggle="collapse" href="#funcs-0"
+         aria-expanded="false" aria-controls="funcs-0">
+         <h4 class="card-header bg-primary text-white">Functions</h4>
+      </a>
+      <div id="funcs-0" class="collapse">
+        <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_character_array_m.html#proc-index_ca">index_ca</a>
+        </div>
+      </div>
+    </div>
+
       <div class="card mb-4">
       <a data-bs-toggle="collapse" href="#subs-0"
          aria-expanded="false" aria-controls="subs-0">
@@ -139,6 +150,7 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_character_array_m.html#proc-character_string_to_array">character_string_to_array</a>
             <a class="list-group-item" href="../module/forgex_character_array_m.html#proc-parse_backslash_and_hyphen_in_char_array">parse_backslash_and_hyphen_in_char_array</a>
+            <a class="list-group-item" href="../module/forgex_character_array_m.html#proc-parse_escape_sequence_with_argument">parse_escape_sequence_with_argument</a>
             <a class="list-group-item" href="../module/forgex_character_array_m.html#proc-parse_segment_width_in_char_array">parse_segment_width_in_char_array</a>
         </div>
       </div>
@@ -200,7 +212,7 @@ and greater than 1 for most shorthand escape sequences.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-c"></span>
+              <span class="anchor" id="variable-c~7"></span>
               character(len=:),
             </td>
               <td>public,</td>
@@ -295,6 +307,70 @@ and greater than 1 for most shorthand escape sequences.</p>
         </section>
         <br>
 
+        <section>
+          <h2>Functions</h2>
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-index_ca"></span> <h3>private pure function <a href='../proc/index_ca.html'>index_ca</a>(ca, chara) result(idx)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ca~3"></span>
+              type(<a href='../type/character_array_t.html'>character_array_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ca</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-chara~6"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>chara</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+    <h4>
+    Return Value
+    <small>integer</small>
+    </h4>
+    
+
+    </div>
+  </div>
+
+        </section>
+        <br>
 
         <section>
           <h2>Subroutines</h2>
@@ -320,7 +396,7 @@ When it encounters invalid value along the way, it returns.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~11"></span>
+              <span class="anchor" id="variable-str~17"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -392,7 +468,62 @@ the current element in <code>character_array_t</code> type array.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ierr"></span>
+              <span class="anchor" id="variable-ierr~4"></span>
+              integer,
+            </td>
+<td>intent(inout)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>ierr</strong></td>
+            <td>
+
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+    </div>
+  </div>
+
+              <div class="card">
+    <div class="card-header codesum"><span class="anchor" id="proc-parse_escape_sequence_with_argument"></span> <h3>public pure subroutine <a href='../proc/parse_escape_sequence_with_argument.html'>parse_escape_sequence_with_argument</a>(ca, ierr)  
+</h3></div>
+    <div class="card-body">
+          
+  
+
+  <h4>Arguments</h4>
+      <table class="table table-striped varlist">
+    <thead>
+      <tr>
+        <th scope="col">Type</th>
+<th scope="col">Intent</th><th scope="col">Optional</th>        <th scope="col">Attributes</th>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ca~2"></span>
+              type(<a href='../type/character_array_t.html'>character_array_t</a>),
+            </td>
+<td>intent(inout),</td>
+              <td></td>            <td>
+              allocatable
+            </td>
+            <td>::</td>
+            <td><strong>ca</strong>(:)</td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-ierr~5"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -476,7 +607,7 @@ the current array element to its <code>seg_size</code>.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-10 08:24 +0000             </p>
+ on 2025-03-11 00:42 +0000             </p>
           </div>
         </div>
         <br>

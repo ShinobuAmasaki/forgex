@@ -31,6 +31,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
       enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
       enumerator :: SYNTAX_ERR_UNICODE_EXCEED
+      enumerator :: SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
       enumerator :: ALLOCATION_ERR
    end enum
@@ -103,6 +104,8 @@ module forgex_error_m
    ! SYNTAX_ERR_UNICODE_EXCEED
    character(*), parameter :: err_exceed_unicode_limit = "ERROR: Given hex number exceeds the range of unicode codepoint."
 
+   ! SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+   character(*), parameter :: err_unicode_property = "ERROR: Unicode property escape hasn't implemented yet."
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = "ERROR: Fatal error is happened."
    
