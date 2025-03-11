@@ -435,7 +435,7 @@ contains
          return
 
       case default
-         self%code = SYNTAX_ERR
+         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
          self%is_valid = .false.
          return
       end select
@@ -743,7 +743,7 @@ contains
 
       if (is_longer_digit) call self%tape%get_token()
 
-      hex = hex//self%tape%token_char(1:1) ! First, get the second digit.
+      hex = self%tape%token_char(1:1) ! First, get the second digit.
       i = 2
 
       reader: do while(.true.)
@@ -762,7 +762,7 @@ contains
       end do reader
 
       allocate(seglist(1))
-      call hex2seg(hex, seglist(1), self%code)
+      call hex2seg(trim(hex), seglist(1), self%code)
 
       if (self%code /= SYNTAX_VALID) then
          self%is_valid = .false.
@@ -1033,7 +1033,7 @@ contains
          if (backslashed .and. c == ESCAPE_X) then
             i = i + 1
             if (i> size(ca, dim=1)) then
-               ierr = SYNTAX_ERR
+               ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
                is_valid = .false.
                return
             end if
@@ -1102,7 +1102,7 @@ contains
       if (j < 1) then
          ! pattern '[+--]' causes this error for now.
          ! ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
-         ierr = SYNTAX_ERR
+         ierr = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
          is_valid = .false.
          return
       end if
