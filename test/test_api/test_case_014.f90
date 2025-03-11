@@ -145,6 +145,8 @@ program test_case_014
 
    call runner_match("[\x{3042}-\x{309f}]{5}", "あいうえお", .true., res)
    call runner_match("[\x{3042}-\x{309f}]{1,5}", "かきくけこ", .true., res)
+   call runner_match('[\x21-\x7a]+','!abc', .true., res)
+
 
    if (res) then
       write(error_unit, *) '=== TEST CASE 14 END ==='
