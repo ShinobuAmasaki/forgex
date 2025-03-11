@@ -369,8 +369,8 @@ contains
       is_two_digits = len(str) == 2
       is_longer_digit = 2 < len(str)
 
-      if (str == '') then
-         ierr = SYNTAX_ERR_INVALID_HEXADECIMAL
+      if (str == '' .or. len(str) <2) then
+         ierr = SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
          return
       end if
 

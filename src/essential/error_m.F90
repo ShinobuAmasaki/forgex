@@ -30,6 +30,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_PLUS_INCOMPLETE
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
       enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
+      enumerator :: SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
       enumerator :: SYNTAX_ERR_UNICODE_EXCEED
       enumerator :: SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
@@ -99,13 +100,19 @@ module forgex_error_m
    character(*), parameter :: err_token_incomplete = "ERROR: The token is incomplete."
 
    ! SYNTAX_ERR_INVALID_HEXADECIMAL
-   character(*), parameter :: err_invalid_hexadecimal_value = "ERROR: Cannot convert to hexadecimal value."
+   character(*), parameter :: err_invalid_hexadecimal_value = &
+                "ERROR: Invalid characters detected. Ensure all characters are 0-9, A-F/a-f."
+
+   ! SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
+   character(*), parameter :: err_hex_is_not_enought_digit = &
+                "ERROR: At least 2 hexadecimal digits are required (e.g., '0A' instead of 'A')."
 
    ! SYNTAX_ERR_UNICODE_EXCEED
    character(*), parameter :: err_exceed_unicode_limit = "ERROR: Given hex number exceeds the range of unicode codepoint."
 
    ! SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
    character(*), parameter :: err_unicode_property = "ERROR: Unicode property escape hasn't implemented yet."
+
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = "ERROR: Fatal error is happened."
    
@@ -182,6 +189,9 @@ contains
 
       case (SYNTAX_ERR_INVALID_HEXADECIMAL)
          msg = err_invalid_hexadecimal_value
+      
+      case (SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH)
+         msg = err_hex_is_not_enought_digit
 
       case (SYNTAX_ERR_UNICODE_EXCEED)
          msg = err_exceed_unicode_limit

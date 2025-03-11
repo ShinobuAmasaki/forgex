@@ -6,9 +6,8 @@ program error_case_003
 
    logical :: res = .true.
 
-   ! For handling errors of the special tokens.
-   ! Pointed out in issue#6 on GitHub.
-
+   ! Invalid characters and too short digits.
+   
    print *, "=== ERROR MESSAGE CASE 3 BEGIN ==="
 !=====================================================================!
 
