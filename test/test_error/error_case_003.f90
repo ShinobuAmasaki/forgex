@@ -31,6 +31,12 @@ program error_case_003
    call runner_error("\xa", '', SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH, res)
    call runner_error("\x{a}", '', SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH, res)
 
+   call runner_error("[x]", '', SYNTAX_VALID, res)
+   call runner_error("[xa]", '', SYNTAX_VALID, res)
+   call runner_error("[xax]", '', SYNTAX_VALID, res)
+   call runner_error("[ax]", '', SYNTAX_VALID, res)
+
+
 !=====================================================================!
    if (res) then
       write(error_unit, *) "=== ERROR MESSAGE CASE 2 END ==="
