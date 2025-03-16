@@ -952,6 +952,13 @@ contains
          return
       end if
 
+      ! Remove backslash and hyphen, and raise respective flag for each component.
+      call parse_backslash_and_hyphen_in_char_array(ca, ierr)
+      if (ierr == SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR) then
+         is_valid = .false.
+         return
+      end if
+
       ! for escape sequences such as \x, \x{...}, \p{...}.
       call parse_escape_sequence_with_argument(ca, ierr)
       if (ierr /= SYNTAX_VALID) then
@@ -959,12 +966,9 @@ contains
          return
       end if
 
-      ! Remove backslash and hyphen, and raise respective flag for each component.
-      call parse_backslash_and_hyphen_in_char_array(ca, ierr)
-      if (ierr == SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR) then
-         is_valid = .false.
-         return
-      end if
+#ifdef IMPURE
+      call dump_character_array_t_list(ca)
+#endif
 
       ! Each ca(:)%seg_size will be set by this procedure calling.
       call parse_segment_width_in_char_array(ca)
