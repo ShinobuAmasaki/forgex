@@ -252,11 +252,11 @@ contains
       k = 1
       j = 1
       outer: do while (j <= siz)
-         if (ca(j)%c == ESCAPE_X) then
+         if (ca(j)%c == ESCAPE_X .and. ca(j)%is_escaped) then
             tmp(k)%c = ESCAPE_X
-            
+            tmp(k)%is_escaped = .true.
             j = j + 1
-            if (j > siz) exit
+            if (j > siz) exit outer
             k = k + 1
 
             if (j+1 <= siz) then
@@ -264,11 +264,11 @@ contains
                if ((ichar_utf8(ca(j)%c) .in. SEG_HEX) .and. (ichar_utf8(ca(j+1)%c) .in. SEG_HEX) )then
                   hex_two_digit = trim(ca(j)%c)//trim(ca(j+1)%c)
                   tmp(k)%c = trim(adjustl(hex_two_digit))
-                  
+                  ! tmp(k)%is_escaped = .true.
+                  tmp(k)%is_hyphenated = ca(j+1)%is_hyphenated
                   j = j + 2
                   if (j > siz) exit outer
                   k = k + 1
-                  hex_two_digit =''
                   cycle
    
                else if (ca(j)%c == SYMBOL_LCRB) then
@@ -289,9 +289,11 @@ contains
                      hex_long = trim(adjustl(hex_long))//ca(i)%c
                      i = i + 1
                   end do reader
-   
+
                   tmp(k)%c = trim(adjustl(hex_long))
-                  
+                  ! tmp(k)%is_escaped = .true.
+                  tmp(k)%is_hyphenated = ca(i)%is_hyphenated
+
                   j = i + 1
                   if (j > siz) exit outer
                   k = k + 1
@@ -323,6 +325,9 @@ contains
       deallocate(ca)
       allocate(ca(k))
       ca(:) = tmp(1:k)
+
+      ! call dump_character_array_t_list(tmp)
+      ! call dump_character_array_t_list(ca)
       
    end subroutine parse_escape_sequence_with_argument
 

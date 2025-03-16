@@ -149,10 +149,10 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_character_array_m.html'>forgex_character_array_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_character_array_m.html'>forgex_character_array_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
               </ul>
             </li>
         </ul>
@@ -176,7 +176,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-str~24"></span>
+              <span class="anchor" id="variable-str~23"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -221,7 +221,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ierr~3"></span>
+              <span class="anchor" id="variable-ierr~5"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -296,6 +296,13 @@
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      end if</span>
 
+<span class="w">      </span><span class="c">! Remove backslash and hyphen, and raise respective flag for each component.</span>
+<span class="w">      </span><span class="k">call </span><span class="n">parse_backslash_and_hyphen_in_char_array</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ierr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
+<span class="w">         </span><span class="k">return</span>
+<span class="k">      end if</span>
+
 <span class="w">      </span><span class="c">! for escape sequences such as \x, \x{...}, \p{...}.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">parse_escape_sequence_with_argument</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ierr</span><span class="w"> </span><span class="o">/=</span><span class="w"> </span><span class="n">SYNTAX_VALID</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -303,12 +310,9 @@
 <span class="w">         </span><span class="k">return</span>
 <span class="k">      end if</span>
 
-<span class="w">      </span><span class="c">! Remove backslash and hyphen, and raise respective flag for each component.</span>
-<span class="w">      </span><span class="k">call </span><span class="n">parse_backslash_and_hyphen_in_char_array</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ierr</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         </span><span class="n">is_valid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">false</span><span class="p">.</span>
-<span class="w">         </span><span class="k">return</span>
-<span class="k">      end if</span>
+<span class="cp">#ifdef IMPURE</span>
+<span class="w">      </span><span class="k">call </span><span class="n">dump_character_array_t_list</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
+<span class="cp">#endif</span>
 
 <span class="w">      </span><span class="c">! Each ca(:)%seg_size will be set by this procedure calling.</span>
 <span class="w">      </span><span class="k">call </span><span class="n">parse_segment_width_in_char_array</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
@@ -479,7 +483,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-11 02:11 +0000             </p>
+ on 2025-03-16 15:12 +0000             </p>
           </div>
         </div>
         <br>

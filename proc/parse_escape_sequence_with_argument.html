@@ -76,7 +76,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.8% of total for procedures.">81 statements</a>
+                 title=" 1.9% of total for procedures.">83 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -150,9 +150,9 @@
             <li class="list-group-item">
               <ul class="list-inline">
                   <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
-                  <li class="list-inline-item"><a href='../module/forgex_error_m.html'>forgex_error_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_error_m.html'>forgex_error_m</a></li>
               </ul>
             </li>
         </ul>
@@ -250,23 +250,23 @@
 <span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">      </span><span class="n">outer</span><span class="p">:</span><span class="w"> </span><span class="k">do while</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ESCAPE_X</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">ESCAPE_X</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">is_escaped</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 <span class="k">            </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ESCAPE_X</span>
-<span class="w">            </span>
+<span class="w">            </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">is_escaped</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">            </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span><span class="w"> </span><span class="k">exit</span>
-<span class="k">            </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span><span class="w"> </span><span class="k">exit </span><span class="n">outer</span>
+<span class="w">            </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 
 <span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
 
 <span class="k">               if</span><span class="w"> </span><span class="p">((</span><span class="n">ichar_utf8</span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">SEG_HEX</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="p">(</span><span class="n">ichar_utf8</span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="n">in</span><span class="p">.</span><span class="w"> </span><span class="n">SEG_HEX</span><span class="p">)</span><span class="w"> </span><span class="p">)</span><span class="k">then</span>
 <span class="k">                  </span><span class="n">hex_two_digit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span><span class="o">//</span><span class="nb">trim</span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span>
 <span class="w">                  </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">hex_two_digit</span><span class="p">))</span>
-<span class="w">                  </span>
+<span class="w">                  </span><span class="c">! tmp(k)%is_escaped = .true.</span>
+<span class="w">                  </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">is_hyphenated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)%</span><span class="n">is_hyphenated</span>
 <span class="w">                  </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span>
 <span class="w">                  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span><span class="w"> </span><span class="k">exit </span><span class="n">outer</span>
 <span class="w">                  </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
-<span class="w">                  </span><span class="n">hex_two_digit</span><span class="w"> </span><span class="o">=</span><span class="s1">&#39;&#39;</span>
 <span class="w">                  </span><span class="k">cycle</span>
 <span class="k">   </span>
 <span class="k">               else if</span><span class="w"> </span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">j</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">SYMBOL_LCRB</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
@@ -287,9 +287,11 @@
 <span class="k">                     </span><span class="n">hex_long</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">hex_long</span><span class="p">))</span><span class="o">//</span><span class="n">ca</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span>
 <span class="w">                     </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">                  </span><span class="k">end do </span><span class="n">reader</span>
-<span class="w">   </span>
+
 <span class="w">                  </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">trim</span><span class="p">(</span><span class="nb">adjustl</span><span class="p">(</span><span class="n">hex_long</span><span class="p">))</span>
-<span class="w">                  </span>
+<span class="w">                  </span><span class="c">! tmp(k)%is_escaped = .true.</span>
+<span class="w">                  </span><span class="n">tmp</span><span class="p">(</span><span class="n">k</span><span class="p">)%</span><span class="n">is_hyphenated</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ca</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">is_hyphenated</span>
+
 <span class="w">                  </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">                  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">j</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">siz</span><span class="p">)</span><span class="w"> </span><span class="k">exit </span><span class="n">outer</span>
 <span class="w">                  </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span>
@@ -321,6 +323,9 @@
 <span class="w">      </span><span class="k">deallocate</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
 <span class="w">      </span><span class="k">allocate</span><span class="p">(</span><span class="n">ca</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
 <span class="w">      </span><span class="n">ca</span><span class="p">(:)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tmp</span><span class="p">(</span><span class="mi">1</span><span class="p">:</span><span class="n">k</span><span class="p">)</span>
+
+<span class="w">      </span><span class="c">! call dump_character_array_t_list(tmp)</span>
+<span class="w">      </span><span class="c">! call dump_character_array_t_list(ca)</span>
 <span class="w">      </span>
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">parse_escape_sequence_with_argument</span>
 </pre></div>
@@ -346,7 +351,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-11 02:11 +0000             </p>
+ on 2025-03-16 15:12 +0000             </p>
           </div>
         </div>
         <br>
