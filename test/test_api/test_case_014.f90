@@ -152,6 +152,12 @@ program test_case_014
    call runner_match('[x]', 'x', .true., res)
    call runner_match('[x]', 'a', .false., res)
 
+   call runner_match("[xaf]", 'a', .true., res)
+   call runner_match("[xaf]", 'x', .true., res)
+   call runner_match("[xaf]", 'f', .true., res)
+   call runner_match("[\xaf]", 'a', .false., res)
+   call runner_match("[\xaf]", 'x', .false., res)
+   call runner_match("[\xaf]", 'f', .false., res)
 
    if (res) then
       write(error_unit, *) '=== TEST CASE 14 END ==='
