@@ -31,7 +31,7 @@ module forgex_syntax_tree_graph_m
       integer :: paren_balance
    contains
       procedure :: build => tree_graph__build_syntax_tree
-      procedure :: reallocate => tree_graph__reallocate
+      procedure :: allocate => tree_graph__allocate
       procedure :: deallocate => tree_graph__deallocate
       procedure :: register => tree_graph__register_node
       procedure :: register_connector => tree_graph__register_connector
@@ -101,7 +101,7 @@ contains
    !> This procedure handles the reallcation of the `tree_node_t` type array 
    !> within the component of the `tree_t` object.
    !> However, it is not be used in v4.2.
-   pure subroutine tree_graph__reallocate(self)
+   pure subroutine tree_graph__allocate(self)
       implicit none
       class(tree_t), intent(inout) :: self
       integer :: new_part_begin, new_part_end, i
@@ -129,7 +129,7 @@ contains
 
       deallocate(tmp)
 
-   end subroutine tree_graph__reallocate
+   end subroutine tree_graph__allocate
 
 
    !> This procedure deallocates `nodes` of `tree_t`
@@ -150,7 +150,7 @@ contains
 
       top = self%top + 1
       if (top > ubound(self%nodes, dim=1)) then
-         call self%reallocate()
+         call self%allocate()
       end if
       node%own_i = top
       self%nodes(top) = node

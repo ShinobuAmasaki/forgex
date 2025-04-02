@@ -167,8 +167,8 @@ contains
 
       ! Execute an error stop statement if the counter exceeds a limit.
       if (self%dfa%dfa_top >= self%dfa%dfa_limit) then
-         ! Reallocate
-         call self%dfa%reallocate()
+         ! allocate
+         call self%dfa%allocate()
       end if
 
       !> @note The processing here should reflect the semantic change of `dfa_top`.

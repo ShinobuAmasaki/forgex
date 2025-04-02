@@ -31,7 +31,7 @@ module forgex_nfa_graph_m
    contains
       procedure :: new_nfa_node => nfa_graph__new_node
       procedure :: is_exceeded => nfa_graph__is_exceeded
-      procedure :: reallocate => nfa_graph__reallocate
+      procedure :: allocate => nfa_graph__allocate
       procedure :: build => nfa_graph__build
       procedure :: collect_epsilon_transition => nfa_graph__collect_epsilon_transition
       procedure :: mark_epsilon_transition => nfa_graph__mark_epsilon_transition
@@ -60,7 +60,7 @@ contains
    end function nfa_graph__is_exceeded
 
 
-   pure subroutine nfa_graph__reallocate(self)
+   pure subroutine nfa_graph__allocate(self)
       implicit none
       class(nfa_graph_t), intent(inout) :: self
       type(nfa_state_node_t), allocatable :: tmp(:)
@@ -74,7 +74,7 @@ contains
       self%graph(NFA_STATE_BASE:n) = tmp(NFA_STATE_BASE:n)
 
       self%graph(n+1:n*2)%forward_top = 1
-   end subroutine nfa_graph__reallocate
+   end subroutine nfa_graph__allocate
 
 
    pure subroutine nfa_graph__build(self, tree, entry_i, exit_i, entire)
@@ -216,7 +216,7 @@ contains
                cube%sps(m) = cache
             end if
          end do 
-         if (m > 0) cube%sps(1:m) = cube%sps(1:m) ! reallocation implicitly
+         if (m > 0) cube%sps(1:m) = cube%sps(1:m) ! allocation implicitly
 
       end block dequeue
 
@@ -402,7 +402,7 @@ contains
             do j = 1, num_1st_repeat
                call nfa%new_nfa_node()
 
-               if (nfa%is_exceeded()) call nfa%reallocate()
+               if (nfa%is_exceeded()) call nfa%allocate()
 
                node1 = nfa%top
                call generate_nfa(tree, tree%nodes(i)%left_i, nfa, entry_local, node1)
@@ -417,7 +417,7 @@ contains
 
             do j = 1, num_2nd_repeat
                call nfa%new_nfa_node()
-               if (nfa%is_exceeded()) call nfa%reallocate()
+               if (nfa%is_exceeded()) call nfa%allocate()
                node2 = nfa%top
 
                call generate_nfa(tree, tree%nodes(i)%left_i, nfa, entry_local, node2)
@@ -456,7 +456,7 @@ contains
       integer(int32) :: node1
 
       call nfa%new_nfa_node()
-      if (nfa%is_exceeded()) call nfa%reallocate()
+      if (nfa%is_exceeded()) call nfa%allocate()
 
       node1 = nfa%top
 
@@ -476,11 +476,11 @@ contains
       integer(int32) :: node1, node2
 
       call nfa%new_nfa_node()
-      if (nfa%is_exceeded()) call nfa%reallocate()
+      if (nfa%is_exceeded()) call nfa%allocate()
       node1 = nfa%top
 
       call nfa%new_nfa_node()
-      if (nfa%is_exceeded()) call nfa%reallocate()
+      if (nfa%is_exceeded()) call nfa%allocate()
       node2 = nfa%top
 
       call nfa%graph(entry_i)%add_transition(entry_i, node1, [SEG_EPSILON])

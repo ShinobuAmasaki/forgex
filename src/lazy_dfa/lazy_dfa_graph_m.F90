@@ -33,7 +33,7 @@ module forgex_lazy_dfa_graph_m
       procedure :: lazy_dfa__add_transition
       procedure :: dense_dfa__add_transition
       generic   :: add_transition => lazy_dfa__add_transition, dense_dfa__add_transition
-      procedure :: reallocate     => lazy_dfa__reallocate
+      procedure :: allocate     => lazy_dfa__allocate
    end type dfa_graph_t
 
 contains
@@ -52,6 +52,12 @@ contains
 
       allocate(self%nodes(base:limit))
 
+      ! The currently policy is to choose not to preallocate transition tables on each node.
+      ! This dicision was made for better runtime performance.
+      ! do i = base, limit
+      !    call self%nodes(i)%alloc_f()
+      ! end do
+
       self%alloc_count_node = 1
 
       self%nodes(:)%own_i = [(i, i=base, limit)]
@@ -61,12 +67,12 @@ contains
    end subroutine lazy_dfa__preprocess
 
 
-   !> This subroutine performs reallocating array that represents the DFA graph.
+   !> This subroutine performs allocating array that represents the DFA graph.
    !>
-   !> It evaluates the current upper limit for the array reallocation request call,
-   !> and if the hard limit is not exceeded, performs the reallocation and updates the
+   !> It evaluates the current upper limit for the array allocation request call,
+   !> and if the hard limit is not exceeded, performs the allocation and updates the
    !> upper limit, otherwise the program stops with `ERROR STOP`.
-   pure subroutine lazy_dfa__reallocate(self)
+   pure subroutine lazy_dfa__allocate(self)
       implicit none
       class(dfa_graph_t), intent(inout) :: self
       type(dfa_state_node_t), allocatable :: tmp(:)
@@ -99,7 +105,7 @@ contains
       self%nodes(new_part_begin:new_part_end)%own_i = [(i, i=new_part_begin, new_part_end)]
 
       self%dfa_limit = new_part_end
-   end subroutine lazy_dfa__reallocate
+   end subroutine lazy_dfa__allocate
 
 
 

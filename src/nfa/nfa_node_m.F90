@@ -39,7 +39,7 @@ module forgex_nfa_node_m
    contains
       procedure :: nfa__add_transition, nfa__add_transition_cube
       generic :: add_transition => nfa__add_transition, nfa__add_transition_cube
-      procedure :: realloc_forward => nfa__reallocate_transition_forward
+      procedure :: alloc_forward => nfa__allocate_transition_forward
       procedure :: merge_segment => nfa__merge_segments_of_transition
    end type nfa_state_node_t
 
@@ -68,7 +68,7 @@ contains
       end if
 
       if (.not. allocated(self%forward)) then
-         call self%realloc_forward()
+         call self%alloc_forward()
       end if
 
       if (any(seg == SEG_EPSILON)) then
@@ -107,7 +107,7 @@ contains
       end if
 
       if (.not. allocated(self%forward)) then
-         call self%realloc_forward()
+         call self%alloc_forward()
       end if
 
       call self%forward(j)%c%add(cube)
@@ -119,7 +119,7 @@ contains
    end subroutine nfa__add_transition_cube
 
 
-   pure subroutine nfa__reallocate_transition_forward (self)
+   pure subroutine nfa__allocate_transition_forward (self)
       implicit none
       class(nfa_state_node_t), intent(inout) :: self
 
@@ -153,7 +153,7 @@ contains
 
       self%forward(1:new_part_end)%own_j = [(j, j=1, new_part_end)]
 
-   end subroutine nfa__reallocate_transition_forward
+   end subroutine nfa__allocate_transition_forward
 
 
    pure elemental subroutine nfa__merge_segments_of_transition(self)

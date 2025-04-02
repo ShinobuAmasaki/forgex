@@ -102,7 +102,7 @@ contains
          index_array(i) = idx + offset
          i = i + 1
 
-         ! Reallocate
+         ! Rallocate
          if (i > siz) then
             call move_alloc(index_array, tmp)
             allocate(index_array(2*siz), source=INVALID_CHAR_INDEX)

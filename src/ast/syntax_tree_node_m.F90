@@ -78,7 +78,7 @@ module forgex_syntax_tree_node_m
 contains
 
 
-   pure subroutine reallocate_tree(tree, alloc_count)
+   pure subroutine allocate_tree(tree, alloc_count)
       implicit none
       type(tree_node_t), allocatable, intent(inout) :: tree(:)
       integer,                    intent(inout)    :: alloc_count
@@ -112,7 +112,7 @@ contains
 
       ! deallocate old tree
       deallocate(tmp)
-   end subroutine reallocate_tree
+   end subroutine allocate_tree
 
 
    !> This subroutine deallocate the syntax tree.

@@ -47,7 +47,7 @@ module forgex_lazy_dfa_node_m
       procedure :: init_tra_top      => dfa_state_node__initialize_transition_top
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
       procedure :: add_transition    => dfa_state_node__add_transition
-      procedure :: realloc_f         => dfa_state_node__reallocate_transition_forward
+      procedure :: alloc_f         => dfa_state_node__allocate_transition_forward
       procedure :: dfa_state_node__is_registered_transition, dfa_state_node__is_registered_transition_cube
       generic   :: is_registered_tra => dfa_state_node__is_registered_transition, dfa_state_node__is_registered_transition_cube
    end type dfa_state_node_t
@@ -93,7 +93,7 @@ contains
       integer :: j
 
       if (.not. self%initialized .or. .not. allocated(self%transition)) then
-         call self%realloc_f()
+         call self%alloc_f()
       end if
 
       !== At this point, self%transition is definitely already assigned. ==!
@@ -110,7 +110,7 @@ contains
       j = self%get_tra_top()
 
       if (j >= size(self%transition, dim=1)) then
-         call self%realloc_f()
+         call self%alloc_f()
       end if
 
       self%transition(j) = tra
@@ -133,7 +133,7 @@ contains
 
    !> This subroutine performs allocating initial or additional transition arrays.
    !>
-   pure subroutine dfa_state_node__reallocate_transition_forward(self)
+   pure subroutine dfa_state_node__allocate_transition_forward(self)
       implicit none
       class(dfa_state_node_t), intent(inout) :: self
 
@@ -168,7 +168,7 @@ contains
       ! Initialize the new part of the array.
       self%transition(new_part_begin:new_part_end)%own_j = [(j, j=new_part_begin, new_part_end)]
       self%initialized = .true.
-   end subroutine dfa_state_node__reallocate_transition_forward
+   end subroutine dfa_state_node__allocate_transition_forward
 
 
    ! This function scans all transition of the node and returns true if a
