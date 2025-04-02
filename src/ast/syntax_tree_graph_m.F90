@@ -871,6 +871,7 @@ contains
       logical :: is_single_prop, is_longer_prop
 
       self%code = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+      self%is_valid = .false.
       return
       
       property = ''
@@ -1311,9 +1312,9 @@ contains
       case (ESCAPE_X)
          allocate(seg_list(1))
          call hex2seg(chara, seg_list(1), unused)
-      case (ESCAPE_P)
-         allocate(seg_list(1))
-         seg_list(1) = SEG_ERROR
+      ! case (ESCAPE_P)
+      !    allocate(seg_list(1))
+      !    seg_list(1) = SEG_ERROR
          continue
       case (SYMBOL_BSLH)
          allocate(seg_list(1))
