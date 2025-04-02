@@ -156,7 +156,7 @@ contains
       end if
 
       ! Free the automaton instance.
-      call automaton%free()
+      ! call automaton%free()
    end function operator__in
 
 
@@ -226,7 +226,7 @@ contains
       call do_matching_exactly(automaton, str, res, prefix, suffix, unused)
 
       ! Free the automaton instance.
-      call automaton%free()
+      ! call automaton%free()
 
    end function operator__match
 
@@ -343,7 +343,7 @@ contains
       end if
 
       ! Free the automaton instance.
-      call automaton%free()
+      ! call automaton%free()
    end subroutine subroutine__regex
 
 

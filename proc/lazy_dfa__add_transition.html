@@ -12,15 +12,30 @@
 
     <title>lazy_dfa__add_transition &ndash; Forgex—Fortran Regular Expression</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="../css/pygments.css" rel="stylesheet">
-    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
     <link href="../css/local.css" rel="stylesheet">
-      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
       <link href="../css/user.css" rel="stylesheet">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
@@ -97,9 +112,11 @@
     </div>
   </div>
   <script>
-    $(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip()
-    })
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
   </script>
 
   </div>
@@ -141,7 +158,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>private pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, seg)  
+    <h2>private pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, symbol)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -149,7 +166,7 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
               </ul>
             </li>
@@ -177,7 +194,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~9"></span>
+              <span class="anchor" id="variable-self~4"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -192,7 +209,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state_set~4"></span>
+              <span class="anchor" id="variable-state_set"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -207,7 +224,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-src~2"></span>
+              <span class="anchor" id="variable-src"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -222,7 +239,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst~4"></span>
+              <span class="anchor" id="variable-dst"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -237,15 +254,15 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~3"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
+              <span class="anchor" id="variable-symbol"></span>
+              character(len=*),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>seg</strong></td>
+            <td><strong>symbol</strong></td>
             <td>
                 
             </td>
@@ -267,18 +284,19 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">lazy_dfa__add_transition</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">seg</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_segment_m</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">lazy_dfa__add_transition</span><span class="p">(</span><span class="n">self</span><span class="p">,</span><span class="w"> </span><span class="n">state_set</span><span class="p">,</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span><span class="p">,</span><span class="w"> </span><span class="n">symbol</span><span class="p">)</span>
+<span class="w">      </span><span class="c">! use :: forgex_segment_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_cube_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">cube_t</span>
 <span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_nfa_state_set_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      class</span><span class="p">(</span><span class="n">dfa_graph_t</span><span class="p">),</span><span class="w">    </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">self</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_set_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">state_set</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="w">               </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">src</span><span class="p">,</span><span class="w"> </span><span class="n">dst</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w">       </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w">    </span><span class="kd">::</span><span class="w"> </span><span class="n">seg</span>
-
+<span class="w">      </span><span class="c">! type(segment_t),       intent(in)    :: seg</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">symbol</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">dfa_transition_t</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tra</span>
 
-<span class="w">      </span><span class="n">tra</span><span class="p">%</span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">seg</span>
+<span class="w">      </span><span class="k">call </span><span class="n">tra</span><span class="p">%</span><span class="n">c</span><span class="p">%</span><span class="n">add</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
 <span class="w">      </span><span class="n">tra</span><span class="p">%</span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dst</span>
 
 <span class="w">      </span><span class="n">tra</span><span class="p">%</span><span class="n">nfa_set</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state_set</span>
@@ -309,33 +327,11 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-16 15:12 +0000             </p>
+ on 2025-04-02 09:45 +0000             </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
-
-    <!-- MathJax JavaScript
-             ================================================== -->
-             <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-          });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-          <script src="../tipuesearch/tipuesearch_content.js"></script>
-          <script src="../tipuesearch/tipuesearch_set.js"></script>
-          <script src="../tipuesearch/tipuesearch.js"></script>
-
   </body>
 </html>

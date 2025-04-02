@@ -19,13 +19,14 @@ module forgex_lazy_dfa_node_m
          DFA_NOT_INIT_TRAENSITION_TOP, ALLOC_COUNT_INITTIAL
    use :: forgex_segment_m, only: segment_t
    use :: forgex_nfa_state_set_m, only: nfa_state_set_t
+   use :: forgex_cube_m, only: cube_t
    implicit none
    private
 
    public :: copy_dfa_transition
 
    type, public :: dfa_transition_t
-      type(segment_t)       :: c
+      type(cube_t)          :: c
       type(nfa_state_set_t) :: nfa_set
       integer(int32)        :: own_j = DFA_NOT_INIT ! Own index in the list of transitions
       integer(int32)        :: dst   = DFA_NOT_INIT ! The destination node index of DFA graph.
@@ -47,8 +48,8 @@ module forgex_lazy_dfa_node_m
       procedure :: increment_tra_top => dfa_state_node__increment_transition_top
       procedure :: add_transition    => dfa_state_node__add_transition
       procedure :: realloc_f         => dfa_state_node__reallocate_transition_forward
-      procedure :: is_registered_tra => dfa_state_node__is_registered_transition
-      procedure :: free              => dfa_state_node__deallocate
+      procedure :: dfa_state_node__is_registered_transition, dfa_state_node__is_registered_transition_cube
+      generic   :: is_registered_tra => dfa_state_node__is_registered_transition, dfa_state_node__is_registered_transition_cube
    end type dfa_state_node_t
 
 contains
@@ -72,15 +73,6 @@ contains
 
       self%tra_top = top
    end subroutine dfa_state_node__initialize_transition_top
-
-
-   !> This subroutine deallocates the transition array of a DFA state node.
-   pure subroutine dfa_state_node__deallocate(self)
-      implicit none
-      class(dfa_state_node_t), intent(inout) :: self
-
-      if (allocated(self%transition)) deallocate(self%transition)
-   end subroutine dfa_state_node__deallocate
 
 
    !> This subroutine increments the value of top transition index.
@@ -182,7 +174,7 @@ contains
    ! This function scans all transition of the node and returns true if a
    ! transition containing the given symbol is already registered.
    pure function dfa_state_node__is_registered_transition(self, dst, symbol) result(res)
-      use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
+      use :: forgex_cube_m, only: operator(.in.)
       implicit none
       class(dfa_state_node_t), intent(in) :: self
       integer, intent(in) :: dst
@@ -195,12 +187,38 @@ contains
       res = .false.
       do j = 1, self%get_tra_top()
          if (self%transition(j)%dst == dst) then
-            if (symbol_to_segment(symbol) .in. self%transition(j)%c) then
+            if (symbol .in. self%transition(j)%c) then
                res = .true.
                return
             end if
          end if
       end do
    end function dfa_state_node__is_registered_transition
+
+
+   pure function dfa_state_node__is_registered_transition_cube(self, dst, cube) result(res)
+      use :: forgex_cube_m, only: cube_t, operator(==)
+      implicit none
+      class(dfa_state_node_t), intent(in) :: self
+      integer, intent(in) :: dst
+      type(cube_t), intent(in) :: cube
+
+      logical :: res
+
+      integer :: j
+
+      res = .false.
+      do j = 1, self%get_tra_top()
+         if (self%transition(j)%dst == dst) then
+
+            if (self%transition(j)%c == cube ) then
+               res = .true.
+               return
+            end if
+         end if
+      end do
+      
+   end function dfa_state_node__is_registered_transition_cube
+      
 
 end module forgex_lazy_dfa_node_m

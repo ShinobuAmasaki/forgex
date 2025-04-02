@@ -10,6 +10,12 @@ module forgex_parameters_m
    use, intrinsic :: iso_fortran_env, only: int32
    implicit none
 
+   integer(int32), parameter :: bits_64 = 64
+   integer(int32), parameter :: BMP_SIZE_BIT = 65536
+   integer(int32), parameter :: BMP_SIZE = BMP_SIZE_BIT / bits_64 ! BMP (U+0000 .. U+FFFF)
+   integer(int32), parameter :: ASCII_SIZE_BIT = 128
+   integer(int32), parameter :: ASCII_SIZE = ASCII_SIZE_BIT / bits_64
+
    !> This constant defines the unit for adding nodes in the abstract syntax tree (AST).
    !> If it's too large it will cause a stack overflow.
    integer(int32), parameter :: TREE_NODE_UNIT = 32
@@ -33,6 +39,8 @@ module forgex_parameters_m
    integer(int32), parameter :: INVALID_SEGMENT_SIZE = -1
    integer(int32), parameter :: SEGMENT_REGISTERED = 0
    integer(int32), parameter :: SEGMENT_REJECTED = 1
+
+   integer(int32), parameter :: INVALID_CODE_POINT = -1
 
    ! For handling UTF-8
    integer(int32), parameter, public :: UTF8_CODE_MAX     = 1114111 ! = 0x10ffff
@@ -119,7 +127,7 @@ module forgex_parameters_m
 
    !> This constant defines the unit of reallocation for the array representing
    !> a DFA graph.
-   integer(int32), parameter, public :: DFA_STATE_UNIT = 16
+   integer(int32), parameter, public :: DFA_STATE_UNIT = 32
 
    !> This constant is provided to define the upper limit of DFA nodes,
    !> but is currently only used to define DFA_STATE_HARD_LIMIT.
@@ -141,7 +149,7 @@ module forgex_parameters_m
    integer(int32), parameter, public :: DFA_TRANSITION_BASE = 1
 
    !> This constant defines the unit of additional allocation for DFA transitions.
-   integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 32
+   integer(int32), parameter, public :: DFA_TRANSITION_UNIT = 128
 
    !> This constant is used to represent that the array of DFA transitions
    !> has not yet been initialized.

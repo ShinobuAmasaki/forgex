@@ -44,25 +44,26 @@ contains
       type(nfa_transition_t) :: n_tra
       integer :: i, j, k
 
-      call init_state_set(state_set, automaton%nfa%nfa_top)
+      call init_state_set(state_set, automaton%nfa%top)
 
       if (.not. allocated(automaton%dfa%nodes(curr)%nfa_set%vec)) return
 
       current_set = automaton%dfa%nodes(curr)%nfa_set
 
-      outer: do i = 1, automaton%nfa%nfa_top
+      outer: do i = 1, automaton%nfa%top
 
          if (check_nfa_state(current_set, i)) then
-            n_node = automaton%nfa%nodes(i)
+            n_node = automaton%nfa%graph(i)
             if (.not. allocated(n_node%forward)) cycle
 
             middle: do j = 1, n_node%forward_top
                n_tra = n_node%forward(j)
-               do k = 1, n_tra%c_top
+               ! do k = 1, n_tra%c_top
                   if (n_tra%dst /= NFA_NULL_TRANSITION) then
                      call add_nfa_state(state_set, n_node%forward(j)%dst)
                   end if
-               end do
+               ! end do
+
             end do middle
          end if
       end do outer
@@ -116,6 +117,7 @@ contains
 
    !> This subroutine convert an NFA into a fully compiled DFA.
    pure subroutine construct_dense_dfa(automaton, curr_i)
+      use :: forgex_cube_m, only: cube_t
       use :: forgex_segment_m, only: SEG_EPSILON, operator(/=)
       implicit none
       type(automaton_t), intent(inout) :: automaton
@@ -123,7 +125,9 @@ contains
 
       ! Already automaton is initialized
       type(dfa_transition_t) :: d_tra
-      integer :: dst_i, i, j, k, ii
+      integer :: dst_i, i, j, k, ii, dst_n
+
+      type(cube_t) :: cube
 
       i =  curr_i
       outer: do while (i < automaton%dfa%dfa_top)
@@ -143,22 +147,24 @@ contains
 
          if (dst_i == DFA_INVALID_INDEX) error stop "DFA registration failed."
 
-         middle: do ii = 1, automaton%nfa%nfa_top
+         middle: do ii = 1, automaton%nfa%top
 
-            if (.not. allocated(automaton%nfa%nodes(ii)%forward))  cycle middle
+            if (.not. allocated(automaton%nfa%graph(ii)%forward))  cycle middle
 
-            inner: do j = 1, automaton%nfa%nodes(ii)%forward_top
-
-               if (automaton%nfa%nodes(ii)%forward(j)%dst == NFA_NULL_TRANSITION) cycle middle
+            inner: do j = 1, automaton%nfa%graph(ii)%forward_top
 
 
-               if (check_nfa_state(d_tra%nfa_set, automaton%nfa%nodes(ii)%forward(j)%dst)) then
-                  core: do k = 1, automaton%nfa%nodes(ii)%forward(j)%c_top
-                     if (automaton%nfa%nodes(ii)%forward(j)%c(k) /= SEG_EPSILON) then
-                        call automaton%dfa%add_transition(d_tra%nfa_set, i, dst_i, &
-                              automaton%nfa%nodes(ii)%forward(j)%c(k))
-                     end if
-                  end do core
+               dst_n = automaton%nfa%graph(ii)%forward(j)%dst
+
+               if (dst_n == NFA_NULL_TRANSITION) cycle middle
+
+               if (check_nfa_state(d_tra%nfa_set, dst_n)) then
+
+
+                  if (automaton%dfa%nodes(i)%is_registered_tra(dst_i, automaton%nfa%graph(ii)%forward(j)%c)) cycle inner
+
+                  call automaton%dfa%add_transition(d_tra%nfa_set, i, dst_i, automaton%nfa%graph(ii)%forward(j)%c)
+
                end if
 
             end do inner
@@ -172,7 +178,7 @@ contains
    !> This function returns the index of the destination DFA state from the
    !> index of the current automaton DFA state array and the input symbol.
    pure function next_state_dense_dfa(automaton, curr_i, symbol) result(dst_i)
-      use :: forgex_segment_m, only: symbol_to_segment, operator(.in.)
+      use :: forgex_cube_m, only: operator(.in.)
       implicit none
       type(automaton_t), intent(in) :: automaton
       integer(int32), intent(in) :: curr_i
@@ -187,7 +193,7 @@ contains
       dst_i = DFA_INVALID_INDEX
       do j = 1, d_node%get_tra_top()
          d_tra = d_node%transition(j)
-         if (symbol_to_segment(symbol) .in. d_tra%c) then
+         if (symbol .in. d_tra%c) then
             dst_i = d_tra%dst
             return
          end if

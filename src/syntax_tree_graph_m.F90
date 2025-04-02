@@ -16,6 +16,7 @@ module forgex_syntax_tree_graph_m
    use :: forgex_syntax_tree_node_m, &
       only: tree_node_t, tape_t, terminal, make_atom, make_tree_node, make_repeat_node
    use :: forgex_error_m
+   ! use :: forgex_unicode_gc_m
    implicit none
    private
 
@@ -46,6 +47,8 @@ module forgex_syntax_tree_graph_m
       procedure :: crlf => tree_graph__make_tree_crlf
       procedure :: shorthand => tree_graph__shorthand
       procedure :: hex2seg => tree_graph__hexadecimal_to_segment
+      procedure :: hex2cp => tree_graph__hexadecimal_to_codepoint
+      procedure :: property => tree_graph__unicode_property
       procedure :: times => tree_graph__times
       procedure :: print => print_tree_wrap
    end type
@@ -150,7 +153,6 @@ contains
          call self%reallocate()
       end if
       node%own_i = top
-
       self%nodes(top) = node
       self%nodes(top)%is_registered = .true.
       self%top = top
@@ -447,11 +449,13 @@ contains
    !> and does not call any other recursive procedures.
    pure subroutine tree_graph__char_class(self)
       use :: forgex_utf8_m, only: idxutf8, len_utf8, count_token, ichar_utf8
+      use :: forgex_cube_m, only: cube_t, assignment(=)
       use :: forgex_enums_m
       implicit none
       class(tree_t), intent(inout) :: self
 
-      type(segment_t), allocatable :: seglist(:)
+      ! type(segment_t), allocatable :: seglist(:)
+      type(cube_t) :: cube
       character(:), allocatable :: buf
       type(tree_node_t) :: node
 
@@ -519,37 +523,30 @@ contains
          return
       end if
 
-      call interpret_class_string(buf, seglist, self%is_valid, self%code)
+      call interpret_class_string(buf, cube, self%is_valid, self%code)
 
       if (.not. self%is_valid) then
          return
       end if
 
-      if (.not. allocated(seglist)) then
-         self%code = ALLOCATION_ERR
-         self%is_valid = .false.
-         return
-      end if
-
-      if (size(seglist) < 1) then
-         self%code = SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
-         self%is_valid = .false.
-         return
-      end if
-
       ! the seglist array have been allocated near the L362.
       if (is_inverted) then
-         call invert_segment_list(seglist)
-      end if
-
-      if (.not. allocated(seglist)) then
-         error stop "ERROR: `seg_list` is not allocated. This should not happen."
+         call cube%invert()
       end if
 
       node = make_tree_node(op_char)
-      if (.not. allocated(node%c)) allocate(node%c(size(seglist, dim=1)))
 
-      node%c(:) = seglist(:)
+      ! Manually cube_t copy
+      if (.not. cube%is_switched_to_bmp)then 
+         node%c%ascii = cube%ascii
+      else
+         call node%c%switch_bmp()
+         node%c%bmp%b(:) = cube%bmp%b(:)
+      end if
+
+      node%c%single_flag = cube%single_flag
+      if (allocated(cube%sps)) node%c%sps = cube%sps(:)
+      if (cube%is_flagged_epsilon()) call node%c%flag_epsilon()
 
       call self%register_connector(node, terminal, terminal)
 
@@ -639,49 +636,71 @@ contains
          return
 
       case (ESCAPE_D_CAPITAL)
-         allocate(seglist(1))
-         seglist(1) = SEG_DIGIT
-         call invert_segment_list(seglist)
+         call node%c%add(SEG_DIGIT)
+         call node%c%invert()
+         ! allocate(seglist(1))
+         ! seglist(1) = SEG_DIGIT
+         ! call invert_segment_list(seglist)
 
       case (ESCAPE_W)
-         allocate(seglist(4))
-         seglist(1) = SEG_LOWERCASE
-         seglist(2) = SEG_UPPERCASE
-         seglist(3) = SEG_DIGIT
-         seglist(4) = SEG_UNDERSCORE
+         call node%c%add(SEG_LOWERCASE)
+         call node%c%add(SEG_UNDERSCORE)
+         call node%c%add(SEG_DIGIT)
+         call node%c%add(SEG_UPPERCASE)
+
+         ! allocate(seglist(4))
+         ! seglist(1) = SEG_LOWERCASE
+         ! seglist(2) = SEG_UPPERCASE
+         ! seglist(3) = SEG_DIGIT
+         ! seglist(4) = SEG_UNDERSCORE
 
       case (ESCAPE_W_CAPITAL)
-         allocate(seglist(4))
-         seglist(1) = SEG_LOWERCASE
-         seglist(2) = SEG_UPPERCASE
-         seglist(3) = SEG_DIGIT
-         seglist(4) = SEG_UNDERSCORE
-         call invert_segment_list(seglist)
+         call node%c%add(SEG_LOWERCASE)
+         call node%c%add(SEG_UNDERSCORE)
+         call node%c%add(SEG_DIGIT)
+         call node%c%add(SEG_UPPERCASE)
+         call node%c%invert()
+         ! allocate(seglist(4))
+         ! seglist(1) = SEG_LOWERCASE
+         ! seglist(2) = SEG_UPPERCASE
+         ! seglist(3) = SEG_DIGIT
+         ! seglist(4) = SEG_UNDERSCORE
+         ! call invert_segment_list(seglist)
 
       case (ESCAPE_S)
-         allocate(seglist(6))
-         seglist(1) = SEG_SPACE
-         seglist(2) = SEG_TAB
-         seglist(3) = SEG_CR
-         seglist(4) = SEG_LF
-         seglist(5) = SEG_FF
-         seglist(6) = SEG_ZENKAKU_SPACE
+         call node%c%add([SEG_SPACE, SEG_TAB, SEG_CR, SEG_LF, SEG_FF, SEG_ZENKAKU_SPACE])
+
+         ! allocate(seglist(6))
+         ! seglist(1) = SEG_SPACE
+         ! seglist(2) = SEG_TAB
+         ! seglist(3) = SEG_CR
+         ! seglist(4) = SEG_LF
+         ! seglist(5) = SEG_FF
+         ! seglist(6) = SEG_ZENKAKU_SPACE
 
       case (ESCAPE_S_CAPITAL)
-         allocate(seglist(6))
-         seglist(1) = SEG_SPACE
-         seglist(2) = SEG_TAB
-         seglist(3) = SEG_CR
-         seglist(4) = SEG_LF
-         seglist(5) = SEG_FF
-         seglist(6) = SEG_ZENKAKU_SPACE
-         call invert_segment_list(seglist)
+         call node%c%add([SEG_SPACE, SEG_TAB, SEG_CR, SEG_LF, SEG_FF, SEG_ZENKAKU_SPACE])
+         call node%c%invert()
+
+         ! allocate(seglist(6))
+         ! seglist(1) = SEG_SPACE
+         ! seglist(2) = SEG_TAB
+         ! seglist(3) = SEG_CR
+         ! seglist(4) = SEG_LF
+         ! seglist(5) = SEG_FF
+         ! seglist(6) = SEG_ZENKAKU_SPACE
+         ! call invert_segment_list(seglist)
 
       case (ESCAPE_X)
          ! Error handling for x escape sequence is handled by hex2seg.
          call self%hex2seg(seglist)
          if (.not. self%is_valid) return
          ! It is not necessary to call self%tape%get_token() procedure.
+         call node%c%add(seglist)
+
+      case (ESCAPE_P)
+         call self%property(seglist)
+         if (.not. self%is_valid) return
 
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
@@ -697,7 +716,9 @@ contains
             SYMBOL_HYPN)
          chara = self%tape%token_char
          seg = segment_t(ichar_utf8(chara), ichar_utf8(chara))
-         node = make_atom(seg)
+         node%op = op_char
+
+         call node%c%add(seg)
          call self%register_connector(node, terminal, terminal)
          return
 
@@ -711,18 +732,81 @@ contains
          return
       end select
 
-      allocate(node%c(size(seglist, dim=1)))
+      ! allocate(node%c(size(seglist, dim=1)))
       ! This size function is safe because it is always allocated 
       ! to the non-returned branches of the select case above.
 
-      node%c(:) = seglist(:)
+      ! node%c(:) = seglist(:)
       node%op = op_char
 
       call self%register_connector(node, terminal, terminal)
 
-      deallocate(seglist)
+      ! deallocate(seglist)
 
    end subroutine tree_graph__shorthand
+
+
+   pure subroutine tree_graph__hexadecimal_to_codepoint(self, cp)
+      implicit none
+      class(tree_t), intent(inout) :: self
+      integer(int32), intent(inout) :: cp
+
+      character(:), allocatable :: buf, fmt
+      character(6) :: hex_c
+      character(8) :: hex_len_c
+      integer :: i, ios
+      logical :: is_two_digit, is_longer_digit
+
+      buf = ''
+
+      call self%tape%get_token()
+
+      is_longer_digit = self%tape%current_token == tk_lcurlybrace
+      is_two_digit = .not. is_longer_digit
+
+      if (is_longer_digit) call self%tape%get_token()
+
+      buf = self%tape%token_char(1:1) ! First, get the second digit.
+      i = 2
+
+      reader: do while(.true.)
+         if (is_two_digit .and. i >= 3) exit reader
+         call self%tape%get_token()
+
+         if (is_longer_digit .and. self%tape%current_token /= tk_rcurlybrace .and. self%tape%current_token /= tk_char) then
+            self%is_valid = .false.
+            self%code = SYNTAX_ERR_CURLYBRACE_MISSING
+            return
+         end if
+
+         if (self%tape%current_token == tk_rcurlybrace) exit reader
+         buf = buf//self%tape%token_char(1:1)
+         i = i + 1
+      end do reader
+
+      hex_c = trim(adjustl(buf))
+
+      write(hex_len_c, '(i0)', iostat=ios) len_trim(hex_c)
+      if (ios /= 0) then
+         self%code = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      endif
+
+      fmt = '(z'//trim(hex_len_c)//')'
+      read(hex_c, fmt=fmt, iostat=ios) cp
+
+      if (ios /= 0) then
+         self%code = SYNTAX_ERR_INVALID_HEXADECIMAL
+         return
+      end if
+
+      if (.not. (cp .in. SEG_WHOLE)) then
+         self%code = SYNTAX_ERR_UNICODE_EXCEED
+         return
+      end if
+
+   end subroutine tree_graph__hexadecimal_to_codepoint
+
 
    !> This procedure handles a escape sequence with '\x'.
    pure subroutine tree_graph__hexadecimal_to_segment(self, seglist)
@@ -775,6 +859,51 @@ contains
 
 
    end subroutine tree_graph__hexadecimal_to_segment
+
+
+   pure subroutine tree_graph__unicode_property(self, seglist)
+      implicit none
+      class(tree_t), intent(inout) :: self
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+
+      character(:), allocatable :: property
+      integer :: i
+      logical :: is_single_prop, is_longer_prop
+
+      self%code = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+      return
+      
+      property = ''
+
+      call self%tape%get_token()
+
+      is_longer_prop = self%tape%current_token == tk_lcurlybrace
+      is_single_prop = .not. is_longer_prop
+
+      if (is_longer_prop) call self%tape%get_token()
+
+      property = self%tape%token_char(1:1)
+      
+      if (is_longer_prop) then
+         i = 2
+         reader: do while (.true.)
+            call self%tape%get_token()
+
+            if (self%tape%current_token /= tk_rcurlybrace .and.  self%tape%current_token /= tk_char) then
+               self%is_valid = .false.
+               self%code = SYNTAX_ERR_CURLYBRACE_MISSING
+               return
+            end if
+
+            if (self%tape%current_token == tk_rcurlybrace) exit
+            property = property//self%tape%token_char(1:1)
+            i = i + 1
+         end do reader
+      end if
+
+      ! call prop2seg(property, seglist, self%code)
+
+   end subroutine tree_graph__unicode_property 
 
 
    !> This subroutine handles a quantifier range, and
@@ -907,22 +1036,25 @@ contains
 
 
    !> This subroutine parses a pattern string and outputs a list of `segment_t` type.
-   pure subroutine interpret_class_string(str, seglist, is_valid, ierr)
+   pure subroutine interpret_class_string(str, cube, is_valid, ierr)
       use :: forgex_utf8_m, only: idxutf8, next_idxutf8, len_utf8, ichar_utf8
       use :: forgex_parameters_m
       use :: forgex_segment_m, register => register_segment_to_list
       use :: forgex_character_array_m
+      use :: forgex_cube_m, only: cube_t
       implicit none
 
       character(*), intent(in) :: str
-      type(segment_t), intent(inout), allocatable :: seglist(:)
+      type(cube_t), intent(inout) :: cube
       logical, intent(inout) :: is_valid
       integer, intent(inout) :: ierr
 
       integer :: i, j, k
       integer :: jerr
+
       type(segment_t) :: prev_seg, curr_seg
       type(segment_t), allocatable :: list(:), cache(:)
+
       logical :: backslashed
       logical :: prev_hyphenated, curr_hyphenated
       type(character_array_t), allocatable :: ca(:) ! character array
@@ -1111,9 +1243,7 @@ contains
          return
       end if
 
-      allocate(seglist(j))
-
-      seglist(1:j) = list(1:j) ! copy local array into the argument array.
+      call cube%add(list(1:j)) ! copy local array into the argument array.
 
    end subroutine interpret_class_string
 
@@ -1219,6 +1349,7 @@ contains
       use, intrinsic :: iso_fortran_env, stderr => error_unit
       implicit none
       class(tree_node_t), intent(in) :: tree(:)
+      type(segment_t), allocatable :: segments(:)
 
       integer :: i, k
 
@@ -1229,17 +1360,13 @@ contains
                tree(i)%op, tree(i)%parent_i, tree(i)%left_i, tree(i)%right_i, '   ', &
                tree(i)%is_registered
 
-            if (allocated(tree(i)%c)) then
-               do k = 1, ubound(tree(i)%c, dim=1)
+            call tree(i)%c%cube2seg(segments)
+            do k = 1, ubound(segments, dim=1)
+               if (k /= 1) write(stderr, '(a)', advance='no') ', '
 
-                  if (k /= 1) write(stderr, '(a)', advance='no') ', '
-                   write(stderr, '(a)', advance='no') tree(i)%c(k)%print()
-                                 
-               end do
-               write(stderr, *) ""
-            else
-               write(stderr, *) " "
-            end if
+               write(stderr, '(a)', advance='no') trim(segments(k)%print())
+            end do
+            write(stderr, *) ""
          end if
       end do
    end subroutine dump_tree_table
@@ -1310,6 +1437,8 @@ contains
       use :: forgex_utf8_m
       implicit none
       type(tree_node_t), intent(in) :: tree(:)
+      
+      type(segment_t), allocatable :: segments(:)
       integer(int32) :: root_i
       character(:), allocatable :: str
 
@@ -1317,31 +1446,38 @@ contains
       character(:),allocatable :: buf
 
       str = ''
-      if (allocated(tree(root_i)%c)) then
-         siz = size(tree(root_i)%c, dim=1)
+
+      call tree(root_i)%c%cube2seg(segments)
+
+      if (allocated(segments)) then
+         siz = size(segments, dim=1)
       else
          return
       end if
 
       if (siz == 0) return
 
-      if (tree(root_i)%c(1) == SEG_LF) then
+      if (segments(1) == SEG_LF) then
          str = '<LF>'
          return
 
-      else if (tree(root_i)%c(1) == SEG_CR) then
+      else if (segments(1) == SEG_CR) then
          str = '<CR>'
          return
 
-      else if (tree(root_i)%c(1) == SEG_EMPTY) then
+      else if (segments(1) == SEG_NULL) then
+         str = '<NULL>'
+         return
+
+      else if (segments(1) == SEG_EMPTY) then
          str ="<EMPTY>"
          return
 
-      else if (siz == 1 .and. tree(root_i)%c(1)%min == tree(root_i)%c(1)%max) then
-         str = '"'//char_utf8(tree(root_i)%c(1)%min)//'"'
+      else if (siz == 1 .and. segments(1)%min == segments(1)%max) then
+         str = '"'//char_utf8(segments(1)%min)//'"'
          return
 
-      else if (siz == 1 .and. tree(root_i)%c(1) == SEG_ANY) then
+      else if (siz == 1 .and. segments(1) == SEG_ANY) then
          str = '<ANY>'
          return
       end if
@@ -1349,29 +1485,32 @@ contains
       buf = '[ '
       do j = 1, siz
 
-         if (tree(root_i)%c(j) == SEG_LF) then
+         if (segments(j) == SEG_LF) then
             buf = buf//'<LF>; '
 
-         else if (tree(root_i)%c(j) == SEG_TAB) then
+         else if (segments(j) == SEG_TAB) then
             buf = buf//'<TAB>; '
 
-         else if (tree(root_i)%c(j) == SEG_CR) then
+         else if (segments(j) == SEG_CR) then
             buf = buf//'<CR>; '
 
-         else if (tree(root_i)%c(j) == SEG_FF) then
+         else if (segments(j) == SEG_FF) then
             buf = buf//'<FF>; '
 
-         else if (tree(root_i)%c(j) == SEG_SPACE) then
+         else if (segments(j) == SEG_SPACE) then
             buf = buf//'<SPACE>; '
 
-         else if (tree(root_i)%c(j) == SEG_ZENKAKU_SPACE) then
+         else if (segments(j) == SEG_ZENKAKU_SPACE) then
             buf = buf//'<ZENKAKU SPACE>; '
+      
+         else if (segments(j)%min == 0) then
+            buf = buf//'<NULL>'//'-"'//char_utf8(segments(j)%max)//'"; '
 
-         else if (tree(root_i)%c(j)%max == UTF8_CODE_MAX) then
-            buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//"<U+1FFFFF>"//'; '
+         else if (segments(j)%max == UTF8_CODE_MAX) then
+            buf = buf//'"'//char_utf8(segments(j)%min)//'"-"'//"<U+10FFFF>"//'; '
 
          else
-            buf = buf//'"'//char_utf8(tree(root_i)%c(j)%min)//'"-"'//char_utf8(tree(root_i)%c(j)%max)//'"; '
+            buf = buf//'"'//char_utf8(segments(j)%min)//'"-"'//char_utf8(segments(j)%max)//'"; '
          end if
       end do
 

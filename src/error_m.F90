@@ -10,7 +10,7 @@ module forgex_error_m
    implicit none
    
    enum, bind(c)
-      enumerator :: SYNTAX_VALID
+      enumerator :: SYNTAX_VALID !0
       enumerator :: SYNTAX_ERR
       enumerator :: SYNTAX_ERR_PARENTHESIS_MISSING
       enumerator :: SYNTAX_ERR_PARENTHESIS_UNEXPECTED
@@ -20,7 +20,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_CURLYBRACE_UNEXPECTED
       enumerator :: SYNTAX_ERR_INVALID_TIMES
       enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
-      enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
+      enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_INVALID ! 10
       enumerator :: SYNTAX_ERR_EMPTY_CHARACTER_CLASS
       enumerator :: SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
       enumerator :: SYNTAX_ERR_MISPLACED_SUBTRACTION_OPERATOR
@@ -30,9 +30,10 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_PLUS_INCOMPLETE
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
       enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
-      enumerator :: SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
+      enumerator :: SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH ! 20
       enumerator :: SYNTAX_ERR_UNICODE_EXCEED
       enumerator :: SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+      enumerator :: SYNTAX_ERR_EMPTY_PROPERTY
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
       enumerator :: ALLOCATION_ERR
    end enum

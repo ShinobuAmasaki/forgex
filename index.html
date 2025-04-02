@@ -12,15 +12,30 @@
 
     <title> Forgex—Fortran Regular Expression </title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="./css/pygments.css" rel="stylesheet">
-    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="./css/fontawesome.min.css" rel="stylesheet">
+    <link href="./css/brands.min.css" rel="stylesheet">
+    <link href="./css/regular.min.css" rel="stylesheet">
+    <link href="./css/solid.min.css" rel="stylesheet">
+    <link href="./css/v4-font-face.min.css" rel="stylesheet">
+    <link href="./css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
     <link href="./css/local.css" rel="stylesheet">
-      <link  href="./tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
       <link href="./css/user.css" rel="stylesheet">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="./js/svg-pan-zoom.min.js"></script>
   </head>
 
@@ -425,7 +440,7 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Source Files</h3>
-              <ul><li><a href='sourcefile/api_internal_m.f90.html'>api_internal_m.F90</a></li><li><a href='sourcefile/automaton_m.f90.html'>automaton_m.F90</a></li><li><a href='sourcefile/character_array_m.f90.html'>character_array_m.F90</a></li><li><a href='sourcefile/dense_dfa_m.f90.html'>dense_dfa_m.f90</a></li><li><a href='sourcefile/enums_m.f90.html'>enums_m.f90</a></li><li><a href='sourcefile/error_m.f90.html'>error_m.F90</a></li><li><a href='sourcefile/forgex.f90.html'>forgex.F90</a></li><li><a href='sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.F90</a></li><li><a href='sourcefile/lazy_dfa_node_m.f90.html'>lazy_dfa_node_m.F90</a></li><li><a href='sourcefile/nfa_graph_m.f90.html'>nfa_graph_m.F90</a></li></ul>
+              <ul><li><a href='sourcefile/api_internal_m.f90.html'>api_internal_m.F90</a></li><li><a href='sourcefile/automaton_m.f90.html'>automaton_m.F90</a></li><li><a href='sourcefile/bitmap_m.f90.html'>bitmap_m.F90</a></li><li><a href='sourcefile/character_array_m.f90.html'>character_array_m.F90</a></li><li><a href='sourcefile/cube_m.f90.html'>cube_m.F90</a></li><li><a href='sourcefile/dense_dfa_m.f90.html'>dense_dfa_m.f90</a></li><li><a href='sourcefile/enums_m.f90.html'>enums_m.f90</a></li><li><a href='sourcefile/error_m.f90.html'>error_m.F90</a></li><li><a href='sourcefile/forgex.f90.html'>forgex.F90</a></li><li><a href='sourcefile/lazy_dfa_graph_m.f90.html'>lazy_dfa_graph_m.F90</a></li></ul>
             </div>
             <div>
               <ul>
@@ -436,7 +451,7 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Modules</h3>
-              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li><li><a href='module/forgex_automaton_m.html'>forgex_automaton_m</a></li><li><a href='module/forgex_character_array_m.html'>forgex_character_array_m</a></li><li><a href='module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></li><li><a href='module/forgex_enums_m.html'>forgex_enums_m</a></li><li><a href='module/forgex_error_m.html'>forgex_error_m</a></li><li><a href='module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li><li><a href='module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li><li><a href='module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li></ul>
+              <ul><li><a href='module/forgex.html'>forgex</a></li><li><a href='module/forgex_api_internal_m.html'>forgex_api_internal_m</a></li><li><a href='module/forgex_automaton_m.html'>forgex_automaton_m</a></li><li><a href='module/forgex_bitmap_m.html'>forgex_bitmap_m</a></li><li><a href='module/forgex_character_array_m.html'>forgex_character_array_m</a></li><li><a href='module/forgex_cube_m.html'>forgex_cube_m</a></li><li><a href='module/forgex_dense_dfa_m.html'>forgex_dense_dfa_m</a></li><li><a href='module/forgex_enums_m.html'>forgex_enums_m</a></li><li><a href='module/forgex_error_m.html'>forgex_error_m</a></li><li><a href='module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></li></ul>
             </div>
             <div>
               <ul>
@@ -447,7 +462,7 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Procedures</h3>
-              <ul><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/adjustl_multi_byte.html'>adjustl_multi_byte</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/automaton__build_nfa.html'>automaton__build_nfa</a></li><li><a href='proc/automaton__compute_reachable_state.html'>automaton__compute_reachable_state</a></li><li><a href='proc/automaton__construct_dfa.html'>automaton__construct_dfa</a></li><li><a href='proc/automaton__deallocate.html'>automaton__deallocate</a></li><li><a href='proc/automaton__destination.html'>automaton__destination</a></li><li><a href='proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a></li></ul>
+              <ul><li><a href='proc/add_nfa_state.html'>add_nfa_state</a></li><li><a href='proc/adjustl_multi_byte.html'>adjustl_multi_byte</a></li><li><a href='proc/arg_in_segment.html'>arg_in_segment</a></li><li><a href='proc/arg_in_segment_list.html'>arg_in_segment_list</a></li><li><a href='proc/ascii2seg.html'>ascii2seg</a></li><li><a href='proc/ascii__add_character_char.html'>ascii__add_character_char</a></li><li><a href='proc/ascii__add_character_codepoint.html'>ascii__add_character_codepoint</a></li><li><a href='proc/ascii__add_character_range.html'>ascii__add_character_range</a></li><li><a href='interface/assignment(=).html'>assignment(=)</a></li><li><a href='proc/automaton__build_nfa.html'>automaton__build_nfa</a></li></ul>
             </div>
             <div>
               <ul>
@@ -458,7 +473,7 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
           <div class="col-xs-6 col-sm-3">
             <div>
               <h3>Derived Types</h3>
-              <ul><li><a href='type/automaton_t.html'>automaton_t</a></li><li><a href='type/character_array_element_t.html'>character_array_element_t</a></li><li><a href='type/character_array_t.html'>character_array_t</a></li><li><a href='type/dfa_graph_t.html'>dfa_graph_t</a></li><li><a href='type/dfa_state_node_t.html'>dfa_state_node_t</a></li><li><a href='type/dfa_transition_t.html'>dfa_transition_t</a></li><li><a href='type/literal_t.html'>literal_t</a></li><li><a href='type/nfa_graph_t.html'>nfa_graph_t</a></li><li><a href='type/nfa_state_node_t.html'>nfa_state_node_t</a></li><li><a href='type/nfa_state_set_t.html'>nfa_state_set_t</a></li></ul>
+              <ul><li><a href='type/ascii_t.html'>ascii_t</a></li><li><a href='type/automaton_t.html'>automaton_t</a></li><li><a href='type/bmp_t.html'>bmp_t</a></li><li><a href='type/character_array_element_t.html'>character_array_element_t</a></li><li><a href='type/character_array_t.html'>character_array_t</a></li><li><a href='type/cube_t.html'>cube_t</a></li><li><a href='type/dfa_graph_t.html'>dfa_graph_t</a></li><li><a href='type/dfa_state_node_t.html'>dfa_state_node_t</a></li><li><a href='type/dfa_transition_t.html'>dfa_transition_t</a></li><li><a href='type/literal_t.html'>literal_t</a></li></ul>
             </div>
             <div>
               <ul>
@@ -482,33 +497,11 @@ The command-line interface design of <code>forgex-cli</code> was inspired in par
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-16 15:12 +0000             </p>
+ on 2025-04-02 09:45 +0000             </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
-
-    <!-- MathJax JavaScript
-             ================================================== -->
-             <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-          });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-          <script src="./tipuesearch/tipuesearch_content.js"></script>
-          <script src="./tipuesearch/tipuesearch_set.js"></script>
-          <script src="./tipuesearch/tipuesearch.js"></script>
-
   </body>
 </html>

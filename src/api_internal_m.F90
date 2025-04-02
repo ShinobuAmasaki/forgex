@@ -31,6 +31,7 @@ contains
    pure subroutine do_matching_including (automaton, string, from, to, prefix, suffix, runs_engine)
       use :: forgex_utility_m, only: get_index_list_forward
       use :: forgex_parameters_m, only: INVALID_CHAR_INDEX, ACCEPTED_EMPTY
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       type(automaton_t), intent(inout) :: automaton
       character(*),      intent(in)    :: string
@@ -48,6 +49,7 @@ contains
       character(:), allocatable :: str
       integer, allocatable :: index_list(:)
       logical :: do_brute_force, is_valid_utf8_char
+      character(:), allocatable :: symbol
 
       do_brute_force = .false.
       runs_engine = .false.
@@ -97,7 +99,7 @@ contains
             end if
 
             if (suffix /= '') then
-               suf_idx = index(string, suffix, back=.true.)
+               suf_idx = index(str, suffix, back=.true.)
                if (suf_idx == 0) return
             end if
 
@@ -126,12 +128,26 @@ contains
 
             call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
 
-            if (is_valid_utf8_char) then
-               call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
-            else
-               call automaton%construct(cur_i, dst_i, make_replacement_char())
-            end if
-            
+
+            block
+               type(dfa_transition_t) :: d_tra
+               ! Lazy evaluation is performed by calling this procedure here.
+               ! The index of destination DFA node is stored in the `dst_i` variable.
+               if (is_valid_utf8_char) then
+                  symbol = str(ci:next_ci-1)
+               else
+                  symbol = make_replacement_char()
+               end if
+               
+               d_tra = automaton%destination(cur_i, symbol)
+               if (d_tra%dst == cur_i) then
+                  ci = next_ci
+                  cycle
+               end if
+   
+               call automaton%construct(cur_i, dst_i, symbol, d_tra)
+            end block 
+
             cur_i = dst_i
             ci = next_ci
          end do
@@ -169,6 +185,7 @@ contains
 
    !> This subroutine is intended to be called from the `forgex` API module.
    pure subroutine do_matching_exactly(automaton, string, res, prefix, suffix, runs_engine)
+      use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       type(automaton_t),      intent(inout) :: automaton
       character(*),           intent(in)    :: string
@@ -187,6 +204,8 @@ contains
       integer :: len_pre, len_suf, n
       logical :: empty_pre, empty_post, matches_pre, matches_post
       logical :: is_valid_utf8_char
+
+      character(:), allocatable :: symbol
 
       runs_engine = .false.
 
@@ -267,26 +286,46 @@ contains
          ! next_ci = next_idxutf8(str, ci)
          call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
 
-         ! Lazy evaluation is performed by calling this procedure here.
-         ! The index of destination DFA node is stored in the `dst_i` variable.
-         if (is_valid_utf8_char) then
-            call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
-         else
-            call automaton%construct(cur_i, dst_i, make_replacement_char())
-         end if
-
-
-         ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
-         if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
-            ci = 2
-            ! next_ci = next_idxutf8(str, ci)
-            call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
+         block
+            type(dfa_transition_t) :: d_tra
+            ! Lazy evaluation is performed by calling this procedure here.
+            ! The index of destination DFA node is stored in the `dst_i` variable.
             if (is_valid_utf8_char) then
-               call automaton%construct(cur_i, dst_i, str(ci:next_ci-1))
+               symbol = str(ci:next_ci-1)
             else
-               call automaton%construct(cur_i, dst_i, make_replacement_char())
+               symbol = make_replacement_char()
             end if
-         end if
+            
+            d_tra = automaton%destination(cur_i, symbol)
+            if (d_tra%dst == cur_i) then
+               ci = next_ci
+               cycle
+            end if
+
+            call automaton%construct(cur_i, dst_i, symbol, d_tra)
+         end block 
+
+         block
+            type(dfa_transition_t) :: d_tra
+            ! If there is mismatch in the first byte of the NULL character, try again with the second byte.
+            if (dst_i == DFA_INVALID_INDEX .and. ci == 1) then
+               ci = 2
+               
+               call next_idxutf8_strict(str, ci, next_ci, is_valid_utf8_char)
+               if (is_valid_utf8_char) then
+                  symbol = str(ci:next_ci-1)
+               else
+                  symbol = make_replacement_char()
+               end if
+               d_tra = automaton%destination(cur_i, symbol)
+               if (d_tra%dst == cur_i) then
+                  ci = next_ci
+                  cycle
+               end if
+
+               call automaton%construct(cur_i, dst_i, symbol, d_tra)
+            end if
+         end block
 
          ! update counters
          cur_i = dst_i

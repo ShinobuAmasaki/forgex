@@ -343,22 +343,12 @@ contains
       integer(int32) :: res         ! Resulting integer representing an UTF-8 binary string.
       integer(int8)  :: byte(4)     ! Byte array (32bit)
       integer(int8)  :: shift_3, shift_4, shift_5, shift_7              ! Shift values
-      integer(int8)  :: mask_2_bit, mask_3_bit, mask_4_bit, mask_5_bit  ! Masks for bit operations
       integer(int32) :: buf         ! Buffer for bit operations
-
-      character(8) :: binary        ! 8-byte character string representing binary.
-
-      binary = '00111111'           ! 6-bit mask for continuation bytes.
-      read(binary, '(b8.8)') mask_2_bit
-
-      binary = '00011111'           ! 5-bit mask for 2-byte characters.
-      read(binary, '(b8.8)') mask_3_bit
-
-      binary = '00001111'           ! 4-bit mask for 3-byte characters.
-      read(binary, '(b8.8)') mask_4_bit
-
-      binary = '00000111'           ! 3-bit mask for 4-byte characters.
-      read(binary, '(b8.8)') mask_5_bit
+      character(4) :: cache
+      integer(int8), parameter :: mask_2_bit = int(z'3f', kind=int8) ! '00111111' 6-bit mask for continuation bytes.
+      integer(int8), parameter :: mask_3_bit = int(z'1f', kind=int8) ! '00011111' 5-bit mask for 2-byte characters.
+      integer(int8), parameter :: mask_4_bit = int(z'0f', kind=int8) ! '00001111' 4-bit mask for 3-byte characters.
+      integer(int8), parameter :: mask_5_bit = int(z'07', kind=int8) ! '00000111' 3-bit mask for 4-byte characters.
 
       res = 0     ! Initialize result
 
@@ -366,67 +356,96 @@ contains
          res = -1                   ! Invalid UTF-8 character.
          return
       end if
-
+      cache = adjustl(chara)
       ! Convert a multi-byte character to thier integer byte representation.
-      byte(1) = int(ichar(chara(1:1)),kind(byte))
-      if (len(chara) >= 2) byte(2) = int(ichar(chara(2:2)), kind(byte))
-      if (len(chara) >= 3) byte(3) = int(ichar(chara(3:3)), kind(byte))
-      if (len(chara) >= 4) byte(4) = int(ichar(chara(4:4)), kind(byte))
+      byte(1) = int(ichar(cache(1:1)),kind(byte))
+      byte(2) = int(ichar(cache(2:2)), kind(byte))
+      byte(3) = int(ichar(cache(3:3)), kind(byte))
+      byte(4) = int(ichar(cache(4:4)), kind(byte))
 
-      ! Perform bit shifts to determine character's byte-length.
-      shift_3 = ishft(byte(1), -3)
-      shift_4 = ishft(byte(1), -4)
-      shift_5 = ishft(byte(1), -5)
-      shift_7 = ishft(byte(1), -7)
 
-      ! 1-byte character
-      if (shift_7 == 0) then
-
+      select case (iand(byte(1), -8_int8)) ! -8 = 0xf8
+      case (0:127)
          res = byte(1)
-         return
+      case (-64:-33)
+         res = ior(ishft(int(iand(byte(1), mask_3_bit),kind=int32),6), &
+                   int(iand(byte(2), mask_2_bit),kind=int32))
+      case (-32:-17)
+         res = ior(&
+                  ishft( &
+                     ior(&
+                        ishft(int(iand(byte(1), mask_4_bit), kind=int32),6),&
+                        int(iand(byte(2), mask_2_bit), kind=int32)),6),&
+                  int(iand(byte(3), mask_2_bit), kind=int32))
+      case (-16:-9)
+         res = ior(&
+                  ishft(&
+                     ior(&
+                        ishft(&
+                            ior(&
+                              ishft(int( iand(byte(1), mask_5_bit),kind=int32),6),&
+                              int(iand(byte(2), mask_2_bit),kind=int32)),6), &
+                        int(iand(byte(3), mask_2_bit),kind=int32)),6), &
+                     int(iand(byte(4), mask_2_bit),kind=int32))
+      case default
+         res = -1
+      end select
 
-      ! 4-byte character
-      else if (shift_3 == 30) then
+      ! return
 
-         ! First 1 byte
-         res =  iand(byte(1), mask_5_bit)
+      ! ! Perform bit shifts to determine character's byte-length.
+      ! shift_3 = ishft(byte(1), -3)
+      ! shift_4 = ishft(byte(1), -4)
+      ! shift_5 = ishft(byte(1), -5)
+      ! shift_7 = ishft(byte(1), -7)
 
-         ! Continuation bytes
-         res = ishft(res, 6)     ! Left shift by 6 bits and store into res
-         buf =  iand(byte(2), mask_2_bit) ! Mask `byte(2)` with `mask_2_bit` and store the result into `buf`.
-         res =   ior(res, buf)   ! Take the bitwise OR of `res` and `buf`. The same applies below.
+      ! ! 1-byte character
+      ! if (shift_7 == 0) then
 
-         res = ishft(res, 6)
-         buf =  iand(byte(3), mask_2_bit)
-         res =   ior(res, buf)
+      !    res = byte(1)
 
-         res = ishft(res, 6)
-         buf =  iand(byte(4), mask_2_bit)
-         res =   ior(res, buf)
+      ! ! 4-byte character
+      ! else if (shift_3 == 30) then
 
-      ! 3-byte character
-      else if (shift_4 == 14) then
+      !    ! First 1 byte
+      !    res =  iand(byte(1), mask_5_bit)
 
-         res =  iand(byte(1), mask_4_bit)
+      !    ! Continuation bytes
+      !    res = ishft(res, 6)     ! Left shift by 6 bits and store into res
+      !    buf =  iand(byte(2), mask_2_bit) ! Mask `byte(2)` with `mask_2_bit` and store the result into `buf`.
+      !    res =   ior(res, buf)   ! Take the bitwise OR of `res` and `buf`. The same applies below.
 
-         res = ishft(res, 6)
-         buf =  iand(byte(2), mask_2_bit)
-         res =   ior(res, buf)
+      !    res = ishft(res, 6)
+      !    buf =  iand(byte(3), mask_2_bit)
+      !    res =   ior(res, buf)
 
-         res = ishft(res, 6)
-         buf =  iand(byte(3), mask_2_bit)
-         res =   ior(res, buf)
+      !    res = ishft(res, 6)
+      !    buf =  iand(byte(4), mask_2_bit)
+      !    res =   ior(res, buf)
 
-      ! 2-byte character
-      else if (shift_5 == 6) then
+      ! ! 3-byte character
+      ! else if (shift_4 == 14) then
 
-         res =  iand(byte(1), mask_3_bit)
+      !    res =  iand(byte(1), mask_4_bit)
 
-         res = ishft(res, 6)
-         buf =  iand(byte(2), mask_2_bit)
-         res =   ior(res, buf)
+      !    res = ishft(res, 6)
+      !    buf =  iand(byte(2), mask_2_bit)
+      !    res =   ior(res, buf)
 
-      end if
+      !    res = ishft(res, 6)
+      !    buf =  iand(byte(3), mask_2_bit)
+      !    res =   ior(res, buf)
+
+      ! ! 2-byte character
+      ! else if (shift_5 == 6) then
+
+      !    res =  iand(byte(1), mask_3_bit)
+
+      !    res = ishft(res, 6)
+      !    buf =  iand(byte(2), mask_2_bit)
+      !    res =   ior(res, buf)
+
+      ! end if
    end function ichar_utf8
 
 

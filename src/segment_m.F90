@@ -8,6 +8,9 @@
 !
 !! This file defines `segment_t` representing subset of UTF-8 character codeset
 !! and contains procedures for that.
+#ifdef IMPURE
+#define pure
+#endif
 module forgex_segment_m
    use, intrinsic :: iso_fortran_env, only: int32
    use :: forgex_parameters_m, only: UTF8_CODE_MIN, UTF8_CODE_MAX, UTF8_CODE_EMPTY
@@ -29,6 +32,8 @@ module forgex_segment_m
    public :: width_of_segment
    public :: total_width_of_segment
    public :: hex2seg
+   public :: prop2seg
+
 
 
    !> This derived-type represents a contiguous range of the Unicode character set
@@ -45,8 +50,9 @@ module forgex_segment_m
    ! See ASCII code set
    type(segment_t), parameter, public :: SEG_INIT  = segment_t(UTF8_CODE_MAX+2, UTF8_CODE_MAX+2)
    type(segment_t), parameter, public :: SEG_ERROR = segment_t(-2, -2)
-   type(segment_t), parameter, public :: SEG_EPSILON = segment_t(-1, -1)
+   type(segment_t), parameter, public :: SEG_EPSILON = segment_t(UTF8_CODE_MAX+3, UTF8_CODE_MAX+3)
    type(segment_t), parameter, public :: SEG_EMPTY = segment_t(UTF8_CODE_EMPTY, UTF8_CODE_EMPTY)
+   type(segment_t), parameter, public :: SEG_NULL  = segment_t(0,0)
    type(segment_t), parameter, public :: SEG_ANY   = segment_t(UTF8_CODE_MIN, UTF8_CODE_MAX)
    type(segment_t), parameter, public :: SEG_TAB   = segment_t(9, 9)     ! Horizontal Tab
    type(segment_t), parameter, public :: SEG_LF    = segment_t(10, 10)   ! Line Feed
@@ -404,6 +410,30 @@ contains
    end subroutine hex2seg
 
 
+   pure subroutine prop2seg(property, seglist, ierr)
+      ! use :: forgex_unicode_gc_m
+      use :: forgex_error_m
+      implicit none
+      character(*), intent(in) :: property
+      type(segment_t), intent(inout), allocatable :: seglist(:)
+      integer, intent(inout) :: ierr
+
+      ! logical :: is_single_prop, is_longer_prop
+      ! character(:), allocatable :: prop
+      
+      ! prop = property
+      ! is_single_prop = len(prop) == 1
+      ! is_longer_prop = 1 < len(prop)
+
+      ! if (prop == '' .or. len(prop) < 1) then
+      !    ierr = SYNTAX_ERR_EMPTY_PROPERTY
+      !    return
+      ! end if
+
+
+   end subroutine prop2seg
+      
+
 !====================================================================-!
 !  Helper procedures
 
@@ -475,7 +505,10 @@ contains
       integer :: i, j, n, m
 
       if (.not. allocated(segments)) return
-      n = size(segments)
+
+      n = ubound(segments, dim=1)
+
+      if (n <= 0) return
 
       m = 1
       do i = 2, n
@@ -574,7 +607,7 @@ contains
          else
             cache = '"'//char_utf8(seg%min)//'"'
          end if
-         res = '['//cache//'-'//"<U+1FFFFF>"//']'
+         res = '['//cache//'-'//"<U+10FFFF>"//']'
       else
          if (seg%min == ichar(' ')) then
             cache = "<SPACE>"

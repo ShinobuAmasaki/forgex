@@ -13,15 +13,30 @@
     <title>All Procedures &ndash; Forgex—Fortran Regular Expression
 </title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="../css/pygments.css" rel="stylesheet">
-    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
     <link href="../css/local.css" rel="stylesheet">
-      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
       <link href="../css/user.css" rel="stylesheet">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
@@ -96,6 +111,36 @@ by setting the corresponding element in <code>state%vec</code> to true.</p></td>
                  <td><p>Check if the ginve integer is within any of specified segments in a list.</p><a href="../proc/arg_in_segment_list.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/ascii2seg.html'>ascii2seg</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/ascii__add_character_char.html'>ascii__add_character_char</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/ascii__add_character_codepoint.html'>ascii__add_character_codepoint</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/ascii__add_character_range.html'>ascii__add_character_range</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/assignment(=).html'>assignment(=)</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/automaton__build_nfa.html'>automaton__build_nfa</a></td>
                  <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
                  <td>Subroutine</td>
@@ -116,17 +161,11 @@ character <code>symbol</code>.</p><a href="../proc/automaton__compute_reachable_
 adding a DFA node if necessary.</p><a href="../proc/automaton__construct_dfa.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/automaton__deallocate.html'>automaton__deallocate</a></td>
-                 <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/automaton__destination.html'>automaton__destination</a></td>
                  <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine gets the next DFA nodes index from current index and symbol,
-and stores the result in <code>next</code> and <code>next_set</code>.</p></td>
+                 <td>Function</td>
+                 <td><p>This function returns the dfa transition object, that contains the destination index
+and the corresponding set of transitionable NFA state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/automaton__epsilon_closure.html'>automaton__epsilon_closure</a></td>
@@ -140,13 +179,6 @@ and stores the result in <code>next</code> and <code>next_set</code>.</p></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine reads <code>tree</code> and <code>tree_top</code> variable, constructs the NFA graph,
 and then initializes the DFA graph.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/automaton__move.html'>automaton__move</a></td>
-                 <td><a href='../module/forgex_automaton_m.html'>forgex_automaton_m</a></td>
-                 <td>Function</td>
-                 <td><p>This function returns the dfa transition object, that contains the destination index
-and the corresponding set of transitionable NFA state.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/automaton__print_dfa.html'>automaton__print_dfa</a></td>
@@ -180,16 +212,34 @@ the set as a DFA state node in the DFA graph.</p><a href="../proc/automaton__reg
                  <td><p>This is recursive procedure to tour a given syntax tree.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/bmp2seg.html'>bmp2seg</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/bmp__add_character_char.html'>bmp__add_character_char</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/bmp__add_character_codepoint.html'>bmp__add_character_codepoint</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/bmp__add_character_range.html'>bmp__add_character_range</a></td>
+                 <td><a href='../module/forgex_bitmap_m.html'>forgex_bitmap_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/bubble_sort.html'>bubble_sort</a></td>
                  <td><a href='../module/forgex_sort_m.html'>forgex_sort_m</a></td>
                  <td>Subroutine</td>
                  <td><p>Implementing insertion sort instead of this algorithm is considered.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/build_nfa_graph.html'>build_nfa_graph</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/char_utf8.html'>char_utf8</a></td>
@@ -217,13 +267,6 @@ When it encounters invalid value along the way, it returns.</p></td>
                  <td><a href='../module/forgex_priority_queue_m.html'>forgex_priority_queue_m</a></td>
                  <td>Subroutine</td>
                  <td><p>The <code>clear</code> subroutine deallocates the queue.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/collect_epsilon_transition.html'>collect_epsilon_transition</a></td>
-                 <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine collects all states reachable by empty transition starting from a given
-state set in an NFA.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/compute_reachable_state.html'>compute_reachable_state</a></td>
@@ -257,10 +300,112 @@ variables of another dfa_transition_t.</p></td>
                  <td><p>This function counts the occurrence of a spcified character(token) in a given string.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/cube__bmp2seg.html'>cube__bmp2seg</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube__dump_sps.html'>cube__dump_sps</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube__first_codepoint.html'>cube__first_codepoint</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube__invert.html'>cube__invert</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube__number_of_flagged_bits.html'>cube__number_of_flagged_bits</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube__switch_ascii_to_bmp.html'>cube__switch_ascii_to_bmp</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_add__cube.html'>cube_add__cube</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_add__segment.html'>cube_add__segment</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_add__segment_list.html'>cube_add__segment_list</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_add__symbol.html'>cube_add__symbol</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_flag__epsilon.html'>cube_flag__epsilon</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_flag__is_flagged_epsilon.html'>cube_flag__is_flagged_epsilon</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_t__codepoint_in_cube.html'>cube_t__codepoint_in_cube</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_t__cube_assign.html'>cube_t__cube_assign</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_t__equal.html'>cube_t__equal</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/cube_t__symbol_in_cube.html'>cube_t__symbol_in_cube</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/deallocate_tree.html'>deallocate_tree</a></td>
                  <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine deallocate the syntax tree.</p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/dense_dfa__add_transition.html'>dense_dfa__add_transition</a></td>
+                 <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/dequeue.html'>dequeue</a></td>
@@ -282,12 +427,6 @@ otherwise it returns <code>DFA_INVALID_INDEX</code>.</p></td>
                  <td><a href='../module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine processes to add the given transition to the list which dfa_state_node_t has.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/dfa_state_node__deallocate.html'>dfa_state_node__deallocate</a></td>
-                 <td><a href='../module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine deallocates the transition array of a DFA state node.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/dfa_state_node__get_transition_top.html'>dfa_state_node__get_transition_top</a></td>
@@ -315,6 +454,12 @@ node with the value of the given argument.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/dfa_state_node__is_registered_transition_cube.html'>dfa_state_node__is_registered_transition_cube</a></td>
+                 <td><a href='../module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/dfa_state_node__reallocate_transition_forward.html'>dfa_state_node__reallocate_transition_forward</a></td>
                  <td><a href='../module/forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></td>
                  <td>Subroutine</td>
@@ -333,14 +478,8 @@ node with the value of the given argument.</p></td>
                  <td><p>Disjoins overlapping segments and creates a new list of non-overlapping segments.</p><a href="../proc/disjoin_kernel.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/disjoin_nfa.html'>disjoin_nfa</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/disjoin_nfa_each_transition.html'>disjoin_nfa_each_transition</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td><p>This subroutine updates the NFA state transitions by disjoining the segments.</p><a href="../proc/disjoin_nfa_each_transition.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
                </tr>
@@ -390,19 +529,19 @@ holding the disjoined segment data with ascending priority order.</p><a href="..
                </tr>
 			   <tr>
                  <td><a href='../proc/generate_nfa.html'>generate_nfa</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/generate_nfa_closure.html'>generate_nfa_closure</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/generate_nfa_concatenate.html'>generate_nfa_concatenate</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -514,12 +653,6 @@ It compute the complement of the given ranges and modifies the list accordingly.
 			   <tr>
                  <td><a href='../proc/is_eqv_str.html'>is_eqv_str</a></td>
                  <td><a href='../module/forgex_test_m.html'>forgex_test_m</a></td>
-                 <td>Function</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/is_exceeded.html'>is_exceeded</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Function</td>
                  <td></td>
                </tr>
@@ -653,13 +786,6 @@ and returns it.</p></td>
 and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</p></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
-                 <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine performs deallocation of the arrays representing
-the DFA node transitions for every node in the DFA graph.</p></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/lazy_dfa__preprocess.html'>lazy_dfa__preprocess</a></td>
                  <td><a href='../module/forgex_lazy_dfa_graph_m.html'>forgex_lazy_dfa_graph_m</a></td>
                  <td>Subroutine</td>
@@ -698,12 +824,6 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/make_nfa_node.html'>make_nfa_node</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/make_repeat_node.html'>make_repeat_node</a></td>
                  <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Function</td>
@@ -720,12 +840,6 @@ or DFA_INVALID_INDEX if it is not registered.</p></td>
                  <td><a href='../module/forgex_syntax_tree_node_m.html'>forgex_syntax_tree_node_m</a></td>
                  <td>Function</td>
                  <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/mark_epsilon_transition.html'>mark_epsilon_transition</a></td>
-                 <td><a href='../module/forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine recursively marks empty transitions from a given NFA state index.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/match_dense_dfa_exactly.html'>match_dense_dfa_exactly</a></td>
@@ -786,7 +900,13 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                  <td><a href='../proc/nfa__add_transition.html'>nfa__add_transition</a></td>
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
-                 <td><p>Note that the return value of the size function on an unallocated array is undefined.</p><a href="../proc/nfa__add_transition.html" class="pull-right"><emph>Read more&hellip;</emph></a></td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/nfa__add_transition_cube.html'>nfa__add_transition_cube</a></td>
+                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/nfa__merge_segments_of_transition.html'>nfa__merge_segments_of_transition</a></td>
@@ -795,19 +915,7 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/nfa__reallocate_transition_backward.html'>nfa__reallocate_transition_backward</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
                  <td><a href='../proc/nfa__reallocate_transition_forward.html'>nfa__reallocate_transition_forward</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/nfa_deallocate.html'>nfa_deallocate</a></td>
                  <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
@@ -825,19 +933,25 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/nfa_graph__deallocate.html'>nfa_graph__deallocate</a></td>
-                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>This subroutine invokes procedure for deallocation.</p></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/nfa_graph__generate.html'>nfa_graph__generate</a></td>
+                 <td><a href='../proc/nfa_graph__disjoin.html'>nfa_graph__disjoin</a></td>
                  <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/nfa_graph__is_exceeded.html'>nfa_graph__is_exceeded</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td>Function</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/nfa_graph__mark_epsilon_transition.html'>nfa_graph__mark_epsilon_transition</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../proc/nfa_graph__new_node.html'>nfa_graph__new_node</a></td>
                  <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
@@ -849,18 +963,30 @@ index of the current automaton DFA state array and the input symbol.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/nfa_graph__reallocate.html'>nfa_graph__reallocate</a></td>
+                 <td><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../interface/operator(.in.).html'>operator(.in.)</a></td>
-                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
                  <td>Interface</td>
-                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
-an integer and a segment, an integer and a list of segments, or a segment
-and a segment, is contained in the latter, respectively.</p></td>
+                 <td></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.in.)~2.html'>operator(.in.)</a></td>
                  <td><a href='../module/forgex.html'>forgex</a></td>
                  <td>Interface</td>
                  <td><p>Interface for user-defined operator of <code>.in.</code></p></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(.in.)~3.html'>operator(.in.)</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
+                 <td>Interface</td>
+                 <td><p>This interface block provides the <code>.in.</code> operator, which checks whether
+an integer and a segment, an integer and a list of segments, or a segment
+and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(.match.).html'>operator(.match.)</a></td>
@@ -876,6 +1002,12 @@ and a segment, is contained in the latter, respectively.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../interface/operator(==).html'>operator(==)</a></td>
+                 <td><a href='../module/forgex_cube_m.html'>forgex_cube_m</a></td>
+                 <td>Interface</td>
+                 <td></td>
+               </tr>
+			   <tr>
+                 <td><a href='../interface/operator(==)~2.html'>operator(==)</a></td>
                  <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Interface</td>
                  <td><p>This interface block provides a equal operator for comparing segments.</p></td>
@@ -944,8 +1076,8 @@ the current array element to its <code>seg_size</code>.</p></td>
                  <td></td>
                </tr>
 			   <tr>
-                 <td><a href='../proc/reallocate_nfa.html'>reallocate_nfa</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
+                 <td><a href='../proc/prop2seg.html'>prop2seg</a></td>
+                 <td><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></td>
                  <td>Subroutine</td>
                  <td></td>
                </tr>
@@ -1157,6 +1289,12 @@ and does not call any other recursive procedures.</p></td>
                  <td></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/tree_graph__hexadecimal_to_codepoint.html'>tree_graph__hexadecimal_to_codepoint</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/tree_graph__hexadecimal_to_segment.html'>tree_graph__hexadecimal_to_segment</a></td>
                  <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
                  <td>Subroutine</td>
@@ -1234,16 +1372,16 @@ It does not call any other recursive procedures.</p></td>
 does not call any other recursive procedures.</p></td>
                </tr>
 			   <tr>
+                 <td><a href='../proc/tree_graph__unicode_property.html'>tree_graph__unicode_property</a></td>
+                 <td><a href='../module/forgex_syntax_tree_graph_m.html'>forgex_syntax_tree_graph_m</a></td>
+                 <td>Subroutine</td>
+                 <td></td>
+               </tr>
+			   <tr>
                  <td><a href='../proc/trim_invalid_utf8_byte.html'>trim_invalid_utf8_byte</a></td>
                  <td><a href='../module/forgex_utf8_m.html'>forgex_utf8_m</a></td>
                  <td>Function</td>
                  <td></td>
-               </tr>
-			   <tr>
-                 <td><a href='../proc/update_c_top.html'>update_c_top</a></td>
-                 <td><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></td>
-                 <td>Subroutine</td>
-                 <td><p>Update c_top, which has become outdated by disjoin, to new information.</p></td>
                </tr>
 			   <tr>
                  <td><a href='../proc/which_segment_symbol_belong.html'>which_segment_symbol_belong</a></td>
@@ -1278,33 +1416,11 @@ and returns the segment as rank=1 array to which symbol belongs
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-16 15:12 +0000             </p>
+ on 2025-04-02 09:45 +0000             </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
-
-    <!-- MathJax JavaScript
-             ================================================== -->
-             <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-          });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-          <script src="../tipuesearch/tipuesearch_content.js"></script>
-          <script src="../tipuesearch/tipuesearch_set.js"></script>
-          <script src="../tipuesearch/tipuesearch.js"></script>
-
   </body>
 </html>

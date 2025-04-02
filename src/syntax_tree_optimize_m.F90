@@ -16,6 +16,7 @@ module forgex_syntax_tree_optimize_m
    use :: forgex_parameters_m, only: INVALID_INDEX, INVALID_CHAR_INDEX
    use :: forgex_segment_m, only: width_of_segment
    use :: forgex_enums_m
+   use :: forgex_cube_m, only: cube_t, assignment(=)
    implicit none
    private
 
@@ -79,6 +80,7 @@ contains
       integer :: i
 
       curr = nodes(idx)
+      curr%c = nodes(idx)%c
       lit%all%c = theta
       lit%pref%c = theta
       lit%suff%c = theta
@@ -183,21 +185,16 @@ contains
          lit%flag_closure = .true.
 
       case (op_char)
-         if (allocated(curr%c)) then
-            if (size(curr%c) == 1) then
-               if (width_of_segment(curr%c(1)) == 1) then
-                  lit%all%c = char_utf8(curr%c(1)%min)
-                  lit%pref%c = char_utf8(curr%c(1)%min)
-                  lit%suff%c =  char_utf8(curr%c(1)%min)
-                  lit%fact%c =  char_utf8(curr%c(1)%min)
-               else
-                  lit%flag_class = .true.
-               end if
-            else
-               lit%flag_class = .true.
-            end if
 
+         if (curr%c%single_flag) then
+            lit%all%c = char_utf8(curr%c%first())
+            lit%pref%c = char_utf8(curr%c%first())
+            lit%suff%c =  char_utf8(curr%c%first())
+            lit%fact%c =  char_utf8(curr%c%first())
+         else
+            lit%flag_class = .true.
          end if
+
       case (op_repeat)
          block
             type(tree_node_t) :: next_l
@@ -215,6 +212,8 @@ contains
                lit%flag_class = lit%flag_class .or. lit_l%flag_class
                if (lit_l%flag_closure) exit
             end do
+
+            if (curr%min_repeat /= curr%max_repeat) lit%all%c = ''
 
             lit%flag_closure = curr%min_repeat /= curr%max_repeat
             lit%flag_closure = lit%flag_closure .or. lit_l%flag_closure

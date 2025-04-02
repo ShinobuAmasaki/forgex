@@ -12,15 +12,30 @@
 
     <title>forgex_lazy_dfa_graph_m &ndash; Forgex—Fortran Regular Expression</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="../css/pygments.css" rel="stylesheet">
-    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
     <link href="../css/local.css" rel="stylesheet">
-      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
       <link href="../css/user.css" rel="stylesheet">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
@@ -76,7 +91,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.9% of total for modules and submodules.">98 statements</a>
+                 title=" 1.9% of total for modules and submodules.">105 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -96,9 +111,11 @@
     </div>
   </div>
   <script>
-    $(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip()
-    })
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
   </script>
 
   </div>
@@ -148,8 +165,8 @@
       </a>
       <div id="subs-0" class="collapse">
         <div class="list-group list-group-flush">
+            <a class="list-group-item" href="../module/forgex_lazy_dfa_graph_m.html#proc-dense_dfa__add_transition">dense_dfa__add_transition</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_graph_m.html#proc-lazy_dfa__add_transition">lazy_dfa__add_transition</a>
-            <a class="list-group-item" href="../module/forgex_lazy_dfa_graph_m.html#proc-lazy_dfa__deallocate">lazy_dfa__deallocate</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_graph_m.html#proc-lazy_dfa__preprocess">lazy_dfa__preprocess</a>
             <a class="list-group-item" href="../module/forgex_lazy_dfa_graph_m.html#proc-lazy_dfa__reallocate">lazy_dfa__reallocate</a>
         </div>
@@ -177,9 +194,9 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
                   <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
         </ul>
@@ -289,7 +306,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nodes~2"></span>
+              <span class="anchor" id="variable-nodes"></span>
               type(<a href='../type/dfa_state_node_t.html'>dfa_state_node_t</a>),
             </td>
               <td>public,</td>
@@ -314,29 +331,34 @@
         <table class="table table-striped varlist">
           <tbody>
               <tr>
-                <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-add_transition~2'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a></td>
-                <td></td>
+                <td>  generic, public ::
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-add_transition'>add_transition</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/type/dfa_graph_t.html#boundprocedure-lazy_dfa__add_transition'>lazy_dfa__add_transition</a>, <a href='/home/runner/work/forgex/forgex/doc/type/dfa_graph_t.html#boundprocedure-dense_dfa__add_transition'>dense_dfa__add_transition</a></td>
+                  <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
-  <strong><a href='../type/dfa_graph_t.html#boundprocedure-free'>free</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a></td>
-                <td></td>
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-dense_dfa__add_transition'>dense_dfa__add_transition</a></strong></td>
+                  <td></td>
+              </tr>
+              <tr>
+                <td>  procedure, public ::
+  <strong><a href='../type/dfa_graph_t.html#boundprocedure-lazy_dfa__add_transition'>lazy_dfa__add_transition</a></strong></td>
+                  <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
   <strong><a href='../type/dfa_graph_t.html#boundprocedure-preprocess'>preprocess</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__preprocess.html'>lazy_dfa__preprocess</a></td>
-                <td></td>
+                  <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
   <strong><a href='../type/dfa_graph_t.html#boundprocedure-reallocate'>reallocate</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__reallocate.html'>lazy_dfa__reallocate</a></td>
-                <td></td>
+                  <td></td>
               </tr>
               <tr>
                 <td>  procedure, public ::
   <strong><a href='../type/dfa_graph_t.html#boundprocedure-registered'>registered</a></strong> => <a href='/home/runner/work/forgex/forgex/doc/proc/lazy_dfa__registered_index.html'>lazy_dfa__registered_index</a></td>
-                <td></td>
+                  <td></td>
               </tr>
           </tbody>
         </table>
@@ -369,7 +391,7 @@ or DFA_INVALID_INDEX if it is not registered.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~8"></span>
+              <span class="anchor" id="variable-self~3"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(in)</td>
@@ -384,7 +406,7 @@ or DFA_INVALID_INDEX if it is not registered.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-set~2"></span>
+              <span class="anchor" id="variable-set"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -415,12 +437,11 @@ or DFA_INVALID_INDEX if it is not registered.</p>
         <section>
           <h2>Subroutines</h2>
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__add_transition"></span> <h3>private pure subroutine <a href='../proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a>(self, state_set, src, dst, seg)  
+    <div class="card-header codesum"><span class="anchor" id="proc-dense_dfa__add_transition"></span> <h3>private pure subroutine <a href='../proc/dense_dfa__add_transition.html'>dense_dfa__add_transition</a>(self, state_set, src, dst, cube)  
 </h3></div>
     <div class="card-body">
           
-  <p>This subroutine construct an new transition object from the arguments,
-and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</p>
+  
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -435,7 +456,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~9"></span>
+              <span class="anchor" id="variable-self~5"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -450,7 +471,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-state_set~4"></span>
+              <span class="anchor" id="variable-state_set~2"></span>
               type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
             </td>
 <td>intent(in)</td>
@@ -480,7 +501,7 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-dst~4"></span>
+              <span class="anchor" id="variable-dst~2"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -495,15 +516,15 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seg~3"></span>
-              type(<a href='../type/segment_t.html'>segment_t</a>),
+              <span class="anchor" id="variable-cube"></span>
+              type(<a href='../type/cube_t.html'>cube_t</a>),
             </td>
 <td>intent(in)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>seg</strong></td>
+            <td><strong>cube</strong></td>
             <td>
 
             </td>
@@ -516,12 +537,12 @@ and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</
   </div>
 
               <div class="card">
-    <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__deallocate"></span> <h3>private pure subroutine <a href='../proc/lazy_dfa__deallocate.html'>lazy_dfa__deallocate</a>(self)  
+    <div class="card-header codesum"><span class="anchor" id="proc-lazy_dfa__add_transition"></span> <h3>private pure subroutine <a href='../proc/lazy_dfa__add_transition.html'>lazy_dfa__add_transition</a>(self, state_set, src, dst, symbol)  
 </h3></div>
     <div class="card-body">
           
-  <p>This subroutine performs deallocation of the arrays representing
-the DFA node transitions for every node in the DFA graph.</p>
+  <p>This subroutine construct an new transition object from the arguments,
+and invokes the type-bound procedure of <code>dfa_state_node_t</code> with it.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -536,7 +557,7 @@ the DFA node transitions for every node in the DFA graph.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~7"></span>
+              <span class="anchor" id="variable-self~4"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -545,6 +566,66 @@ the DFA node transitions for every node in the DFA graph.</p>
             </td>
             <td>::</td>
             <td><strong>self</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-state_set"></span>
+              type(<a href='../type/nfa_state_set_t.html'>nfa_state_set_t</a>),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>state_set</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-src"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>src</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-dst"></span>
+              integer,
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>dst</strong></td>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-symbol"></span>
+              character(len=*),
+            </td>
+<td>intent(in)</td>
+              <td></td>            <td>
+              
+            </td>
+            <td>::</td>
+            <td><strong>symbol</strong></td>
             <td>
 
             </td>
@@ -577,7 +658,7 @@ and allocate the array.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~5"></span>
+              <span class="anchor" id="variable-self"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -617,7 +698,7 @@ and allocate the array.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-self~6"></span>
+              <span class="anchor" id="variable-self~2"></span>
               class(<a href='../type/dfa_graph_t.html'>dfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -660,33 +741,11 @@ and allocate the array.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-16 15:12 +0000             </p>
+ on 2025-04-02 09:45 +0000             </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
-
-    <!-- MathJax JavaScript
-             ================================================== -->
-             <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-          });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-          <script src="../tipuesearch/tipuesearch_content.js"></script>
-          <script src="../tipuesearch/tipuesearch_set.js"></script>
-          <script src="../tipuesearch/tipuesearch.js"></script>
-
   </body>
 </html>

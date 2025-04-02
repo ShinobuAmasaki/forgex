@@ -30,8 +30,9 @@ module forgex_lazy_dfa_graph_m
    contains
       procedure :: preprocess     => lazy_dfa__preprocess
       procedure :: registered     => lazy_dfa__registered_index
-      procedure :: add_transition => lazy_dfa__add_transition
-      procedure :: free           => lazy_dfa__deallocate
+      procedure :: lazy_dfa__add_transition
+      procedure :: dense_dfa__add_transition
+      generic   :: add_transition => lazy_dfa__add_transition, dense_dfa__add_transition
       procedure :: reallocate     => lazy_dfa__reallocate
    end type dfa_graph_t
 
@@ -101,20 +102,6 @@ contains
    end subroutine lazy_dfa__reallocate
 
 
-   !> This subroutine performs deallocation of the arrays representing 
-   !> the DFA node transitions for every node in the DFA graph.
-   pure subroutine lazy_dfa__deallocate(self)
-      implicit none
-      class(dfa_graph_t), intent(inout) :: self
-
-      integer :: i
-      if (.not. allocated(self%nodes)) return
-      do i = 1, self%dfa_limit
-         call self%nodes(i)%free()
-      end do
-
-   end subroutine lazy_dfa__deallocate
-
 
    ! DFA状態がすでに登録されているかを、添字で返す。登録されていなければDFA_INVALID_INDEXを返す。
    !> Returns whether the DFA state is already registered by index,
@@ -145,18 +132,19 @@ contains
 
    !> This subroutine construct an new transition object from the arguments,
    !> and invokes the type-bound procedure of `dfa_state_node_t` with it.
-   pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, seg)
-      use :: forgex_segment_m
+   pure subroutine lazy_dfa__add_transition(self, state_set, src, dst, symbol)
+      ! use :: forgex_segment_m
+      use :: forgex_cube_m, only : cube_t
       use :: forgex_nfa_state_set_m
       implicit none
       class(dfa_graph_t),    intent(inout) :: self
       type(nfa_state_set_t), intent(in)    :: state_set
       integer,               intent(in)    :: src, dst
-      type(segment_t),       intent(in)    :: seg
-
+      ! type(segment_t),       intent(in)    :: seg
+      character(*), intent(in) :: symbol
       type(dfa_transition_t) :: tra
 
-      tra%c = seg
+      call tra%c%add(symbol)
       tra%dst = dst
 
       tra%nfa_set = state_set
@@ -165,5 +153,24 @@ contains
 
    end subroutine lazy_dfa__add_transition
 
+
+   pure subroutine dense_dfa__add_transition(self, state_set, src, dst, cube)
+      use :: forgex_cube_m, only: cube_t, assignment(=)
+      use :: forgex_nfa_state_set_m, only: nfa_state_set_t
+      use :: forgex_segment_m
+      implicit none
+      class(dfa_graph_t), intent(inout) :: self
+      type(nfa_state_set_t), intent(in) :: state_set
+      integer,               intent(in) :: src, dst
+      type(cube_t),          intent(in) :: cube
+
+      type(dfa_transition_t) :: tra
+
+      call tra%c%add(cube)
+
+      tra%dst = dst
+      tra%nfa_set = state_set
+      call self%nodes(src)%add_transition(tra)
+   end subroutine dense_dfa__add_transition
 
 end module forgex_lazy_dfa_graph_m

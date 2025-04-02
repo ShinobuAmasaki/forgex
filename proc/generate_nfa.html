@@ -12,15 +12,30 @@
 
     <title>generate_nfa &ndash; Forgex—Fortran Regular Expression</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link href="../css/pygments.css" rel="stylesheet">
-    <link href="../css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link href="../css/fontawesome.min.css" rel="stylesheet">
+    <link href="../css/brands.min.css" rel="stylesheet">
+    <link href="../css/regular.min.css" rel="stylesheet">
+    <link href="../css/solid.min.css" rel="stylesheet">
+    <link href="../css/v4-font-face.min.css" rel="stylesheet">
+    <link href="../css/v4-shims.min.css" rel="stylesheet">
+    <!-- MathJax -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: { autoNumber: "AMS" } }
+      });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async
+            integrity="sha256-DViIOMYdwlM/axqoGDPeUyf0urLoHMN4QACBKyB58Uw=" crossorigin="anonymous"></script>
+    <!-- Other scripts and stylesheets -->
     <link href="../css/local.css" rel="stylesheet">
-      <link  href="../tipuesearch/tipuesearch.css" rel="stylesheet">
+    <link href="../css/pygments.css" rel="stylesheet">
       <link href="../css/user.css" rel="stylesheet">
-
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="../js/svg-pan-zoom.min.js"></script>
   </head>
 
@@ -76,20 +91,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 1.7% of total for procedures.">78 statements</a>
+                 title=" 1.4% of total for procedures.">69 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/nfa_node_m.F90"> Source File</a>
+              <a href="../src/nfa_graph_m.F90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/nfa_node_m.f90.html'>nfa_node_m.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_nfa_node_m.html'>forgex_nfa_node_m</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/nfa_graph_m.f90.html'>nfa_graph_m.F90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_nfa_graph_m.html'>forgex_nfa_graph_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">generate_nfa</li>
           </ol>
         </nav>
@@ -97,9 +112,11 @@
     </div>
   </div>
   <script>
-    $(function () {
-    $('[data-bs-toggle="tooltip"]').tooltip()
-    })
+    // Enable Bootstrap tooltips
+    (function () {
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    })();
   </script>
 
   </div>
@@ -141,7 +158,7 @@
     </div>
     
     <div class="col-md-9" id='text'>
-    <h2>public pure recursive subroutine generate_nfa(tree, idx, nfa_graph, nfa_top, entry, exit)  
+    <h2>public pure recursive subroutine generate_nfa(tree, idx, nfa, entry_i, exit_i)  
 </h2>
         <div class="card mb-4">
       <h3 class="card-header card-title bg-light">Uses</h3>
@@ -149,8 +166,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_enums_m.html'>forgex_enums_m</a></li>
               </ul>
             </li>
         </ul>
@@ -173,7 +190,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-tree~4"></span>
+              <span class="anchor" id="variable-tree~13"></span>
               type(<a href='../type/tree_t.html'>tree_t</a>),
             </td>
 <td>intent(in)</td>
@@ -188,7 +205,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-idx~4"></span>
+              <span class="anchor" id="variable-idx~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -203,37 +220,22 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-nfa_graph~3"></span>
-              type(<a href='../type/nfa_state_node_t.html'>nfa_state_node_t</a>),
-            </td>
-<td>intent(inout),</td>
-              <td></td>            <td>
-              allocatable
-            </td>
-            <td>::</td>
-            <td><strong>nfa_graph</strong>(:)</td>
-            <td>
-                
-            </td>
-        </tr>
-        <tr>
-            <td>
-              <span class="anchor" id="variable-nfa_top~4"></span>
-              integer(kind=int32),
+              <span class="anchor" id="variable-nfa~2"></span>
+              type(<a href='../type/nfa_graph_t.html'>nfa_graph_t</a>),
             </td>
 <td>intent(inout)</td>
               <td></td>            <td>
               
             </td>
             <td>::</td>
-            <td><strong>nfa_top</strong></td>
+            <td><strong>nfa</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-entry"></span>
+              <span class="anchor" id="variable-entry_i~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -241,14 +243,14 @@
               
             </td>
             <td>::</td>
-            <td><strong>entry</strong></td>
+            <td><strong>entry_i</strong></td>
             <td>
                 
             </td>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-exit"></span>
+              <span class="anchor" id="variable-exit_i~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -256,7 +258,7 @@
               
             </td>
             <td>::</td>
-            <td><strong>exit</strong></td>
+            <td><strong>exit_i</strong></td>
             <td>
                 
             </td>
@@ -278,55 +280,45 @@
     
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
-    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure recursive subroutine </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_enums_m</span>
-<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_parameters_m</span>
-<span class="w">      </span><span class="k">implicit none</span>
-<span class="k">      type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w">  </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
-<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_state_node_t</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">(:)</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa_top</span>
-<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">entry</span>
-<span class="k">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="k">exit</span>
+    <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure recursive subroutine </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_enums_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">op_char</span><span class="p">,</span><span class="w"> </span><span class="n">op_empty</span><span class="p">,</span><span class="w"> </span><span class="n">op_closure</span><span class="p">,</span><span class="w"> </span><span class="n">op_concat</span><span class="p">,</span><span class="w"> </span><span class="n">op_repeat</span><span class="p">,</span><span class="w"> </span><span class="n">op_union</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_parameters_m</span><span class="p">,</span><span class="w"> </span><span class="k">only</span><span class="p">:</span><span class="w"> </span><span class="n">INFINITE</span><span class="p">,</span><span class="w"> </span><span class="n">INVALID_INDEX</span>
 
-<span class="k">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
+<span class="w">      </span><span class="k">implicit none</span>
+<span class="k">      type</span><span class="p">(</span><span class="n">tree_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">tree</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">idx</span>
+<span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">nfa_graph_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">nfa</span>
+<span class="w">      </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span>
+
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">i</span>
 <span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">k</span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">node1</span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">node2</span>
-<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">entry_local</span>
+<span class="w">      </span><span class="kt">integer</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">node1</span><span class="p">,</span><span class="w"> </span><span class="n">node2</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span>
 
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">idx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INVALID_INDEX</span><span class="p">)</span><span class="w"> </span><span class="k">return</span>
 <span class="k">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">idx</span>
-<span class="w">      </span><span class="n">entry_local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">entry</span>
+<span class="w">      </span><span class="n">entry_local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry_i</span>
 
-<span class="k">      select case</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">op</span><span class="p">)</span>
+<span class="w">      </span><span class="k">select case</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">op</span><span class="p">)</span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_char</span><span class="p">)</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(.</span><span class="nb">not</span><span class="p">.</span><span class="w"> </span><span class="nb">allocated</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            error stop</span><span class="w"> </span><span class="s2">&quot;ERROR: Character node of the AST do not have actual character list.&quot;</span>
-<span class="w">         </span><span class="k">end if</span>
 <span class="w">         </span><span class="c">! Handle character operations by adding transition for each character.</span>
-<span class="w">         </span><span class="k">do </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">(</span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="nb">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="w">            </span><span class="k">call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="k">entry</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-<span class="w">         </span><span class="k">end do</span>
-
-<span class="k">      case</span><span class="w"> </span><span class="p">(</span><span class="n">op_empty</span><span class="p">)</span>
+<span class="w">         </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">graph</span><span class="p">(</span><span class="n">entry_i</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">c</span><span class="p">)</span>
+<span class="w">      </span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_empty</span><span class="p">)</span>
 <span class="w">         </span><span class="c">! Handle empty opration by adding an epsilon transition</span>
-<span class="w">         </span><span class="k">call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="k">entry</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EPSILON</span><span class="p">)</span>
-
-<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_union</span><span class="p">)</span>
-<span class="w">         </span><span class="c">! Handle union operation by recursively generating NFA for left and right subtrees.</span>
-<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">right_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-
+<span class="w">         </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">graph</span><span class="p">(</span><span class="n">entry_i</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">SEG_EPSILON</span><span class="p">])</span>
+<span class="w">      </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_closure</span><span class="p">)</span>
 <span class="w">         </span><span class="c">! Handle closure (Kleene star) operations by creating new node and adding appropriate transition</span>
-<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa_closure</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-
+<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa_closure</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
+<span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_union</span><span class="p">)</span>
+<span class="w">         </span><span class="c">! Handle union operation by recursively generating NFA for left and right subtrees.</span>
+<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
+<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">right_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
 
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_concat</span><span class="p">)</span>
 <span class="w">         </span><span class="c">! Handle concatenation operations by recursively generating NFA for left and right subtrees.</span>
-<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa_concatenate</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
-
+<span class="w">         </span><span class="k">call </span><span class="n">generate_nfa_concatenate</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
+<span class="w">      </span>
 <span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">op_repeat</span><span class="p">)</span>
 <span class="w">         </span><span class="k">block</span>
 <span class="k">            </span><span class="kt">integer</span><span class="p">(</span><span class="n">int32</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">min_repeat</span><span class="p">,</span><span class="w"> </span><span class="n">max_repeat</span><span class="p">,</span><span class="w"> </span><span class="n">j</span>
@@ -340,10 +332,12 @@
 <span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">num_1st_repeat</span>
-<span class="w">               </span><span class="k">call </span><span class="n">make_nfa_node</span><span class="p">(</span><span class="n">nfa_top</span><span class="p">)</span>
-<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_exceeded</span><span class="p">(</span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">reallocate_nfa</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">)</span>
-<span class="w">               </span><span class="n">node1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nfa_top</span>
-<span class="w">               </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">node1</span><span class="p">)</span>
+<span class="w">               </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">new_nfa_node</span><span class="p">()</span>
+
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nfa</span><span class="p">%</span><span class="n">is_exceeded</span><span class="p">())</span><span class="w"> </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">reallocate</span><span class="p">()</span>
+
+<span class="w">               </span><span class="n">node1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nfa</span><span class="p">%</span><span class="n">top</span>
+<span class="w">               </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">node1</span><span class="p">)</span>
 <span class="w">               </span><span class="n">entry_local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node1</span>
 <span class="w">            </span><span class="k">end do</span>
 
@@ -354,30 +348,32 @@
 <span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            do </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">num_2nd_repeat</span>
-<span class="w">               </span><span class="k">call </span><span class="n">make_nfa_node</span><span class="p">(</span><span class="n">nfa_top</span><span class="p">)</span>
-<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_exceeded</span><span class="p">(</span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">))</span><span class="w"> </span><span class="k">call </span><span class="n">reallocate_nfa</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">)</span>
-<span class="w">               </span><span class="n">node2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nfa_top</span>
+<span class="w">               </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">new_nfa_node</span><span class="p">()</span>
+<span class="w">               </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">nfa</span><span class="p">%</span><span class="n">is_exceeded</span><span class="p">())</span><span class="w"> </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">reallocate</span><span class="p">()</span>
+<span class="w">               </span><span class="n">node2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nfa</span><span class="p">%</span><span class="n">top</span>
 
-<span class="w">               </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">node2</span><span class="p">)</span>
-<span class="w">               </span><span class="k">call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="n">node2</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">node2</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EPSILON</span><span class="p">)</span>
+<span class="w">               </span><span class="k">call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">node2</span><span class="p">)</span>
+<span class="w">               </span><span class="k">call </span><span class="n">nfa</span><span class="p">%</span><span class="n">graph</span><span class="p">(</span><span class="n">node2</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">node2</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">SEG_EPSILON</span><span class="p">])</span>
+
 <span class="w">               </span><span class="n">entry_local</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">node2</span>
 <span class="w">            </span><span class="k">end do</span>
 <span class="k">            </span>
 
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">min_repeat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               call </span><span class="n">nfa_graph</span><span class="p">(</span><span class="k">entry</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="k">entry</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">,</span><span class="w"> </span><span class="n">SEG_EPSILON</span><span class="p">)</span>
+<span class="k">               call </span><span class="n">nfa</span><span class="p">%</span><span class="n">graph</span><span class="p">(</span><span class="n">entry_i</span><span class="p">)%</span><span class="n">add_transition</span><span class="p">(</span><span class="n">entry_i</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">SEG_EPSILON</span><span class="p">])</span>
 <span class="w">            </span><span class="k">end if</span>
 
 <span class="k">            if</span><span class="w"> </span><span class="p">(</span><span class="n">max_repeat</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">INFINITE</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">               call </span><span class="n">generate_nfa_closure</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
+<span class="k">               call </span><span class="n">generate_nfa_closure</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">idx</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
 <span class="w">            </span><span class="k">else</span>
-<span class="k">               call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_graph</span><span class="p">,</span><span class="w"> </span><span class="n">nfa_top</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="k">exit</span><span class="p">)</span>
+<span class="k">               call </span><span class="n">generate_nfa</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span><span class="w"> </span><span class="n">tree</span><span class="p">%</span><span class="n">nodes</span><span class="p">(</span><span class="n">i</span><span class="p">)%</span><span class="n">left_i</span><span class="p">,</span><span class="w"> </span><span class="n">nfa</span><span class="p">,</span><span class="w"> </span><span class="n">entry_local</span><span class="p">,</span><span class="w"> </span><span class="n">exit_i</span><span class="p">)</span>
 <span class="w">            </span><span class="k">end if</span>
 
 <span class="k">         end block</span>
 <span class="k">      case </span><span class="n">default</span><span class="w"> </span><span class="c">! for case (op_not_init)</span>
 <span class="w">         </span><span class="c">! Handle unexpected cases.</span>
 <span class="w">         </span><span class="k">error stop</span><span class="w"> </span><span class="s2">&quot;This will not heppen in &#39;generate_nfa&#39;.&quot;</span>
+<span class="w">         </span><span class="c">! error stop tree%nodes(i)%op</span>
 <span class="w">      </span><span class="k">end select</span>
 <span class="k">   end subroutine </span><span class="n">generate_nfa</span>
 </pre></div>
@@ -403,33 +399,11 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-03-16 15:12 +0000             </p>
+ on 2025-04-02 09:45 +0000             </p>
           </div>
         </div>
         <br>
       </div> <!-- /container -->
     </footer>
-
-    <!-- Bootstrap core JavaScript -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>    
-
-    <!-- MathJax JavaScript
-             ================================================== -->
-             <!-- Placed at the end of the document so the pages load faster -->
-        <script type="text/x-mathjax-config">
-          MathJax.Hub.Config({
-          TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
-          jax: ['input/TeX','input/MathML','output/HTML-CSS'],
-          extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
-          });
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-          <script src="../tipuesearch/tipuesearch_content.js"></script>
-          <script src="../tipuesearch/tipuesearch_set.js"></script>
-          <script src="../tipuesearch/tipuesearch.js"></script>
-
   </body>
 </html>

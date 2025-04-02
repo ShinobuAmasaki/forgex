@@ -18,6 +18,7 @@ module forgex_syntax_tree_node_m
    use :: forgex_parameters_m
    use :: forgex_segment_m, only: segment_t
    use :: forgex_enums_m
+   use :: forgex_cube_m, only: cube_t, white_bmp
    implicit none
    private
 
@@ -36,7 +37,7 @@ module forgex_syntax_tree_node_m
       !! This type is used to construct a concrete syntax tree,
       !! later converted to NFA.
       integer(int32) :: op            = op_not_init
-      type(segment_t), allocatable :: c(:)
+      type(cube_t)   :: c
       integer(int32) :: left_i        = INVALID_INDEX
       integer(int32) :: right_i       = INVALID_INDEX
       integer(int32) :: parent_i      = INVALID_INDEX
@@ -62,6 +63,8 @@ module forgex_syntax_tree_node_m
    contains
       procedure :: get_token
    end type
+
+   type(cube_t), parameter :: terminal_c = cube_t(single_flag=.false.)
 
    type(tree_node_t), parameter, public :: terminal = &
       tree_node_t( op=op_not_init,&
@@ -119,9 +122,9 @@ contains
 
       integer :: i
 
-      do i = lbound(tree, dim=1), ubound(tree, dim=1)
-         if (allocated(tree(i)%c)) deallocate(tree(i)%c)
-      end do
+      ! do i = lbound(tree, dim=1), ubound(tree, dim=1)
+      !    if (allocated(tree(i)%c)) deallocate(tree(i)%c)
+      ! end do
 
       if (allocated(tree)) deallocate(tree)
    end subroutine deallocate_tree
@@ -231,8 +234,7 @@ contains
       type(tree_node_t) :: node
 
       node%op = op_char
-      allocate(node%c(1))
-      node%c = segment
+      call node%c%add(segment)
     end function
 
 
