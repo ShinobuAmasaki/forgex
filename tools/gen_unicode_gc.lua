@@ -27,10 +27,16 @@ end
 outf:write("module forgex_unicode_gc_m\n")
 outf:write("   use :: forgex_segment_m\n")
 outf:write("   implicit none\n")
+outf:write("   private\n\n")
+
+for _, abbrev in ipairs(abbrev_order) do
+   outf:write(string.format("   public :: unicode_gc_%s\n", abbrev))
+end
+outf:write("\n")
 
 for _, abbrev in ipairs(abbrev_order) do
    local list = ranges[abbrev]
-   
+
    outf:write(string.format("   type(segment_t), parameter :: unicode_gc_%s(*) = &\n", abbrev))
    
    outf:write("   [ &\n")

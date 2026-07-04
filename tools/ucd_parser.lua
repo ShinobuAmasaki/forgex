@@ -17,7 +17,6 @@ end
 -- are integer codepoints (lo == hi for single codepoints) and prop is
 -- the trimed property value string.
 function M.parse_property_file(path, callback)
-   io.write("hoge")
    for line in io.lines(path) do
       local data = trim(line:match("^([^#]+)") or "")
       if data == "" then goto continue end
