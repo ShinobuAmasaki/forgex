@@ -1,4 +1,6 @@
 -- gen_unicode_gc.lua
+--
+-- generate unicode_gc_m.f90
 
 local ucd = require("tools.ucd_parser")
 
@@ -33,6 +35,7 @@ for _, abbrev in ipairs(abbrev_order) do
    outf:write(string.format("   public :: unicode_gc_%s\n", abbrev))
 end
 outf:write("\n")
+
 
 for _, abbrev in ipairs(abbrev_order) do
    local list = ranges[abbrev]
