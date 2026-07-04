@@ -32,7 +32,6 @@ module forgex_segment_m
    public :: width_of_segment
    public :: total_width_of_segment
    public :: hex2seg
-   public :: prop2seg
 
 
 
@@ -408,30 +407,6 @@ contains
       ierr = SYNTAX_VALID
 
    end subroutine hex2seg
-
-
-   pure subroutine prop2seg(property, seglist, ierr)
-      ! use :: forgex_unicode_gc_m
-      use :: forgex_error_m
-      implicit none
-      character(*), intent(in) :: property
-      type(segment_t), intent(inout), allocatable :: seglist(:)
-      integer, intent(inout) :: ierr
-
-      ! logical :: is_single_prop, is_longer_prop
-      ! character(:), allocatable :: prop
-      
-      ! prop = property
-      ! is_single_prop = len(prop) == 1
-      ! is_longer_prop = 1 < len(prop)
-
-      ! if (prop == '' .or. len(prop) < 1) then
-      !    ierr = SYNTAX_ERR_EMPTY_PROPERTY
-      !    return
-      ! end if
-
-
-   end subroutine prop2seg
       
 
 !====================================================================-!

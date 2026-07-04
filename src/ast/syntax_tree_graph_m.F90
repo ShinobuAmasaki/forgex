@@ -862,6 +862,7 @@ contains
 
 
    pure subroutine tree_graph__unicode_property(self, seglist)
+      use :: forgex_unicode_tools_m
       implicit none
       class(tree_t), intent(inout) :: self
       type(segment_t), intent(inout), allocatable :: seglist(:)
@@ -870,8 +871,8 @@ contains
       integer :: i
       logical :: is_single_prop, is_longer_prop
 
-      self%code = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
-      return
+      ! self%code = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
+      ! return
       
       property = ''
 
@@ -901,7 +902,7 @@ contains
          end do reader
       end if
 
-      ! call prop2seg(property, seglist, self%code)
+      call prop2seg(property, seglist, self%code)
 
    end subroutine tree_graph__unicode_property 
 
