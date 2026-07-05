@@ -35,6 +35,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
       enumerator :: SYNTAX_ERR_EMPTY_PROPERTY
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+      enumerator :: SYNTAX_ERR_INVALID_PROPERTY
       enumerator :: ALLOCATION_ERR
    end enum
 

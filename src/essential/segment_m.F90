@@ -360,10 +360,10 @@ contains
       type(segment_t), intent(inout) :: seg
       integer, intent(inout) :: ierr
 
-      character(:), allocatable :: buf, fmt
+      character(:), allocatable :: fmt
       character(8) :: c_len
 
-      integer :: i, ios, code
+      integer :: ios, code
       logical :: is_two_digits, is_longer_digit, is_hex_valid
       
       fmt = ''
