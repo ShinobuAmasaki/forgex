@@ -28,7 +28,7 @@ function M.generate_select_constract(abbrevs)
    end
    case_stat = case_stat .. "         case default\n"
    case_stat = case_stat .. "            if (allocated(seglist)) deallocate(seglist)\n"
-   case_stat = case_stat .. "            ierr = SYNTAX_INVALID_PROPERTY\n"
+   case_stat = case_stat .. "            ierr = SYNTAX_ERR_INVALID_PROPERTY\n"
    case_stat = case_stat .. "            return\n"
    case_stat = case_stat .. "         end select\n"
    M.cases = case_stat
