@@ -214,14 +214,6 @@ contains
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
-
-      ! Returns true immediately if the given prefix exactly matches the string.
-      if (len(string) > 0 .and. len(prefix) >0 ) then
-         if (prefix == string .and. len_pre == n) then
-            res = .true.
-            return
-         end if
-      end if
       
       ! Returns false if the prefix or suffix is ​​longer than the input string.
       if (len_pre > len(string) .or. len_suf > len(string)) then
