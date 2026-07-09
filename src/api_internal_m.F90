@@ -67,7 +67,8 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (len(string) <= 1 .and. string == '') then
+      ! detect only empty strings
+      if (len(string) == 0) then
          if (automaton%dfa%nodes(cur_i)%accepted) then
             from = ACCEPTED_EMPTY
             to = ACCEPTED_EMPTY
