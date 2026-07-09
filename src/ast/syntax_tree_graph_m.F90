@@ -701,6 +701,7 @@ contains
       case (ESCAPE_P)
          call self%property(seglist)
          if (.not. self%is_valid) return
+         call node%c%add(seglist)
 
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
@@ -903,6 +904,10 @@ contains
       end if
 
       call prop2seg(property, seglist, self%code)
+      if (self%code /= SYNTAX_VALID) then
+         self%is_valid = .false.
+         return
+      end if
 
    end subroutine tree_graph__unicode_property 
 
