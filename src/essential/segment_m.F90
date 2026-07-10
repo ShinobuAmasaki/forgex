@@ -215,46 +215,44 @@ contains
       call sort_segment_by_min(list)
       call merge_segments(list)
 
-      ! Count the number of new segments
-      count = 0
-      current_min = UTF8_CODE_EMPTY+1
+      !!    The complement is computed only over the domain [UTF8_CODE_MIN, UTF8_CODE_MAX];
+      !! code points below UTF8_CODE_MIN (control characters) are deliberately excluded
+      !! from every negated class (see README). Segments in `list` that lie below UTF8_CODE_MIN
+      !! (e.g. SEG_TAB, SEG_LF, SEG_FF, SEG_CR) must therefore never pull `current_min`
+      !! back below the domain floor, or spurious low-valued gap segments occur.
+      !! Clamping with max() enforces that invariant.
+      !!
+      !!    With that invariant in place, a single pass over an upper-bound sized buffer
+      !! suffices: the complement of `n` disjoint sorted segments has at most `n+1` gaps
+      !! (before, between, and after them). A prior version used two separate loops (one
+      !! to count, one to fill) that had to strictly control the size and order; they produced
+      !! a corrupted list due to a minor mistake, so this was collapsed into one loop to
+      !! remove that failure mode entirely.
+      
       n = size(list, dim=1)
+      allocate(new_list(n+1))
 
-      do i = 1, n
-         if (current_min < list(i)%min) then
-            count = count + 1
-         end if
-         current_min = list(i)%max + 1
-      end do
-
-      if (current_min <= UTF8_CODE_MAX) then
-         count = count + 1
-      end if
-
-      ! Allocate new list
-      allocate(new_list(count))
-
-      ! Fill the new list with the component segments
-      count = 1
+      count = 0
       current_min = UTF8_CODE_MIN
 
       do i = 1, n
          if (current_min < list(i)%min) then
+            count = count + 1
             new_list(count)%min = current_min
             new_list(count)%max = list(i)%min - 1
-            count = count + 1
          end if
-         current_min = list(i)%max + 1
+         current_min = max(current_min, list(i)%max + 1)
       end do
 
       if (current_min <= UTF8_CODE_MAX) then
+         count = count + 1
          new_list(count)%min = current_min
          new_list(count)%max = UTF8_CODE_MAX
       end if
 
-      ! Deallocate old list and reassign new list
+      ! Deallocate old list and reassign the trimmed new list
       deallocate(list)
-      list = new_list
+      list = new_list(1:count)
    end subroutine invert_segment_list
 
    !> This function takes an array of segments and a character as arguments,
