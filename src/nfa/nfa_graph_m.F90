@@ -395,9 +395,7 @@ contains
             max_repeat = tree%nodes(i)%max_repeat
 
             num_1st_repeat = min_repeat-1
-            if (max_repeat == INFINITE) then
-               num_1st_repeat = num_1st_repeat +1
-            end if
+            if (max_repeat == INFINITE) num_1st_repeat = num_1st_repeat +1
 
             do j = 1, num_1st_repeat
                call nfa%new_nfa_node()
@@ -433,7 +431,7 @@ contains
 
             if (max_repeat == INFINITE) then
                call generate_nfa_closure(tree, idx, nfa, entry_local, exit_i)
-            else
+            else if (max_repeat > 0) then
                call generate_nfa(tree, tree%nodes(i)%left_i, nfa, entry_local, exit_i)
             end if
 
