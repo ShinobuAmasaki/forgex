@@ -10,6 +10,8 @@ add_library(essential STATIC
    utility_m.f90
    cube_m.F90
    bitmap_m.F90
+   unicode_gc_m.f90
+   unicode_tools_m.f90
 )
 
 set_target_properties(essential PROPERTIES
