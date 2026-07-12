@@ -38,6 +38,9 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_INVALID_PROPERTY
       enumerator :: SYNTAX_ERR_TOO_MANY_NODES
       enumerator :: ALLOCATION_ERR
+      enumerator :: ENGINE_ERR_NFA_TOO_MANY_STATES
+      enumerator :: ENGINE_ERR_DFA_TOO_MANY_STATES
+      enumerator :: ENGINE_ERR_INTERNAL
    end enum
 
 
@@ -125,6 +128,17 @@ module forgex_error_m
    ! ALLOCATION_ERR
    character(*), parameter :: err_allocation = "ERROR: Allocation is failed."
 
+   ! ENGINE_ERR_NFA_TOO_MANY_STATES
+   character(*), parameter :: err_nfa_too_many_states = &
+               "ERROR: Pattern is too complex: exceeded the maximum number of NFA states."
+   ! ENGINE_ERR_DFA_TOO_MANY_STATES
+   character(*), parameter :: err_dfa_too_many_states = &
+               "ERROR: Matching aborted: exceeded the maximum number of DFA states." 
+
+   ! ENGINE_ERR_INTERNAL
+   character(*), parameter :: err_engine_internal = &
+               "ERROR: Matching aborted: internal error."
+
 
 contains
 
@@ -208,7 +222,15 @@ contains
       case (ALLOCATION_ERR)
          msg = err_allocation
 
-      !!!
+      case (ENGINE_ERR_NFA_TOO_MANY_STATES)
+         msg = err_nfa_too_many_states
+
+      case (ENGINE_ERR_DFA_TOO_MANY_STATES)
+         msg = err_dfa_too_many_states
+
+      case (ENGINE_ERR_INTERNAL)
+         msg = err_engine_internal
+
       case (SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN)
          msg = err_this_should_not_happen
 
