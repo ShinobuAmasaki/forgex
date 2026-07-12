@@ -185,11 +185,11 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
-                  <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
                   <li class="list-inline-item"><a href='forgex_lazy_dfa_node_m.html'>forgex_lazy_dfa_node_m</a></li>
-                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
-                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
                   <li class="list-inline-item"><a href='forgex_nfa_state_set_m.html'>forgex_nfa_state_set_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_parameters_m.html'>forgex_parameters_m</a></li>
+                  <li class="list-inline-item"><a href='forgex_automaton_m.html'>forgex_automaton_m</a></li>
+                  <li class="list-inline-item"><a href='http://fortranwiki.org/fortran/show/iso_fortran_env'>iso_fortran_env</a></li>
               </ul>
             </li>
         </ul>
@@ -228,7 +228,7 @@ and returns <code>.true.</code> if it matches exactly.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~11"></span>
+              <span class="anchor" id="variable-automaton~6"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -243,7 +243,7 @@ and returns <code>.true.</code> if it matches exactly.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~3"></span>
+              <span class="anchor" id="variable-string"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -288,7 +288,7 @@ and returns <code>.true.</code> if it matches exactly.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~6"></span>
+              <span class="anchor" id="variable-automaton"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -303,7 +303,7 @@ and returns <code>.true.</code> if it matches exactly.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~3"></span>
+              <span class="anchor" id="variable-curr"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -349,7 +349,7 @@ and the corresponding set of transitionable NFA state.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~8"></span>
+              <span class="anchor" id="variable-automaton~3"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -364,7 +364,7 @@ and the corresponding set of transitionable NFA state.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~5"></span>
+              <span class="anchor" id="variable-curr~3"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -410,7 +410,7 @@ index of the current automaton DFA state array and the input symbol.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~10"></span>
+              <span class="anchor" id="variable-automaton~5"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -440,7 +440,7 @@ index of the current automaton DFA state array and the input symbol.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-symbol~7"></span>
+              <span class="anchor" id="variable-symbol~4"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -490,7 +490,7 @@ index of the current automaton DFA state array and the input symbol.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~9"></span>
+              <span class="anchor" id="variable-automaton~4"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -546,7 +546,7 @@ and stores the string index in the argument if it contains a match.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~12"></span>
+              <span class="anchor" id="variable-automaton~7"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -561,7 +561,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~4"></span>
+              <span class="anchor" id="variable-string~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -576,7 +576,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-from~4"></span>
+              <span class="anchor" id="variable-from"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -591,7 +591,7 @@ and stores the string index in the argument if it contains a match.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-to~4"></span>
+              <span class="anchor" id="variable-to"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -634,7 +634,7 @@ otherwise it returns <code>DFA_INVALID_INDEX</code>.</p>
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~7"></span>
+              <span class="anchor" id="variable-automaton~2"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(in)</td>
@@ -649,7 +649,7 @@ otherwise it returns <code>DFA_INVALID_INDEX</code>.</p>
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-curr~4"></span>
+              <span class="anchor" id="variable-curr~2"></span>
               integer(kind=int32),
             </td>
 <td>intent(in)</td>
@@ -722,7 +722,7 @@ otherwise it returns <code>DFA_INVALID_INDEX</code>.</p>
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2026-07-12 23:35 +0000             </p>
+ on 2026-07-12 23:40 +0000             </p>
           </div>
         </div>
         <br>
