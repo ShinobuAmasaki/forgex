@@ -91,20 +91,20 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 0.1% of total for procedures.">7 statements</a>
+                 title=" 1.7% of total for procedures.">85 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
               <i class="fa fa-code"></i>
-              <a href="../src/segment_m.F90"> Source File</a>
+              <a href="../src/unicode_tools_m.f90"> Source File</a>
             </li>
         </ul>
       </div>
       <div class="col">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-                <li class="breadcrumb-item"><a href='../sourcefile/segment_m.f90.html'>segment_m.F90</a></li>
-                <li class="breadcrumb-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
+                <li class="breadcrumb-item"><a href='../sourcefile/unicode_tools_m.f90.html'>unicode_tools_m.f90</a></li>
+                <li class="breadcrumb-item"><a href='../module/forgex_unicode_tools_m.html'>forgex_unicode_tools_m</a></li>
             <li class="breadcrumb-item active" aria-current="page">prop2seg</li>
           </ol>
         </nav>
@@ -166,6 +166,8 @@
         <ul class="list-group list-group-flush">
             <li class="list-group-item">
               <ul class="list-inline">
+                  <li class="list-inline-item"><a href='../module/forgex_segment_m.html'>forgex_segment_m</a></li>
+                  <li class="list-inline-item"><a href='../module/forgex_unicode_gc_m.html'>forgex_unicode_gc_m</a></li>
                   <li class="list-inline-item"><a href='../module/forgex_error_m.html'>forgex_error_m</a></li>
               </ul>
             </li>
@@ -189,7 +191,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-property"></span>
+              <span class="anchor" id="variable-property~3"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -204,7 +206,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-seglist"></span>
+              <span class="anchor" id="variable-seglist~6"></span>
               type(<a href='../type/segment_t.html'>segment_t</a>),
             </td>
 <td>intent(inout),</td>
@@ -219,7 +221,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-ierr~5"></span>
+              <span class="anchor" id="variable-ierr~2"></span>
               integer,
             </td>
 <td>intent(inout)</td>
@@ -250,25 +252,95 @@
     <section>
     <h2><span class="anchor" id="src"></span>Source Code</h2>
     <div class="hl codehilite"><pre><span></span><span class="w">   </span><span class="k">pure subroutine </span><span class="n">prop2seg</span><span class="p">(</span><span class="n">property</span><span class="p">,</span><span class="w"> </span><span class="n">seglist</span><span class="p">,</span><span class="w"> </span><span class="n">ierr</span><span class="p">)</span>
-<span class="w">      </span><span class="c">! use :: forgex_unicode_gc_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_unicode_gc_m</span>
 <span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_error_m</span>
+<span class="w">      </span><span class="k">use</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">forgex_segment_m</span>
 <span class="w">      </span><span class="k">implicit none</span>
 <span class="k">      </span><span class="kt">character</span><span class="p">(</span><span class="o">*</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">in</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">property</span>
 <span class="w">      </span><span class="k">type</span><span class="p">(</span><span class="n">segment_t</span><span class="p">),</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">seglist</span><span class="p">(:)</span>
 <span class="w">      </span><span class="kt">integer</span><span class="p">,</span><span class="w"> </span><span class="k">intent</span><span class="p">(</span><span class="n">inout</span><span class="p">)</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">ierr</span>
 
-<span class="w">      </span><span class="c">! logical :: is_single_prop, is_longer_prop</span>
-<span class="w">      </span><span class="c">! character(:), allocatable :: prop</span>
+<span class="w">      </span><span class="kt">logical</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">is_single_prop</span><span class="p">,</span><span class="w"> </span><span class="n">is_longer_prop</span>
+<span class="w">      </span><span class="kt">character</span><span class="p">(:),</span><span class="w"> </span><span class="k">allocatable</span><span class="w"> </span><span class="kd">::</span><span class="w"> </span><span class="n">prop</span>
 <span class="w">      </span>
-<span class="w">      </span><span class="c">! prop = property</span>
-<span class="w">      </span><span class="c">! is_single_prop = len(prop) == 1</span>
-<span class="w">      </span><span class="c">! is_longer_prop = 1 &lt; len(prop)</span>
+<span class="w">      </span><span class="n">prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">property</span>
+<span class="w">      </span><span class="n">is_single_prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">      </span><span class="n">is_longer_prop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
 
-<span class="w">      </span><span class="c">! if (prop == &#39;&#39; .or. len(prop) &lt; 1) then</span>
-<span class="w">      </span><span class="c">!    ierr = SYNTAX_ERR_EMPTY_PROPERTY</span>
-<span class="w">      </span><span class="c">!    return</span>
-<span class="w">      </span><span class="c">! end if</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">prop</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
+<span class="k">         </span><span class="n">ierr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_EMPTY_PROPERTY</span>
+<span class="w">         </span><span class="k">return</span>
+<span class="k">      end if</span>
 
+<span class="k">      select case</span><span class="w"> </span><span class="p">(</span><span class="n">property</span><span class="p">)</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Cn&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Cn</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Lu&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Lu</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Ll&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Ll</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Lt&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Lt</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Lm&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Lm</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Lo&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Lo</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Mn&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Mn</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Me&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Me</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Mc&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Mc</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Nd&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Nd</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Nl&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Nl</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;No&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_No</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Zs&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Zs</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Zl&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Zl</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Zp&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Zp</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Cc&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Cc</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Cf&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Cf</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Co&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Co</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Cs&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Cs</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Pd&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Pd</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Ps&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Ps</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Pe&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Pe</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Pc&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Pc</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Po&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Po</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Sm&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Sm</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Sc&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Sc</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Sk&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Sk</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;So&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_So</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Pi&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Pi</span>
+<span class="w">         </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Pf&#39;</span><span class="p">)</span>
+<span class="w">            </span><span class="n">seglist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">unicode_gc_Pf</span>
+<span class="w">         </span><span class="k">case </span><span class="n">default</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">allocated</span><span class="p">(</span><span class="n">seglist</span><span class="p">))</span><span class="w"> </span><span class="k">deallocate</span><span class="p">(</span><span class="n">seglist</span><span class="p">)</span>
+<span class="w">            </span><span class="n">ierr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_ERR_INVALID_PROPERTY</span>
+<span class="w">            </span><span class="k">return</span>
+<span class="k">         end select</span>
+
+
+<span class="k">      </span><span class="n">ierr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SYNTAX_VALID</span>
 
 <span class="w">   </span><span class="k">end subroutine </span><span class="n">prop2seg</span>
 </pre></div>
@@ -294,7 +366,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-08-16 04:52 +0000             </p>
+ on 2026-07-12 23:35 +0000             </p>
           </div>
         </div>
         <br>

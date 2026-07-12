@@ -91,7 +91,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.0% of total for modules and submodules.">115 statements</a>
+                 title=" 2.3% of total for modules and submodules.">132 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -134,7 +134,9 @@
         <div class="list-group list-group-flush">
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_allocation">err_allocation</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_character_class_subtraction">err_character_class_subtraction</a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_dfa_too_many_states">err_dfa_too_many_states</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_empty_character_class">err_empty_character_class</a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_engine_internal">err_engine_internal</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_escaped_symbol_invalid">err_escaped_symbol_invalid</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_escaped_symbol_missing">err_escaped_symbol_missing</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_exceed_unicode_limit">err_exceed_unicode_limit</a>
@@ -145,6 +147,7 @@
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_invalid_quantifier">err_invalid_quantifier</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_is_nothing">err_is_nothing</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_misplaced_subtraction_operator">err_misplaced_subtraction_operator</a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_nfa_too_many_states">err_nfa_too_many_states</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_plus_incomplete">err_plus_incomplete</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_question_incomplete">err_question_incomplete</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_r_bracket_missing">err_r_bracket_missing</a>
@@ -157,6 +160,7 @@
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_star_incomplete">err_star_incomplete</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_this_should_not_happen">err_this_should_not_happen</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_token_incomplete">err_token_incomplete</a>
+            <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_too_many_nodes">err_too_many_nodes</a>
             <a class="list-group-item" href="../module/forgex_error_m.html#variable-err_unicode_property">err_unicode_property</a>
         </div>
       </div>
@@ -263,6 +267,23 @@ parameter
         </tr>
         <tr>
             <td>
+              <span class="anchor" id="variable-err_dfa_too_many_states"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>err_dfa_too_many_states</strong></td>
+<td> =</td>
+                <td>&#34;ERROR: Matching aborted: exceeded the maximum number of DFA states.&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
               <span class="anchor" id="variable-err_empty_character_class"></span>
               character(len=*),
             </td>
@@ -274,6 +295,23 @@ parameter
             <td><strong>err_empty_character_class</strong></td>
 <td> =</td>
                 <td>&#34;ERROR: Given class has no character.&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-err_engine_internal"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>err_engine_internal</strong></td>
+<td> =</td>
+                <td>&#34;ERROR: Matching aborted: internal error.&#34;</td>
             <td>
                 
             </td>
@@ -444,6 +482,23 @@ parameter
             <td><strong>err_misplaced_subtraction_operator</strong></td>
 <td> =</td>
                 <td>&#34;ERROR: Subtraction operator is misplaced in the given character class.&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
+              <span class="anchor" id="variable-err_nfa_too_many_states"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>err_nfa_too_many_states</strong></td>
+<td> =</td>
+                <td>&#34;ERROR: Pattern is too complex: exceeded the maximum number of NFA states.&#34;</td>
             <td>
                 
             </td>
@@ -654,6 +709,23 @@ parameter
         </tr>
         <tr>
             <td>
+              <span class="anchor" id="variable-err_too_many_nodes"></span>
+              character(len=*),
+            </td>
+              <td>public,</td>
+            <td>
+parameter               
+            </td>
+            <td>::</td>
+            <td><strong>err_too_many_nodes</strong></td>
+<td> =</td>
+                <td>&#34;ERROR: Pattern is too complex: exceeded the maximum number of syntax tree nodes.&#34;</td>
+            <td>
+                
+            </td>
+        </tr>
+        <tr>
+            <td>
               <span class="anchor" id="variable-err_unicode_property"></span>
               character(len=*),
             </td>
@@ -785,7 +857,27 @@ parameter
             </tr>
             <tr>
               <td>enumerator</td><td>::</td>
-              <td><strong>ALLOCATION_ERR</strong></td><td> = </td><td>25</td><td></td>
+              <td><strong>SYNTAX_ERR_INVALID_PROPERTY</strong></td><td> = </td><td>25</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>SYNTAX_ERR_TOO_MANY_NODES</strong></td><td> = </td><td>26</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>ALLOCATION_ERR</strong></td><td> = </td><td>27</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>ENGINE_ERR_NFA_TOO_MANY_STATES</strong></td><td> = </td><td>28</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>ENGINE_ERR_DFA_TOO_MANY_STATES</strong></td><td> = </td><td>29</td><td></td>
+            </tr>
+            <tr>
+              <td>enumerator</td><td>::</td>
+              <td><strong>ENGINE_ERR_INTERNAL</strong></td><td> = </td><td>30</td><td></td>
             </tr>
         </tbody>
       </table>
@@ -806,8 +898,7 @@ parameter
     <div class="card-body">
           
   <p>This function accepts integer error status code and then return error
- messagge corresponding to it.
-!</p>
+messagge corresponding to it.</p>
 
   <h4>Arguments</h4>
       <table class="table table-striped varlist">
@@ -822,7 +913,7 @@ parameter
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-code~3"></span>
+              <span class="anchor" id="variable-code"></span>
               integer,
             </td>
 <td>intent(in)</td>
@@ -871,7 +962,7 @@ parameter
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-08-16 04:52 +0000             </p>
+ on 2026-07-12 23:35 +0000             </p>
           </div>
         </div>
         <br>

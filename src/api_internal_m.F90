@@ -67,7 +67,8 @@ contains
          error stop "DFA have not been initialized."
       end if
 
-      if (len(string) <= 1 .and. string == '') then
+      ! detect only empty strings
+      if (len(string) == 0) then
          if (automaton%dfa%nodes(cur_i)%accepted) then
             from = ACCEPTED_EMPTY
             to = ACCEPTED_EMPTY
@@ -214,14 +215,6 @@ contains
       n = len(string)
       matches_pre = .true.
       matches_post = .true.
-
-      ! Returns true immediately if the given prefix exactly matches the string.
-      if (len(string) > 0 .and. len(prefix) >0 ) then
-         if (prefix == string .and. len_pre == n) then
-            res = .true.
-            return
-         end if
-      end if
       
       ! Returns false if the prefix or suffix is ​​longer than the input string.
       if (len_pre > len(string) .or. len_suf > len(string)) then

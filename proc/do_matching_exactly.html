@@ -91,7 +91,7 @@
 
             <li class="list-inline-item" id="statements"><i class="fa fa-list-ol"></i>
               <a data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-                 title=" 2.1% of total for procedures.">105 statements</a>
+                 title=" 2.0% of total for procedures.">99 statements</a>
             </li>
 
             <li class="list-inline-item" id="source-file">
@@ -190,7 +190,7 @@
     <tbody>
         <tr>
             <td>
-              <span class="anchor" id="variable-automaton~12"></span>
+              <span class="anchor" id="variable-automaton~2"></span>
               type(<a href='../type/automaton_t.html'>automaton_t</a>),
             </td>
 <td>intent(inout)</td>
@@ -205,7 +205,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-string~4"></span>
+              <span class="anchor" id="variable-string~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -220,7 +220,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-res~8"></span>
+              <span class="anchor" id="variable-res"></span>
               logical,
             </td>
 <td>intent(inout)</td>
@@ -235,7 +235,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-prefix~5"></span>
+              <span class="anchor" id="variable-prefix~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -250,7 +250,7 @@
         </tr>
         <tr>
             <td>
-              <span class="anchor" id="variable-suffix~5"></span>
+              <span class="anchor" id="variable-suffix~2"></span>
               character(len=*),
             </td>
 <td>intent(in)</td>
@@ -325,14 +325,6 @@
 <span class="w">      </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
 <span class="w">      </span><span class="n">matches_pre</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
 <span class="w">      </span><span class="n">matches_post</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
-
-<span class="w">      </span><span class="c">! Returns true immediately if the given prefix exactly matches the string.</span>
-<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="mi">0</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">         if</span><span class="w"> </span><span class="p">(</span><span class="n">prefix</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="p">.</span><span class="nb">and</span><span class="p">.</span><span class="w"> </span><span class="n">len_pre</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="k">then</span>
-<span class="k">            </span><span class="n">res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.</span><span class="n">true</span><span class="p">.</span>
-<span class="w">            </span><span class="k">return</span>
-<span class="k">         end if</span>
-<span class="k">      end if</span>
 <span class="w">      </span>
 <span class="w">      </span><span class="c">! Returns false if the prefix or suffix is ​​longer than the input string.</span>
 <span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">len_pre</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span><span class="w"> </span><span class="p">.</span><span class="nb">or</span><span class="p">.</span><span class="w"> </span><span class="n">len_suf</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">))</span><span class="w"> </span><span class="k">then</span>
@@ -474,7 +466,7 @@
             <p class="text-end">
               Documentation generated by
               <a href="https://github.com/Fortran-FOSS-Programmers/ford">FORD</a>
- on 2025-08-16 04:52 +0000             </p>
+ on 2026-07-12 23:35 +0000             </p>
           </div>
         </div>
         <br>
