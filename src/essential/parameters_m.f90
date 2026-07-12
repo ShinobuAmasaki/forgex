@@ -28,7 +28,7 @@ module forgex_parameters_m
 
    !> The maximum value that can be allocated to a syntax tree graph;
    !> exceeding this will cause ERROR STOP.
-   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = TREE_NODE_LIMIT
+   integer(int32), parameter :: TREE_NODE_HARD_LIMIT = 2**20
 
    integer(int32), parameter :: LIT_OPTS_INDEX_UNIT = 32
 

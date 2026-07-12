@@ -107,6 +107,8 @@ contains
       integer :: new_part_begin, new_part_end, i
       type(tree_node_t), allocatable :: tmp(:)
 
+      integer :: alloc_stat
+
       if (.not. allocated(self%nodes)) then
          allocate(self%nodes(TREE_NODE_BASE:TREE_NODE_UNIT))
          self%num_alloc = 1
@@ -116,12 +118,23 @@ contains
       new_part_end   = ubound(self%nodes, dim=1) * 2
 
       if (new_part_end > TREE_NODE_HARD_LIMIT) then
-         error stop "Exceeded the maximum number of tree nodes can be allocated."
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_TOO_MANY_NODES
+         return
+         ! error stop "Exceeded the maximum number of tree nodes can be allocated."
       end if
 
       call move_alloc(self%nodes, tmp)
 
-      allocate(self%nodes(TREE_NODE_BASE:new_part_end))
+      allocate(self%nodes(TREE_NODE_BASE:new_part_end), stat=alloc_stat)
+
+      if (alloc_stat /= 0) then
+         self%is_valid = .false.
+         self%code = SYNTAX_ERR_TOO_MANY_NODES
+         return
+         ! Restoration from tmp is unnecessary:
+         ! nodes is not accessed after is_valid becomes false.
+      end if
 
       self%nodes(TREE_NODE_BASE:new_part_begin-1) = tmp(TREE_NODE_BASE:new_part_begin-1)
 
@@ -147,11 +160,15 @@ contains
       type(tree_node_t), intent(inout) :: node
 
       integer :: top
+      
+      if (.not. self%is_valid) return
 
       top = self%top + 1
       if (top > ubound(self%nodes, dim=1)) then
          call self%reallocate()
+         if (.not. self%is_valid) return
       end if
+      
       node%own_i = top
       self%nodes(top) = node
       self%nodes(top)%is_registered = .true.
@@ -167,6 +184,8 @@ contains
       type(tree_node_t), intent(in) :: left, right
 
       call self%register(node)
+      if (.not. self%is_valid) return
+
 
       call self%connect_left(self%nodes(self%top)%own_i, left%own_i)
       call self%connect_right(self%nodes(self%top)%own_i, right%own_i)

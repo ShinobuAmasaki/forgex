@@ -36,6 +36,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_EMPTY_PROPERTY
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
       enumerator :: SYNTAX_ERR_INVALID_PROPERTY
+      enumerator :: SYNTAX_ERR_TOO_MANY_NODES
       enumerator :: ALLOCATION_ERR
    end enum
 
@@ -117,6 +118,9 @@ module forgex_error_m
 
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = "ERROR: Fatal error is happened."
+
+   ! SYNTAX_ERRO_TOO_MANY_NODES
+   character(*), parameter :: err_too_many_nodes = "ERROR: Pattern is too complex: exceeded the maximum number of syntax tree nodes."
    
    ! ALLOCATION_ERR
    character(*), parameter :: err_allocation = "ERROR: Allocation is failed."
@@ -197,6 +201,9 @@ contains
 
       case (SYNTAX_ERR_UNICODE_EXCEED)
          msg = err_exceed_unicode_limit
+
+      case (SYNTAX_ERR_TOO_MANY_NODES)
+         msg = err_too_many_nodes
       
       case (ALLOCATION_ERR)
          msg = err_allocation
