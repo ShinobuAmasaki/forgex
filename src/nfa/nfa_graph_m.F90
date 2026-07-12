@@ -170,7 +170,6 @@ contains
       type(nfa_transition_t) :: node
 
       type(priority_queue_t) :: queue
-      type(nfa_transition_t) :: tra
 
       integer :: i, j, k
 
@@ -306,8 +305,6 @@ contains
       integer(int32), intent(in) :: uni
       integer(int32), intent(in) :: nfa_exit
 
-      type(nfa_state_node_t) :: node
-      type(nfa_transition_t) :: transition
       character(:), allocatable :: buf
       integer(int32) :: i, j, k
 
@@ -359,7 +356,6 @@ contains
       integer(int32), intent(in) :: entry_i, exit_i
 
       integer :: i
-      integer :: k
       integer :: node1, node2, entry_local
 
       if (idx == INVALID_INDEX) return
