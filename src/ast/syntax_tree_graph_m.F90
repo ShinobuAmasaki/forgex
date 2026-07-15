@@ -722,6 +722,12 @@ contains
          if (.not. self%is_valid) return
          call node%c%add(seglist)
 
+      case (ESCAPE_P_CAPITAL)
+         call self%property(seglist)
+         if (.not. self%is_valid) return
+         call node%c%add(seglist)
+         call node%c%invert()
+
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
          self%is_valid = .false.
@@ -891,9 +897,6 @@ contains
       integer :: i
       logical :: is_single_prop, is_longer_prop
 
-      ! self%code = SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
-      ! return
-      
       property = ''
 
       call self%tape%get_token()
