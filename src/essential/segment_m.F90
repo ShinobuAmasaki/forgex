@@ -191,10 +191,14 @@ contains
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
-      type(segment_t) :: init
+      type(segment_t) :: init ! == segment_t(2097153, 2097153)
+
+      
 
       res = self%min /= init%min .and. self%max /= init%max &
-      .and. self%min <= self%max
+      .and. self%min <= self%max &
+      .and. self%min >= UTF8_CODE_EMPTY &
+      .and. self%max <= UTF8_CODE_MAX
    end function segment_is_valid
 
 
