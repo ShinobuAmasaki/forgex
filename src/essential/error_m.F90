@@ -20,6 +20,7 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_CURLYBRACE_UNEXPECTED
       enumerator :: SYNTAX_ERR_INVALID_TIMES
       enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
+
       enumerator :: SYNTAX_ERR_ESCAPED_SYMBOL_INVALID ! 10
       enumerator :: SYNTAX_ERR_EMPTY_CHARACTER_CLASS
       enumerator :: SYNTAX_ERR_RANGE_WITH_ESCAPE_SEQUENCES
@@ -30,17 +31,19 @@ module forgex_error_m
       enumerator :: SYNTAX_ERR_PLUS_INCOMPLETE
       enumerator :: SYNTAX_ERR_QUESTION_INCOMPLETE
       enumerator :: SYNTAX_ERR_INVALID_HEXADECIMAL
+
       enumerator :: SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH ! 20
       enumerator :: SYNTAX_ERR_UNICODE_EXCEED
       enumerator :: SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
       enumerator :: SYNTAX_ERR_EMPTY_PROPERTY
       enumerator :: SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
+      enumerator :: ALLOCATION_ERR
       enumerator :: SYNTAX_ERR_INVALID_PROPERTY
       enumerator :: SYNTAX_ERR_TOO_MANY_NODES
-      enumerator :: ALLOCATION_ERR
       enumerator :: ENGINE_ERR_NFA_TOO_MANY_STATES
       enumerator :: ENGINE_ERR_DFA_TOO_MANY_STATES
-      enumerator :: ENGINE_ERR_INTERNAL
+
+      enumerator :: ENGINE_ERR_INTERNAL   ! 30
    end enum
 
 
@@ -84,6 +87,8 @@ module forgex_error_m
    ! SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
    character(*), parameter :: err_escaped_symbol_missing = &
       "ERROR: Pattern cannot end with a trailing unescaped backslash."
+
+
    
    ! SYNTAX_ERR_ESCAPED_SYMBOL_INVALID
    character(*), parameter :: err_escaped_symbol_invalid = &
@@ -121,13 +126,15 @@ module forgex_error_m
    character(*), parameter :: err_question_incomplete = &
       "ERROR: Not quantifiable; question '?' operator is missing operand."
    
-   ! SYNTAX_ERR_TOKEN_INCOMPLETE
-   character(*), parameter :: err_token_incomplete = &
-      "ERROR: The token is incomplete."
+   ! ! SYNTAX_ERR_TOKEN_INCOMPLETE
+   ! character(*), parameter :: err_token_incomplete = &
+   !    "ERROR: The token is incomplete."
 
    ! SYNTAX_ERR_INVALID_HEXADECIMAL
    character(*), parameter :: err_invalid_hexadecimal_value = &
       "ERROR: Invalid characters detected. Ensure all characters are 0-9, A-F/a-f."
+
+
 
    ! SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH
    character(*), parameter :: err_hex_is_not_enought_digit = &
@@ -138,32 +145,42 @@ module forgex_error_m
       "ERROR: Given hex number exceeds the range of unicode codepoint."
 
    ! SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED
-   character(*), parameter :: err_unicode_property = &
+   character(*), parameter :: err_unicode_property_not_implemented = &
       "ERROR: Unicode property escape hasn't implemented yet."
+
+   ! SYNTAX_ERR_EMPTY_PROPERTY
+   character(*), parameter :: err_unicode_empty_property = &
+      "ERROR: Unicode property is missing."
 
    ! SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN
    character(*), parameter :: err_this_should_not_happen = &
       "ERROR: Fatal error is happened."
 
-   ! SYNTAX_ERRO_TOO_MANY_NODES
-   character(*), parameter :: err_too_many_nodes = &
-       "ERROR: Pattern is too complex: exceeded the maximum number of syntax tree nodes."
-   
    ! ALLOCATION_ERR
    character(*), parameter :: err_allocation = &
       "ERROR: Allocation is failed."
+   
+   ! SYNTAX_ERR_INVALID_PROPERTY
+   character(*), parameter :: err_unicode_invalid_property = &
+      "ERROR: Unicode property is invalid."
+
+   ! SYNTAX_ERR_TOO_MANY_NODES
+   character(*), parameter :: err_too_many_nodes = &
+       "ERROR: Pattern is too complex: exceeded the maximum number of syntax tree nodes."
 
    ! ENGINE_ERR_NFA_TOO_MANY_STATES
    character(*), parameter :: err_nfa_too_many_states = &
                "ERROR: Pattern is too complex: exceeded the maximum number of NFA states."
+
    ! ENGINE_ERR_DFA_TOO_MANY_STATES
    character(*), parameter :: err_dfa_too_many_states = &
                "ERROR: Matching aborted: exceeded the maximum number of DFA states." 
 
+   
+   
    ! ENGINE_ERR_INTERNAL
    character(*), parameter :: err_engine_internal = &
                "ERROR: Matching aborted: internal error."
-
 
 contains
 
@@ -175,7 +192,7 @@ contains
       character(:), allocatable :: msg
 
       select case (code)
-      case (SYNTAX_VALID)
+      case (SYNTAX_VALID) 
          msg = err_is_nothing
 
       case (SYNTAX_ERR)
@@ -204,6 +221,7 @@ contains
 
       case (SYNTAX_ERR_ESCAPED_SYMBOL_MISSING)
          msg = err_escaped_symbol_missing
+
 
       case (SYNTAX_ERR_ESCAPED_SYMBOL_INVALID)
          msg = err_escaped_symbol_invalid
@@ -234,18 +252,31 @@ contains
 
       case (SYNTAX_ERR_INVALID_HEXADECIMAL)
          msg = err_invalid_hexadecimal_value
-      
+
+
       case (SYNTAX_ERR_HEX_DIGITS_NOT_ENOUGH)
          msg = err_hex_is_not_enought_digit
 
       case (SYNTAX_ERR_UNICODE_EXCEED)
          msg = err_exceed_unicode_limit
+      
+      case (SYNTAX_ERR_UNICODE_PROPERTY_NOT_IMPLEMENTED)
+         msg = err_unicode_property_not_implemented
+
+      case (SYNTAX_ERR_EMPTY_PROPERTY)
+         msg = err_unicode_empty_property
+
+      case (SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN)
+         msg = err_this_should_not_happen
+           
+      case (ALLOCATION_ERR)
+         msg = err_allocation
+
+      case (SYNTAX_ERR_INVALID_PROPERTY)
+         msg = err_unicode_invalid_property
 
       case (SYNTAX_ERR_TOO_MANY_NODES)
          msg = err_too_many_nodes
-      
-      case (ALLOCATION_ERR)
-         msg = err_allocation
 
       case (ENGINE_ERR_NFA_TOO_MANY_STATES)
          msg = err_nfa_too_many_states
@@ -255,9 +286,6 @@ contains
 
       case (ENGINE_ERR_INTERNAL)
          msg = err_engine_internal
-
-      case (SYNTAX_ERR_THIS_SHOULD_NOT_HAPPEN)
-         msg = err_this_should_not_happen
 
       case default
          msg = err_this_should_not_happen
