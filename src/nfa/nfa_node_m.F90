@@ -110,6 +110,11 @@ contains
          call self%realloc_forward()
       end if
 
+      ! reallocate when the number of forward top exceeds the size of transition array.
+      if (self%forward_top > size(self%forward)) then
+         call self%realloc_forward()
+      end if
+
       call self%forward(j)%c%add(cube)
       self%forward(j)%dst = dst
       self%forward(j)%is_registered = .true.
