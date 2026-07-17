@@ -50,12 +50,9 @@ contains
       if (.not.allocated(pq%heap)) allocate(pq%heap(1))
 
       !  Managing the size of array in the queue.
-      !! @note This implementation shall be rewritten using the `move_alloc` statement.
       n = pq%number
       if (n == size(pq%heap)) then
-         allocate(tmp(n))
-         tmp(:) = pq%heap(:)
-         deallocate(pq%heap)
+         call move_alloc(pq%heap, tmp)
          allocate(pq%heap(n*2))
          pq%heap(1:n) = tmp(1:n)
       end if

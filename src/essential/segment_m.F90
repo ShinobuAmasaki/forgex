@@ -39,8 +39,8 @@ module forgex_segment_m
    !> as a `min` and `max` value, providing an effective way to represent ranges of characters
    !> when building automata where a range characters share the same transition destination.
    type, public :: segment_t
-      integer(int32) :: min = UTF8_CODE_MAX+2 ! = 2097153
-      integer(int32) :: max = UTF8_CODE_MAX+2 ! = 2097153
+      integer(int32) :: min = UTF8_CODE_MAX+2 ! = 114113 +2
+      integer(int32) :: max = UTF8_CODE_MAX+2 ! = 114113 +2
    contains
       procedure :: print => segment_for_print
       procedure :: validate => segment_is_valid
@@ -191,9 +191,7 @@ contains
       implicit none
       class(segment_t), intent(in) :: self
       logical :: res
-      type(segment_t) :: init ! == segment_t(2097153, 2097153)
-
-      
+      type(segment_t) :: init
 
       res = self%min /= init%min .and. self%max /= init%max &
       .and. self%min <= self%max &

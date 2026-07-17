@@ -722,11 +722,12 @@ contains
          if (.not. self%is_valid) return
          call node%c%add(seglist)
 
-      case (ESCAPE_P_CAPITAL)
-         call self%property(seglist)
-         if (.not. self%is_valid) return
-         call node%c%add(seglist)
-         call node%c%invert()
+      ! ESCAPE_P_CAPITAL has not been impliemented yet.
+      ! case (ESCAPE_P_CAPITAL)
+      !    call self%property(seglist)
+      !    if (.not. self%is_valid) return
+      !    call node%c%add(seglist)
+      !    call node%c%invert()
 
       case (EMPTY_CHAR)
          self%code = SYNTAX_ERR_ESCAPED_SYMBOL_MISSING
@@ -926,10 +927,15 @@ contains
       end if
 
       call prop2seg(property, seglist, self%code)
+      
       if (self%code /= SYNTAX_VALID) then
          self%is_valid = .false.
          return
       end if
+
+      self%is_valid = all(seglist(:) .in. SEG_WHOLE)
+
+      if (.not. self%is_valid) self%code = SYNTAX_ERR_INVALID_PROPERTY
 
    end subroutine tree_graph__unicode_property 
 
