@@ -453,7 +453,7 @@ contains
       implicit none
       character(3) :: replace
 
-      replace = char_utf8(65535)  ! U+FFFF
+      replace = char_utf8(65533)  ! U+FFFD
    end function make_replacement_char
 
    !> This function calculates the length of a UTF-8 string excluding tailing spaces.

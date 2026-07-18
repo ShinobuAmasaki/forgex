@@ -60,7 +60,7 @@ To use a literal left curly brace `{`, escape it with a backslash: `\{`.
 
 **Note: It is the user's responsibility to ensure that input text and the regular expression patterns passed to the API are composed of UTF-8 encoding.**
 
-Version 4.2 adds handling when non-UTF-8 characters are given as input strings. When the processor encounters a non-UTF-8 character, it replaces it byte by byte with U+FFFF and attempts to continue matching. Since this library is primarily focused on UTF-8 string processing, this feature should be considered experimental and preliminary. That is it is intended for simple purposes, such as searching for a pattern that matches ASCII and its class in a text file created with a character encoding that includes ASCII.
+Version 4.2 adds handling when non-UTF-8 characters are given as input strings. When the processor encounters a non-UTF-8 character, it replaces it byte by byte with U+FFFD (REPLACEMENT CHARACTER) and attempts to continue matching. Since this library is primarily focused on UTF-8 string processing, this feature should be considered experimental and preliminary. That is it is intended for simple purposes, such as searching for a pattern that matches ASCII and its class in a text file created with a character encoding that includes ASCII.
 
 
 ## Documentation
