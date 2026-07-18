@@ -252,9 +252,28 @@ contains
    end function automaton__compute_reachable_state
 
 
-   !> This function returns the dfa transition object, that contains the destination index
-   !> and the corresponding set of transitionable NFA state.
+   !> This function looks up the DFA transition for the given `symbol` from the DFA node
+   !> indexed by `curr`, consulting the node's own transition list as a cache before
+   !> doing any recomputation.
+   !>
+   !> On a cache hit, `ret%dst` holds the destination DFA index (self-loop included) and
+   !> `ret%own_j` holds the position of the matched entry in the transition list; the
+   !> `nfa_set` component is left unset in this case, so a hit result must NOT be passed
+   !> to `construct`—the caller transitions directly and skips construction entirely.
+   !>
+   !> On a cache miss, `ret%dst` is `DFA_INVALID_INDEX` and `ret%nfa_set` holds the
+   !> set of NFA states reachable by `symbol` WITHOUT the epsilon closure applied.
+   !> The caller is expected to hand this result to `construct`, which applies the closure,
+   !> registers the destination state if it is new, and records the transition so that
+   !> subsequent calls for the same node and symbol are resolved by the cache lookup above.
+   !
+   ! @note
+   ! Note that `dst == DFA_INVALID_INDEX` here means only "not cached yet", never
+   ! "dead state": whether the transition actually leads anywhere is decided later by
+   ! `construct`.
+   ! @endnote
    pure function automaton__destination(self, curr, symbol) result(ret)
+      use :: forgex_cube_m, only: operator(.in.)
       use :: forgex_lazy_dfa_node_m, only: dfa_transition_t
       implicit none
       class(automaton_t),    intent(in) :: self
@@ -263,23 +282,32 @@ contains
 
       type(dfa_transition_t) :: ret
 
-      
-      integer :: i
+      integer :: j
 
-      ! Get a set of NFAs for which current state can transition, excluding epsilon-transitions.
-      ret%nfa_set = self%get_reachable(curr, symbol)
+      ! First, scan the transition already recorded on the current DFA node.
+      do j = 1, self%dfa%nodes(curr)%get_tra_top()
+         if (self%dfa%nodes(curr)%transition(j)%dst <= DFA_INVALID_INDEX) cycle
+         ! Skip entries not yet written (thier destination still holds the default invalid value).
+         ! Planned: 拒否された遷移がキャッシュされるように変更した場合は、このガードは未初期化と既知の行き止まりを区別すべきだろう
 
-      ! Initialize the next value
-      ret%dst = DFA_INVALID_INDEX
-
-      ! Scan the entire DFA nodes.
-      do concurrent (i = 1:self%dfa%dfa_top-1)
-         ! If there is an existing node corresponding to the NFA state set,
-         ! return the index of that node.
-         if (equivalent_nfa_state_set(ret%nfa_set, self%dfa%nodes(i)%nfa_set)) then
-            ret%dst = i
+         if (symbol .in. self%dfa%nodes(curr)%transition(j)%c) then
+            ! Cache hit: return the cached destination immediately. `nfa_set` is deliberately
+            ! left unset—computing it is exactly the cost this cache avoids—so the caller
+            ! must skip `construct` whenever `dst` is valid.
+            ! 遷移の登録が増えてきたら、ほとんどの文字はここで解決されるはずなので、このループの下の処理は
+            ! ホットパス上では実行されない。
+            ret%dst = self%dfa%nodes(curr)%transition(j)%dst
+            ret%own_j = j
+            return
          end if
       end do
+
+      ! Cache miss: compute the set of NFA states reachable by this symbol, excluding epsilon transitions.
+      ! The epsilon closure is applied later in `construct`, which is also where the new state gets
+      ! registered and the transition gets cached for the next encounter. `dst` is set to the invalid
+      ! index to signal the miss to the caller.
+      ret%nfa_set = self%get_reachable(curr, symbol)
+      ret%dst = DFA_INVALID_INDEX
 
    end function automaton__destination
 

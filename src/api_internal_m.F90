@@ -141,7 +141,10 @@ contains
                end if
                
                d_tra = automaton%destination(cur_i, symbol)
-               if (d_tra%dst == cur_i) then
+               if (d_tra%dst /= DFA_INVALID_INDEX) then
+                  ! Transition-cache hit (including self-loops): move to the
+                  ! destination directly without invoking DFA construction.
+                  cur_i = d_tra%dst
                   ci = next_ci
                   cycle
                end if
@@ -290,7 +293,10 @@ contains
             end if
             
             d_tra = automaton%destination(cur_i, symbol)
-            if (d_tra%dst == cur_i) then
+            if (d_tra%dst /= DFA_INVALID_INDEX) then  ! in the event of a cache hit.
+               ! Transition-cache hit (including self-loops): move to the
+               ! destination directly without invoking DFA construction.
+               cur_i = d_tra%dst
                ci = next_ci
                cycle
             end if
@@ -310,8 +316,12 @@ contains
                else
                   symbol = make_replacement_char()
                end if
+
                d_tra = automaton%destination(cur_i, symbol)
-               if (d_tra%dst == cur_i) then
+               if (d_tra%dst /= DFA_INVALID_INDEX) then
+                  ! Transition-cache hit (including self-loops): move to the
+                  ! destination directly without invoking DFA construction.
+                  cur_i = d_tra%dst
                   ci = next_ci
                   cycle
                end if
