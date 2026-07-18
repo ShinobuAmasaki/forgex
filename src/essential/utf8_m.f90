@@ -201,6 +201,7 @@ contains
       integer :: siz, i, expected_siz
       integer(int8) :: shift_3, shift_4, shift_5, shift_6, shift_7
       integer(int8) :: byte
+      integer(int32) :: b1, b2
       
       res = .true.
       siz = len(chara)
@@ -242,6 +243,35 @@ contains
             return
          end if
       end do
+
+      ! UTF-8 TERMS
+      !
+      ! Overlong: encoding a code point with more bytes than the shortest form
+      ! (e.g. C0 80 for U+0000). UTF-8 defines only the shortest as valid.
+      !
+      ! Surrogate: U+D800-DFFF are reserved for UTF-16 pairs, never carry a
+      ! character by themselves, and must not appear in well-formed UTF-8.
+
+
+      ! Reject overlong encoding, surrogates, and code point above U+10FFFF
+      ! per Unicode Standard Table 3-7 (lead byte constrains the 2nd byte).
+      if (expected_siz >= 2) then
+         b1 = ichar(chara(1:1))
+         b2 = ichar(chara(2:2))
+         select case (expected_siz)
+         case (2)
+            if (b1 < 194) res = .false. ! C0/C1: overlong
+               ! C2_16 = 194_10
+         case (3)
+            if (b1 == 224 .and. b2 < 160) res = .false. ! overlong:  E0_16 = 224_10, A0_16 = 160_10 
+            if (b1 == 237 .and. b2 > 159) res = .false. ! surrogate: ED_16 = 237_10, 9F_16 = 159_10
+         case (4)
+            if (b1 == 240 .and. b2 < 144) res = .false. ! overlong:  F0_16 = 240_10, 90_16 = 144_10
+            if (b1 == 244 .and. b2 > 143) res = .false. ! above U+10FFFF:
+                                                        !            F4_16 = 244_10, 8F_16 = 143_10
+            if (b1 > 244) res = .false.                 ! F5-F7: above U+10FFFF 
+         end select
+      end if
 
    end function is_valid_multiple_byte_character
       
