@@ -342,8 +342,6 @@ contains
 
       integer(int32) :: res         ! Resulting integer representing an UTF-8 binary string.
       integer(int8)  :: byte(4)     ! Byte array (32bit)
-      integer(int8)  :: shift_3, shift_4, shift_5, shift_7              ! Shift values
-      integer(int32) :: buf         ! Buffer for bit operations
       character(4) :: cache
       integer(int8), parameter :: mask_2_bit = int(z'3f', kind=int8) ! '00111111' 6-bit mask for continuation bytes.
       integer(int8), parameter :: mask_3_bit = int(z'1f', kind=int8) ! '00011111' 5-bit mask for 2-byte characters.
@@ -391,61 +389,6 @@ contains
          res = -1
       end select
 
-      ! return
-
-      ! ! Perform bit shifts to determine character's byte-length.
-      ! shift_3 = ishft(byte(1), -3)
-      ! shift_4 = ishft(byte(1), -4)
-      ! shift_5 = ishft(byte(1), -5)
-      ! shift_7 = ishft(byte(1), -7)
-
-      ! ! 1-byte character
-      ! if (shift_7 == 0) then
-
-      !    res = byte(1)
-
-      ! ! 4-byte character
-      ! else if (shift_3 == 30) then
-
-      !    ! First 1 byte
-      !    res =  iand(byte(1), mask_5_bit)
-
-      !    ! Continuation bytes
-      !    res = ishft(res, 6)     ! Left shift by 6 bits and store into res
-      !    buf =  iand(byte(2), mask_2_bit) ! Mask `byte(2)` with `mask_2_bit` and store the result into `buf`.
-      !    res =   ior(res, buf)   ! Take the bitwise OR of `res` and `buf`. The same applies below.
-
-      !    res = ishft(res, 6)
-      !    buf =  iand(byte(3), mask_2_bit)
-      !    res =   ior(res, buf)
-
-      !    res = ishft(res, 6)
-      !    buf =  iand(byte(4), mask_2_bit)
-      !    res =   ior(res, buf)
-
-      ! ! 3-byte character
-      ! else if (shift_4 == 14) then
-
-      !    res =  iand(byte(1), mask_4_bit)
-
-      !    res = ishft(res, 6)
-      !    buf =  iand(byte(2), mask_2_bit)
-      !    res =   ior(res, buf)
-
-      !    res = ishft(res, 6)
-      !    buf =  iand(byte(3), mask_2_bit)
-      !    res =   ior(res, buf)
-
-      ! ! 2-byte character
-      ! else if (shift_5 == 6) then
-
-      !    res =  iand(byte(1), mask_3_bit)
-
-      !    res = ishft(res, 6)
-      !    buf =  iand(byte(2), mask_2_bit)
-      !    res =   ior(res, buf)
-
-      ! end if
    end function ichar_utf8
 
 
