@@ -23,6 +23,7 @@ module forgex_automaton_m
    use :: forgex_lazy_dfa_graph_m
    use :: forgex_syntax_tree_graph_m, only: tree_t
    use :: forgex_cube_m, only: cube_t
+   use :: forgex_error_m
    implicit none
    private
 
@@ -43,6 +44,8 @@ module forgex_automaton_m
       procedure :: construct       => automaton__construct_dfa
       procedure :: get_reachable   => automaton__compute_reachable_state
       procedure :: destination     => automaton__destination
+      procedure :: all_green       => automaton__all_green
+      procedure :: error_code      => automaton__error_code
       procedure :: print           => automaton__print_info
       procedure :: print_dfa       => automaton__print_dfa
    end type automaton_t
@@ -112,8 +115,6 @@ contains
       type(nfa_state_set_t), intent(inout) :: closure
       integer, intent(in) :: n_index
 
-      type(nfa_state_node_t) :: n_node
-      type(nfa_transition_t) :: n_tra
       integer :: dst
       integer :: j
 
@@ -205,13 +206,8 @@ contains
 
       type(nfa_state_set_t)  :: state_set    ! RESULT variable
       type(nfa_state_set_t)  :: current_set
-      integer                :: i, j, k
+      integer                :: i, j
 
-      ! temporary variables ... to increase the cache hit rate
-      ! type(nfa_state_node_t) :: n_node       ! This variable simulates a pointer.
-      ! type(segment_t), allocatable :: segs(:)
-      ! type(nfa_transition_t)       :: n_tra
-      ! type(cube_t) :: cube
       integer :: dst
 
       call init_state_set(state_set, self%nfa%top)
@@ -365,6 +361,31 @@ contains
       call self%dfa%add_transition(nfa_set, prev_i, dst_i, symbol)
    end subroutine automaton__construct_dfa
 
+   !> Returns true only whenb tree/NFA/DFA are all valid, i.e. matching can start.
+   pure function automaton__all_green(self) result(res)
+      implicit none
+      class(automaton_t), intent(in) :: self
+      logical :: res
+      res = self%tree%is_valid .and. self%nfa%is_valid .and. self%dfa%is_valid
+   end function automaton__all_green
+
+
+   pure function automaton__error_code(self) result(code)
+      implicit none
+      class(automaton_t), intent(in) :: self
+      integer :: code
+
+      if (.not. self%tree%is_valid) then
+         code = self%tree%code
+      else if (.not. self%nfa%is_valid) then
+         code = self%nfa%code
+      else if (.not. self%dfa%is_valid) then
+         code = self%dfa%code
+      else
+         code = SYNTAX_VALID
+      end if
+   end function automaton__error_code
+
 
 !=====================================================================!
 
@@ -394,7 +415,6 @@ contains
       integer(int32), intent(in) :: uni
 
       type(segment_t), allocatable :: segments(:)
-      type(dfa_transition_t) :: p
       integer(int32) :: i, j, k
 
       do i = 1, self%dfa%dfa_top -1
