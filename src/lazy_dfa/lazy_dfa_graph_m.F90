@@ -16,7 +16,7 @@ module forgex_lazy_dfa_graph_m
    use :: forgex_parameters_m, only: DFA_STATE_BASE, DFA_STATE_UNIT, DFA_STATE_HARD_LIMIT, &
                                      DFA_INITIAL_INDEX, DFA_INVALID_INDEX
    use :: forgex_lazy_dfa_node_m, only: dfa_state_node_t, dfa_transition_t
-
+   use :: forgex_error_m
    implicit none
    private
 
@@ -27,6 +27,8 @@ module forgex_lazy_dfa_graph_m
       integer(int32) :: dfa_limit = DFA_STATE_UNIT
       integer(int32) :: dfa_top   = DFA_INVALID_INDEX
       integer(int32) :: alloc_count_node = 0
+      logical :: is_valid = .true.
+      integer :: code = SYNTAX_VALID
    contains
       procedure :: preprocess     => lazy_dfa__preprocess
       procedure :: registered     => lazy_dfa__registered_index

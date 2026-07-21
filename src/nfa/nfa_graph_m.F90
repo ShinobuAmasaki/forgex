@@ -19,7 +19,9 @@ module forgex_nfa_graph_m
    use :: forgex_parameters_m, only: NFA_STATE_BASE, NFA_STATE_UNIT, NFA_STATE_LIMIT, NFA_NULL_TRANSITION
    use :: forgex_segment_m, only: SEG_EPSILON
    use :: forgex_cube_m, only: cube_t, assignment(=)
+   use :: forgex_error_m
    implicit none
+   private
 
    type, public :: nfa_graph_t
       type(nfa_state_node_t), allocatable :: graph(:)
@@ -28,6 +30,8 @@ module forgex_nfa_graph_m
       integer(int32) :: exit = 0
       integer(int32) :: nfa_base = NFA_STATE_BASE
       integer(int32) :: nfa_limit = NFA_STATE_LIMIT
+      logical :: is_valid = .true.
+      integer :: code = SYNTAX_VALID
    contains
       procedure :: new_nfa_node => nfa_graph__new_node
       procedure :: is_exceeded => nfa_graph__is_exceeded
