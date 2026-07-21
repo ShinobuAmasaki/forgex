@@ -9,13 +9,15 @@ function M.open_unicode_tools_m()
    -- open template file
    local inf = io.open("template/unicode_tools_m.template.f90", "r")
    if inf == nil then
-      io.stderr("Failed to open: template/unicode_tools_m.template.f90 [gen_prop2seg.lua]")
+      io.stderr:write("Failed to open: template/unicode_tools_m.template.f90 [gen_prop2seg.lua]")
+      os.exit(1)
    end
    
    -- open destination file
    local outf = io.open("src/essential/unicode_tools_m.f90", "w")
    if outf == nil then
-      io.stderr("Failed to open: src/essential/unicode_tools_m.f90 [gen_prop2seg.lua]")
+      io.stderr:write("Failed to open: src/essential/unicode_tools_m.f90 [gen_prop2seg.lua]")
+      os.exit(1)
    end
    return inf, outf
 end
@@ -32,9 +34,6 @@ function M.generate_select_constract(abbrevs)
    case_stat = case_stat .. "            return\n"
    case_stat = case_stat .. "         end select\n"
    M.cases = case_stat
-end
-
-function M.edit()
 end
 
 return M
